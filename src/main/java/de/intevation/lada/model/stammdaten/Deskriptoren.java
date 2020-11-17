@@ -31,7 +31,7 @@ public class Deskriptoren implements Serializable {
 
     private Integer ebene;
 
-    @Column(name="s_xx")
+    @Column(name = "s_xx")
     private Integer sXx;
 
     private Integer sn;
@@ -77,8 +77,8 @@ public class Deskriptoren implements Serializable {
         return this.sXx;
     }
 
-    public void setSXx(Integer sXx) {
-        this.sXx = sXx;
+    public void setSXx(Integer s) {
+        this.sXx = s;
     }
 
     public Integer getSn() {

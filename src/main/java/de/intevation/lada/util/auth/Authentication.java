@@ -15,6 +15,5 @@ import javax.ws.rs.core.HttpHeaders;
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
 public interface Authentication {
-
-    public boolean isAuthenticated(HttpHeaders headers);
+    boolean isAuthenticated(HttpHeaders headers);
 }

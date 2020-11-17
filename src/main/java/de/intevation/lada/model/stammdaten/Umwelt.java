@@ -20,7 +20,7 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name="umwelt", schema="stamm")
+@Table(name = "umwelt", schema = "stamm")
 public class Umwelt implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -29,13 +29,13 @@ public class Umwelt implements Serializable {
 
     private String beschreibung;
 
-    @Column(name="meh_id")
+    @Column(name = "meh_id")
     private Integer mehId;
 
-    @Column(name="meh_id_2")
+    @Column(name = "meh_id_2")
     private Integer secMehId;
 
-    @Column(name="umwelt_bereich")
+    @Column(name = "umwelt_bereich")
     private String umweltBereich;
 
     public Umwelt() {

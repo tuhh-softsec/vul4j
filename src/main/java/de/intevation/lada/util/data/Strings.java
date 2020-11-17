@@ -11,5 +11,5 @@ public class Strings {
     public static final String STAMM = "stamm";
     public static final String LAND = "land";
 
-    private Strings() {};
+    private Strings() { };
 }

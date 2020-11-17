@@ -7,7 +7,6 @@
  */
 package de.intevation.lada.rest;
 
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,12 +15,8 @@ import java.util.Map;
 import javax.ejb.EJBTransactionRolledbackException;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.json.JsonString;
-import javax.json.JsonValue;
 import javax.persistence.TransactionRequiredException;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DELETE;
@@ -121,28 +116,28 @@ public class ProbeService {
      * The data repository granting read/write access.
      */
     @Inject
-    @RepositoryConfig(type=RepositoryType.RW)
+    @RepositoryConfig(type = RepositoryType.RW)
     private Repository repository;
 
     /**
      * The authorization module.
      */
     @Inject
-    @AuthorizationConfig(type=AuthorizationType.HEADER)
+    @AuthorizationConfig(type = AuthorizationType.HEADER)
     private Authorization authorization;
 
     /**
      * The object lock mechanism.
      */
     @Inject
-    @LockConfig(type=LockType.TIMESTAMP)
+    @LockConfig(type = LockType.TIMESTAMP)
     private ObjectLocker lock;
 
     /**
      * The validator used for Probe objects.
      */
     @Inject
-    @ValidationConfig(type="Probe")
+    @ValidationConfig(type = "Probe")
     private Validator validator;
 
     /**
@@ -161,15 +156,14 @@ public class ProbeService {
      *  * start: The first Probe item.<br>
      *  * limit: The count of Probe items.<br>
      *  <br>
-     *  The response data contains a stripped set of Probe objects. The returned fields
-     *  are defined in the query used in the request.
+     *  The response data contains a stripped set of Probe objects.
+     *  The returned fields are defined in the query used in the request.
      * <p>
      * Example:
      * http://example.com/probe?page=[PAGE]&start=[START]&limit=[LIMIT]
      *
      * @return Response object containing all Probe objects.
      */
-    @SuppressWarnings("unchecked")
     @GET
     @Path("/")
     @Produces("application/json")
@@ -194,7 +188,10 @@ public class ProbeService {
 
         for (Probe probe: probes) {
             Violation violation = validator.validate(probe);
-            if (violation.hasWarnings() || violation.hasErrors() || violation.hasNotifications()) {
+            if (violation.hasWarnings()
+                || violation.hasErrors()
+                || violation.hasNotifications()
+            ) {
                 probe.setWarnings(violation.getWarnings());
                 probe.setErrors(violation.getErrors());
                 probe.setNotifications(violation.getNotifications());
@@ -302,10 +299,10 @@ public class ProbeService {
         /* Persist the new probe object*/
         Response newProbe = repository.create(probe, Strings.LAND);
 
-        if(violation.hasWarnings()) {
+        if (violation.hasWarnings()) {
             newProbe.setWarnings(violation.getWarnings());
         }
-        if(violation.hasNotifications()) {
+        if (violation.hasNotifications()) {
             newProbe.setNotifications(violation.getNotifications());
         }
 
@@ -365,8 +362,8 @@ public class ProbeService {
                 return;
             }
 
-            // Use a dummy probe with same mstId as the messprogramm to authorize
-            // the user to create probe objects.
+            // Use a dummy probe with same mstId as the messprogramm to
+            // authorize the user to create probe objects.
             Probe testProbe = new Probe();
             testProbe.setMstId(messprogramm.getMstId());
             if (!authorization.isAuthorized(
@@ -425,10 +422,12 @@ public class ProbeService {
             } else {
                 ortBuilder.and("ortszuordnungTyp", "E");
             }
-            List<OrtszuordnungMp> ortszuordnung = repository.filterPlain(ortBuilder.getQuery(), "land");
+            List<OrtszuordnungMp> ortszuordnung =
+                repository.filterPlain(ortBuilder.getQuery(), "land");
             String gemId = null;
             if (!ortszuordnung.isEmpty()) {
-                Ort ort = repository.getByIdPlain(Ort.class, ortszuordnung.get(0).getOrtId(), "stamm");
+                Ort ort = repository.getByIdPlain(
+                    Ort.class, ortszuordnung.get(0).getOrtId(), "stamm");
                 gemId = ort.getGemId();
             }
 
@@ -469,10 +468,12 @@ public class ProbeService {
         Tag newTag = null;
         //Generate Tags
         if (generatedProbeIds.size() > 0) {
-            Response tagCreation = TagUtil.generateTag("PEP", mstId, repository);
+            Response tagCreation =
+                TagUtil.generateTag("PEP", mstId, repository);
             if (tagCreation.getSuccess()) {
                 newTag = (Tag) tagCreation.getData();
-                TagUtil.setTagsByProbeIds(generatedProbeIds, newTag.getId(), repository);
+                TagUtil.setTagsByProbeIds(
+                    generatedProbeIds, newTag.getId(), repository);
             }
             responseData.put("tag", newTag.getTag());
         }
@@ -556,7 +557,7 @@ public class ProbeService {
         }
         Response updated = repository.getById(
             Probe.class,
-            ((Probe)response.getData()).getId(), Strings.LAND);
+            ((Probe) response.getData()).getId(), Strings.LAND);
         if (violation.hasWarnings()) {
             updated.setWarnings(violation.getWarnings());
         }
@@ -592,7 +593,7 @@ public class ProbeService {
         if (!probe.getSuccess()) {
             return probe;
         }
-        Probe probeObj = (Probe)probe.getData();
+        Probe probeObj = (Probe) probe.getData();
         if (!authorization.isAuthorized(
                 request,
                 probeObj,
@@ -605,9 +606,10 @@ public class ProbeService {
         try {
             Response response = repository.delete(probeObj, Strings.LAND);
             return response;
-        }
-        catch(IllegalArgumentException | EJBTransactionRolledbackException |
-            TransactionRequiredException e) {
+        } catch (IllegalArgumentException
+            | EJBTransactionRolledbackException
+            | TransactionRequiredException e
+        ) {
             return new Response(false, 600, "");
         }
     }

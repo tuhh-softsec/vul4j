@@ -33,11 +33,12 @@ public class MessungAuthorizer extends BaseAuthorizer {
         Messung messung;
         messung = (Messung) data;
         Probe probe =
-            repository.getByIdPlain(Probe.class, messung.getProbeId(), Strings.LAND);
-        if (method == RequestMethod.PUT ||
-            method == RequestMethod.DELETE) {
-            return !this.isMessungReadOnly(messung.getId()) &&
-                getAuthorization(userInfo, probe);
+            repository.getByIdPlain(
+                Probe.class, messung.getProbeId(), Strings.LAND);
+        if (method == RequestMethod.PUT
+            || method == RequestMethod.DELETE) {
+            return !this.isMessungReadOnly(messung.getId())
+                && getAuthorization(userInfo, probe);
         }
         if (method == RequestMethod.POST) {
             return getAuthorization(userInfo, probe);
@@ -50,8 +51,8 @@ public class MessungAuthorizer extends BaseAuthorizer {
             StatusKombi.class,
             status.getStatusKombi(),
             Strings.STAMM);
-        return kombi.getStatusWert().getId() > 0 ||
-            getAuthorization(userInfo, probe);
+        return kombi.getStatusWert().getId() > 0
+            || getAuthorization(userInfo, probe);
     }
 
     @Override
@@ -76,13 +77,12 @@ public class MessungAuthorizer extends BaseAuthorizer {
     ) {
         if (data.getData() instanceof List<?>) {
             List<Messung> messungen = new ArrayList<Messung>();
-            for (Messung messung :(List<Messung>)data.getData()) {
+            for (Messung messung :(List<Messung>) data.getData()) {
                 messungen.add(setAuthData(userInfo, messung));
             }
             data.setData(messungen);
-        }
-        else if (data.getData() instanceof Messung) {
-            Messung messung = (Messung)data.getData();
+        } else if (data.getData() instanceof Messung) {
+            Messung messung = (Messung) data.getData();
             data.setData(setAuthData(userInfo, messung));
         }
         return data;
@@ -100,15 +100,16 @@ public class MessungAuthorizer extends BaseAuthorizer {
         Messung messung
     ) {
         Probe probe =
-            (Probe)repository.getById(
+            (Probe) repository.getById(
                 Probe.class, messung.getProbeId(), Strings.LAND).getData();
-        MessStelle mst = repository.getByIdPlain(MessStelle.class, probe.getMstId(), Strings.STAMM);
+        MessStelle mst =
+            repository.getByIdPlain(
+                MessStelle.class, probe.getMstId(), Strings.STAMM);
 
         if (userInfo.belongsTo(probe.getMstId(), probe.getLaborMstId())) {
             messung.setOwner(true);
             messung.setReadonly(false);
-        }
-        else {
+        } else {
             messung.setOwner(false);
             messung.setReadonly(true);
         }
@@ -118,9 +119,10 @@ public class MessungAuthorizer extends BaseAuthorizer {
         messung.setStatusEditLand(false);
         messung.setStatusEditLst(false);
 
-        if (!userInfo.getFunktionen().contains(1) &&
-            !userInfo.getFunktionen().contains(2) &&
-            !userInfo.getFunktionen().contains(3)) {
+        if (!userInfo.getFunktionen().contains(1)
+            && !userInfo.getFunktionen().contains(2)
+            && !userInfo.getFunktionen().contains(3)
+        ) {
             return messung;
         }
 
@@ -147,23 +149,27 @@ public class MessungAuthorizer extends BaseAuthorizer {
         }
 
         // Has the user the right to edit status for the 'Netzbetreiber'?
-        if (userInfo.getFunktionenForNetzbetreiber(mst.getNetzbetreiberId()).contains(2) &&
-            (stufe == 0 && messung.getStatusEditMst() ||
-             stufe == 1 ||
-             stufe == 2)
-            ) {
+        if (userInfo.getFunktionenForNetzbetreiber(
+                mst.getNetzbetreiberId()).contains(2)
+            && (stufe == 0 && messung.getStatusEditMst()
+            || stufe == 1
+            || stufe == 2)
+        ) {
             messung.setStatusEditLand(true);
             messung.setStatusEdit(true);
         }
 
         /* Does the user belong to an appropriate 'Leitstelle' to
            edit status? */
-        if (userInfo.getFunktionen().contains(3) &&
-            (stufe == 0 && messung.getStatusEditMst() && messung.getStatusEditLand() ||
-             stufe == 1 && messung.getStatusEditLand() ||
-             stufe == 2 ||
-             stufe == 3)
-           ) {
+        if (userInfo.getFunktionen().contains(3)
+            && (stufe == 0
+                && messung.getStatusEditMst()
+                && messung.getStatusEditLand()
+                || stufe == 1
+                && messung.getStatusEditLand()
+                || stufe == 2
+                || stufe == 3)
+        ) {
             QueryBuilder<AuthLstUmw> lstFilter = new QueryBuilder<AuthLstUmw>(
                 repository.entityManager(Strings.STAMM),
                 AuthLstUmw.class);

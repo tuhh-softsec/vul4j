@@ -21,7 +21,6 @@ import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.data.Strings;
-import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
 
 public abstract class BaseAuthorizer implements Authorizer {
@@ -30,7 +29,7 @@ public abstract class BaseAuthorizer implements Authorizer {
      * The Repository used to read from Database.
      */
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type = RepositoryType.RO)
     protected Repository repository;
 
     /**
@@ -40,11 +39,10 @@ public abstract class BaseAuthorizer implements Authorizer {
      * @param probe     The probe to authorize.
      */
     protected boolean getAuthorization(UserInfo userInfo, Probe probe) {
-        if (probe.getMstId() != null &&
-            userInfo.getMessstellen().contains(probe.getMstId())) {
+        if (probe.getMstId() != null
+            && userInfo.getMessstellen().contains(probe.getMstId())) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -69,12 +67,16 @@ public abstract class BaseAuthorizer implements Authorizer {
             if (messungen.get(i).getStatus() == null) {
                 continue;
             }
-            StatusProtokoll status = repository.getByIdPlain(
-                StatusProtokoll.class, messungen.get(i).getStatus(), Strings.LAND);
+            StatusProtokoll status =
+                repository.getByIdPlain(
+                    StatusProtokoll.class,
+                    messungen.get(i).getStatus(),
+                    Strings.LAND);
             StatusKombi kombi = repository.getByIdPlain(
                 StatusKombi.class, status.getStatusKombi(), Strings.STAMM);
-            if (kombi.getStatusWert().getId() != 0 &&
-                kombi.getStatusWert().getId() != 4) {
+            if (kombi.getStatusWert().getId() != 0
+                && kombi.getStatusWert().getId() != 4
+            ) {
                 return true;
             }
         }
@@ -93,8 +95,8 @@ public abstract class BaseAuthorizer implements Authorizer {
             Strings.LAND);
         StatusKombi kombi = repository.getByIdPlain(
             StatusKombi.class, status.getStatusKombi(), Strings.STAMM);
-        return (kombi.getStatusWert().getId() != 0 &&
-                kombi.getStatusWert().getId() != 4);
+        return (kombi.getStatusWert().getId() != 0
+                && kombi.getStatusWert().getId() != 4);
     }
 
 }

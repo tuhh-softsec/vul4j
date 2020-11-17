@@ -20,26 +20,26 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name="auth")
+@Table(name = "auth")
 public class Auth implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
     private Integer id;
 
-    @Column(name="funktion_id")
+    @Column(name = "funktion_id")
     private Integer funktionId;
 
-    @Column(name="labor_mst_id")
+    @Column(name = "labor_mst_id")
     private String laborMstId;
 
-    @Column(name="ldap_group")
+    @Column(name = "ldap_group")
     private String ldapGroup;
 
-    @Column(name="mst_id")
+    @Column(name = "mst_id")
     private String mstId;
 
-    @Column(name="netzbetreiber_id")
+    @Column(name = "netzbetreiber_id")
     private String netzbetreiberId;
 
     public Auth() {

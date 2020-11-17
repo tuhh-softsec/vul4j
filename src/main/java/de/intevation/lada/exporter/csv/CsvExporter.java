@@ -12,7 +12,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
@@ -51,17 +50,17 @@ import de.intevation.lada.util.data.Strings;
  *
  * @author <a href="mailto:awoestmann@intevation.de">Alexander Woestmann</a>
  */
-@ExportConfig(format=ExportFormat.CSV)
-public class CsvExporter implements Exporter{
+@ExportConfig(format = ExportFormat.CSV)
+public class CsvExporter implements Exporter {
 
     @Inject Logger logger;
 
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type = RepositoryType.RO)
     private Repository repository;
 
     /**
-     * Enum storing all possible csv options
+     * Enum storing all possible csv options.
      */
     private enum CsvOptions {
         comma(","), period("."), semicolon(";"), space(" "),
@@ -70,8 +69,8 @@ public class CsvExporter implements Exporter{
 
         private final String value;
 
-        CsvOptions(String value) {
-            this.value = value;
+        CsvOptions(String v) {
+            this.value = v;
         }
 
         public char getChar() {
@@ -83,8 +82,9 @@ public class CsvExporter implements Exporter{
         }
     }
 
-    private String getStatusStringByid (Integer id) {
-        StatusKombi kombi = repository.getByIdPlain(StatusKombi.class, id, Strings.STAMM);
+    private String getStatusStringByid(Integer id) {
+        StatusKombi kombi =
+            repository.getByIdPlain(StatusKombi.class, id, Strings.STAMM);
         StatusStufe stufe = kombi.getStatusStufe();
         StatusWert wert = kombi.getStatusWert();
 
@@ -94,28 +94,33 @@ public class CsvExporter implements Exporter{
     /**
      * Return an array of readable column names.
      *
-     * The names are either fetched from the database or used from the given sub data column name object
+     * The names are either fetched from the database or used from the given
+     * sub data column name object
      * @param keys Keys to get name for
      * @param subDataColumnNames Object containing sub data column names
      * @return Name array
      */
-    private String[] getReadableColumnNames (String[] keys, JsonObject subDataColumnNames) {
+    private String[] getReadableColumnNames(
+        String[] keys,
+        JsonObject subDataColumnNames
+    ) {
         String[] names = new String[keys.length];
         ArrayList<String> keysList = new ArrayList<String>(Arrays.asList(keys));
         keysList.forEach(key -> {
             QueryBuilder<GridColumn> builder = new QueryBuilder<GridColumn>(
                 repository.entityManager(Strings.STAMM),
                 GridColumn.class);
-            builder.and("dataIndex",key);
-            List<GridColumn> result = repository.filterPlain(builder.getQuery(), Strings.STAMM);
+            builder.and("dataIndex", key);
+            List<GridColumn> result =
+                repository.filterPlain(builder.getQuery(), Strings.STAMM);
             String name = key;
             if (result.size() > 0) {
                 GridColumn column = result.get(0);
                 name = column.getName();
             } else {
-                name = subDataColumnNames.containsKey(key)?
-                    subDataColumnNames.getString(key):
-                    key;
+                name = subDataColumnNames.containsKey(key)
+                    ? subDataColumnNames.getString(key)
+                    : key;
             }
             names[keysList.indexOf(key)] = name;
         });
@@ -124,25 +129,36 @@ public class CsvExporter implements Exporter{
 
     /**
      * Export a query result.
-     * @param queryResult Result to export as list of maps. Every list item represents a row,
-     *               while every map key represents a column
+     * @param queryResult Result to export as list of maps.
+     *                    Every list item represents a row,
+     *                    while every map key represents a column
      * @param encoding Encoding to use
      * @param options Optional export options as JSON Object.
      *                Valid options are: <p>
-     *                <ul>
-     *                  <li> decimalSeparator: "comma" | "period", defaults to "period" </li>
-     *                  <li> fieldSeparator: "comma" | "semicolon" | "period" | "space", defaults to "comma" </li>
-     *                  <li> rowDelimiter: "windows" | "linux", defaults to "windows" </li>
-     *                  <li> quoteType: "singlequote" | "doublequote", defaults to "doublequote" </li>
-     *                  <li> timezone: Target timezone for timestamp conversion </li>
-     *                  <li> subDataColumnNames: JsonObject containing dataIndex:ColumnName key-value-pairs used to get readable column names </li>
-     *                </ul>
+     *   <ul>
+     *     <li> decimalSeparator: "comma" | "period", defaults to "period" </li>
+     *     <li> fieldSeparator: "comma" | "semicolon" | "period" |
+     *          "space", defaults to "comma" </li>
+     *     <li> rowDelimiter: "windows" | "linux", defaults to "windows" </li>
+     *     <li> quoteType: "singlequote" |
+     *          "doublequote", defaults to "doublequote" </li>
+     *     <li> timezone: Target timezone for timestamp conversion </li>
+     *     <li> subDataColumnNames: JsonObject containing dataIndex:
+     *          ColumnName key-value-pairs used to get readable column
+     *          names </li>
+     *   </ul>
      *                Invalid options will cause the export to fail.
      *
-     * @param columnsToInclude List of column names to include in the export. If not set, all columns will be exported
+     * @param columnsToInclude List of column names to include in the export.
+     *                         If not set, all columns will be exported
      * @return Export result as input stream or null if the export failed
      */
-    public InputStream export(List<Map<String, Object>> queryResult, String encoding, JsonObject options, ArrayList<String> columnsToInclude) {
+    public InputStream export(
+        List<Map<String, Object>> queryResult,
+        String encoding,
+        JsonObject options,
+        ArrayList<String> columnsToInclude
+    ) {
         if (queryResult == null || queryResult.size() == 0) {
             return null;
         }
@@ -157,21 +173,28 @@ public class CsvExporter implements Exporter{
         if (options != null) {
             try {
                 decimalSeparator = CsvOptions.valueOf(
-                    options.containsKey("decimalSeparator")?
-                    options.getString("decimalSeparator"): "period").getChar();
+                    options.containsKey("decimalSeparator")
+                    ? options.getString("decimalSeparator")
+                    : "period").getChar();
                 fieldSeparator = CsvOptions.valueOf(
-                    options.containsKey("fieldSeparator")?
-                    options.getString("fieldSeparator"): "comma").getChar();
+                    options.containsKey("fieldSeparator")
+                    ? options.getString("fieldSeparator") : "comma").getChar();
                 rowDelimiter = CsvOptions.valueOf(
-                    options.containsKey("rowDelimiter")?
-                    options.getString("rowDelimiter"): "windows").getValue();
+                    options.containsKey("rowDelimiter")
+                    ? options.getString("rowDelimiter") : "windows").getValue();
                 quoteType = CsvOptions.valueOf(
-                    options.containsKey("quoteType")?
-                    options.getString("quoteType"): "doublequote").getChar();
-                timezoneOption = options.containsKey("timezone")? options.getString("timezone"): "UTC";
-                subDataColumnNames = options.containsKey("subDataColumnNames")? options.getJsonObject("subDataColumnNames"): null;
+                    options.containsKey("quoteType")
+                    ? options.getString("quoteType") : "doublequote").getChar();
+                timezoneOption =
+                    options.containsKey("timezone")
+                    ? options.getString("timezone") : "UTC";
+                subDataColumnNames =
+                    options.containsKey("subDataColumnNames")
+                    ? options.getJsonObject("subDataColumnNames") : null;
             } catch (IllegalArgumentException iae) {
-                logger.error(String.format("Invalid CSV options: %s", options.toString()));
+                logger.error(
+                    String.format(
+                        "Invalid CSV options: %s", options.toString()));
                 return null;
             }
         }
@@ -219,27 +242,32 @@ public class CsvExporter implements Exporter{
                     }
                     if (value instanceof Double) {
                         rowItems.add(decimalFormat.format((Double) value));
-                    } if (value instanceof Timestamp) {
+                    }
+                    if (value instanceof Timestamp) {
                         //Convert to target timezone
                         Timestamp time = (Timestamp) value;
                         Calendar calendar = Calendar.getInstance();
                         calendar.setTime(new Date(time.getTime()));
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                        SimpleDateFormat sdf =
+                            new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                         sdf.setTimeZone(TimeZone.getTimeZone(timezone));
                         rowItems.add(sdf.format(calendar.getTime()));
                     } else {
-                        rowItems.add(value != null? value.toString(): null);
+                        rowItems.add(value != null ? value.toString() : null);
                     }
                 }
                 try {
                     printer.printRecord(rowItems);
                 } catch (IOException ioe) {
-                    logger.error(String.format("Error on printing records: %s", ioe.toString()));
+                    logger.error(
+                        String.format(
+                            "Error on printing records: %s", ioe.toString()));
                 }
             });
 
             printer.close();
-            return new ByteArrayInputStream(result.toString().getBytes(encoding));
+            return new ByteArrayInputStream(
+                result.toString().getBytes(encoding));
         } catch (UnsupportedEncodingException uee) {
             logger.error(String.format("Unsupported encoding: %s", encoding));
             return null;

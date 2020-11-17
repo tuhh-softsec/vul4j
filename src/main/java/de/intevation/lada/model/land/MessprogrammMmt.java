@@ -27,25 +27,25 @@ import de.intevation.lada.util.data.IntegerArrayType;
  *
  */
 @Entity
-@Table(name="messprogramm_mmt", schema="land")
-@TypeDefs({@TypeDef(name="IntegerArray", typeClass=IntegerArrayType.class)})
+@Table(name = "messprogramm_mmt", schema = "land")
+@TypeDefs({@TypeDef(name = "IntegerArray", typeClass = IntegerArrayType.class)})
 public class MessprogrammMmt implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name="letzte_aenderung", insertable=false)
+    @Column(name = "letzte_aenderung", insertable = false)
     private Timestamp letzteAenderung;
 
-    @Type(type="IntegerArray")
+    @Type(type = "IntegerArray")
     private Integer[] messgroessen;
 
-    @Column(name="messprogramm_id")
+    @Column(name = "messprogramm_id")
     private Integer messprogrammId;
 
-    @Column(name="mmt_id")
+    @Column(name = "mmt_id")
     private String mmtId;
 
     public MessprogrammMmt() {

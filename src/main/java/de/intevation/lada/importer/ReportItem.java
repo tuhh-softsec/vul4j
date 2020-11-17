@@ -10,7 +10,8 @@ package de.intevation.lada.importer;
 /**
  * Container for error or warning messages send to the client.
  *
- * Errors and warnings are specified by the key-value pair that caused the problem and a code.
+ * Errors and warnings are specified by the key-value pair that caused
+ * the problem and a code.
  * The code can be
  * 670: Parser error
  * 671: existing
@@ -21,8 +22,7 @@ package de.intevation.lada.importer;
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-public class ReportItem
-{
+public class ReportItem {
     private String key;
     private Object value;
     private Integer code;
@@ -35,14 +35,14 @@ public class ReportItem
 
     /**
      * Constructor to create a {@link ReportItem} object with data.
-     * @param key   The key caused the error/warning.
-     * @param value The value caused the error/warning.
-     * @param code  The code specifying the error/warning.
+     * @param k The key caused the error/warning.
+     * @param v The value caused the error/warning.
+     * @param c The code specifying the error/warning.
      */
-    public ReportItem(String key, Object value, Integer code) {
-        this.key = key;
-        this.value = value;
-        this.code = code;
+    public ReportItem(String k, Object v, Integer c) {
+        this.key = k;
+        this.value = v;
+        this.code = c;
     }
 
     /**

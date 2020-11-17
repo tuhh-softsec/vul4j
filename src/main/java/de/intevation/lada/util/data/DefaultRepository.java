@@ -29,7 +29,7 @@ import de.intevation.lada.util.rest.Response;
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-@RepositoryConfig(type=RepositoryType.RW)
+@RepositoryConfig(type = RepositoryType.RW)
 @ApplicationScoped
 public class DefaultRepository extends ReadOnlyRepository {
 
@@ -52,29 +52,25 @@ public class DefaultRepository extends ReadOnlyRepository {
     public Response create(Object object, String dataSource) {
         try {
             transaction.persistInDatabase(object, dataSource);
-        }
-        catch (EntityExistsException eee) {
-            logger.error("Could not persist " + object.getClass().getName() +
-                ". Reason: " + eee.getClass().getName() + " - " +
-                eee.getMessage());
+        } catch (EntityExistsException eee) {
+            logger.error("Could not persist " + object.getClass().getName()
+                + ". Reason: " + eee.getClass().getName() + " - "
+                + eee.getMessage());
             return new Response(false, 601, object);
-        }
-        catch (IllegalArgumentException iae) {
-            logger.error("Could not persist " + object.getClass().getName() +
-                ". Reason: " + iae.getClass().getName() + " - " +
-                iae.getMessage());
+        } catch (IllegalArgumentException iae) {
+            logger.error("Could not persist " + object.getClass().getName()
+                + ". Reason: " + iae.getClass().getName() + " - "
+                + iae.getMessage());
             return new Response(false, 602, object);
-        }
-        catch (TransactionRequiredException tre) {
-            logger.error("Could not persist " + object.getClass().getName() +
-                ". Reason: " + tre.getClass().getName() + " - " +
-                tre.getMessage());
+        } catch (TransactionRequiredException tre) {
+            logger.error("Could not persist " + object.getClass().getName()
+                + ". Reason: " + tre.getClass().getName() + " - "
+                + tre.getMessage());
             return new Response(false, 603, object);
-        }
-        catch (EJBTransactionRolledbackException ete) {
-            logger.error("Could not persist " + object.getClass().getName() +
-                ". Reason: " + ete.getClass().getName() + " - " +
-                ete.getMessage());
+        } catch (EJBTransactionRolledbackException ete) {
+            logger.error("Could not persist " + object.getClass().getName()
+                + ". Reason: " + ete.getClass().getName() + " - "
+                + ete.getMessage());
             return new Response(false, 604, object);
         }
         Response response = new Response(true, 200, object);
@@ -94,20 +90,15 @@ public class DefaultRepository extends ReadOnlyRepository {
         Response response = new Response(true, 200, object);
         try {
             transaction.updateInDatabase(object, dataSource);
-        }
-        catch (EntityExistsException eee) {
+        } catch (EntityExistsException eee) {
             return new Response(false, 601, object);
-        }
-        catch (IllegalArgumentException iae) {
+        } catch (IllegalArgumentException iae) {
             return new Response(false, 602, object);
-        }
-        catch (TransactionRequiredException tre) {
+        } catch (TransactionRequiredException tre) {
             return new Response(false, 603, object);
-        }
-        catch (EJBTransactionRolledbackException ete) {
+        } catch (EJBTransactionRolledbackException ete) {
             return new Response(false, 604, object);
-        }
-        catch (TransactionException te) {
+        } catch (TransactionException te) {
             return new Response(false, 604, object);
         }
         return response;
@@ -126,14 +117,11 @@ public class DefaultRepository extends ReadOnlyRepository {
         Response response = new Response(true, 200, "");
         try {
             transaction.removeFromDatabase(object, dataSource);
-        }
-        catch (IllegalArgumentException iae) {
+        } catch (IllegalArgumentException iae) {
             return new Response(false, 602, object);
-        }
-        catch (TransactionRequiredException tre) {
+        } catch (TransactionRequiredException tre) {
             return new Response(false, 603, object);
-        }
-        catch (EJBTransactionRolledbackException ete) {
+        } catch (EJBTransactionRolledbackException ete) {
             return new Response(false, 696, object);
         }
         return response;
@@ -150,7 +138,8 @@ public class DefaultRepository extends ReadOnlyRepository {
     @Override
     public <T> Response filter(CriteriaQuery<T> filter, String dataSource) {
         List<T> result =
-            transaction.entityManager(dataSource).createQuery(filter).getResultList();
+            transaction.entityManager(dataSource)
+                .createQuery(filter).getResultList();
         return new Response(true, 200, result);
     }
 
@@ -173,7 +162,8 @@ public class DefaultRepository extends ReadOnlyRepository {
         String dataSource
     ) {
         List<T> result =
-            transaction.entityManager(dataSource).createQuery(filter).getResultList();
+            transaction.entityManager(dataSource)
+                .createQuery(filter).getResultList();
         if (size > 0 && start > -1) {
             List<T> newList = result.subList(start, size + start);
             return new Response(true, 200, newList, result.size());

@@ -30,27 +30,31 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  *
  */
 @Entity
-@Table(name="query_user")
+@Table(name = "query_user")
 public class QueryUser implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String description;
 
     private String name;
 
-    @Column(name="user_id")
+    @Column(name = "user_id")
     private Integer userId;
 
     //uni-directional many-to-one association to Query
-    @Column(name="base_query")
+    @Column(name = "base_query")
     private Integer baseQuery;
 
     //bi-directional many-to-one association to QueryMessstelle
-    @OneToMany(mappedBy="queryUser", fetch=FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(
+        mappedBy = "queryUser",
+        fetch = FetchType.EAGER,
+        cascade = CascadeType.ALL,
+        orphanRemoval = true)
     private List<QueryMessstelle> messStelles;
 
     @Transient
@@ -99,6 +103,10 @@ public class QueryUser implements Serializable {
         this.baseQuery = query;
     }
 
+    /**
+     * Get all messstelle objects.
+     * @return the messstelle objects
+     */
     @JsonIgnore
     public List<QueryMessstelle> getMessStelles() {
         if (this.messStelles == null) {
@@ -111,6 +119,11 @@ public class QueryUser implements Serializable {
         this.messStelles = messStelles;
     }
 
+    /**
+     * Add a query messstelle object.
+     * @param messStelle the query messstelle
+     * @return the query messstelle obejct
+     */
     public QueryMessstelle addMessStelle(QueryMessstelle messStelle) {
         getMessStelles().add(messStelle);
         messStelle.setQueryUser(this);
@@ -118,6 +131,11 @@ public class QueryUser implements Serializable {
         return messStelle;
     }
 
+    /**
+     * Remove a query messstelle object.
+     * @param messStelle the query messstelle
+     * @return the query messstelle obejct
+     */
     public QueryMessstelle removeMessStelle(QueryMessstelle messStelle) {
         getMessStelles().remove(messStelle);
         messStelle.setQueryUser(null);

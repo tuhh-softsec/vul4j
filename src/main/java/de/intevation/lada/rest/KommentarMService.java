@@ -75,14 +75,14 @@ public class KommentarMService {
      * The data repository granting read/write access.
      */
     @Inject
-    @RepositoryConfig(type=RepositoryType.RW)
+    @RepositoryConfig(type = RepositoryType.RW)
     private Repository defaultRepo;
 
     /**
      * The authorization module.
      */
     @Inject
-    @AuthorizationConfig(type=AuthorizationType.HEADER)
+    @AuthorizationConfig(type = AuthorizationType.HEADER)
     private Authorization authorization;
 
     /**
@@ -113,15 +113,16 @@ public class KommentarMService {
         int id;
         try {
             id = Integer.valueOf(messungId);
-        }
-        catch(NumberFormatException nfe) {
+        } catch (NumberFormatException nfe) {
             return new Response(false, 699, null);
         }
         Messung messung = defaultRepo.getByIdPlain(
             Messung.class,
             id,
             Strings.LAND);
-        if (!authorization.isAuthorized(request, messung, RequestMethod.GET, Messung.class)) {
+        if (!authorization.isAuthorized(
+                request, messung, RequestMethod.GET, Messung.class)
+        ) {
             return new Response(false, 699, null);
         }
 
@@ -154,13 +155,16 @@ public class KommentarMService {
         @PathParam("id") String id
     ) {
         Response response =
-            defaultRepo.getById(KommentarM.class, Integer.valueOf(id), Strings.LAND);
-        KommentarM kommentar = (KommentarM)response.getData();
+            defaultRepo.getById(
+                KommentarM.class, Integer.valueOf(id), Strings.LAND);
+        KommentarM kommentar = (KommentarM) response.getData();
         Messung messung = defaultRepo.getByIdPlain(
             Messung.class,
             kommentar.getMessungsId(),
             Strings.LAND);
-        if (!authorization.isAuthorized(request, messung, RequestMethod.GET, Messung.class)) {
+        if (!authorization.isAuthorized(
+                request, messung, RequestMethod.GET, Messung.class)
+        ) {
             return new Response(false, 699, null);
         }
 
@@ -272,8 +276,9 @@ public class KommentarMService {
     ) {
         /* Get the object by id*/
         Response kommentar =
-            defaultRepo.getById(KommentarM.class, Integer.valueOf(id), Strings.LAND);
-        KommentarM kommentarObj = (KommentarM)kommentar.getData();
+            defaultRepo.getById(
+                KommentarM.class, Integer.valueOf(id), Strings.LAND);
+        KommentarM kommentarObj = (KommentarM) kommentar.getData();
         if (!authorization.isAuthorized(
                 request,
                 kommentarObj,

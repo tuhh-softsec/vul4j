@@ -36,48 +36,48 @@ import org.hibernate.annotations.DynamicInsert;
 // process!
 @Entity
 @DynamicInsert(true)
-@Table(name="messung", schema="land")
+@Table(name = "messung", schema = "land")
 public class Messung implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private Boolean fertig;
 
     private Boolean geplant;
 
-    @Column(name="ext_id")
+    @Column(name = "ext_id")
     private Integer externeMessungsId;
 
-    @Column(name="letzte_aenderung", insertable=false)
+    @Column(name = "letzte_aenderung", insertable = false)
     private Timestamp letzteAenderung;
 
     private Integer messdauer;
 
     private Timestamp messzeitpunkt;
 
-    @Column(name="mmt_id")
+    @Column(name = "mmt_id")
     private String mmtId;
 
-    @Column(name="nebenproben_nr")
+    @Column(name = "nebenproben_nr")
     private String nebenprobenNr;
 
-    @Column(name="probe_id")
+    @Column(name = "probe_id")
     private Integer probeId;
 
     @OneToOne
-    @JoinColumn(name="probe_id", insertable=false, updatable=false)
+    @JoinColumn(name = "probe_id", insertable = false, updatable = false)
     private Probe probe;
 
     private Integer status;
 
     @OneToOne
-    @JoinColumn(name="status", insertable=false, updatable=false)
+    @JoinColumn(name = "status", insertable = false, updatable = false)
     private StatusProtokoll statusProtokoll;
 
-    @Column(name="tree_modified", insertable=false, updatable=false)
+    @Column(name = "tree_modified", insertable = false, updatable = false)
     private Timestamp treeModified;
 
     @Transient
@@ -306,7 +306,9 @@ public class Messung implements Serializable {
     }
 
     @JsonIgnore
-    public void setNotifications(MultivaluedMap<String, Integer> notifications) {
+    public void setNotifications(
+        MultivaluedMap<String, Integer> notifications
+    ) {
       this.notifications = notifications;
     }
 
@@ -328,7 +330,7 @@ public class Messung implements Serializable {
         return this.statusProtokoll;
     }
 
-    public void setStatusProtokoll (StatusProtokoll statusProtokoll) {
+    public void setStatusProtokoll(StatusProtokoll statusProtokoll) {
         this.statusProtokoll = statusProtokoll;
     }
 

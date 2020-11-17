@@ -24,7 +24,7 @@ import de.intevation.lada.validation.rules.Rule;
  *
  * @author <a href="mailto:raimund.renkert@intevation.de">Raimund Renkert</a>
  */
-@ValidationConfig(type="Messung")
+@ValidationConfig(type = "Messung")
 @ApplicationScoped
 public class MessungValidator implements Validator {
 
@@ -39,7 +39,7 @@ public class MessungValidator implements Validator {
             violations.addError("messung", 602);
             return violations;
         }
-        for(Rule rule: rules) {
+        for (Rule rule : rules) {
             Violation result = rule.execute(object);
             if (result != null) {
                 if (result.hasWarnings()) {
@@ -48,7 +48,7 @@ public class MessungValidator implements Validator {
                 if (result.hasErrors()) {
                     violations.addErrors(result.getErrors());
                 }
-                if (result.hasNotifications()){
+                if (result.hasNotifications()) {
                   violations.addNotifications(result.getNotifications());
                 }
             }

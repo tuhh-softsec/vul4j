@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  *
  */
 @Entity
-@Table(name="mess_einheit")
+@Table(name = "mess_einheit")
 public class MessEinheit implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -41,14 +41,14 @@ public class MessEinheit implements Serializable {
      * Get all MasseinheitUmrechnungs for units that can be converted into
      * this one.
      */
-    @OneToMany(mappedBy="mehIdZu", fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "mehIdZu", fetch = FetchType.EAGER)
     @JsonIgnore
     private List<MassEinheitUmrechnung> massEinheitUmrechnungZus;
 
-    @Column(name="eudf_messeinheit_id")
+    @Column(name = "eudf_messeinheit_id")
     private String eudfMesseinheitId;
 
-    @Column(name="umrechnungs_faktor_eudf")
+    @Column(name = "umrechnungs_faktor_eudf")
     private Long umrechnungsFaktorEudf;
 
     /**

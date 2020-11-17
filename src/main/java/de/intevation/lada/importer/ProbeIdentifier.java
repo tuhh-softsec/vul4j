@@ -19,38 +19,41 @@ import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.data.Strings;
 
-@IdentifierConfig(type="Probe")
+/**
+ * Class to identify a probe object.
+ */
+@IdentifierConfig(type = "Probe")
 public class ProbeIdentifier implements Identifier {
 
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type = RepositoryType.RO)
     private Repository repository;
 
     private Probe found;
 
     @Override
     public Identified find(Object object)
-    throws InvalidTargetObjectTypeException
-    {
+    throws InvalidTargetObjectTypeException {
         found = null;
         if (!(object instanceof Probe)) {
             throw new InvalidTargetObjectTypeException(
                 "Object is not of type Probe");
         }
-        Probe probe = (Probe)object;
+        Probe probe = (Probe) object;
         QueryBuilder<Probe> builder = new QueryBuilder<Probe>(
             repository.entityManager(Strings.LAND),
             Probe.class
         );
 
         // externeProbeId null and hauptprobenNr not null and mstId not null.
-        if (probe.getExterneProbeId() == null &&
-            probe.getHauptprobenNr() != null &&
-            probe.getMstId() != null
+        if (probe.getExterneProbeId() == null
+            && probe.getHauptprobenNr() != null
+            && probe.getMstId() != null
         ) {
             builder.and("mstId", probe.getMstId());
             builder.and("hauptprobenNr", probe.getHauptprobenNr());
-            List<Probe> proben = repository.filterPlain(builder.getQuery(), Strings.LAND);
+            List<Probe> proben =
+                repository.filterPlain(builder.getQuery(), Strings.LAND);
             if (proben.size() > 1) {
                 // Should never happen. DB has unique constraint for
                 // "hauptprobenNr"
@@ -61,16 +64,16 @@ public class ProbeIdentifier implements Identifier {
             }
             found = proben.get(0);
             return Identified.UPDATE;
-        }
-        else if (probe.getExterneProbeId() != null &&
-            (probe.getHauptprobenNr() == null ||
-            probe.getMstId() == null)
+        } else if (probe.getExterneProbeId() != null
+            && (probe.getHauptprobenNr() == null
+                || probe.getMstId() == null)
         ) {
             builder.and("externeProbeId", probe.getExterneProbeId());
             List<Probe> proben =
                 repository.filterPlain(builder.getQuery(), Strings.LAND);
             if (proben.size() > 1) {
-                // Should never happen. DB has unique constraint for "externeProbeId"
+                // Should never happen. DB has unique constraint for
+                // "externeProbeId"
                 return Identified.REJECT;
             }
             if (proben.isEmpty()) {
@@ -78,28 +81,27 @@ public class ProbeIdentifier implements Identifier {
             }
             found = proben.get(0);
             return Identified.UPDATE;
-        }
-        else {
+        } else {
             builder.and("externeProbeId", probe.getExterneProbeId());
             List<Probe> proben =
                 repository.filterPlain(builder.getQuery(), Strings.LAND);
             if (proben.size() > 1) {
-                // Should never happen. DB has unique constraint for "externeProbeId"
+                // Should never happen. DB has unique constraint for
+                // "externeProbeId"
                 return Identified.REJECT;
             }
             if (proben.isEmpty()) {
                 return Identified.NEW;
             }
-            if (proben.get(0).getHauptprobenNr() == null ||
-                proben.get(0).getHauptprobenNr().equals(
-                    probe.getHauptprobenNr()) ||
-                probe.getHauptprobenNr().isEmpty() ||
-                proben.get(0).getHauptprobenNr().isEmpty()
+            if (proben.get(0).getHauptprobenNr() == null
+                || proben.get(0).getHauptprobenNr().equals(
+                    probe.getHauptprobenNr())
+                || probe.getHauptprobenNr().isEmpty()
+                || proben.get(0).getHauptprobenNr().isEmpty()
             ) {
                 found = proben.get(0);
                 return Identified.UPDATE;
-            }
-            else {
+            } else {
                 return Identified.REJECT;
             }
         }

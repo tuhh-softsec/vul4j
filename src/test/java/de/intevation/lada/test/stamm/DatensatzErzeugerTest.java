@@ -13,13 +13,16 @@ import java.util.List;
 
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
-import javax.json.JsonValue;
 
 import org.junit.Assert;
 
 import de.intevation.lada.Protocol;
 import de.intevation.lada.test.ServiceTest;
 
+/**
+ * Test datensatz erzeuger entities.
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 public class DatensatzErzeugerTest extends ServiceTest {
     private JsonObject expectedById;
     private JsonObject create;
@@ -56,6 +59,9 @@ public class DatensatzErzeugerTest extends ServiceTest {
         Assert.assertNotNull(create);
     }
 
+    /**
+     * Execute the tests.
+     */
     public final void execute() {
         getAll("datensatzerzeuger", "rest/datensatzerzeuger");
         getById(
@@ -68,7 +74,7 @@ public class DatensatzErzeugerTest extends ServiceTest {
             "bezeichnung",
             "Testbezeichnung",
             "geändert");
-        JsonObject created = create(
+        create(
             "datensatzerzeuger", "rest/datensatzerzeuger", create);
 /*        delete("datensatzerzeuger",
             "rest/datensatzerzeuger/"

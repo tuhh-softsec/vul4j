@@ -19,7 +19,7 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name="mess_methode")
+@Table(name = "mess_methode")
 public class MessMethode implements Serializable {
     private static final long serialVersionUID = 1L;
 

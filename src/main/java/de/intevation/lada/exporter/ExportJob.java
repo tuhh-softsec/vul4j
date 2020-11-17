@@ -5,6 +5,7 @@
  * and comes with ABSOLUTELY NO WARRANTY! Check out
  * the documentation coming with IMIS-Labordaten-Application for details.
  */
+
 package de.intevation.lada.exporter;
 
 import java.io.BufferedWriter;
@@ -15,7 +16,6 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 
 import javax.json.JsonObject;
 
@@ -27,96 +27,96 @@ import de.intevation.lada.util.data.Repository;
 /**
  * Abstract class for an export job.
  */
-public abstract class ExportJob extends Thread{
+public abstract class ExportJob extends Thread {
 
     /**
-     * True if job has finished and will not change it's status anymore
+     * True if job has finished and will not change it's status anymore.
      */
     private boolean done;
 
     /**
-     * Result encoding
+     * Result encoding.
      */
     protected String encoding;
 
     /**
-     * Exporter instance
+     * Exporter instance.
      */
     protected Exporter exporter;
 
     /**
-     * Parameters used for the export
+     * Parameters used for the export.
      */
     protected JsonObject exportParameters;
 
     /**
-     * The export format
+     * The export format.
      */
     protected String format;
 
     /**
-     * Logger instance
+     * Logger instance.
      */
     protected Logger logger;
 
     /**
-     * Message String, used in case of an error
+     * Message String, used in case of an error.
      */
     protected String message;
 
     /**
-     * Filename set by the users request
+     * Filename set by the users request.
      */
     protected String downloadFileName;
 
     /**
-     * Temporary output file's name
+     * Temporary output file's name.
      */
     protected String outputFileName;
 
     /**
-     * Output file's location
+     * Output file's location.
      */
     protected String outputFileLocation;
 
     /**
-     * Complete path to the output file
+     * Complete path to the output file.
      */
     protected Path outputFilePath;
 
     /**
-     * Id of this export job
+     * Id of this export job.
      */
     protected String jobId;
 
     /**
-     * Repository used for loading data
+     * Repository used for loading data.
      */
     protected Repository repository;
 
     /**
-     * UserInfo
+     * UserInfo.
      */
     protected UserInfo userInfo;
 
     /**
-     * Possible status values for export jobs
+     * Possible status values for export jobs.
      */
-    public enum status {waiting, running, finished, error}
+    public enum Status { waiting, running, finished, error }
 
     /**
-     * The current job status
+     * The current job status.
      */
-    private status currentStatus;
+    private Status currentStatus;
 
     /**
-     * Create a new job with the given id
+     * Create a new job with the given id.
      * @param jobId Job identifier
      */
-    public ExportJob (String jobId) {
+    public ExportJob(String jId) {
         this.done = false;
-        this.jobId = jobId;
-        this.currentStatus = status.waiting;
+        this.jobId = jId;
+        this.currentStatus = Status.waiting;
         this.outputFileLocation = "/tmp/lada-server/";
         if (!outputFileLocation.endsWith("/")) {
             outputFileLocation += "/";
@@ -142,34 +142,34 @@ public abstract class ExportJob extends Thread{
 
 
     /**
-     * Set this job to failed state
-     * @param message Optional message
+     * Set this job to failed state.
+     * @param m Optional message
      */
-    protected void fail(String message) {
+    protected void fail(String m) {
         try {
-            this.setCurrentStatus(status.error);
+            this.setCurrentStatus(Status.error);
             this.setDone(true);
-            this.message = message != null ? message: "";
+            this.message = message != null ? message : "";
         } catch (IllegalStatusTransitionException iste) {
-            this.currentStatus = status.error;
+            this.currentStatus = Status.error;
             this.message = "Internal server errror";
             this.done = true;
-        }
-        finally {
-            logger.error(String.format("Export failed with message: %s", message));
+        } finally {
+            logger.error(
+                String.format("Export failed with message: %s", message));
         }
     }
 
 
     /**
-     * Set this job to finished state
+     * Set this job to finished state.
      */
     protected void finish() {
         try {
-            this.setCurrentStatus(status.finished);
+            this.setCurrentStatus(Status.finished);
             this.setDone(true);
         } catch (IllegalStatusTransitionException iste) {
-            this.currentStatus = status.error;
+            this.currentStatus = Status.error;
             this.message = "Internal server errror";
             this.done = true;
         }
@@ -177,20 +177,20 @@ public abstract class ExportJob extends Thread{
 
 
     /**
-     * Set this job to a running state
+     * Set this job to a running state.
      */
     protected void runnning() {
         try {
-            this.setCurrentStatus(status.running);
+            this.setCurrentStatus(Status.running);
         } catch (IllegalStatusTransitionException iste) {
-            this.currentStatus = status.error;
+            this.currentStatus = Status.error;
             this.message = "Internal server errror";
             this.done = true;
         }
     }
 
     /**
-     * Get the filename used for downloading
+     * Get the filename used for downloading.
      * @return Filename as String
      */
     public String getDownloadFileName() {
@@ -198,7 +198,7 @@ public abstract class ExportJob extends Thread{
     }
 
     /**
-     * Get the encoding
+     * Get the encoding.
      * @return Encoding as String
      */
     public String getEncoding() {
@@ -238,7 +238,7 @@ public abstract class ExportJob extends Thread{
     }
 
     /**
-     * Get the export file's path
+     * Get the export file's path.
      * @return File path
      */
     public Path getOutputFilePath() {
@@ -249,7 +249,7 @@ public abstract class ExportJob extends Thread{
      * Return the current job status.
      * @return Job status
      */
-    public status getStatus() {
+    public Status getStatus() {
         return currentStatus;
     }
     /**
@@ -265,7 +265,7 @@ public abstract class ExportJob extends Thread{
     }
 
     /**
-     * Check if job is done and will no longer change its status
+     * Check if job is done and will no longer change its status.
      * @return True if done, else false
      */
     public boolean isDone() {
@@ -276,7 +276,8 @@ public abstract class ExportJob extends Thread{
      * Checks if given charset is valid.
      *
      * Note that charset names are not case sensitive.
-     * See https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/nio/charset/Charset.html for further information.
+     * See https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/nio/charset/Charset.html
+     * for further information.
      * @return True if charset is valid, else false
      */
     protected boolean isEncodingValid() {
@@ -288,36 +289,41 @@ public abstract class ExportJob extends Thread{
      * Should be overwritten in child classes.
      */
     public void run() {
-        currentStatus = status.running;
+        currentStatus = Status.running;
     }
 
     /**
-     * Set the current status
+     * Set the current status.
      *
      * @param status New status
      * @throws IllegalStatusTransitionException Thrown if job is already done
      */
-    private void setCurrentStatus(status status) throws IllegalStatusTransitionException {
+    private void setCurrentStatus(
+        Status status
+    ) throws IllegalStatusTransitionException {
         if (isDone()) {
-            throw new IllegalStatusTransitionException("Invalid job status transition: Job is already done");
+            throw new IllegalStatusTransitionException(
+                "Invalid job status transition: Job is already done");
         }
         this.currentStatus = status;
     }
 
     /**
-     * Set the done state
+     * Set the done state.
      * @param done New done status
-     * @throws IllegalArgumentException Thrown if argument is false and job is already done
+     * @throws IllegalArgumentException Thrown if argument is false and
+     *                                  job is already done
      */
     protected void setDone(boolean done) throws IllegalArgumentException {
         if (!done && this.done) {
-            throw new IllegalArgumentException("Job is already done, can not reset done to false");
+            throw new IllegalArgumentException(
+                "Job is already done, can not reset done to false");
         }
         this.done = done;
     }
 
     /**
-     * Set the filename used for downloading the result file
+     * Set the filename used for downloading the result file.
      * @param downloadFileName File name
      */
     public void setDownloadFileName(String downloadFileName) {
@@ -325,7 +331,7 @@ public abstract class ExportJob extends Thread{
     }
 
     /**
-     * Set the export encoding
+     * Set the export encoding.
      * @param encoding Encoding as String
      */
     public void setEncoding(String encoding) {
@@ -341,11 +347,11 @@ public abstract class ExportJob extends Thread{
     }
 
     /**
-     * Set parameters used for the export
-     * @param exportParameters Parameters as JsonObject
+     * Set parameters used for the export.
+     * @param exportParams Parameters as JsonObject
      */
-    public void setExportParameter(JsonObject exportParameters) {
-        this.exportParameters = exportParameters;
+    public void setExportParameter(JsonObject exportParams) {
+        this.exportParameters = exportParams;
     }
 
     /**
@@ -357,7 +363,7 @@ public abstract class ExportJob extends Thread{
     }
 
     /**
-     * Set user info
+     * Set user info.
      * @param userInfo New userInfo
      */
     public void setUserInfo(UserInfo userInfo) {
@@ -365,7 +371,7 @@ public abstract class ExportJob extends Thread{
     }
 
     /**
-     * Remove the export's result file if present
+     * Remove the export's result file if present.
      */
     protected void removeResultFile() {
         try {
@@ -373,28 +379,35 @@ public abstract class ExportJob extends Thread{
         } catch (NoSuchFileException nsfe) {
             logger.debug("Can not remove result file: File not found");
         } catch (IOException ioe) {
-            logger.error(String.format("Cannot delete result file. IOException: %s", ioe.getStackTrace().toString()));
+            logger.error(String.format(
+                "Cannot delete result file. IOException: %s",
+                ioe.getStackTrace().toString()));
         }
     }
 
     /**
-     * Write the export result to a file
+     * Write the export result to a file.
      * @param result Result string to export
      * @return True if written successfully, else false
      */
     protected boolean writeResultToFile(String result) {
         Path tmpPath = Paths.get(outputFileLocation);
-        logger.debug(String.format("Writing result to file %s", outputFilePath));
+        logger.debug(String.format(
+            "Writing result to file %s", outputFilePath));
 
         //Create dir
         if (!Files.exists(tmpPath)) {
             try {
                 Files.createDirectories(tmpPath);
             } catch (IOException ioe) {
-                logger.error(String.format("JCannot create export folder. IOException: %s", ioe.getStackTrace().toString()));
+                logger.error(String.format(
+                    "JCannot create export folder. IOException: %s",
+                    ioe.getStackTrace().toString()));
                 return false;
             } catch (SecurityException se) {
-                logger.error(String.format("Security Exception during directory creation %s", se.getStackTrace().toString()));
+                logger.error(String.format(
+                    "Security Exception during directory creation %s",
+                    se.getStackTrace().toString()));
                 return false;
             }
         }
@@ -406,18 +419,26 @@ public abstract class ExportJob extends Thread{
             logger.error("Cannot create export file. File already exists");
             return false;
         } catch (IOException ioe) {
-            logger.error(String.format("Cannot create export file. IOException: %s", ioe.getStackTrace().toString()));
+            logger.error(String.format(
+                "Cannot create export file. IOException: %s",
+                ioe.getStackTrace().toString()));
             return false;
         } catch (SecurityException se) {
-            logger.error(String.format("Security Exception during file creation %s", se.getStackTrace().toString()));
+            logger.error(String.format(
+                "Security Exception during file creation %s",
+                se.getStackTrace().toString()));
             return false;
         }
 
         //Write to file
-        try (BufferedWriter writer = Files.newBufferedWriter(outputFilePath, Charset.forName(encoding))) {
+        try (BufferedWriter writer =
+            Files.newBufferedWriter(
+                outputFilePath, Charset.forName(encoding))) {
             writer.write(result);
         } catch (IOException ioe) {
-            logger.error(String.format("Cannot write to export file. IOException: %s", ioe.getStackTrace().toString()));
+            logger.error(String.format(
+                "Cannot write to export file. IOException: %s",
+                ioe.getStackTrace().toString()));
             return false;
         }
 
@@ -425,12 +446,16 @@ public abstract class ExportJob extends Thread{
     }
 
     /**
-     * Exception thrown if an unfished ExportJob is about to be removed while still runnning
+     * Exception thrown if an unfished ExportJob is about to be removed
+     * while still runnning.
      */
     public static class JobNotFinishedException extends Exception {
         private static final long serialVersionUID = 1L;
     }
 
+    /**
+     * Exception thrown if an illegal status transition was done.
+     */
     public static class IllegalStatusTransitionException extends Exception {
         private static final long serialVersionUID = 2L;
         public IllegalStatusTransitionException(String msg) {

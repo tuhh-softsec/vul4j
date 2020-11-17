@@ -30,12 +30,11 @@ import javax.ws.rs.core.UriInfo;
 import de.intevation.lada.lock.LockConfig;
 import de.intevation.lada.lock.LockType;
 import de.intevation.lada.lock.ObjectLocker;
-import de.intevation.lada.model.land.Messwert;
 import de.intevation.lada.model.land.Messung;
+import de.intevation.lada.model.land.Messwert;
 import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.model.land.StatusProtokoll;
 import de.intevation.lada.model.stammdaten.StatusKombi;
-import de.intevation.lada.model.stammdaten.StatusReihenfolge;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
@@ -50,7 +49,6 @@ import de.intevation.lada.util.rest.Response;
 import de.intevation.lada.validation.Validator;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationConfig;
-import net.bytebuddy.implementation.bind.annotation.Super;
 
 /**
  * REST service for Status objects.
@@ -94,7 +92,7 @@ public class StatusService {
      * The data repository granting read/write access.
      */
     @Inject
-    @RepositoryConfig(type=RepositoryType.RW)
+    @RepositoryConfig(type = RepositoryType.RW)
     private Repository defaultRepo;
 
     @Inject
@@ -105,30 +103,30 @@ public class StatusService {
      * The object lock mechanism.
      */
     @Inject
-    @LockConfig(type=LockType.TIMESTAMP)
+    @LockConfig(type = LockType.TIMESTAMP)
     private ObjectLocker lock;
 
     /**
      * The authorization module.
      */
     @Inject
-    @AuthorizationConfig(type=AuthorizationType.HEADER)
+    @AuthorizationConfig(type = AuthorizationType.HEADER)
     private Authorization authorization;
 
     @Inject
-    @ValidationConfig(type="Status")
+    @ValidationConfig(type = "Status")
     private Validator validator;
 
     @Inject
-    @ValidationConfig(type="Messwert")
+    @ValidationConfig(type = "Messwert")
     private Validator messwertValidator;
 
     @Inject
-    @ValidationConfig(type="Messung")
+    @ValidationConfig(type = "Messung")
     private Validator messungValidator;
 
     @Inject
-    @ValidationConfig(type="Probe")
+    @ValidationConfig(type = "Probe")
     private Validator probeValidator;
 
     /**
@@ -159,8 +157,7 @@ public class StatusService {
         int id;
         try {
             id = Integer.valueOf(messungId);
-        }
-        catch(NumberFormatException nfe) {
+        } catch (NumberFormatException nfe) {
             return new Response(false, 698, null);
         }
 
@@ -181,7 +178,7 @@ public class StatusService {
                 if (violation.hasErrors() || violation.hasWarnings()) {
                     s.setErrors(violation.getErrors());
                     s.setWarnings(violation.getWarnings());
-		    s.setNotifications(violation.getNotifications());
+                    s.setNotifications(violation.getNotifications());
                 }
             }
             return new Response(true, 200, status);
@@ -211,7 +208,6 @@ public class StatusService {
             StatusProtokoll.class,
             Integer.valueOf(id),
             Strings.LAND);
-        StatusProtokoll status = (StatusProtokoll)response.getData();
 
         return authorization.filter(
             request,
@@ -267,8 +263,8 @@ public class StatusService {
             request,
             new Response(true, 200, messung),
             Messung.class);
-        Messung filteredMessung = (Messung)r.getData();
-        if (filteredMessung.getStatusEdit() == false) {
+        Messung filteredMessung = (Messung) r.getData();
+        if (!filteredMessung.getStatusEdit()) {
             return new Response(false, 699, status);
         }
 
@@ -276,18 +272,29 @@ public class StatusService {
             // set the first status as default
             status.setStatusKombi(1);
             return new Response(false, 696, status);
-        }
-        else {
+        } else {
             StatusProtokoll oldStatus = defaultRepo.getByIdPlain(
                 StatusProtokoll.class, messung.getStatus(), Strings.LAND);
-            StatusKombi oldKombi = defaultRepo.getByIdPlain(StatusKombi.class, oldStatus.getStatusKombi(), Strings.STAMM);
-            StatusKombi newKombi = defaultRepo.getByIdPlain(StatusKombi.class, status.getStatusKombi(), Strings.STAMM);
+            // StatusKombi oldKombi =
+            //     defaultRepo.getByIdPlain(
+            //         StatusKombi.class,
+            //         oldStatus.getStatusKombi(),
+            //         Strings.STAMM);
+            StatusKombi newKombi =
+                defaultRepo.getByIdPlain(
+                    StatusKombi.class, status.getStatusKombi(), Strings.STAMM);
 
-            // Check if the user is allowed to change to the requested status_kombi
-            if (userInfo.getFunktionenForMst(status.getMstId()).contains(newKombi.getStatusStufe().getId()) &&
-                   (newKombi.getStatusStufe().getId().equals(1) && messung.getStatusEditMst() ||
-                    newKombi.getStatusStufe().getId().equals(2) && messung.getStatusEditLand() ||
-                    newKombi.getStatusStufe().getId().equals(3) && messung.getStatusEditLst())
+            // Check if the user is allowed to change to the requested
+            // status_kombi
+            if (userInfo.getFunktionenForMst(
+                    status.getMstId()).contains(
+                        newKombi.getStatusStufe().getId())
+                && (newKombi.getStatusStufe().getId().equals(1)
+                    && messung.getStatusEditMst()
+                    || newKombi.getStatusStufe().getId().equals(2)
+                    && messung.getStatusEditLand()
+                    || newKombi.getStatusStufe().getId().equals(3)
+                    && messung.getStatusEditLst())
                 ) {
                 // 1. user user wants to reset the current status
                 //    'status wert' == 8
@@ -296,13 +303,11 @@ public class StatusService {
                         request,
                         resetStatus(status, oldStatus, messung),
                         StatusProtokoll.class);
-                }
-                // 2. user wants to set new status
-                else {
+                } else {
+                    // 2. user wants to set new status
                     return setNewStatus(status, newKombi, messung, request);
                 }
-            }
-            else {
+            } else {
                 // Not allowed.
                 return new Response(false, 699, status);
             }
@@ -316,75 +321,81 @@ public class StatusService {
         HttpServletRequest request
     ) {
         Violation violation = null;
-        Violation violation_collection = null;
+        Violation violationCollection = null;
         int newStatusWert = newKombi.getStatusWert().getId();
-        if (newStatusWert == 1 ||
-            newStatusWert == 2 ||
-            newStatusWert == 7
+        if (newStatusWert == 1
+            || newStatusWert == 2
+            || newStatusWert == 7
         ) {
             Probe probe = readOnlyRepo.getByIdPlain(
                 Probe.class, messung.getProbeId(), "land");
             // init violation_collection with probe validation
-            violation_collection = probeValidator.validate(probe);
+            violationCollection = probeValidator.validate(probe);
 
             //validate messung object
             violation  = messungValidator.validate(messung);
-            violation_collection.addErrors(violation.getErrors());
-            violation_collection.addWarnings(violation.getWarnings());
-            violation_collection.addNotifications(violation.getNotifications());
+            violationCollection.addErrors(violation.getErrors());
+            violationCollection.addWarnings(violation.getWarnings());
+            violationCollection.addNotifications(violation.getNotifications());
 
             //validate messwert objects
             QueryBuilder<Messwert> builder = new QueryBuilder<Messwert>(
                     readOnlyRepo.entityManager(Strings.LAND), Messwert.class);
             builder.and("messungsId", messung.getId());
-            Response messwertQry = readOnlyRepo.filter(builder.getQuery(), Strings.LAND);
+            Response messwertQry =
+                readOnlyRepo.filter(builder.getQuery(), Strings.LAND);
             @SuppressWarnings("unchecked")
             List<Messwert> messwerte = (List<Messwert>) messwertQry.getData();
             boolean hasValidMesswerte = false;
             for (Messwert messwert: messwerte) {
                 violation = messwertValidator.validate(messwert);
                 boolean hasNoMesswert = messwert.getMesswert() == null;
-                if (newStatusWert == 7 && hasNoMesswert == false) {
+                if (newStatusWert == 7
+                    && !hasNoMesswert
+                ) {
                     hasValidMesswerte = true;
                     Violation error = new Violation();
                     error.addError("status", 654);
                     violation.addErrors(error.getErrors());
                 }
                 if (violation.hasErrors() || violation.hasWarnings()) {
-                    violation_collection.addErrors(violation.getErrors());
-                    violation_collection.addWarnings(violation.getWarnings());
+                    violationCollection.addErrors(violation.getErrors());
+                    violationCollection.addWarnings(violation.getWarnings());
                 }
-                violation_collection.addNotifications(violation.getNotifications());
-                if (hasValidMesswerte == true) {
+                violationCollection.addNotifications(
+                    violation.getNotifications());
+                if (hasValidMesswerte) {
                     break;
                 }
             }
-            if (newStatusWert == 7 && hasValidMesswerte == false) {
+            if (newStatusWert == 7 && !hasValidMesswerte) {
                 for (int i = 0; i < messwerte.size(); i++) {
                     defaultRepo.delete(messwerte.get(i), Strings.LAND);
                 }
             }
             // validate statusobject
             violation = validator.validate(status);
-            violation_collection.addErrors(violation.getErrors());
-            violation_collection.addWarnings(violation.getWarnings());
-            violation_collection.addNotifications(violation.getNotifications());
+            violationCollection.addErrors(violation.getErrors());
+            violationCollection.addWarnings(violation.getWarnings());
+            violationCollection.addNotifications(violation.getNotifications());
 
-            if (violation_collection.hasErrors() || violation_collection.hasWarnings()) {
+            if (violationCollection.hasErrors()
+                || violationCollection.hasWarnings()
+            ) {
                 Response response = new Response(false, 605, status);
-                response.setErrors(violation_collection.getErrors());
-                response.setWarnings(violation_collection.getWarnings());
-                response.setNotifications(violation_collection.getNotifications());
+                response.setErrors(violationCollection.getErrors());
+                response.setWarnings(violationCollection.getWarnings());
+                response.setNotifications(
+                    violationCollection.getNotifications());
                 return response;
             }
         }
         //Set datum to null to use database timestamp
         status.setDatum(null);
         Response response = defaultRepo.create(status, Strings.LAND);
-        StatusProtokoll created = (StatusProtokoll)response.getData();
         //NOTE: The referenced messung status field is updated by a DB trigger
-        if (violation_collection != null) {
-            response.setNotifications(violation_collection.getNotifications());
+        if (violationCollection != null) {
+            response.setNotifications(violationCollection.getNotifications());
         }
         return authorization.filter(
             request,
@@ -445,8 +456,9 @@ public class StatusService {
     ) {
         /* Get the object by id*/
         Response object =
-            defaultRepo.getById(StatusProtokoll.class, Integer.valueOf(id), Strings.LAND);
-        StatusProtokoll obj = (StatusProtokoll)object.getData();
+            defaultRepo.getById(
+                StatusProtokoll.class, Integer.valueOf(id), Strings.LAND);
+        StatusProtokoll obj = (StatusProtokoll) object.getData();
         if (!authorization.isAuthorized(
                 request,
                 obj,
@@ -472,11 +484,14 @@ public class StatusService {
             new QueryBuilder<StatusKombi>(
                     defaultRepo.entityManager(Strings.STAMM),
                     StatusKombi.class);
-        StatusKombi oldKombi = defaultRepo.getByIdPlain(StatusKombi.class, oldStatus.getStatusKombi(), Strings.STAMM);
+        StatusKombi oldKombi =
+            defaultRepo.getByIdPlain(
+                StatusKombi.class, oldStatus.getStatusKombi(), Strings.STAMM);
 
         kombiFilter.and("statusStufe", oldKombi.getStatusStufe().getId());
         kombiFilter.and("statusWert", 8);
-        List<StatusKombi> newKombi = defaultRepo.filterPlain(kombiFilter.getQuery(), Strings.STAMM);
+        List<StatusKombi> newKombi =
+            defaultRepo.filterPlain(kombiFilter.getQuery(), Strings.STAMM);
         StatusProtokoll statusNew = new StatusProtokoll();
         statusNew.setDatum(new Timestamp(new Date().getTime()));
         statusNew.setMstId(newStatus.getMstId());
@@ -499,8 +514,7 @@ public class StatusService {
             nV.setStatusKombi(1);
             nV.setText("");
             retValue = defaultRepo.create(nV, Strings.LAND);
-        }
-        else {
+        } else {
             QueryBuilder<StatusProtokoll> lastFilter =
                 new QueryBuilder<StatusProtokoll>(
                         defaultRepo.entityManager(Strings.LAND),
@@ -514,9 +528,10 @@ public class StatusService {
             for (int i = proto.size() - 1; i >= 0; i--) {
                 int curKom = proto.get(i).getStatusKombi();
                 StatusKombi sk =
-                    defaultRepo.getByIdPlain(StatusKombi.class, curKom, Strings.STAMM);
-                if (sk.getStatusStufe().getId() <
-                        kombi.getStatusStufe().getId()
+                    defaultRepo.getByIdPlain(
+                        StatusKombi.class, curKom, Strings.STAMM);
+                if (sk.getStatusStufe().getId()
+                    < kombi.getStatusStufe().getId()
                 ) {
                     ndx = i;
                     break;
@@ -530,7 +545,6 @@ public class StatusService {
             copy.setStatusKombi(orig.getStatusKombi());
             copy.setText("");
             retValue = defaultRepo.create(copy, Strings.LAND);
-            StatusProtokoll createdCopy = (StatusProtokoll)retValue.getData();
         }
         return retValue;
     }

@@ -27,19 +27,19 @@ public class Messgroesse implements Serializable {
 
     private String beschreibung;
 
-    @Column(name="default_farbe")
+    @Column(name = "default_farbe")
     private String defaultFarbe;
 
-    @Column(name="eudf_nuklid_id")
+    @Column(name = "eudf_nuklid_id")
     private Long eudfNuklidId;
 
-    @Column(name="idf_nuklid_key")
+    @Column(name = "idf_nuklid_key")
     private String idfNuklidKey;
 
-    @Column(name="ist_leitnuklid")
+    @Column(name = "ist_leitnuklid")
     private Boolean istLeitnuklid;
 
-    @Column(name="kennung_bvl")
+    @Column(name = "kennung_bvl")
     private String kennungBvl;
 
     private String messgroesse;

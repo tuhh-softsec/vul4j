@@ -8,7 +8,11 @@
 package de.intevation.lada.model.stammdaten;
 
 import java.io.Serializable;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 
 /**
@@ -16,7 +20,7 @@ import javax.persistence.*;
  *
  */
 @Entity
-@Table(name="importer_config")
+@Table(name = "importer_config")
 public class ImporterConfig implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -27,15 +31,15 @@ public class ImporterConfig implements Serializable {
 
     private String attribute;
 
-    @Column(name="from_value")
+    @Column(name = "from_value")
     private String fromValue;
 
-    @Column(name="mst_id")
+    @Column(name = "mst_id")
     private String mstId;
 
     private String name;
 
-    @Column(name="to_value")
+    @Column(name = "to_value")
     private String toValue;
 
     public ImporterConfig() {

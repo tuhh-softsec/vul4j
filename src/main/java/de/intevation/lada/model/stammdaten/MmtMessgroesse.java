@@ -20,17 +20,17 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name="mmt_messgroesse")
+@Table(name = "mmt_messgroesse")
 public class MmtMessgroesse implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @EmbeddedId
     private MmtMessgroessePK id;
 
-    @Column(name="messgroesse_id", insertable=false, updatable=false)
+    @Column(name = "messgroesse_id", insertable = false, updatable = false)
     private Integer messgroesseId;
 
-    @Column(name="mmt_id", insertable=false, updatable=false)
+    @Column(name = "mmt_id", insertable = false, updatable = false)
     private String mmtId;
 
     public MmtMessgroesse() {
@@ -40,8 +40,8 @@ public class MmtMessgroesse implements Serializable {
         return this.id;
     }
 
-    public void setMmtMessgroessePK(MmtMessgroessePK id) {
-        this.id = id;
+    public void setMmtMessgroessePK(MmtMessgroessePK i) {
+        this.id = i;
     }
 
     public Integer getMessgroesseId() {

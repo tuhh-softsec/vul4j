@@ -25,7 +25,7 @@ import javax.json.JsonObject;
 import org.apache.log4j.Logger;
 
 import de.intevation.lada.exporter.ExportJob.JobNotFinishedException;
-import de.intevation.lada.exporter.ExportJob.status;
+import de.intevation.lada.exporter.ExportJob.Status;
 import de.intevation.lada.exporter.csv.CsvExportJob;
 import de.intevation.lada.exporter.json.JsonExportJob;
 import de.intevation.lada.exporter.laf.LafExportJob;
@@ -36,44 +36,46 @@ import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 
 /**
- * Class creating and managing ExportJobs
+ * Class creating and managing ExportJobs.
  * @author <a href="mailto:awoestmann@intevation.de">Alexander Woestmann</a>
  */
 @ApplicationScoped
 public class ExportJobManager {
 
-    private static JobIdentifier identifier = new ExportJobManager.JobIdentifier();
+    private static JobIdentifier identifier =
+        new ExportJobManager.JobIdentifier();
 
     private Logger logger;
 
-    private Map<String, ExportJob> activeJobs = new HashMap<String, ExportJob>();
+    private Map<String, ExportJob> activeJobs =
+        new HashMap<String, ExportJob>();
 
     /**
-     * The csv exporter
+     * The csv exporter.
      */
     @Inject
-    @ExportConfig(format=ExportFormat.CSV)
+    @ExportConfig(format = ExportFormat.CSV)
     private Exporter csvExporter;
 
     /**
      * The laf exporter.
      */
     @Inject
-    @ExportConfig(format=ExportFormat.LAF)
+    @ExportConfig(format = ExportFormat.LAF)
     private Exporter lafExporter;
 
     /**
-     * The Json exporter
+     * The Json exporter.
      */
     @Inject
-    @ExportConfig(format=ExportFormat.JSON)
+    @ExportConfig(format = ExportFormat.JSON)
     private Exporter jsonExporter;
 
     /**
      * The data repository granting read-only access.
      */
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type = RepositoryType.RO)
     private Repository repository;
 
     @Inject
@@ -85,7 +87,7 @@ public class ExportJobManager {
     };
 
     /**
-     * Creates a new export job using the given format and parameters
+     * Creates a new export job using the given format and parameters.
      * @param format Export format
      * @param encoding Result encoding
      * @param params Export parameters as JsonObject
@@ -93,7 +95,12 @@ public class ExportJobManager {
      * @return The new ExportJob's id
      * @throws IllegalArgumentException if an invalid export format is specified
      */
-    public String createExportJob(String format, String encoding, JsonObject params, UserInfo userInfo) throws IllegalArgumentException {
+    public String createExportJob(
+        String format,
+        String encoding,
+        JsonObject params,
+        UserInfo userInfo
+    ) throws IllegalArgumentException {
         String id = getNextIdentifier();
         ExportJob newJob;
         logger.debug(String.format("Creating new job: %s", id));
@@ -113,10 +120,14 @@ public class ExportJobManager {
                 break;
             default:
                 logger.error(String.format("Unkown export format: %s", format));
-                throw new IllegalArgumentException(String.format("%s is not a valid export format", format));
+                throw new IllegalArgumentException(
+                    String.format("%s is not a valid export format", format));
         }
 
-        String downloadFileName = params.containsKey("filename")? params.getString("filename"): String.format("export.%s", format);
+        String downloadFileName =
+            params.containsKey("filename")
+                ? params.getString("filename")
+                : String.format("export.%s", format);
 
         newJob.setRepository(repository);
         newJob.setDownloadFileName(downloadFileName);
@@ -130,12 +141,15 @@ public class ExportJobManager {
     }
 
     /**
-     * Get Exportjob by id
-     * @param identifier Id to look for
-     * @throws JobNotFoundException Thrown if a job with the given can not be found
+     * Get Exportjob by id.
+     * @param id Id to look for
+     * @throws JobNotFoundException Thrown if a job with the given can not
+     *                              be found
      */
-    private ExportJob getJobById (String identifier) throws JobNotFoundException {
-        ExportJob job = activeJobs.get(identifier);
+    private ExportJob getJobById(
+        String id
+    ) throws JobNotFoundException {
+        ExportJob job = activeJobs.get(id);
         if (job == null) {
             throw new JobNotFoundException();
         }
@@ -143,49 +157,68 @@ public class ExportJobManager {
     }
 
     /**
-     * Get the encoding of an export job by id
-     * @param identifier Id to check
+     * Get the encoding of an export job by id.
+     * @param id Id to check
      * @return Encoding as String
-     * @throws JobNotFoundException Thrown if a job with the given can not be found
+     * @throws JobNotFoundException Thrown if a job with the given can not
+     *                              be found
      */
-    public String getJobEncoding(String identifier) throws JobNotFoundException {
-        ExportJob job = getJobById(identifier);
+    public String getJobEncoding(
+        String id
+    ) throws JobNotFoundException {
+        ExportJob job = getJobById(id);
         return job.getEncoding();
     }
 
     /**
-     * Get the filename used for downloading by the given job id
-     * @param identifier Job id
+     * Get the filename used for downloading by the given job id.
+     * @param id Job id
      * @return Filename as String
-     * @throws JobNotFoundException Thrown if a job with the given can not be found
+     * @throws JobNotFoundException Thrown if a job with the given can not
+     *                              be found
      */
-    public String getJobDownloadFilename(String identifier) throws JobNotFoundException {
-        ExportJob job = getJobById(identifier);
+    public String getJobDownloadFilename(
+        String id
+    ) throws JobNotFoundException {
+        ExportJob job = getJobById(id);
         return job.getDownloadFileName();
     }
 
     /**
-     * Get the status of a job by identifier
+     * Get the status of a job by identifier.
      *
-     * If the job is done with an error, it will be removed after return the failure status.
-     * @param identifier Id to look for
+     * If the job is done with an error, it will be removed after return
+     * the failure status.
+     * @param id Id to look for
      * @return Job status
-     * @throws JobNotFoundException Thrown if a job with the given can not be found
+     * @throws JobNotFoundException Thrown if a job with the given can not
+     *                              be found
      */
-    public JobStatus getJobStatus(String identifier) throws JobNotFoundException {
-        ExportJob job = getJobById(identifier);
+    public JobStatus getJobStatus(
+        String id
+    ) throws JobNotFoundException {
+        ExportJob job = getJobById(id);
         String jobStatus = job.getStatusName();
         String message = job.getMessage();
         boolean done = job.isDone();
         JobStatus statusObject = new JobStatus(jobStatus, message, done);
-        if (jobStatus.equals(status.error.name()) && done) {
+        if (jobStatus.equals(Status.error.name()) && done) {
             removeExportJob(job);
         }
         return statusObject;
     }
 
-    public UserInfo getJobUserInfo(String identifier) throws JobNotFoundException {
-        ExportJob job = getJobById(identifier);
+    /**
+     * Get the user informations for the current job by identifier.
+     * @param id Id to look for.
+     * @return The user info
+     * @throws JobNotFoundException Thrown if a job with the given can not
+     *                              be found
+     */
+    public UserInfo getJobUserInfo(
+        String id
+    ) throws JobNotFoundException {
+        ExportJob job = getJobById(id);
         return job.getUserInfo();
     }
 
@@ -201,13 +234,17 @@ public class ExportJobManager {
     }
 
     /**
-     * Get the result file of the export job with the given id as stream
+     * Get the result file of the export job with the given id as stream.
      * @param id ExportJob id
      * @return Result file as stream
-     * @throws JobNotFoundException Thrown if a job with the given can not be found
-     * @throws FileNotFoundException Thrown if the job exists but the result was deleted or can not be read
+     * @throws JobNotFoundException Thrown if a job with the given can not
+     *                              be found
+     * @throws FileNotFoundException Thrown if the job exists but the result
+     *                               was deleted or can not be read
      */
-    public ByteArrayInputStream getResultFileAsStream(String id) throws JobNotFoundException, FileNotFoundException {
+    public ByteArrayInputStream getResultFileAsStream(
+        String id
+    ) throws JobNotFoundException, FileNotFoundException {
         ExportJob job = activeJobs.get(id);
         if (job == null) {
             throw new JobNotFoundException();
@@ -220,14 +257,16 @@ public class ExportJobManager {
             removeExportJob(job);
             return new ByteArrayInputStream(outputStream.toByteArray());
         } catch (IOException ioe) {
-            logger.error(String.format("Error on reading result file: %s", ioe.getMessage()));
+            logger.error(String.format(
+                "Error on reading result file: %s", ioe.getMessage()));
             removeExportJob(job);
             throw new FileNotFoundException();
         }
     }
 
     /**
-     * Remove the given job from the active job list and trigger its cleanup function
+     * Remove the given job from the active job list and trigger its
+     * cleanup function.
      * @param job Job to remove
      */
     private void removeExportJob(ExportJob job) {
@@ -235,7 +274,8 @@ public class ExportJobManager {
             logger.debug(String.format("Removing job %s", job.getJobId()));
             job.cleanup();
         } catch (JobNotFinishedException jfe) {
-            logger.warn(String.format("Tried to remove unfinished job %s", job.getJobId()));
+            logger.warn(String.format(
+                "Tried to remove unfinished job %s", job.getJobId()));
         }
         activeJobs.remove(job.getJobId());
     }
@@ -249,10 +289,10 @@ public class ExportJobManager {
         private String message;
         private boolean done;
 
-        public JobStatus(String status, String message, boolean done) {
-            this.status = status;
-            this.message = message;
-            this.done = done;
+        public JobStatus(String s, String m, boolean d) {
+            this.status = s;
+            this.message = m;
+            this.done = d;
         }
 
         public boolean isDone() {
@@ -268,6 +308,9 @@ public class ExportJobManager {
         }
     }
 
+    /**
+     * Thrown if a job with the given can not be found.
+     */
     public static class JobNotFoundException extends Exception {
         private static final long serialVersionUID = 1L;
     }
@@ -280,8 +323,10 @@ public class ExportJobManager {
      *
      * Identifier format:
      * [timestamp]-[sequenceNumber]-[randomPart]
-     * timestamp: Timestamp in seconds the identifier was set to the next value (64 bits)
-     * sequenceNumber: Sequence number, will be reset for each timestamp (16 bits)
+     * timestamp: Timestamp in seconds the identifier was set to the next
+     *            value (64 bits)
+     * sequenceNumber: Sequence number, will be reset for each
+     *                 timestamp (16 bits)
      * randomPart: Random number (32 bits)
      *
      * The hexadecimal representation will contain leading zeroes.
@@ -289,9 +334,9 @@ public class ExportJobManager {
     private static class JobIdentifier {
 
         /**
-         * Format string for the hexadecimal representation
+         * Format string for the hexadecimal representation.
          */
-        private final String HEX_FORMAT;
+        private final String hexFormat;
 
         private static final short INITIAL_SEQ_NO = 1;
 
@@ -302,9 +347,9 @@ public class ExportJobManager {
         private int randomPart;
 
         /**
-         * Create the identifier with an initial value
+         * Create the identifier with an initial value.
          */
-        public JobIdentifier () {
+        JobIdentifier() {
             seqNo = INITIAL_SEQ_NO;
             timestamp = System.currentTimeMillis();
             randomPart = 0;
@@ -323,11 +368,11 @@ public class ExportJobManager {
                 .append("%3$0")
                 .append(intHexWidth)
                 .append("x");
-            HEX_FORMAT = formatBuilder.toString();
+            hexFormat = formatBuilder.toString();
         }
 
         /**
-         * Set the identifier to the next value
+         * Set the identifier to the next value.
          */
         public void next() {
             long currentTime = System.currentTimeMillis();
@@ -345,7 +390,7 @@ public class ExportJobManager {
          * The string will include padding zeroes.
          */
         public String toString() {
-            return String.format(HEX_FORMAT, timestamp, seqNo, randomPart);
+            return String.format(hexFormat, timestamp, seqNo, randomPart);
         }
     }
 }

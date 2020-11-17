@@ -30,10 +30,10 @@ import de.intevation.lada.util.data.Strings;
 *
 * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
 */
-@ExportConfig(format=ExportFormat.LAF)
+@ExportConfig(format = ExportFormat.LAF)
 public class LafExporter
-implements Exporter
-{
+implements Exporter {
+
     /**
      * The creator used to generate content.
      */
@@ -44,7 +44,7 @@ implements Exporter
      * The repository used to read data.
      */
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type = RepositoryType.RO)
     private Repository repository;
 
     /**
@@ -52,7 +52,8 @@ implements Exporter
      *
      * @param proben    List of probe ids.
      * @param messungen    List of messung ids.
-     * @param auth      The authentication information.
+     * @param encoding The encoding of the resulting input stream
+     * @param userInfo The information about the current user
      * @return InputStream with the LAF data.
      */
     @Override

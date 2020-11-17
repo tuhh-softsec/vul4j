@@ -18,7 +18,7 @@ import de.intevation.lada.util.annotation.AuthenticationConfig;
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
 @Stateless
-@AuthenticationConfig(type=AuthenticationType.NONE)
+@AuthenticationConfig(type = AuthenticationType.NONE)
 public class DefaultAuthentication implements Authentication {
 
     /**

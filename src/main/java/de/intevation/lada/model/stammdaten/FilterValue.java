@@ -21,18 +21,18 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name="filter_value")
-@NamedQuery(name="FilterValue.findAll", query="SELECT f FROM FilterValue f")
+@Table(name = "filter_value")
+@NamedQuery(name = "FilterValue.findAll", query = "SELECT f FROM FilterValue f")
 public class FilterValue implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
     private Integer id;
 
-    @Column(name="filter_id")
+    @Column(name = "filter_id")
     private Integer filterId;
 
-    @Column(name="user_id")
+    @Column(name = "user_id")
     private Integer userId;
 
     private String value;

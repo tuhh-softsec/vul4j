@@ -60,19 +60,23 @@ public class AsyncExportService {
      * The authorization module.
      */
     @Inject
-    @AuthorizationConfig(type=AuthorizationType.HEADER)
+    @AuthorizationConfig(type = AuthorizationType.HEADER)
     private Authorization authorization;
 
     /**
      * Export data into a csv file.
      *
      * This service takes json formatted POST data containing:
-     * - Query parameters used for obtaining the data to. The "export" set whether the field should be export or not.
-     *   Note: The column list must contain the record's id column even if it will not be exported.
+     * - Query parameters used for obtaining the data to.
+     *      The "export" set whether the field should be export or not.
+     *   Note: The column list must contain the record's id
+     *      column even if it will not be exported.
      * - A boolean that sets if related subdata should be exported too
-     * - An optional list of subdata column names. May only be set if "subData" is true
+     * - An optional list of subdata column names.
+     *      May only be set if "subData" is true
      * - The gridColumnId that contains the record id
-     * - An optional id filter to limit the export data. If not set, the complete query result will be exported
+     * - An optional id filter to limit the export data.
+     *      If not set, the complete query result will be exported
      * - A timezone string to convert timestamps to
      * - Key-value pairs matching sub data columns to readable names
      * - CSV specific options
@@ -133,7 +137,9 @@ public class AsyncExportService {
             encoding = "iso-8859-15";
         }
         UserInfo userInfo = authorization.getInfo(request);
-        String newJobId = exportJobManager.createExportJob("csv", encoding, objects, userInfo);
+        String newJobId =
+            exportJobManager.createExportJob(
+                "csv", encoding, objects, userInfo);
         JsonObject responseJson = Json.createObjectBuilder()
             .add("refId", newJobId)
             .build();
@@ -144,9 +150,11 @@ public class AsyncExportService {
      * Export Probe objects into laf files.
      *
      * The service takes JSON formatted  POST data containing probe ids and
-     * creates a asynchronous export job for the Probe objects filtered by these ids.
+     * creates a asynchronous export job for the Probe objects filtered by
+     * these ids.
      * <p>
-     * To request the export post a JSON formatted string with an array of probe ids and an optional filename
+     * To request the export post a JSON formatted string with an array of
+     * probe ids and an optional filename
      * <pre>
      * <code>
      * {
@@ -156,7 +164,8 @@ public class AsyncExportService {
      * </code>
      * </pre>
      *
-     * The services returns a JSON object containing the id of the newly created export job,
+     * The services returns a JSON object containing the id of the newly
+     * created export job,
      * which can be used to get the job status or download the file:
      * <p>
      * <pre>
@@ -189,7 +198,9 @@ public class AsyncExportService {
             encoding = "iso-8859-15";
         }
         UserInfo userInfo = authorization.getInfo(request);
-        String newJobId = exportJobManager.createExportJob("laf", encoding, objects, userInfo);
+        String newJobId =
+            exportJobManager.createExportJob(
+                "laf", encoding, objects, userInfo);
         JsonObject responseJson = Json.createObjectBuilder()
             .add("refId", newJobId)
             .build();
@@ -199,12 +210,16 @@ public class AsyncExportService {
      * Export data into a json file.
      *
      * This service takes json formatted POST data containing:
-     * - Query parameters used for obtaining the data to. The "export" set whether the field should be export or not.
-     *   Note: The column list must contain the record's id column even if it will not be exported.
+     * - Query parameters used for obtaining the data to. The "export" set
+     * whether the field should be export or not.
+     *   Note: The column list must contain the record's id column even
+     * if it will not be exported.
      * - A boolean that sets if related subdata should be exported too
-     * - An optional list of subdata column names. May only be set if "subData" is true
+     * - An optional list of subdata column names. May only be set if
+     * "subData" is true
      * - The gridColumnId that contains the record id
-     * - An optional id filter to limit the export data. If not set, the complete query result will be exported
+     * - An optional id filter to limit the export data. If not set, the
+     * complete query result will be exported
      * - A timezone string to convert timestamps to
      * - An optional filename used for download
      * <p>
@@ -250,7 +265,9 @@ public class AsyncExportService {
 
         String encoding = "utf-8";
         UserInfo userInfo = authorization.getInfo(request);
-        String newJobId = exportJobManager.createExportJob("json", encoding, objects, userInfo);
+        String newJobId =
+            exportJobManager.createExportJob(
+                "json", encoding, objects, userInfo);
         JsonObject responseJson = Json.createObjectBuilder()
             .add("refId", newJobId)
             .build();
@@ -271,7 +288,8 @@ public class AsyncExportService {
      * </pre>
      *
      * @param id Job id to check
-     * @return Json object containing the status information, status 403 if the requesting user has not created the request
+     * @return Json object containing the status information, status
+     *         403 if the requesting user has not created the request
      *         or status 404 if job was not found
      */
     @GET
@@ -287,9 +305,15 @@ public class AsyncExportService {
 
         try {
             originalCreator = exportJobManager.getJobUserInfo(id);
-            if (!originalCreator.getUserId().equals(requestingUser.getUserId())) {
-                logger.warn(String.format("Rejected status request by user #%s for job %s created by user #%s",
-                    requestingUser.getUserId(), id, originalCreator.getUserId()));
+            if (!originalCreator.getUserId().equals(
+                    requestingUser.getUserId())
+            ) {
+                logger.warn(String.format(
+                    "Rejected status request by user "
+                    + "#%s for job %s created by user #%s",
+                    requestingUser.getUserId(),
+                    id,
+                    originalCreator.getUserId()));
                 return Response.status(Response.Status.FORBIDDEN).build();
             }
 
@@ -310,8 +334,8 @@ public class AsyncExportService {
     /**
      * Download a finished export file
      * @param id Job id to download file from
-     * @return Export file, status 403 if the requesting user has not created the request
-     *         or status 404 if job was not found
+     * @return Export file, status 403 if the requesting user has not created
+     *         the request or status 404 if job was not found
      */
     @GET
     @Path("download/{id}")
@@ -328,9 +352,15 @@ public class AsyncExportService {
 
         try {
             originalCreator = exportJobManager.getJobUserInfo(id);
-            if (!originalCreator.getUserId().equals(requestingUser.getUserId())) {
-                logger.warn(String.format("Rejected download request by user %s for job %s created by user %s",
-                    requestingUser.getUserId(), id, originalCreator.getUserId()));
+            if (!originalCreator.getUserId().equals(
+                    requestingUser.getUserId())
+            ) {
+                logger.warn(String.format(
+                    "Rejected download request by user %s "
+                    + "for job %s created by user %s",
+                    requestingUser.getUserId(),
+                    id,
+                    originalCreator.getUserId()));
                 return Response.status(Response.Status.FORBIDDEN).build();
             }
 
@@ -339,11 +369,14 @@ public class AsyncExportService {
             resultStream = exportJobManager.getResultFileAsStream(id);
 
         } catch (JobNotFoundException jfe) {
-            logger.info(String.format("Returning 404 for download: Could not find job %s", id));
+            logger.info(String.format(
+                "Returning 404 for download: Could not find job %s", id));
             return Response.status(Response.Status.NOT_FOUND).build();
         } catch (FileNotFoundException fnfe) {
-            logger.error(String.format("Error on reading result file for job %s", id));
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            logger.error(String.format(
+                "Error on reading result file for job %s", id));
+            return Response.status(
+                Response.Status.INTERNAL_SERVER_ERROR).build();
         }
 
         ResponseBuilder response = Response.ok(resultStream);
@@ -351,7 +384,9 @@ public class AsyncExportService {
                 "Content-Disposition",
                 "attachment; filename=\"" + filename + "\"");
             response.encoding(encoding);
-            response.header("Content-Type", "application/octet-stream; charset=" + encoding);
+            response.header(
+                "Content-Type",
+                "application/octet-stream; charset=" + encoding);
 
         return response.build();
     }

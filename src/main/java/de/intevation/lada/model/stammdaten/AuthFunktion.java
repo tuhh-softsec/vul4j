@@ -19,7 +19,7 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name="auth_funktion")
+@Table(name = "auth_funktion")
 public class AuthFunktion implements Serializable {
     private static final long serialVersionUID = 1L;
 

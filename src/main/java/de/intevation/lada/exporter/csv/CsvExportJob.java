@@ -19,7 +19,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
-import javax.json.JsonValue;
 
 import org.apache.log4j.Logger;
 
@@ -29,17 +28,20 @@ import de.intevation.lada.model.land.Messwert;
 import de.intevation.lada.query.QueryTools;
 
 /**
- * Job class for exporting records to a CSV file
+ * Job class for exporting records to a CSV file.
  *
  * @author <a href="mailto:awoestmann@intevation.de">Alexander Woestmann</a>
  */
 public class CsvExportJob extends QueryExportJob {
 
+    private static final int SIZE = 1024;
+
     public CsvExportJob(String jobId, QueryTools queryTools) {
         super(jobId, queryTools);
         this.format = "csv";
         this.downloadFileName = "export.csv";
-        this.logger = Logger.getLogger(String.format("CsvExportJob[%s]", jobId));
+        this.logger =
+            Logger.getLogger(String.format("CsvExportJob[%s]", jobId));
     }
 
     /**
@@ -52,9 +54,15 @@ public class CsvExportJob extends QueryExportJob {
      */
     @Override
     @SuppressWarnings("unchecked")
-    protected List<Map<String, Object>> mergeSubData(List<?> subData) throws QueryExportException {
+    protected List<Map<String, Object>> mergeSubData(
+        List<?> subData
+    ) throws QueryExportException {
         List<Map<String, Object>> mergedData;
-        logger.debug(String.format("Merging %d sub data records into %d primary record(s)", subData.size(), primaryData.size()));
+        logger.debug(
+            String.format(
+                "Merging %d sub data records into %d primary record(s)",
+                subData.size(),
+                primaryData.size()));
         switch (getSubDataType(idType)) {
             case "messung":
                 mergedData = mergeMessungData((List<Messung>) subData);
@@ -65,13 +73,14 @@ public class CsvExportJob extends QueryExportJob {
             default: return null;
         }
         if (mergedData == null) {
-            throw new QueryExportException("Failed merging subdata into query data");
+            throw new QueryExportException(
+                "Failed merging subdata into query data");
         }
         return mergedData;
     }
 
     /**
-     * Merge records without sub data
+     * Merge records without sub data.
      * @param objects Record list
      * @param ids list of ids to merge
      * @param subDataColumns Subdata columns
@@ -98,14 +107,17 @@ public class CsvExportJob extends QueryExportJob {
     }
 
     /**
-     * Merge primary result and messung data
+     * Merge primary result and messung data.
      * @param messungData Data to merge
      * @return Merged data as list
      */
-    private List<Map<String, Object>> mergeMessungData(List<Messung> messungData) {
-        //Create a map of id->record
-        Map<Integer, Map<String, Object>> idMap = new HashMap<Integer, Map<String, Object>> ();
-        //Ids left for merging
+    private List<Map<String, Object>> mergeMessungData(
+        List<Messung> messungData
+    ) {
+        // Create a map of id->record
+        Map<Integer, Map<String, Object>> idMap =
+            new HashMap<Integer, Map<String, Object>>();
+        // Ids left for merging
         List<Integer> idsLeft = new ArrayList<Integer>();
         primaryData.forEach(record -> {
             idMap.put((Integer) record.get(idColumn), record);
@@ -122,10 +134,11 @@ public class CsvExportJob extends QueryExportJob {
                 return;
             }
             Map<String, Object> mergedRow = new HashMap<String, Object>();
-            //Add sub data
+            // Add sub data
             subDataColumns.forEach(subDataColumn -> {
                 Object fieldValue = null;
-                //Check if column needs seperate handling or is a valid messung field
+                // Check if column needs seperate handling or is a valid
+                // messung field
                 switch (subDataColumn) {
                     case "statusKombi":
                         fieldValue = getStatusString(messung);
@@ -138,18 +151,19 @@ public class CsvExportJob extends QueryExportJob {
                 }
                 mergedRow.put(subDataColumn, fieldValue);
             });
-            //Add primary record
+            // Add primary record
             Map<String, Object> primaryRecord = idMap.get(primaryId);
             primaryRecord.forEach((key, value) -> {
                 mergedRow.put(key, value);
             });
-            //Remove finished record from list
+            // Remove finished record from list
             idsLeft.remove(primaryId);
             merged.add(mergedRow);
         });
 
         //Merge any skipped records without sub data
-        merged.addAll(mergeDataWithEmptySubdata(idMap, idsLeft, subDataColumns, columnsToExport));
+        merged.addAll(mergeDataWithEmptySubdata(
+            idMap, idsLeft, subDataColumns, columnsToExport));
         if (!success.get()) {
             return null;
         }
@@ -157,14 +171,17 @@ public class CsvExportJob extends QueryExportJob {
     }
 
     /**
-     * Merge primary result and messung data
+     * Merge primary result and messung data.
      * @param messwertData Data to merge
      * @return Merged data as list
      */
-    private List<Map<String, Object>> mergeMesswertData(List<Messwert> messwertData) {
-        //Create a map of id->record
-        Map<Integer, Map<String, Object>> idMap = new HashMap<Integer, Map<String, Object>> ();
-        //Ids left for merging
+    private List<Map<String, Object>> mergeMesswertData(
+        List<Messwert> messwertData
+    ) {
+        // Create a map of id->record
+        Map<Integer, Map<String, Object>> idMap =
+            new HashMap<Integer, Map<String, Object>>();
+        // Ids left for merging
         List<Integer> idsLeft = new ArrayList<Integer>();
         primaryData.forEach(record -> {
             idMap.put((Integer) record.get(idColumn), record);
@@ -180,10 +197,11 @@ public class CsvExportJob extends QueryExportJob {
                 return;
             }
             Map<String, Object> mergedRow = new HashMap<String, Object>();
-            //Add sub data
+            // Add sub data
             subDataColumns.forEach(subDataColumn -> {
                 Object fieldValue = null;
-                //Check if column needs seperate handling or is a valid messwert field
+                // Check if column needs seperate handling or is a valid
+                // messwert field
                 switch (subDataColumn) {
                     case "messungId":
                         fieldValue = getFieldByName("messungsId", messwert);
@@ -193,7 +211,7 @@ public class CsvExportJob extends QueryExportJob {
                 }
                 mergedRow.put(subDataColumn, fieldValue);
             });
-            //Add primary record
+            // Add primary record
             Map<String, Object> primaryRecord = idMap.get(primaryId);
             if (primaryRecord == null) {
                 logger.error("Can not get primary record for merging");
@@ -203,12 +221,13 @@ public class CsvExportJob extends QueryExportJob {
             primaryRecord.forEach((key, value) -> {
                 mergedRow.put(key, value);
             });
-            //Remove finished record from list
+            // Remove finished record from list
             idsLeft.remove(primaryId);
             merged.add(mergedRow);
         });
-        //Merge any skipped records without sub data
-        merged.addAll(mergeDataWithEmptySubdata(idMap, idsLeft, subDataColumns, columnsToExport));
+        // Merge any skipped records without sub data
+        merged.addAll(mergeDataWithEmptySubdata(
+            idMap, idsLeft, subDataColumns, columnsToExport));
 
         if (!success.get()) {
             return null;
@@ -217,13 +236,14 @@ public class CsvExportJob extends QueryExportJob {
     }
 
     /**
-     * Start the CSV export;
+     * Start the CSV export.
      */
     @Override
     public void run() {
         super.run();
 
-        logger.debug(String.format("Starting LAF export %s (%s)", jobId, encoding));
+        logger.debug(
+            String.format("Starting LAF export %s (%s)", jobId, encoding));
         //Check encoding
         if (!isEncodingValid()) {
             String error = String.format("Invalid encoding: %s", this.encoding);
@@ -275,8 +295,12 @@ public class CsvExportJob extends QueryExportJob {
         csvOptions.forEach((key, value) -> {
             exportOptions.add(key, value);
         });
-        if (exportSubdata && exportParameters.containsKey("subDataColumnNames")) {
-            exportOptions.add("subDataColumnNames", exportParameters.getJsonObject("subDataColumnNames"));
+        if (exportSubdata
+            && exportParameters.containsKey("subDataColumnNames")
+        ) {
+            exportOptions.add(
+                "subDataColumnNames",
+                exportParameters.getJsonObject("subDataColumnNames"));
         }
         if (exportData == null || exportData.size() == 0) {
             fail("Export data is empty");
@@ -284,7 +308,8 @@ public class CsvExportJob extends QueryExportJob {
         }
         InputStream exported;
         try {
-            exported = exporter.export(exportData, encoding, exportOptions.build(), exportColumns);
+            exported = exporter.export(
+                exportData, encoding, exportOptions.build(), exportColumns);
         } catch (Exception e) {
             logger.error("Error writing csv");
             e.printStackTrace();
@@ -293,13 +318,13 @@ public class CsvExportJob extends QueryExportJob {
         }
         try {
             ByteArrayOutputStream result = new ByteArrayOutputStream();
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[SIZE];
             int length;
             while ((length = exported.read(buffer)) != -1) {
                 result.write(buffer, 0, length);
             }
             String resultString = new String(result.toByteArray(), encoding);
-            if(!writeResultToFile(resultString)) {
+            if (!writeResultToFile(resultString)) {
                 fail("Error on writing export result.");
                 return;
             }

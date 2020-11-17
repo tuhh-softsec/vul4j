@@ -15,6 +15,5 @@ import de.intevation.lada.validation.Violation;
  * @author <a href="mailto:raimund.renkert@intevation.de">Raimund Renkert</a>
  */
 public interface Rule {
-
-    public Violation execute(Object object);
+    Violation execute(Object object);
 }

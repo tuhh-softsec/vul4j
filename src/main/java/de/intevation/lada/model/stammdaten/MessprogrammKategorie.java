@@ -24,22 +24,22 @@ import javax.persistence.Transient;
  *
  */
 @Entity
-@Table(name="messprogramm_kategorie")
+@Table(name = "messprogramm_kategorie")
 public class MessprogrammKategorie implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String bezeichnung;
 
     private String code;
 
-    @Column(name="letzte_aenderung", insertable=false)
+    @Column(name = "letzte_aenderung", insertable = false)
     private Timestamp letzteAenderung;
 
-    @Column(name="netzbetreiber_id")
+    @Column(name = "netzbetreiber_id")
     private String netzbetreiberId;
 
     @Transient

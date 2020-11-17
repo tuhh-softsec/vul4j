@@ -65,7 +65,7 @@ public class UmweltService {
      * The data repository granting read access.
      */
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type = RepositoryType.RO)
     private Repository repository;
 
     /**
@@ -89,8 +89,7 @@ public class UmweltService {
         Integer id = null;
         try {
             id = Integer.valueOf(params.getFirst("reiprogpunktgruppe"));
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return new Response(false, 603, "Not a valid filter id");
         }
         QueryBuilder<ReiProgpunktGrpUmwZuord> builder =

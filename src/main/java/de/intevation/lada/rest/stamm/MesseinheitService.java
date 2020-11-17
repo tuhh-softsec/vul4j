@@ -12,13 +12,6 @@ import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -72,7 +65,7 @@ public class MesseinheitService {
      * The data repository granting read access.
      */
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type = RepositoryType.RO)
     private Repository defaultRepo;
 
     /**
@@ -84,8 +77,8 @@ public class MesseinheitService {
      * convertable into one of these units.
      * Records, convertable into the primary messeinheit (mehId) will have the
      * attribute 'primary' set to true.
-     * Records convertable into the secondary messeinheit (secMehId) will have the
-     * attribute 'primary' set to false.
+     * Records convertable into the secondary messeinheit (secMehId) will have
+     * the attribute 'primary' set to false.
      * Example: http://example.com/messeinheit
      *
      * @return Response object containing all MessEinheit objects.
@@ -98,26 +91,35 @@ public class MesseinheitService {
         @Context UriInfo info
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
-        if (params.isEmpty() || !params.containsKey("mehId") || params.getFirst("mehId").equals("")) {
+        if (params.isEmpty()
+            || !params.containsKey("mehId")
+            || params.getFirst("mehId").equals("")
+        ) {
             return defaultRepo.getAll(MessEinheit.class, Strings.STAMM);
         }
         String mehId = params.getFirst("mehId");
 
 
-        MessEinheit meh = defaultRepo.getByIdPlain(MessEinheit.class, Integer.parseInt(mehId), Strings.STAMM);
+        MessEinheit meh = defaultRepo.getByIdPlain(
+            MessEinheit.class, Integer.parseInt(mehId), Strings.STAMM);
         MessEinheit secMeh = null;
         if (params.containsKey("secMehId")) {
             String secMehId = params.getFirst("secMehId");
-            secMeh = defaultRepo.getByIdPlain(MessEinheit.class, Integer.parseInt(secMehId), Strings.STAMM);
+            secMeh = defaultRepo.getByIdPlain(
+                MessEinheit.class, Integer.parseInt(secMehId), Strings.STAMM);
         }
-        List<MessEinheit> einheits = new ArrayList<MessEinheit>(meh.getMassEinheitUmrechnungZus().size());
+        List<MessEinheit> einheits =
+            new ArrayList<MessEinheit>(
+                meh.getMassEinheitUmrechnungZus().size());
         meh.setPrimary(true);
         einheits.add(meh);
         if (secMeh != null) {
             secMeh.setPrimary(false);
             einheits.add(secMeh);
         }
-        for (MassEinheitUmrechnung umrechnung : meh.getMassEinheitUmrechnungZus()) {
+        for (MassEinheitUmrechnung umrechnung
+            : meh.getMassEinheitUmrechnungZus()
+        ) {
             MessEinheit einheit = umrechnung.getMehVon();
             einheit.setPrimary(true);
             einheits.add(einheit);

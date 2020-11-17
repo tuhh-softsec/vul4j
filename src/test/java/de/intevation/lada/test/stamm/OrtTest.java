@@ -19,6 +19,10 @@ import org.junit.Assert;
 import de.intevation.lada.Protocol;
 import de.intevation.lada.test.ServiceTest;
 
+/**
+ * Test ort entities.
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 public class OrtTest extends ServiceTest {
     private JsonObject expectedById;
     private JsonObject create;
@@ -47,7 +51,8 @@ public class OrtTest extends ServiceTest {
 
         // Prepare expected object
         JsonObject content = readJsonResource("/datasets/dbUnit_ort.json");
-        JsonObject erzeuger = content.getJsonArray("stamm.ort").getJsonObject(0);
+        JsonObject erzeuger =
+            content.getJsonArray("stamm.ort").getJsonObject(0);
         JsonObjectBuilder builder = convertObject(erzeuger);
         expectedById = builder.build();
         Assert.assertNotNull(expectedById);
@@ -57,6 +62,9 @@ public class OrtTest extends ServiceTest {
         Assert.assertNotNull(create);
     }
 
+    /**
+     * Execute the tests.
+     */
     public final void execute() {
         getAll("ort", "rest/ort");
         getById("ort", "rest/ort/1000", expectedById);

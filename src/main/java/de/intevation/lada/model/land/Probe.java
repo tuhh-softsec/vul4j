@@ -35,88 +35,88 @@ import de.intevation.lada.model.stammdaten.Umwelt;
  */
 @Entity
 @DynamicInsert(true)
-@Table(name="probe", schema="land")
+@Table(name = "probe", schema = "land")
 public class Probe implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name="ba_id")
+    @Column(name = "ba_id")
     private Integer baId;
 
-    @Column(name="datenbasis_id")
+    @Column(name = "datenbasis_id")
     private Integer datenbasisId;
 
-    @Column(name="erzeuger_id")
+    @Column(name = "erzeuger_id")
     private Integer erzeugerId;
 
-    @Column(name="hauptproben_nr")
+    @Column(name = "hauptproben_nr")
     private String hauptprobenNr;
 
-    @Column(name="ext_id")
+    @Column(name = "ext_id")
     private String externeProbeId;
 
-    @Column(name="labor_mst_id")
+    @Column(name = "labor_mst_id")
     private String laborMstId;
 
-    @Column(name="letzte_aenderung", insertable=false)
+    @Column(name = "letzte_aenderung", insertable = false)
     private Timestamp letzteAenderung;
 
     private String media;
 
-    @Column(name="media_desk")
+    @Column(name = "media_desk")
     private String mediaDesk;
 
     private Long mittelungsdauer;
 
-    @Column(name="mpl_id")
+    @Column(name = "mpl_id")
     private Integer mplId;
 
-    @Column(name="mpr_id")
+    @Column(name = "mpr_id")
     private Integer mprId;
 
-    @Column(name="mst_id")
+    @Column(name = "mst_id")
     private String mstId;
 
-    @Column(name="probe_nehmer_id")
+    @Column(name = "probe_nehmer_id")
     private Integer probeNehmerId;
 
-    @Column(name="probeentnahme_beginn")
+    @Column(name = "probeentnahme_beginn")
     private Timestamp probeentnahmeBeginn;
 
-    @Column(name="probeentnahme_ende")
+    @Column(name = "probeentnahme_ende")
     private Timestamp probeentnahmeEnde;
 
-    @Column(name="probenart_id")
+    @Column(name = "probenart_id")
     private Integer probenartId;
 
-    @Column(name="solldatum_beginn")
+    @Column(name = "solldatum_beginn")
     private Timestamp solldatumBeginn;
 
-    @Column(name="solldatum_ende")
+    @Column(name = "solldatum_ende")
     private Timestamp solldatumEnde;
 
-    @Column(name="ursprungszeit")
+    @Column(name = "ursprungszeit")
     private Timestamp ursprungszeit;
 
     private Boolean test;
 
-    @Column(name="tree_modified", insertable=false, updatable=false)
+    @Column(name = "tree_modified", insertable = false, updatable = false)
     private Timestamp treeModified;
 
     @OneToOne
-    @JoinColumn(name="umw_id", insertable=false, updatable=false)
+    @JoinColumn(name = "umw_id", insertable = false, updatable = false)
     private Umwelt umwelt;
 
-    @Column(name="umw_id")
+    @Column(name = "umw_id")
     private String umwId;
 
-    @Column(name="rei_progpunkt_grp_id")
+    @Column(name = "rei_progpunkt_grp_id")
     private Integer reiProgpunktGrpId;
 
-    @Column(name="kta_gruppe_id")
+    @Column(name = "kta_gruppe_id")
     private Integer ktaGruppeId;
 
     @Transient
@@ -385,7 +385,9 @@ public class Probe implements Serializable {
     }
 
     @JsonIgnore
-    public void setNotifications(MultivaluedMap<String, Integer> notifications) {
+    public void setNotifications(
+        MultivaluedMap<String, Integer> notifications
+    ) {
       this.notifications = notifications;
     }
 

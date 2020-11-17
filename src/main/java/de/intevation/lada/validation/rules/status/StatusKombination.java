@@ -35,12 +35,12 @@ public class StatusKombination implements Rule {
     @Inject Logger logger;
 
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type = RepositoryType.RO)
     private Repository repository;
 
     @Override
     public Violation execute(Object object) {
-        StatusProtokoll status = (StatusProtokoll)object;
+        StatusProtokoll status = (StatusProtokoll) object;
         QueryBuilder<StatusKombi> kombi = new QueryBuilder<StatusKombi>(
             repository.entityManager(Strings.STAMM),
             StatusKombi.class);

@@ -71,7 +71,7 @@ public class DeskriptorService {
      * The data repository granting read/write access.
      */
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type = RepositoryType.RO)
     private Repository repository;
 
     /**
@@ -98,8 +98,9 @@ public class DeskriptorService {
         @Context HttpServletRequest request
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
-        if (params.isEmpty() ||
-            !params.containsKey("layer")) {
+        if (params.isEmpty()
+            || !params.containsKey("layer")
+        ) {
             return repository.getAll(Deskriptoren.class, Strings.STAMM);
         }
         QueryBuilder<Deskriptoren> builder = new QueryBuilder<Deskriptoren>(
@@ -140,6 +141,7 @@ public class DeskriptorService {
         @PathParam("id") String id,
         @Context HttpServletRequest request
     ) {
-        return repository.getById(Deskriptoren.class, Integer.valueOf(id), Strings.STAMM);
+        return repository.getById(
+            Deskriptoren.class, Integer.valueOf(id), Strings.STAMM);
     }
 }

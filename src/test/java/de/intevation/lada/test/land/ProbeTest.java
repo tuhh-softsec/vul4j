@@ -20,6 +20,10 @@ import org.junit.Assert;
 import de.intevation.lada.Protocol;
 import de.intevation.lada.test.ServiceTest;
 
+/**
+ * Test probe entities.
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 public class ProbeTest extends ServiceTest {
 
     private JsonObject expectedById;
@@ -68,12 +72,22 @@ public class ProbeTest extends ServiceTest {
         Assert.assertNotNull(create);
     }
 
+    /**
+     * Execute the tests.
+     */
     public final void execute() {
         getAll("probe", "rest/probe");
         getById("probe", "rest/probe/1000", expectedById);
         filter("probe", "rest/probe?qid=4&mst_id=11010&umw_id=N24");
         JsonObject created = create("probe", "rest/probe", create);
-        update("probe", "rest/probe/1000", "hauptprobenNr", "120510002", "130510002");
-        delete("probe", "rest/probe/" + created.getJsonObject("data").get("id"));
+        update(
+            "probe",
+            "rest/probe/1000",
+            "hauptprobenNr",
+            "120510002",
+            "130510002");
+        delete(
+            "probe",
+            "rest/probe/" + created.getJsonObject("data").get("id"));
     }
 }

@@ -26,53 +26,54 @@ import de.intevation.lada.validation.rules.Rule;
 public class HasEntnahmeOrt implements Rule {
 
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type = RepositoryType.RO)
     private Repository repository;
 
     @Override
     public Violation execute(Object object) {
         Integer id = null;
         if (object instanceof Ortszuordnung) {
-            Ortszuordnung ort = (Ortszuordnung)object;
+            Ortszuordnung ort = (Ortszuordnung) object;
             if (!"E".equals(ort.getOrtszuordnungTyp())) {
                 return null;
             }
             id = ort.getProbeId();
-            QueryBuilder<Ortszuordnung> builder = new QueryBuilder<Ortszuordnung>(
-                repository.entityManager(Strings.LAND),
-                Ortszuordnung.class);
+            QueryBuilder<Ortszuordnung> builder =
+                new QueryBuilder<Ortszuordnung>(
+                    repository.entityManager(Strings.LAND),
+                    Ortszuordnung.class);
 
             builder.and("probeId", id);
             List<Ortszuordnung> orte = repository.filterPlain(
                 builder.getQuery(),
                 Strings.LAND);
             for (Ortszuordnung o : orte) {
-                if ("E".equals(o.getOrtszuordnungTyp()) &&
-                    !o.getId().equals(ort.getId())
+                if ("E".equals(o.getOrtszuordnungTyp())
+                    && !o.getId().equals(ort.getId())
                 ) {
                     Violation violation = new Violation();
                     violation.addError("ortszuordnungTyp", 611);
                     return violation;
                 }
             }
-        }
-        else if (object instanceof OrtszuordnungMp) {
-            OrtszuordnungMp ort = (OrtszuordnungMp)object;
+        } else if (object instanceof OrtszuordnungMp) {
+            OrtszuordnungMp ort = (OrtszuordnungMp) object;
             if (!"E".equals(ort.getOrtszuordnungTyp())) {
                 return null;
             }
             id = ort.getMessprogrammId();
-            QueryBuilder<OrtszuordnungMp> builder = new QueryBuilder<OrtszuordnungMp>(
-                repository.entityManager(Strings.LAND),
-                OrtszuordnungMp.class);
+            QueryBuilder<OrtszuordnungMp> builder =
+                new QueryBuilder<OrtszuordnungMp>(
+                    repository.entityManager(Strings.LAND),
+                    OrtszuordnungMp.class);
 
             builder.and("messprogrammId", id);
             List<OrtszuordnungMp> orte = repository.filterPlain(
                 builder.getQuery(),
                 Strings.LAND);
             for (OrtszuordnungMp o : orte) {
-                if ("E".equals(o.getOrtszuordnungTyp()) &&
-                    !o.getId().equals(ort.getId())
+                if ("E".equals(o.getOrtszuordnungTyp())
+                    && !o.getId().equals(ort.getId())
                 ) {
                     Violation violation = new Violation();
                     violation.addError("ortszuordnungTyp", 611);

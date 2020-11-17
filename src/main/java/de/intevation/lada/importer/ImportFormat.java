@@ -13,5 +13,8 @@ package de.intevation.lada.importer;
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
 public enum ImportFormat {
+    /**
+     * LAF import format.
+     */
     LAF
 }

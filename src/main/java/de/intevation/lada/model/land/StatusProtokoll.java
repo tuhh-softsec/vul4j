@@ -28,29 +28,29 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  */
 @Entity
-@Table(name="status_protokoll", schema="land")
+@Table(name = "status_protokoll", schema = "land")
 public class StatusProtokoll implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name="datum", insertable=false, updatable=false)
+    @Column(name = "datum", insertable = false, updatable = false)
     private Timestamp datum;
 
-    @Column(name="messungs_id")
+    @Column(name = "messungs_id")
     private Integer messungsId;
 
-    @Column(name="mst_id")
+    @Column(name = "mst_id")
     private String mstId;
 
-    @Column(name="status_kombi")
+    @Column(name = "status_kombi")
     private Integer statusKombi;
 
     private String text;
 
-    @Column(name="tree_modified", insertable=false, updatable=false)
+    @Column(name = "tree_modified", insertable = false, updatable = false)
     private Timestamp treeModified;
 
     @Transient

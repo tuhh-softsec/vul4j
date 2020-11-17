@@ -28,29 +28,29 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  */
 @Entity
-@Table(name="ortszuordnung_mp", schema="land")
+@Table(name = "ortszuordnung_mp", schema = "land")
 public class OrtszuordnungMp implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name="letzte_aenderung", insertable=false)
+    @Column(name = "letzte_aenderung", insertable = false)
     private Timestamp letzteAenderung;
 
-    @Column(name="messprogramm_id")
+    @Column(name = "messprogramm_id")
     private Integer messprogrammId;
 
-    @Column(name="ort_id")
+    @Column(name = "ort_id")
     private Integer ortId;
 
-    @Column(name="ortszuordnung_typ")
+    @Column(name = "ortszuordnung_typ")
     private String ortszuordnungTyp;
 
     private String ortszusatztext;
 
-    @Column(name="tree_modified", insertable=false, updatable=false)
+    @Column(name = "tree_modified", insertable = false, updatable = false)
     private Timestamp treeModified;
 
     @Transient

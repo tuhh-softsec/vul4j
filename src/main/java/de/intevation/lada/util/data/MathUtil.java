@@ -17,6 +17,8 @@ import java.math.RoundingMode;
  */
 public class MathUtil {
 
+    private MathUtil() { }
+
     public static final MathContext ROUNDING_CONTEXT = new MathContext(
         3, RoundingMode.HALF_EVEN);
 

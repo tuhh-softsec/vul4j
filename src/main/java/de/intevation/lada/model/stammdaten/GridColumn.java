@@ -20,7 +20,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 /**
@@ -28,33 +27,33 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  */
 @Entity
-@Table(name="grid_column")
+@Table(name = "grid_column")
 public class GridColumn implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
     private Integer id;
 
-    @Column(name="data_index")
+    @Column(name = "data_index")
     private String dataIndex;
 
-    @ManyToOne(fetch=FetchType.EAGER)
-    @JoinColumn(name="data_type")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "data_type")
     private ResultType dataType;
 
-    @ManyToOne(fetch=FetchType.EAGER)
-    @JoinColumn(name="filter")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "filter")
     private Filter filter;
 
     private String name;
 
     private Integer position;
 
-    @Column(name="base_query")
+    @Column(name = "base_query")
     private Integer baseQuery;
 
     //bi-directional one-to-one association to GridColumnValue
-    @OneToMany(mappedBy="gridColumn", fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "gridColumn", fetch = FetchType.EAGER)
     @JsonIgnore
     private List<GridColumnValue> gridColumnValues;
 
@@ -121,12 +120,16 @@ public class GridColumn implements Serializable {
         return this.gridColumnValues;
     }
 
+    /**
+     * Add a grid column value.
+     * @param gridColumnValue the value
+     */
     public void addGridColumnValue(GridColumnValue gridColumnValue) {
         this.gridColumnValues.add(gridColumnValue);
     }
 
-    public void setGridColumnValue(List<GridColumnValue> gridColumnValues) {
-        this.gridColumnValues = gridColumnValues;
+    public void setGridColumnValue(List<GridColumnValue> gCV) {
+        this.gridColumnValues = gCV;
     }
 
 }

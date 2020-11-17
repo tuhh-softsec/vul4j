@@ -8,8 +8,11 @@
 package de.intevation.lada.model.stammdaten;
 
 import java.io.Serializable;
-import javax.persistence.*;
-import java.util.List;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 
 /**
@@ -17,42 +20,42 @@ import java.util.List;
  *
  */
 @Entity
-@Table(name="result_type")
-@NamedQuery(name="ResultType.findAll", query="SELECT r FROM ResultType r")
+@Table(name = "result_type")
+@NamedQuery(name = "ResultType.findAll", query = "SELECT r FROM ResultType r")
 public class ResultType implements Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Id
-	private Integer id;
+    @Id
+    private Integer id;
 
-	private String format;
+    private String format;
 
-	private String name;
+    private String name;
 
-	public ResultType() {
-	}
+    public ResultType() {
+    }
 
-	public Integer getId() {
-		return this.id;
-	}
+    public Integer getId() {
+        return this.id;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public String getFormat() {
-		return this.format;
-	}
+    public String getFormat() {
+        return this.format;
+    }
 
-	public void setFormat(String format) {
-		this.format = format;
-	}
+    public void setFormat(String format) {
+        this.format = format;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 }

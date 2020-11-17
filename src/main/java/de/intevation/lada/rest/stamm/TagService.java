@@ -7,8 +7,6 @@
  */
 package de.intevation.lada.rest.stamm;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +18,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletRequest;
@@ -36,6 +33,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
+import de.intevation.lada.model.land.Messung;
+import de.intevation.lada.model.land.Probe;
+import de.intevation.lada.model.land.TagZuordnung;
+import de.intevation.lada.model.stammdaten.Tag;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
@@ -45,10 +46,6 @@ import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.data.TagUtil;
-import de.intevation.lada.model.land.Messung;
-import de.intevation.lada.model.land.Probe;
-import de.intevation.lada.model.land.TagZuordnung;
-import de.intevation.lada.model.stammdaten.Tag;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
 
@@ -61,15 +58,16 @@ import de.intevation.lada.util.rest.Response;
  public class TagService {
 
     @Inject
-    @RepositoryConfig(type=RepositoryType.RW)
+    @RepositoryConfig(type = RepositoryType.RW)
     private Repository repository;
 
     @Inject
-    @AuthorizationConfig(type=AuthorizationType.HEADER)
+    @AuthorizationConfig(type = AuthorizationType.HEADER)
     private Authorization authorization;
 
     /**
-     * Get all tags for a Probe or Messung instance, filtered by the users messstelle id.
+     * Get all tags for a Probe or Messung instance,
+     * filtered by the users messstelle id.
      * If a pid is set in the url, the tags are filter by the given probe id.
      * If a mid is set in the url, the tags are filter by the given messung id.
      */
@@ -84,15 +82,20 @@ import de.intevation.lada.util.rest.Response;
         Integer probeId = null;
         Integer messungId = null;
 
-        if (!params.isEmpty() && params.containsKey("pid") && params.containsKey("mid")) {
-            return new Response(false, 603, "Filtering by both pid and mid not allowed");
+        if (!params.isEmpty()
+            && params.containsKey("pid")
+            && params.containsKey("mid")
+        ) {
+            return new Response(
+                false,
+                603,
+                "Filtering by both pid and mid not allowed");
         }
 
         if (!params.isEmpty() && params.containsKey("pid")) {
             try {
                 probeId = Integer.valueOf(params.getFirst("pid"));
-            }
-            catch (NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 return new Response(false, 603, "Not a valid probe id");
             }
         }
@@ -111,16 +114,24 @@ import de.intevation.lada.util.rest.Response;
         CriteriaQuery<Tag> criteriaQuery = builder.createQuery(Tag.class);
         Root<Tag> root = criteriaQuery.from(Tag.class);
         Predicate zeroMstfilter = builder.isNull(root.get("mstId"));
-        Predicate userMstFilter = builder.in(root.get("mstId")).value(userInfo.getMessstellen());
+        Predicate userMstFilter =
+            builder.in(root.get("mstId")).value(userInfo.getMessstellen());
         Predicate filter = builder.or(zeroMstfilter, userMstFilter);
         if (probeId != null) {
-            Join<Tag, TagZuordnung> joinTagZuordnung = root.join("tagZuordnungs", javax.persistence.criteria.JoinType.LEFT);
-            Predicate probeFilter = builder.equal(joinTagZuordnung.get("probeId"), probeId);
+            Join<Tag, TagZuordnung> joinTagZuordnung =
+                root.join(
+                    "tagZuordnungs",
+                    javax.persistence.criteria.JoinType.LEFT);
+            Predicate probeFilter =
+                builder.equal(joinTagZuordnung.get("probeId"), probeId);
             filter = builder.and(filter, probeFilter);
-        }
-        else if (messungId != null) {
-            Join<Tag, TagZuordnung> joinTagZuordnung = root.join("tagZuordnungs", javax.persistence.criteria.JoinType.LEFT);
-            Predicate messungFilter = builder.equal(joinTagZuordnung.get("messungId"), messungId);
+        } else if (messungId != null) {
+            Join<Tag, TagZuordnung> joinTagZuordnung =
+                root.join(
+                    "tagZuordnungs",
+                    javax.persistence.criteria.JoinType.LEFT);
+            Predicate messungFilter =
+                builder.equal(joinTagZuordnung.get("messungId"), messungId);
             filter = builder.and(filter, messungFilter);
         }
         criteriaQuery.where(filter);
@@ -129,9 +140,10 @@ import de.intevation.lada.util.rest.Response;
     }
 
     /**
-     * Creates and sets a generated tag for a list of generated probe and messung
-     * instances.
-     * The created tag has the format "PEP_<YYYYMMDD>_<#>", with <#> as a serial.
+     * Creates and sets a generated tag for a list of generated probe and
+     * messung instances.
+     * The created tag has the format "PEP_<YYYYMMDD>_<#>", with <#> as a
+     * serial.
      * <pre>
      * <code>
      * {
@@ -173,16 +185,23 @@ import de.intevation.lada.util.rest.Response;
         } catch (NumberFormatException nfe) {
             return new Response(false, 699, "Invalid probe id(s)");
         }
-        Response resp = TagUtil.generateTag("PEP", userInfo.getMessstellen().get(0), repository);
+        Response resp =
+            TagUtil.generateTag(
+                "PEP", userInfo.getMessstellen().get(0), repository);
         Tag currentTag = (Tag) resp.getData();
 
-        return new Response(true, 200, TagUtil.setTagsByProbeIds(probeIds, currentTag.getId(), repository));
+        return new Response(
+            true,
+            200,
+            TagUtil.setTagsByProbeIds(
+                probeIds, currentTag.getId(), repository));
     }
 
     /**
      * Creates and sets a generated tag for a list of imported probe and messung
      * instances.
-     * The created tag has the format "IMP_<YYYYMMDD>_<#>", with <#> as a serial.
+     * The created tag has the format "IMP_<YYYYMMDD>_<#>", with <#> as a
+     * serial.
      * <pre>
      * <code>
      * {
@@ -224,10 +243,16 @@ import de.intevation.lada.util.rest.Response;
         } catch (NumberFormatException nfe) {
             return new Response(false, 699, "Invalid probe id(s)");
         }
-        Response resp = TagUtil.generateTag("IMP", userInfo.getMessstellen().get(0), repository);
+        Response resp =
+            TagUtil.generateTag(
+                "IMP", userInfo.getMessstellen().get(0), repository);
         Tag currentTag = (Tag) resp.getData();
 
-        return new Response(true, 200, TagUtil.setTagsByProbeIds(probeIds, currentTag.getId(), repository));
+        return new Response(
+            true,
+            200,
+            TagUtil.setTagsByProbeIds(
+                probeIds, currentTag.getId(), repository));
     }
 
 
@@ -270,9 +295,11 @@ import de.intevation.lada.util.rest.Response;
         Tag tag = zuordnung.getTag();
         Integer tagId = zuordnung.getTagId();
         if (zuordnung == null
-                || tag != null && tagId != null
-                || tag == null && tagId == null
-                || zuordnung.getProbeId() != null && zuordnung.getMessungId() != null) {
+            || tag != null && tagId != null
+            || tag == null && tagId == null
+            || zuordnung.getProbeId() != null
+            && zuordnung.getMessungId() != null
+        ) {
             return new Response(false, 603, "Not a valid tag");
         }
 
@@ -282,33 +309,47 @@ import de.intevation.lada.util.rest.Response;
             //Check if tag is already assigned to the probe
             EntityManager em = repository.entityManager(Strings.STAMM);
             CriteriaBuilder builder = em.getCriteriaBuilder();
-            CriteriaQuery<TagZuordnung> criteriaQuery = builder.createQuery(TagZuordnung.class);
+            CriteriaQuery<TagZuordnung> criteriaQuery =
+                builder.createQuery(TagZuordnung.class);
             Root<TagZuordnung> root = criteriaQuery.from(TagZuordnung.class);
-            Join<TagZuordnung, Tag> joinTagZuordnung = root.join("tag", javax.persistence.criteria.JoinType.LEFT);
-            Predicate tagFilter = builder.equal(root.get("tag").get("id"), zuordnung.getTagId());
-            Predicate userMstFilter = builder.in(joinTagZuordnung.get("mstId")).value(userInfo.getMessstellen());
+            Join<TagZuordnung, Tag> joinTagZuordnung =
+                root.join("tag", javax.persistence.criteria.JoinType.LEFT);
+            Predicate tagFilter =
+                builder.equal(root.get("tag").get("id"), zuordnung.getTagId());
+            Predicate userMstFilter =
+                builder.in(
+                    joinTagZuordnung.get("mstId")).value(
+                        userInfo.getMessstellen());
             Predicate filter = builder.and(tagFilter, userMstFilter);
             if (zuordnung.getProbeId() != null) {
-                Predicate probeFilter = builder.equal(root.get("probeId"),zuordnung.getProbeId());
+                Predicate probeFilter =
+                    builder.equal(root.get("probeId"), zuordnung.getProbeId());
                 filter = builder.and(filter, probeFilter);
             } else {
-                Predicate messungFilter = builder.equal(root.get("messungId"), zuordnung.getMessungId());
+                Predicate messungFilter =
+                    builder.equal(
+                        root.get("messungId"), zuordnung.getMessungId());
                 filter = builder.and(filter, messungFilter);
             }
             criteriaQuery.where(filter);
-            List<TagZuordnung> zuordnungs = repository.filterPlain(criteriaQuery, Strings.STAMM);
+            List<TagZuordnung> zuordnungs =
+                repository.filterPlain(criteriaQuery, Strings.STAMM);
             if (zuordnungs.size() > 0) {
-                return new Response(false, 604, "Tag is already assigned to probe");
+                return new Response(
+                    false,
+                    604,
+                    "Tag is already assigned to probe");
             }
 
             tag = repository.getByIdPlain(Tag.class, tagId, Strings.STAMM);
             String mstId = tag.getMstId();
             //If user tries to assign a global tag: authorize
-            if ( mstId == null) {
+            if (mstId == null) {
                 Object data;
                 boolean authorized = false;
                 if (zuordnung.getMessungId() != null) {
-                    data = repository.getByIdPlain(Messung.class, zuordnung.getMessungId(), Strings.LAND);
+                    data = repository.getByIdPlain(
+                        Messung.class, zuordnung.getMessungId(), Strings.LAND);
                     authorized = authorization.isAuthorized(
                         request,
                         data,
@@ -316,7 +357,8 @@ import de.intevation.lada.util.rest.Response;
                         Messung.class
                     );
                 } else {
-                    data = repository.getByIdPlain(Probe.class, zuordnung.getProbeId(), Strings.LAND);
+                    data = repository.getByIdPlain(
+                        Probe.class, zuordnung.getProbeId(), Strings.LAND);
                     authorized = authorization.isAuthorized(
                         request,
                         data,
@@ -325,7 +367,10 @@ import de.intevation.lada.util.rest.Response;
                     );
                 }
                 if (!authorized) {
-                    return new Response(false, 699, "Not authorized to set global tag");
+                    return new Response(
+                        false,
+                        699,
+                        "Not authorized to set global tag");
                 }
             //Else check if it is the users private tag
             } else if (!userInfo.getMessstellen().contains(mstId)) {
@@ -339,13 +384,15 @@ import de.intevation.lada.util.rest.Response;
         } else {
             String mstId = zuordnung.getTag().getMstId();
             //mstId may not be null, global tags cannot be created
-            if ( mstId == null || !userInfo.getMessstellen().contains(mstId)) {
+            if (mstId == null
+                || !userInfo.getMessstellen().contains(mstId)
+            ) {
                 return new Response(false, 603, "Invalid/empty mstId");
             }
-            if (repository.create(tag, Strings.STAMM).getSuccess() == true) {
+            if (repository.create(tag, Strings.STAMM).getSuccess()) {
                 return repository.create(zuordnung, Strings.LAND);
             } else {
-                //TODO: Proper response code?
+                //TODO Proper response code?
                 return new Response(false, 603, "Failed to create Tag");
             }
         }
@@ -362,18 +409,22 @@ import de.intevation.lada.util.rest.Response;
         @Context HttpServletRequest request,
         TagZuordnung tagZuordnung
     ) {
-        if ((tagZuordnung.getProbeId() == null && tagZuordnung.getMessungId() == null)
-                || tagZuordnung.getTagId() == null) {
+        if ((tagZuordnung.getProbeId() == null
+            && tagZuordnung.getMessungId() == null)
+            || tagZuordnung.getTagId() == null
+        ) {
             return new Response(false, 699, "Invalid TagZuordnung");
         }
         boolean global = false;
         //Check if its a global tag
-        Tag tag = repository.getByIdPlain(Tag.class, tagZuordnung.getTagId(), Strings.STAMM);
+        Tag tag = repository.getByIdPlain(
+            Tag.class, tagZuordnung.getTagId(), Strings.STAMM);
         if (tag.getMstId() == null) {
             Object data;
             boolean authorized = false;
             if (tagZuordnung.getMessungId() != null) {
-                data = repository.getByIdPlain(Messung.class, tagZuordnung.getMessungId(), Strings.LAND);
+                data = repository.getByIdPlain(
+                    Messung.class, tagZuordnung.getMessungId(), Strings.LAND);
                 authorized = authorization.isAuthorized(
                     request,
                     data,
@@ -381,7 +432,8 @@ import de.intevation.lada.util.rest.Response;
                     Messung.class
                 );
             } else {
-                data = repository.getByIdPlain(Probe.class, tagZuordnung.getProbeId(), Strings.LAND);
+                data = repository.getByIdPlain(
+                    Probe.class, tagZuordnung.getProbeId(), Strings.LAND);
                 authorized = authorization.isAuthorized(
                     request,
                     data,
@@ -390,7 +442,10 @@ import de.intevation.lada.util.rest.Response;
                 );
             }
             if (!authorized) {
-                return new Response(false, 699, "Not authorized to delete global tag");
+                return new Response(
+                    false,
+                    699,
+                    "Not authorized to delete global tag");
             } else {
                 global = true;
             }
@@ -399,31 +454,38 @@ import de.intevation.lada.util.rest.Response;
         UserInfo userInfo = authorization.getInfo(request);
         EntityManager em = repository.entityManager(Strings.STAMM);
         CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<TagZuordnung> criteriaQuery = builder.createQuery(TagZuordnung.class);
+        CriteriaQuery<TagZuordnung> criteriaQuery =
+            builder.createQuery(TagZuordnung.class);
         Root<TagZuordnung> root = criteriaQuery.from(TagZuordnung.class);
-        Join<TagZuordnung, Tag> joinTagZuordnung = root.join("tag", javax.persistence.criteria.JoinType.LEFT);
-        Predicate tagFilter = builder.equal(root.get("tag").get("id"), tagZuordnung.getTagId());
+        Join<TagZuordnung, Tag> joinTagZuordnung =
+            root.join("tag", javax.persistence.criteria.JoinType.LEFT);
+        Predicate tagFilter =
+            builder.equal(root.get("tag").get("id"), tagZuordnung.getTagId());
         Predicate mstFilter;
-        if (global == true) {
+        if (global) {
             mstFilter = builder.isNull(joinTagZuordnung.get("mstId"));
         } else {
-            mstFilter = builder.in(joinTagZuordnung.get("mstId")).value(userInfo.getMessstellen());
+            mstFilter = builder.in(
+                joinTagZuordnung.get("mstId")).value(userInfo.getMessstellen());
         }
         Predicate filter = builder.and(tagFilter, mstFilter);
 
         if (tagZuordnung.getProbeId() != null) {
-            Predicate probeFilter = builder.equal(root.get("probeId"), tagZuordnung.getProbeId());
+            Predicate probeFilter =
+                builder.equal(root.get("probeId"), tagZuordnung.getProbeId());
             filter = builder.and(filter, probeFilter);
         } else {
-            Predicate messungFilter = builder.equal(root.get("messungId"), tagZuordnung.getMessungId());
+            Predicate messungFilter =
+                builder.equal(
+                    root.get("messungId"), tagZuordnung.getMessungId());
             filter = builder.and(filter, messungFilter);
         }
 
-
         criteriaQuery.where(filter);
-        List<TagZuordnung> zuordnungs = repository.filterPlain(criteriaQuery, Strings.STAMM);
+        List<TagZuordnung> zuordnungs =
+            repository.filterPlain(criteriaQuery, Strings.STAMM);
 
-        //TODO: Error code if no zuordnung is found?
+        // TODO Error code if no zuordnung is found?
         if (zuordnungs.size() == 0) {
             return new Response(false, 699, "No valid Tags found");
         } else {

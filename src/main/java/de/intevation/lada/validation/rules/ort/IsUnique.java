@@ -23,12 +23,12 @@ import de.intevation.lada.validation.rules.Rule;
 public class IsUnique implements Rule {
 
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type = RepositoryType.RO)
     private Repository repository;
 
     @Override
     public Violation execute(Object object) {
-        Ort ort = (Ort)object;
+        Ort ort = (Ort) object;
 
         QueryBuilder<Ort> builder = new QueryBuilder<Ort>(
             repository.entityManager(Strings.STAMM), Ort.class);
@@ -38,7 +38,9 @@ public class IsUnique implements Rule {
         }
         builder.and("netzbetreiberId", ort.getNetzbetreiberId());
         builder.and("ortId", ort.getOrtId());
-        if (!repository.filterPlain(builder.getQuery(), Strings.STAMM).isEmpty()) {
+        if (!repository.filterPlain(
+                builder.getQuery(), Strings.STAMM).isEmpty()
+        ) {
             Violation violation = new Violation();
             violation.addError("ortId", 672);
             return violation;

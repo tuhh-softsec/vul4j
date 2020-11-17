@@ -22,7 +22,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
-import de.intevation.lada.model.stammdaten.Datenbasis;
 import de.intevation.lada.model.stammdaten.KtaGrpZuord;
 import de.intevation.lada.model.stammdaten.KtaGruppe;
 import de.intevation.lada.util.annotation.RepositoryConfig;
@@ -64,7 +63,7 @@ public class KtaGruppeService {
      * The data repository granting read access.
      */
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type = RepositoryType.RO)
     private Repository repository;
 
     /**
@@ -88,8 +87,7 @@ public class KtaGruppeService {
         Integer id = null;
         try {
             id = Integer.valueOf(params.getFirst("kta"));
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return new Response(false, 603, "Not a valid filter id");
         }
         QueryBuilder<KtaGrpZuord> builder =

@@ -20,17 +20,17 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name="status_reihenfolge")
+@Table(name = "status_reihenfolge")
 public class StatusReihenfolge implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
     private Integer id;
 
-    @Column(name="von_id")
+    @Column(name = "von_id")
     private Integer vonId;
 
-    @Column(name="zu_id")
+    @Column(name = "zu_id")
     private Integer zuId;
 
     public StatusReihenfolge() {

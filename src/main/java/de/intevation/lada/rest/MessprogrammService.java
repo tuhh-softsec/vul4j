@@ -36,7 +36,6 @@ import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
-import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
@@ -101,21 +100,21 @@ public class MessprogrammService {
      * The data repository granting read/write access.
      */
     @Inject
-    @RepositoryConfig(type=RepositoryType.RW)
+    @RepositoryConfig(type = RepositoryType.RW)
     private Repository repository;
 
     /**
      * The authorization module.
      */
     @Inject
-    @AuthorizationConfig(type=AuthorizationType.HEADER)
+    @AuthorizationConfig(type = AuthorizationType.HEADER)
     private Authorization authorization;
 
     /**
      * The validator used for Messprogramm objects.
      */
     @Inject
-    @ValidationConfig(type="Messprogramm")
+    @ValidationConfig(type = "Messprogramm")
     private Validator validator;
 
     @Inject
@@ -131,8 +130,8 @@ public class MessprogrammService {
      *  * limit: The count of Probe items.<br>
      *  * sort: Sort the result ascending(ASC) or descenting (DESC).<br>
      *  <br>
-     *  The response data contains a stripped set of Messprogramm objects. The returned fields
-     *  are defined in the query used in the request.
+     *  The response data contains a stripped set of Messprogramm objects.
+     *  The returned fields are defined in the query used in the request.
      * <p>
      * Example:
      * http://example.com/messprogramm?page=[PAGE]&start=[START]&limit=[LIMIT]]
@@ -142,14 +141,14 @@ public class MessprogrammService {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    @SuppressWarnings("unchecked")
     public Response get(
         @Context UriInfo info,
         @Context HttpServletRequest request
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
 
-        List<Messprogramm> messprogramms  = repository.getAllPlain(Messprogramm.class, Strings.STAMM);
+        List<Messprogramm> messprogramms =
+            repository.getAllPlain(Messprogramm.class, Strings.STAMM);
         int size = messprogramms.size();
         if (params.containsKey("start") && params.containsKey("limit")) {
             int start = Integer.valueOf(params.getFirst("start"));
@@ -163,7 +162,8 @@ public class MessprogrammService {
 
         for (Messprogramm mp: messprogramms) {
             mp.setReadonly(
-                    !authorization.isAuthorized(request, mp, RequestMethod.POST, Messprogramm.class));
+                !authorization.isAuthorized(
+                    request, mp, RequestMethod.POST, Messprogramm.class));
             Violation violation = validator.validate(mp);
             if (violation.hasErrors() || violation.hasWarnings()) {
                 mp.setErrors(violation.getErrors());
@@ -192,13 +192,16 @@ public class MessprogrammService {
         Response response =
             authorization.filter(
                 request,
-                repository.getById(Messprogramm.class, Integer.valueOf(id), Strings.LAND),
+                repository.getById(
+                    Messprogramm.class, Integer.valueOf(id), Strings.LAND),
                 Messprogramm.class);
-        Messprogramm mp = (Messprogramm)response.getData();
+        Messprogramm mp = (Messprogramm) response.getData();
         QueryBuilder<Probe> builder =
-             new QueryBuilder<Probe>(repository.entityManager(Strings.LAND), Probe.class);
+             new QueryBuilder<Probe>(
+                 repository.entityManager(Strings.LAND), Probe.class);
         builder.and("mprId", mp.getId());
-        List<Probe> probes = repository.filterPlain(builder.getQuery(), Strings.LAND);
+        List<Probe> probes =
+            repository.filterPlain(builder.getQuery(), Strings.LAND);
         mp.setReferenceCount(probes.size());
         response.setData(mp);
         return response;
@@ -261,12 +264,14 @@ public class MessprogrammService {
             return response;
         }
 
-        if (messprogramm.getUmwId() == null || messprogramm.getUmwId().length() == 0) {
+        if (messprogramm.getUmwId() == null
+            || messprogramm.getUmwId().length() == 0
+        ) {
             messprogramm = factory.findUmweltId(messprogramm);
         }
         /* Persist the new messprogramm object*/
         Response response = repository.create(messprogramm, Strings.LAND);
-        Messprogramm ret = (Messprogramm)response.getData();
+        Messprogramm ret = (Messprogramm) response.getData();
         Response created =
             repository.getById(Messprogramm.class, ret.getId(), Strings.LAND);
         return authorization.filter(
@@ -333,7 +338,9 @@ public class MessprogrammService {
             return response;
         }
 
-        if (messprogramm.getUmwId() == null || messprogramm.getUmwId().equals("")) {
+        if (messprogramm.getUmwId() == null
+            || messprogramm.getUmwId().equals("")
+        ) {
             messprogramm = factory.findUmweltId(messprogramm);
         }
         Response response = repository.update(messprogramm, Strings.LAND);
@@ -342,7 +349,7 @@ public class MessprogrammService {
         }
         Response updated = repository.getById(
             Messprogramm.class,
-            ((Messprogramm)response.getData()).getId(), Strings.LAND);
+            ((Messprogramm) response.getData()).getId(), Strings.LAND);
         return authorization.filter(
             request,
             updated,
@@ -376,8 +383,7 @@ public class MessprogrammService {
         Boolean active;
         try {
             active = data.getBoolean("aktiv");
-        }
-        catch(NullPointerException npe) {
+        } catch (NullPointerException npe) {
             return new Response(false, 600, null);
         }
 
@@ -390,8 +396,7 @@ public class MessprogrammService {
             for (int i = 0; i < ids.size(); i++) {
                 idList.add(ids.getInt(i));
             }
-        }
-        catch(NullPointerException npe) {
+        } catch (NullPointerException npe) {
             return new Response(false, 600, null);
         }
 
@@ -400,20 +405,22 @@ public class MessprogrammService {
             Messprogramm.class
         );
         builder.orIn("id", idList);
-        List<Messprogramm> messprogramme = repository.filterPlain(builder.getQuery(), Strings.LAND);
+        List<Messprogramm> messprogramme =
+            repository.filterPlain(builder.getQuery(), Strings.LAND);
 
         List<Map<String, Integer>> result = new ArrayList<>();
         for (Messprogramm m : messprogramme) {
             Map<String, Integer> mpResult = new HashMap<>();
             int id = m.getId().intValue();
             mpResult.put("id", id);
-            if (authorization.isAuthorized(request, m, RequestMethod.PUT, Messprogramm.class)) {
+            if (authorization.isAuthorized(
+                    request, m, RequestMethod.PUT, Messprogramm.class)
+            ) {
                 m.setAktiv(active);
                 Response r = repository.update(m, Strings.LAND);
                 int code = Integer.valueOf(r.getMessage()).intValue();
                 mpResult.put("success", code);
-            }
-            else {
+            } else {
                 mpResult.put("success", 699);
             }
             result.add(mpResult);
@@ -440,16 +447,19 @@ public class MessprogrammService {
     ) {
         /* Get the messprogamm object by id*/
         Response messprogramm =
-            repository.getById(Messprogramm.class, Integer.valueOf(id), Strings.LAND);
-        Messprogramm messprogrammObj = (Messprogramm)messprogramm.getData();
+            repository.getById(
+                Messprogramm.class, Integer.valueOf(id), Strings.LAND);
+        Messprogramm messprogrammObj = (Messprogramm) messprogramm.getData();
         /* check if probe references to the messprogramm exists */
         QueryBuilder<Probe> builder =
-                new QueryBuilder<Probe>(repository.entityManager(Strings.LAND), Probe.class);
+                new QueryBuilder<Probe>(
+                    repository.entityManager(Strings.LAND), Probe.class);
         builder.and("mprId",  ((Messprogramm) messprogramm.getData()).getId());
-        List<Probe> probes = repository.filterPlain(builder.getQuery(), Strings.LAND);
+        List<Probe> probes =
+            repository.filterPlain(builder.getQuery(), Strings.LAND);
         if (probes.size() > 0) {
             return new Response(false, 606, null);
-        };
+        }
 
         if (!authorization.isAuthorized(
                 request,

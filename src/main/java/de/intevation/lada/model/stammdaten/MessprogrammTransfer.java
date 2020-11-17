@@ -22,24 +22,24 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name="messprogramm_transfer")
+@Table(name = "messprogramm_transfer")
 public class MessprogrammTransfer implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name="ba_id")
+    @Column(name = "ba_id")
     private Integer baId;
 
-    @Column(name="datenbasis_id")
+    @Column(name = "datenbasis_id")
     private Integer datenbasisId;
 
-    @Column(name="messprogramm_c")
+    @Column(name = "messprogramm_c")
     private String messprogrammC;
 
-    @Column(name="messprogramm_s")
+    @Column(name = "messprogramm_s")
     private String messprogrammS;
 
     public MessprogrammTransfer() {

@@ -20,23 +20,23 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name="status_erreichbar")
+@Table(name = "status_erreichbar")
 public class StatusErreichbar implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
     private Integer id;
 
-    @Column(name="cur_stufe")
+    @Column(name = "cur_stufe")
     private Integer curStufe;
 
-    @Column(name="cur_wert")
+    @Column(name = "cur_wert")
     private Integer curWert;
 
-    @Column(name="stufe_id")
+    @Column(name = "stufe_id")
     private Integer stufeId;
 
-    @Column(name="wert_id")
+    @Column(name = "wert_id")
     private Integer wertId;
 
     public StatusErreichbar() {

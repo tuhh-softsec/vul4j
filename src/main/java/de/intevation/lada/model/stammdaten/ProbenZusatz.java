@@ -20,7 +20,7 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name="proben_zusatz")
+@Table(name = "proben_zusatz")
 public class ProbenZusatz implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -29,12 +29,12 @@ public class ProbenZusatz implements Serializable {
 
     private String beschreibung;
 
-    @Column(name="eudf_keyword")
+    @Column(name = "eudf_keyword")
     private String eudfKeyword;
 
     private String zusatzwert;
 
-    @Column(name="meh_id")
+    @Column(name = "meh_id")
     private Integer messEinheitId;
 
     public ProbenZusatz() {

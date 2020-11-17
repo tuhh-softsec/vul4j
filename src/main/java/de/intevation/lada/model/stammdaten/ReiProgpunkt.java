@@ -20,14 +20,14 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name="rei_progpunkt")
+@Table(name = "rei_progpunkt")
 public class ReiProgpunkt implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
     private Integer id;
 
-    @Column(name="rei_prog_punkt")
+    @Column(name = "rei_prog_punkt")
     private String reiProgPunkt;
 
     private String reiid;

@@ -16,7 +16,6 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TransactionRequiredException;
-import javax.transaction.Transactional;
 
 /**
  * Abstract class implementing low level data operations.
@@ -24,8 +23,7 @@ import javax.transaction.Transactional;
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
 @Stateless
-public class DataTransaction
-{
+public class DataTransaction {
     @Inject
     protected EntityManagerProducer emp;
 
@@ -47,8 +45,7 @@ public class DataTransaction
     throws EntityExistsException,
         IllegalArgumentException,
         EJBTransactionRolledbackException,
-        TransactionRequiredException
-    {
+        TransactionRequiredException {
         EntityManager manager = emp.entityManager(dataSource);
         manager.persist(object);
         manager.flush();
@@ -75,8 +72,7 @@ public class DataTransaction
     throws EntityExistsException,
         IllegalArgumentException,
         EJBTransactionRolledbackException,
-        TransactionRequiredException
-    {
+        TransactionRequiredException {
         emp.entityManager(dataSource).merge(object);
     }
 
@@ -93,12 +89,11 @@ public class DataTransaction
     public void removeFromDatabase(Object object, String dataSource)
     throws IllegalArgumentException,
         TransactionRequiredException,
-        EJBTransactionRolledbackException
-    {
+        EJBTransactionRolledbackException {
         EntityManager em = emp.entityManager(dataSource);
         em.remove(
-            em.contains(object) ?
-                object : em.merge(object));
+            em.contains(object)
+            ? object : em.merge(object));
         em.flush();
     }
 

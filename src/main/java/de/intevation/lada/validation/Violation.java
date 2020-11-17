@@ -53,21 +53,21 @@ public class Violation {
       this.notifications.add(key, value);
     }
 
-    public void addWarnings(MultivaluedMap<String, Integer> warnings) {
-        for (String key: warnings.keySet()) {
-            this.warnings.addAll(key, warnings.get(key));
+    public void addWarnings(MultivaluedMap<String, Integer> w) {
+        for (String key: w.keySet()) {
+            this.warnings.addAll(key, w.get(key));
         }
     }
 
-    public void addErrors(MultivaluedMap<String, Integer> errors) {
-        for (String key: errors.keySet()) {
-            this.errors.addAll(key, errors.get(key));
+    public void addErrors(MultivaluedMap<String, Integer> e) {
+        for (String key: e.keySet()) {
+            this.errors.addAll(key, e.get(key));
         }
     }
 
-    public void addNotifications(MultivaluedMap<String, Integer> notifications) {
-     for (String key: notifications.keySet()) {
-       this.notifications.addAll(key, notifications.get(key));
+    public void addNotifications(MultivaluedMap<String, Integer> n) {
+     for (String key: n.keySet()) {
+       this.notifications.addAll(key, n.get(key));
      }
     }
 

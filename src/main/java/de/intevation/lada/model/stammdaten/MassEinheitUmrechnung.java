@@ -18,21 +18,21 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
- * The persistent class for the mess_einheit_umrechung database table
+ * The persistent class for the mess_einheit_umrechung database table.
  */
 @Entity
-@Table(name="mass_einheit_umrechnung")
+@Table(name = "mass_einheit_umrechnung")
 public class MassEinheitUmrechnung implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
     private Integer id;
 
-    @ManyToOne(fetch=FetchType.EAGER)
-    @JoinColumn(name="meh_id_von")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "meh_id_von")
     private MessEinheit mehVon;
 
-    @Column(name="meh_id_zu")
+    @Column(name = "meh_id_zu")
     private Integer mehIdZu;
 
     private Double faktor;

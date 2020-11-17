@@ -24,48 +24,48 @@ import org.locationtech.jts.geom.MultiPolygon;
  *
  */
 @Entity
-@Table(name="verwaltungsgrenze")
+@Table(name = "verwaltungsgrenze")
 public class Verwaltungsgrenze implements Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Id
-	private Integer id;
+    @Id
+    private Integer id;
 
-	@Column(name="gem_id")
-	private String gemId;
+    @Column(name = "gem_id")
+    private String gemId;
 
-	@Column(name="is_gemeinde")
-	private Boolean isGemeinde;
+    @Column(name = "is_gemeinde")
+    private Boolean isGemeinde;
 
-	@Type(type = "jts_geometry")
-	@Column(columnDefinition="geometry(MultiPolygon, 4326)")
-	private MultiPolygon shape;
+    @Type(type = "jts_geometry")
+    @Column(columnDefinition = "geometry(MultiPolygon, 4326)")
+    private MultiPolygon shape;
 
-	public Verwaltungsgrenze() {
-	}
+    public Verwaltungsgrenze() {
+    }
 
-	public Integer getId() {
-		return this.id;
-	}
+    public Integer getId() {
+        return this.id;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public String getGemId() {
-		return this.gemId;
-	}
+    public String getGemId() {
+        return this.gemId;
+    }
 
-	public void setGemId(String gemId) {
-		this.gemId = gemId;
-	}
+    public void setGemId(String gemId) {
+        this.gemId = gemId;
+    }
 
-	public MultiPolygon getShape() {
-		return this.shape;
-	}
+    public MultiPolygon getShape() {
+        return this.shape;
+    }
 
-	public void setShape(MultiPolygon shape) {
-		this.shape = shape;
-	}
+    public void setShape(MultiPolygon shape) {
+        this.shape = shape;
+    }
 
 }

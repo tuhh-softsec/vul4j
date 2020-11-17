@@ -35,12 +35,12 @@ public class StatusFolge implements Rule {
     @Inject Logger logger;
 
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type = RepositoryType.RO)
     private Repository repository;
 
     @Override
     public Violation execute(Object object) {
-        StatusProtokoll status = (StatusProtokoll)object;
+        StatusProtokoll status = (StatusProtokoll) object;
 
         // Get the previous status
         QueryBuilder<StatusProtokoll> lastFilter =

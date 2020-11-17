@@ -21,12 +21,12 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name="lada_user")
+@Table(name = "lada_user")
 public class LadaUser implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String name;

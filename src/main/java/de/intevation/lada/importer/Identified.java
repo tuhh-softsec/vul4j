@@ -7,8 +7,22 @@
  */
 package de.intevation.lada.importer;
 
+/**
+ * Enum for object identification.
+ */
 public enum Identified {
+    /**
+     * Object is not exisiting.
+     */
     NEW,
+
+    /**
+     * Object exists.
+     */
     UPDATE,
+
+    /**
+     * Object can not be created or updated.
+     */
     REJECT
 }

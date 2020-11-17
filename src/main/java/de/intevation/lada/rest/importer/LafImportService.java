@@ -56,35 +56,33 @@ import de.intevation.lada.util.rest.Response;
 /**
  * This class produces a RESTful service to interact with probe objects.
  *
- * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ * @author <a href = "mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
 @Path("data/import")
 @RequestScoped
 public class LafImportService {
 
-    @Inject
-    private Logger logger;
-
     /**
      * The importer
      */
     @Inject
-    @ImportConfig(format=ImportFormat.LAF)
+    @ImportConfig(format = ImportFormat.LAF)
     private Importer importer;
 
     @Inject
-    @RepositoryConfig(type=RepositoryType.RW)
+    @RepositoryConfig(type = RepositoryType.RW)
     private Repository repository;
 
     /**
      * The authorization module.
      */
     @Inject
-    @AuthorizationConfig(type=AuthorizationType.HEADER)
+    @AuthorizationConfig(type = AuthorizationType.HEADER)
     private Authorization authorization;
 
     /**
-     * Import a given list of files, generate a tag and set it to all imported records.
+     * Import a given list of files, generate a tag and set it to all
+     * imported records.
      * Expected input format:
      * <pre>
      * <code>
@@ -118,7 +116,8 @@ public class LafImportService {
         //Ids of alle imported probe records
         List<Integer> importedProbeids = new ArrayList<Integer>();
         //Contains a response data object for every import
-        Map<String, Map<String, Object>> importResponseData = new HashMap<String, Map<String, Object>>();
+        Map<String, Map<String, Object>> importResponseData =
+            new HashMap<String, Map<String, Object>>();
 
         String mstId = request.getHeader("X-LADA-MST");
         if (mstId == null) {
@@ -128,7 +127,8 @@ public class LafImportService {
         filesObject.forEach((fileName, fileContent) -> {
             String encodedString = fileContent.toString();
             byte[] decodedBytes = Base64.decodeBase64(encodedString);
-            String decodedContent = new String(decodedBytes, Charset.forName(encoding));
+            String decodedContent =
+                new String(decodedBytes, Charset.forName(encoding));
             files.put(fileName, decodedContent);
         });
 
@@ -142,10 +142,13 @@ public class LafImportService {
                         repository.entityManager(Strings.STAMM),
                         ImporterConfig.class);
                 builder.and("mstId", mstId);
-                config = (List<ImporterConfig>) repository.filterPlain(builder.getQuery(), Strings.STAMM);
+                config =
+                    (List<ImporterConfig>) repository.filterPlain(
+                        builder.getQuery(), Strings.STAMM);
             }
             importer.doImport(content, userInfo, config);
-            Map<String, Object> fileResponseData = new HashMap<String,Object>();
+            Map<String, Object> fileResponseData =
+                new HashMap<String, Object>();
             if (!importer.getErrors().isEmpty()) {
                 fileResponseData.put("errors", importer.getErrors());
             }
@@ -153,10 +156,12 @@ public class LafImportService {
                 fileResponseData.put("warnings", importer.getWarnings());
             }
             if (!importer.getNotifications().isEmpty()) {
-              fileResponseData.put("notifications", importer.getNotifications());
+                fileResponseData.put(
+                    "notifications", importer.getNotifications());
             }
             fileResponseData.put("success", true);
-            fileResponseData.put("probeIds", ((LafImporter) importer).getImportedIds());
+            fileResponseData.put(
+                "probeIds", ((LafImporter) importer).getImportedIds());
             importResponseData.put(fileName, fileResponseData);
             importedProbeids.addAll(((LafImporter) importer).getImportedIds());
         });
@@ -166,13 +171,15 @@ public class LafImportService {
         if (importedProbeids.size() > 0) {
             success = true;
             //Generate a tag for the imported probe records
-            Response tagCreation = TagUtil.generateTag("IMP", mstId, repository);
+            Response tagCreation =
+                TagUtil.generateTag("IMP", mstId, repository);
             if (!tagCreation.getSuccess()) {
-                //TODO: Tag creation failed -> import success?
+                // TODO Tag creation failed -> import success?
                 return new Response(success, 200, importResponseData);
             }
             Tag newTag = (Tag) tagCreation.getData();
-            TagUtil.setTagsByProbeIds(importedProbeids, newTag.getId(), repository);
+            TagUtil.setTagsByProbeIds(
+                importedProbeids, newTag.getId(), repository);
 
             //Put new tag in import response
             importResponseData.forEach((file, responseData) -> {
@@ -198,13 +205,14 @@ public class LafImportService {
         @Context HttpServletRequest request
     ) {
         UserInfo userInfo = authorization.getInfo(request);
-	String mstId = request.getHeader("X-LADA-MST");
+        String mstId = request.getHeader("X-LADA-MST");
 
-	/** Preparation for Client-Update: "Vorbelegung Messstelle" will become mandatory!
-        *if (mstId.equals("null")) {
-        *    return new Response(false, 699, "Missing header for messtelle.");
-        *}
-	*/
+        /** Preparation for Client-Update: "Vorbelegung Messstelle" will
+         * become mandatory!
+         *if (mstId.equals("null")) {
+         *    return new Response(false, 699, "Missing header for messtelle.");
+         *}
+         */
 
         logLAFFile(mstId, content);
         List<ImporterConfig> config = new ArrayList<ImporterConfig>();
@@ -214,10 +222,11 @@ public class LafImportService {
                     repository.entityManager(Strings.STAMM),
                     ImporterConfig.class);
             builder.and("mstId", mstId);
-            config = (List<ImporterConfig>) repository.filterPlain(builder.getQuery(), Strings.STAMM);
+            config = (List<ImporterConfig>) repository.filterPlain(
+                builder.getQuery(), Strings.STAMM);
         }
         importer.doImport(content, userInfo, config);
-        Map<String, Object> respData = new HashMap<String,Object>();
+        Map<String, Object> respData = new HashMap<String, Object>();
         if (!importer.getErrors().isEmpty()) {
             respData.put("errors", importer.getErrors());
         }
@@ -227,19 +236,22 @@ public class LafImportService {
         if (!importer.getNotifications().isEmpty()) {
           respData.put("notifications", importer.getNotifications());
         }
-        List<Integer> importedProbeids = ((LafImporter) importer).getImportedIds();
+        List<Integer> importedProbeids =
+            ((LafImporter) importer).getImportedIds();
         respData.put("probeIds", importedProbeids);
 
         // If import created at least a new record
         if (importedProbeids.size() > 0 && !mstId.equals("null")) {
             //Generate a tag for the imported probe records
-            Response tagCreation = TagUtil.generateTag("IMP", mstId, repository);
+            Response tagCreation =
+                TagUtil.generateTag("IMP", mstId, repository);
             if (!tagCreation.getSuccess()) {
-                //TODO: Tag creation failed -> import success?
+                // TODO Tag creation failed -> import success?
                 return new Response(true, 200, respData);
             }
             Tag newTag = (Tag) tagCreation.getData();
-            TagUtil.setTagsByProbeIds(importedProbeids, newTag.getId(), repository);
+            TagUtil.setTagsByProbeIds(
+                importedProbeids, newTag.getId(), repository);
 
             respData.put("tag", newTag.getTag());
         }
@@ -265,13 +277,15 @@ public class LafImportService {
         Appender lafAppender = Logger.getRootLogger().getAppender("laf");
         // Retrive path set for import logger
         if (lafAppender instanceof FileAppender) {
-            File appenderFile = new File(((FileAppender)lafAppender).getFile());
+            File appenderFile =
+                new File(((FileAppender) lafAppender).getFile());
             filePath = appenderFile.getParent();
         }
         // Write laf file if debug enabled
         if (lafLogger.isDebugEnabled()) {
             lafLogger.debug("X-LADA-MST: " + mstId);
-            lafLogger.debug("Imported file logged to: " + filePath + "/" + fileName);
+            lafLogger.debug(
+                "Imported file logged to: " + filePath + "/" + fileName);
             try {
                 FileWriter f = new FileWriter(filePath + "/" + fileName);
                 f.write(content);

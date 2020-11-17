@@ -7,9 +7,6 @@
  */
 package de.intevation.lada.util.auth;
 
-import javax.inject.Inject;
-
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -17,7 +14,6 @@ import java.util.List;
 
 import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.model.stammdaten.MessStelle;
-import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
@@ -40,9 +36,9 @@ public class ProbeIdAuthorizer extends BaseAuthorizer {
         }
         try {
             id = (Integer) m.invoke(data);
-        } catch (IllegalAccessException |
-            IllegalArgumentException |
-            InvocationTargetException e
+        } catch (IllegalAccessException
+            | IllegalArgumentException
+            | InvocationTargetException e
         ) {
             return false;
         }
@@ -57,7 +53,8 @@ public class ProbeIdAuthorizer extends BaseAuthorizer {
     ) {
         Probe probe =
             repository.getByIdPlain(Probe.class, id, Strings.LAND);
-        return !isProbeReadOnly((Integer) id) && getAuthorization(userInfo, probe);
+        return !isProbeReadOnly((Integer) id)
+            && getAuthorization(userInfo, probe);
     }
 
     @SuppressWarnings("unchecked")
@@ -69,12 +66,11 @@ public class ProbeIdAuthorizer extends BaseAuthorizer {
     ) {
         if (data.getData() instanceof List<?>) {
             List<Object> objects = new ArrayList<Object>();
-            for (Object object :(List<Object>)data.getData()) {
+            for (Object object :(List<Object>) data.getData()) {
                 objects.add(setAuthData(userInfo, object, clazz));
             }
             data.setData(objects);
-        }
-        else {
+        } else {
             Object object = data.getData();
             data.setData(setAuthData(userInfo, object, clazz));
         }
@@ -98,26 +94,28 @@ public class ProbeIdAuthorizer extends BaseAuthorizer {
             Integer id = null;
             if (getProbeId != null) {
                 id = (Integer) getProbeId.invoke(data);
-            }
-            else {
+            } else {
                 return null;
             }
             Probe probe =
-                (Probe)repository.getById(Probe.class, id, Strings.LAND).getData();
+                (Probe) repository.getById(
+                    Probe.class, id, Strings.LAND).getData();
 
             boolean readOnly = true;
             boolean owner = false;
-            MessStelle mst = repository.getByIdPlain(MessStelle.class, probe.getMstId(), Strings.STAMM);
+            MessStelle mst =
+                repository.getByIdPlain(
+                    MessStelle.class, probe.getMstId(), Strings.STAMM);
             if (!userInfo.getNetzbetreiber().contains(
                     mst.getNetzbetreiberId())) {
                 owner = false;
                 readOnly = true;
-            }
-            else {
-                if (userInfo.belongsTo(probe.getMstId(), probe.getLaborMstId())) {
+            } else {
+                if (userInfo.belongsTo(
+                    probe.getMstId(), probe.getLaborMstId())
+                ) {
                     owner = true;
-                }
-                else {
+                } else {
                     owner = false;
                 }
                 readOnly = this.isProbeReadOnly(id);

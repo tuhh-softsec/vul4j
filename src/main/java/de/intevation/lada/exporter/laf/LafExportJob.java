@@ -26,21 +26,24 @@ import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Strings;
 
 /**
- * Job class for exporting records to a laf file
+ * Job class for exporting records to a laf file.
  *
  * @author <a href="mailto:awoestmann@intevation.de">Alexander Woestmann</a>
  */
 public class LafExportJob extends ExportJob {
 
+    private static final int LENGTH = 1024;
+
     public LafExportJob(String jobId) {
         super(jobId);
         this.format = "laf";
         this.downloadFileName = "export.laf";
-        this.logger = Logger.getLogger(String.format("LafExportJob[%s]", jobId));
+        this.logger =
+            Logger.getLogger(String.format("LafExportJob[%s]", jobId));
     }
 
     /**
-     * Start the export
+     * Start the export.
      */
     @Override
     public void run() {
@@ -61,14 +64,14 @@ public class LafExportJob extends ExportJob {
         if (exportParameters.getJsonArray("proben") != null) {
             for (JsonValue id : exportParameters.getJsonArray("proben")) {
                 if (id instanceof JsonNumber) {
-                    probeIds.add(((JsonNumber)id).intValue());
+                    probeIds.add(((JsonNumber) id).intValue());
                 }
             }
         }
         if (exportParameters.getJsonArray("messungen") != null) {
             for (JsonValue id : exportParameters.getJsonArray("messungen")) {
                 if (id instanceof JsonNumber) {
-                    messungIds.add(((JsonNumber)id).intValue());
+                    messungIds.add(((JsonNumber) id).intValue());
                 }
             }
         }
@@ -104,23 +107,26 @@ public class LafExportJob extends ExportJob {
         }
 
         //Export and write to file
-        InputStream exported = exporter.exportProben(pIds, mIds, encoding, userInfo);
+        InputStream exported =
+            exporter.exportProben(pIds, mIds, encoding, userInfo);
         logger.debug("Finished export to memory, writing to file.");
         try {
             ByteArrayOutputStream result = new ByteArrayOutputStream();
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[LENGTH];
             int length;
             while ((length = exported.read(buffer)) != -1) {
                 result.write(buffer, 0, length);
             }
             String resultString = new String(result.toByteArray(), encoding);
-            if(!writeResultToFile(resultString)) {
+            if (!writeResultToFile(resultString)) {
                 fail("Error on writing export result.");
                 return;
             }
 
         } catch (IOException ioe) {
-            logger.error(String.format("Error on writing export result. IOException: %s", ioe.getStackTrace().toString()));
+            logger.error(String.format(
+                "Error on writing export result. IOException: %s",
+                ioe.getStackTrace().toString()));
             fail("Error on writing export result.");
             return;
         }

@@ -26,28 +26,47 @@ import org.junit.AfterClass;
  */
 public class BaseTest {
 
-    protected static String ARCHIVE_NAME = "lada-server-test.war";
+    /**
+     * Name of the test archive output file.
+     */
+    protected static String archiveName = "lada-server-test.war";
 
-    public static String TEST_USER = "testeins";
+    /**
+     * User name used for tests.
+     */
+    public static String testUser = "testeins";
 
-    public static String TEST_ROLES = "cn=mst_06010 cn=mst_06_status, cn=land_06_stamm";
+    /**
+     * Roles used for tests.
+     */
+    public static String testRoles =
+        "cn=mst_06010 cn=mst_06_status, cn=land_06_stamm";
 
     private static Logger logger = Logger.getLogger(BaseTest.class);
 
+    /**
+     * Results to print out when tests are done.
+     */
     protected static List<Protocol> testProtocol;
 
+    /**
+     * Enable verbose output for tests.
+     */
     protected static boolean verboseLogging = false;
 
     /**
      * Create a deployable WAR archive.
+     *
+     * @throws Exception that happens during build process.
+     * @return WebArchive to deploy in wildfly application server.
      */
-    @Deployment(testable=true)
+    @Deployment(testable = true)
     public static WebArchive createDeployment() throws Exception {
         File antlr = Maven.resolver().loadPomFromFile("pom.xml")
             .resolve("org.antlr:antlr4-runtime")
             .withoutTransitivity().asSingleFile();
 
-        WebArchive archive = ShrinkWrap.create(WebArchive.class, ARCHIVE_NAME)
+        WebArchive archive = ShrinkWrap.create(WebArchive.class, archiveName)
             .addPackages(true, Package.getPackage("de.intevation.lada"))
             .addAsResource("log4j.properties", "log4j.properties")
             .addAsResource("shibboleth.properties", "shibboleth.properties")
@@ -63,6 +82,9 @@ public class BaseTest {
         return archive;
     }
 
+    /**
+     * Prints out the test results.
+     */
     @After
     public final void printLogs() {
         for (Protocol p : testProtocol) {
@@ -70,12 +92,23 @@ public class BaseTest {
         }
     }
 
+    /**
+     * Print a newline after each test file was processed for formatting.
+     */
     @AfterClass
     public static final void afterTests() {
         System.out.println("");
     }
 
-    private static void addWithDependencies(String coordinate, WebArchive archive) {
+    /**
+     * Add a dependency to the given webarchive.
+     *
+     * @param coordinate
+     * @param archive
+     */
+    private static void addWithDependencies(
+        String coordinate, WebArchive archive
+    ) {
         File[] files = Maven.resolver().loadPomFromFile("pom.xml")
             .resolve(coordinate).withTransitivity().asFile();
         for (File f : files) {

@@ -15,7 +15,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
 
@@ -63,7 +62,7 @@ public class IntegerArrayType implements UserType {
     @Override
     public Serializable disassemble(Object value)
     throws HibernateException {
-        return (Integer[])this.deepCopy(value);
+        return (Integer[]) this.deepCopy(value);
     }
 
     @Override
@@ -79,20 +78,27 @@ public class IntegerArrayType implements UserType {
     }
 
     @Override
-    public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner)
-            throws HibernateException, SQLException {
+    public Object nullSafeGet(
+        ResultSet rs,
+        String[] names,
+        SharedSessionContractImplementor session,
+        Object owner)
+    throws HibernateException, SQLException {
         Array array = rs.getArray(names[0]);
         Integer[] javaArray = (Integer[]) array.getArray();
         return javaArray;
     }
 
     @Override
-    public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session)
-            throws HibernateException, SQLException {
+    public void nullSafeSet(
+        PreparedStatement st,
+        Object value,
+        int index,
+        SharedSessionContractImplementor session)
+    throws HibernateException, SQLException {
         Connection connection = st.getConnection();
         Integer[] castObject = (Integer[]) value;
         Array array = connection.createArrayOf("integer", castObject);
         st.setArray(index, array);
-	}
-
+    }
 }

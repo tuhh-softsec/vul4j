@@ -64,7 +64,7 @@ public class ReiProgpunktGruppeService {
      * The data repository granting read access.
      */
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type = RepositoryType.RO)
     private Repository repository;
 
     /**
@@ -82,9 +82,10 @@ public class ReiProgpunktGruppeService {
         @Context UriInfo info
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
-        if (params.isEmpty() ||
-            (!params.containsKey("reiprogpunkt") &&
-             !params.containsKey("umwelt"))) {
+        if (params.isEmpty()
+            || (!params.containsKey("reiprogpunkt")
+            && !params.containsKey("umwelt"))
+        ) {
             return repository.getAll(ReiProgpunktGruppe.class, "stamm");
         }
         List<ReiProgpunktGruppe> list = new ArrayList<ReiProgpunktGruppe>();
@@ -92,8 +93,7 @@ public class ReiProgpunktGruppeService {
             Integer id = null;
             try {
                 id = Integer.valueOf(params.getFirst("reiprogpunkt"));
-            }
-            catch (NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 return new Response(false, 603, "Not a valid filter id");
             }
             QueryBuilder<ReiProgpunktGrpZuord> builder =
@@ -118,8 +118,7 @@ public class ReiProgpunktGruppeService {
             }
             builder1.orIn("id", ids);
             list = repository.filterPlain(builder1.getQuery(), "stamm");
-        }
-        else if (params.containsKey("umwelt")) {
+        } else if (params.containsKey("umwelt")) {
             QueryBuilder<ReiProgpunktGrpUmwZuord> builder =
                 new QueryBuilder<ReiProgpunktGrpUmwZuord>(
                     repository.entityManager("stamm"),

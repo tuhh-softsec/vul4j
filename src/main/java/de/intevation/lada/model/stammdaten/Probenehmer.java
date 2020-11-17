@@ -27,7 +27,7 @@ public class Probenehmer implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String bearbeiter;
@@ -38,20 +38,20 @@ public class Probenehmer implements Serializable {
 
     private String bezeichnung;
 
-    @Column(name="kurz_bezeichnung")
+    @Column(name = "kurz_bezeichnung")
     private String kurzBezeichnung;
 
-    @Column(name="letzte_aenderung", insertable=false)
+    @Column(name = "letzte_aenderung", insertable = false)
     private Timestamp letzteAenderung;
 
-    @Column(name="netzbetreiber_id")
+    @Column(name = "netzbetreiber_id")
     private String netzbetreiberId;
 
     private String ort;
 
     private String plz;
 
-    @Column(name="prn_id")
+    @Column(name = "prn_id")
     private String prnId;
 
     private String strasse;

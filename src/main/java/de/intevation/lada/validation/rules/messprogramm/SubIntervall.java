@@ -39,7 +39,7 @@ public class SubIntervall implements Rule {
 
     @Override
     public Violation execute(Object object) {
-        Messprogramm messprogramm = (Messprogramm)object;
+        Messprogramm messprogramm = (Messprogramm) object;
         Violation violation = new Violation();
 
         String probenintervall = messprogramm.getProbenintervall();
@@ -67,8 +67,7 @@ public class SubIntervall implements Rule {
                         violation.addError("intervallOffset", 612);
                     }
                 }
-            }
-            else {
+            } else {
                 // lower limits are independent of intervall type
                 if (teilVon < 1) {
                     violation.addError("teilintervallVon", 612);
@@ -112,6 +111,6 @@ public class SubIntervall implements Rule {
 
         return violation.hasErrors()
             ? violation
-            :null;
+            : null;
     }
 }

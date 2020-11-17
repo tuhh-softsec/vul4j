@@ -7,9 +7,7 @@
  */
 package de.intevation.lada.rest;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -93,29 +91,26 @@ public class MessungService {
      * The data repository granting read/write access.
      */
     @Inject
-    @RepositoryConfig(type=RepositoryType.RW)
+    @RepositoryConfig(type = RepositoryType.RW)
     private Repository repository;
 
     /**
      * The object lock mechanism.
      */
     @Inject
-    @LockConfig(type=LockType.TIMESTAMP)
+    @LockConfig(type = LockType.TIMESTAMP)
     private ObjectLocker lock;
 
     /**
      * The authorization module.
      */
     @Inject
-    @AuthorizationConfig(type=AuthorizationType.HEADER)
+    @AuthorizationConfig(type = AuthorizationType.HEADER)
     private Authorization authorization;
 
     @Inject
-    @ValidationConfig(type="Messung")
+    @ValidationConfig(type = "Messung")
     private Validator validator;
-
-    @Inject
-    private QueryTools queryTools;
 
     /**
      * Get all Messung objects.
@@ -140,11 +135,12 @@ public class MessungService {
         @Context HttpServletRequest request
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
-        UserInfo userInfo = authorization.getInfo(request);
         //If no params are given: return all messung records
-        if (params.isEmpty() ||
-            (!params.containsKey("probeId"))) {
-            List<Messung> messungs = repository.getAllPlain(Messung.class, Strings.LAND);
+        if (params.isEmpty()
+            || (!params.containsKey("probeId"))
+        ) {
+            List<Messung> messungs =
+                repository.getAllPlain(Messung.class, Strings.LAND);
             int size = messungs.size();
             if (params.containsKey("start") && params.containsKey("limit")) {
                 int start = Integer.valueOf(params.getFirst("start"));
@@ -158,7 +154,10 @@ public class MessungService {
             for (Messung m: messungs) {
                 m.setReadonly(authorization.isMessungReadOnly(m.getId()));
                 Violation violation = validator.validate(m);
-                if (violation.hasErrors() || violation.hasWarnings() || violation.hasNotifications()) {
+                if (violation.hasErrors()
+                    || violation.hasWarnings()
+                    || violation.hasNotifications()
+                ) {
                     m.setErrors(violation.getErrors());
                     m.setWarnings(violation.getWarnings());
                     m.setNotifications(violation.getNotifications());
@@ -177,11 +176,13 @@ public class MessungService {
                 request,
                 repository.filter(builder.getQuery(), Strings.LAND),
                 Messung.class);
-            if (r.getSuccess() == true) {
+            if (r.getSuccess()) {
                 @SuppressWarnings("unchecked")
                 List<Messung> messungs = (List<Messung>) r.getData();
                 int size = messungs.size();
-                if (params.containsKey("start") && params.containsKey("limit")) {
+                if (params.containsKey("start")
+                    && params.containsKey("limit")
+                ) {
                     int start = Integer.valueOf(params.getFirst("start"));
                     int limit = Integer.valueOf(params.getFirst("limit"));
                     int end = limit + start;
@@ -193,17 +194,27 @@ public class MessungService {
                 if (messungs.size() > 0) {
                     for (Messung messung: messungs) {
                         messung.setReadonly(
-                            !authorization.isAuthorized(request, messung, RequestMethod.PUT, Messung.class));
+                            !authorization.isAuthorized(
+                                request,
+                                messung,
+                                RequestMethod.PUT,
+                                Messung.class));
                         Violation violation = validator.validate(messung);
-                        if (violation.hasErrors() || violation.hasWarnings() || violation.hasNotifications()) {
+                        if (violation.hasErrors()
+                            || violation.hasWarnings()
+                            || violation.hasNotifications()
+                        ) {
                             messung.setErrors(violation.getErrors());
                             messung.setWarnings(violation.getWarnings());
-                            messung.setNotifications(violation.getNotifications());
+                            messung.setNotifications(
+                                violation.getNotifications());
                         }
                     }
                 }
                 return new Response(true, 200, messungs);
-                //return authorization.filter(request, new Response(true, 200, messungs), Messung.class);
+                //return authorization.filter(
+                //    request, new Response(
+                //        true, 200, messungs), Messung.class);
             } else {
                 return r;
             }
@@ -228,10 +239,14 @@ public class MessungService {
         @PathParam("id") String id
     ) {
         Response response =
-            repository.getById(Messung.class, Integer.valueOf(id), Strings.LAND);
-        Messung messung = (Messung)response.getData();
+            repository.getById(
+                Messung.class, Integer.valueOf(id), Strings.LAND);
+        Messung messung = (Messung) response.getData();
         Violation violation = validator.validate(messung);
-        if (violation.hasErrors() || violation.hasWarnings() || violation.hasNotifications()) {
+        if (violation.hasErrors()
+            || violation.hasWarnings()
+            || violation.hasNotifications()
+        ) {
             response.setErrors(violation.getErrors());
             response.setWarnings(violation.getWarnings());
             response.setNotifications(violation.getNotifications());
@@ -296,10 +311,10 @@ public class MessungService {
 
         /* Persist the new messung object*/
         Response response = repository.create(messung, Strings.LAND);
-        if(violation.hasWarnings()) {
+        if (violation.hasWarnings()) {
             response.setWarnings(violation.getWarnings());
         }
-        if (violation.hasNotifications()){
+        if (violation.hasNotifications()) {
             response.setNotifications(violation.getNotifications());
         }
         return authorization.filter(
@@ -368,11 +383,11 @@ public class MessungService {
         }
         Response updated = repository.getById(
             Messung.class,
-            ((Messung)response.getData()).getId(), Strings.LAND);
-        if(violation.hasWarnings()) {
+            ((Messung) response.getData()).getId(), Strings.LAND);
+        if (violation.hasWarnings()) {
             updated.setWarnings(violation.getWarnings());
         }
-        if (violation.hasNotifications()){
+        if (violation.hasNotifications()) {
             updated.setNotifications(violation.getNotifications());
         }
         return authorization.filter(
@@ -400,8 +415,9 @@ public class MessungService {
     ) {
         /* Get the messung object by id*/
         Response messung =
-            repository.getById(Messung.class, Integer.valueOf(id), Strings.LAND);
-        Messung messungObj = (Messung)messung.getData();
+            repository.getById(
+                Messung.class, Integer.valueOf(id), Strings.LAND);
+        Messung messungObj = (Messung) messung.getData();
         if (!authorization.isAuthorized(
                 request,
                 messungObj,

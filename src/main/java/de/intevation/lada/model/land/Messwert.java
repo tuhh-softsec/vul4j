@@ -30,43 +30,43 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  */
 @Entity
-@Table(name="messwert", schema="land")
+@Table(name = "messwert", schema = "land")
 public class Messwert implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private Boolean grenzwertueberschreitung;
 
-    @Column(name="letzte_aenderung", insertable=false)
+    @Column(name = "letzte_aenderung", insertable = false)
     private Timestamp letzteAenderung;
 
-    @Column(name="meh_id")
+    @Column(name = "meh_id")
     private Integer mehId;
 
     private Float messfehler;
 
-    @Column(name="messgroesse_id")
+    @Column(name = "messgroesse_id")
     private Integer messgroesseId;
 
-    @Column(name="messungs_id")
+    @Column(name = "messungs_id")
     private Integer messungsId;
 
     private Double messwert;
 
-    @Column(name="messwert_nwg")
+    @Column(name = "messwert_nwg")
     private String messwertNwg;
 
-    @Column(name="nwg_zu_messwert")
+    @Column(name = "nwg_zu_messwert")
     private Double nwgZuMesswert;
 
-    @Column(name="tree_modified", insertable=false, updatable=false)
+    @Column(name = "tree_modified", insertable = false, updatable = false)
     private Timestamp treeModified;
 
     @OneToOne
-    @JoinColumn(name="messungs_id", insertable=false, updatable=false)
+    @JoinColumn(name = "messungs_id", insertable = false, updatable = false)
     private Messung messung;
 
     @Transient
@@ -214,6 +214,10 @@ public class Messwert implements Serializable {
         this.readonly = readonly;
     }
 
+    /**
+     * Check if a parent object was modified.
+     * @return timestamp when the parent was modified
+     */
     public Timestamp getParentModified() {
         if (this.parentModified == null && this.messung != null) {
             return this.messung.getTreeModified();
@@ -247,11 +251,13 @@ public class Messwert implements Serializable {
 
     @JsonProperty
     public MultivaluedMap<String, Integer> getNotifications() {
-        return this.notifications=notifications;
+        return this.notifications;
     }
 
     @JsonIgnore
-    public void setNotifications(MultivaluedMap<String, Integer> notifications) {
-        this.notifications=notifications;
+    public void setNotifications(
+        MultivaluedMap<String, Integer> notifications
+    ) {
+        this.notifications = notifications;
     }
 }

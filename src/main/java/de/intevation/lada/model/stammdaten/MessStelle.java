@@ -20,7 +20,7 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name="mess_stelle")
+@Table(name = "mess_stelle")
 public class MessStelle implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -31,13 +31,13 @@ public class MessStelle implements Serializable {
 
     private String beschreibung;
 
-    @Column(name="mess_stelle")
+    @Column(name = "mess_stelle")
     private String messStelle;
 
-    @Column(name="mst_typ")
+    @Column(name = "mst_typ")
     private String mstTyp;
 
-    @Column(name="netzbetreiber_id")
+    @Column(name = "netzbetreiber_id")
     private String netzbetreiberId;
 
     public MessStelle() {

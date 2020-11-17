@@ -20,17 +20,17 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name="auth_lst_umw")
+@Table(name = "auth_lst_umw")
 public class AuthLstUmw implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
     private Integer id;
 
-    @Column(name="mst_id")
+    @Column(name = "mst_id")
     private String mstId;
 
-    @Column(name="umw_id")
+    @Column(name = "umw_id")
     private String umwId;
 
     public AuthLstUmw() {

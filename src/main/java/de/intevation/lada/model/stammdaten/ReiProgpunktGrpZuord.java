@@ -20,17 +20,17 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name="rei_progpunkt_grp_zuord")
+@Table(name = "rei_progpunkt_grp_zuord")
 public class ReiProgpunktGrpZuord implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
     private Integer id;
 
-    @Column(name="rei_progpunkt_grp_id")
+    @Column(name = "rei_progpunkt_grp_id")
     private Integer reiProgpunktGrpId;
 
-    @Column(name="rei_progpunkt_id")
+    @Column(name = "rei_progpunkt_id")
     private Integer reiProgpunktId;
 
     public ReiProgpunktGrpZuord() {

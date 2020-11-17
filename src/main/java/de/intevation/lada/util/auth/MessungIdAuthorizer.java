@@ -40,9 +40,9 @@ public class MessungIdAuthorizer extends BaseAuthorizer {
         }
         try {
             id = (Integer) m.invoke(data);
-        } catch (IllegalAccessException |
-            IllegalArgumentException |
-            InvocationTargetException e
+        } catch (IllegalAccessException
+            | IllegalArgumentException
+            | InvocationTargetException e
         ) {
             return false;
         }
@@ -56,7 +56,8 @@ public class MessungIdAuthorizer extends BaseAuthorizer {
         UserInfo userInfo,
         Class<T> clazz
     ) {
-        Messung messung = repository.getByIdPlain(Messung.class, id, Strings.LAND);
+        Messung messung =
+            repository.getByIdPlain(Messung.class, id, Strings.LAND);
         Probe probe = repository.getByIdPlain(
             Probe.class,
             messung.getProbeId(),
@@ -72,16 +73,16 @@ public class MessungIdAuthorizer extends BaseAuthorizer {
             StatusKombi.class,
             status.getStatusKombi(),
             Strings.STAMM);
-        if (method == RequestMethod.DELETE &&
-           (kombi.getId() == 1 ||
-           kombi.getId() == 9 ||
-           kombi.getId() == 13)
+        if (method == RequestMethod.DELETE
+            && (kombi.getId() == 1
+            || kombi.getId() == 9
+            || kombi.getId() == 13)
         ) {
             return true;
         }
-        return ((method == RequestMethod.POST ||
-                method == RequestMethod.PUT) &&
-                getAuthorization(userInfo, probe));
+        return ((method == RequestMethod.POST
+            || method == RequestMethod.PUT)
+            && getAuthorization(userInfo, probe));
     }
 
     @SuppressWarnings("unchecked")
@@ -93,12 +94,11 @@ public class MessungIdAuthorizer extends BaseAuthorizer {
     ) {
         if (data.getData() instanceof List<?>) {
             List<Object> objects = new ArrayList<Object>();
-            for (Object object :(List<Object>)data.getData()) {
+            for (Object object :(List<Object>) data.getData()) {
                 objects.add(setAuthData(userInfo, object, clazz));
             }
             data.setData(objects);
-        }
-        else {
+        } else {
             Object object = data.getData();
             data.setData(setAuthData(userInfo, object, clazz));
         }
@@ -120,7 +120,7 @@ public class MessungIdAuthorizer extends BaseAuthorizer {
     ) {
         try {
             Method getMessungsId = clazz.getMethod("getMessungsId");
-            Integer id = (Integer)getMessungsId.invoke(data);
+            Integer id = (Integer) getMessungsId.invoke(data);
             Messung messung = repository.getByIdPlain(
                 Messung.class,
                 id,
@@ -132,17 +132,19 @@ public class MessungIdAuthorizer extends BaseAuthorizer {
 
             boolean readOnly = true;
             boolean owner = false;
-            MessStelle mst = repository.getByIdPlain(MessStelle.class, probe.getMstId(), Strings.STAMM);
+            MessStelle mst =
+                repository.getByIdPlain(
+                    MessStelle.class, probe.getMstId(), Strings.STAMM);
             if (!userInfo.getNetzbetreiber().contains(
                     mst.getNetzbetreiberId())) {
                 owner = false;
                 readOnly = true;
-            }
-            else {
-                if (userInfo.belongsTo(probe.getMstId(), probe.getLaborMstId())) {
+            } else {
+                if (userInfo.belongsTo(
+                    probe.getMstId(), probe.getLaborMstId())
+                ) {
                     owner = true;
-                }
-                else {
+                } else {
                     owner = false;
                 }
                 readOnly = this.isMessungReadOnly(messung.getId());

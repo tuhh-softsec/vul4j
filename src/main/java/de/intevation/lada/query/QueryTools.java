@@ -34,19 +34,17 @@ import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.data.Strings;
-import org.postgresql.util.PSQLException;
 
 
 /**
  * Utility class to handle the SQL query configuration.
  *
- * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ * @author <a href = "mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-public class QueryTools
-{
+public class QueryTools {
 
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type = RepositoryType.RO)
     private Repository repository;
 
     @Inject
@@ -54,11 +52,11 @@ public class QueryTools
 
     /**
      * Execute query and return the filtered and sorted results.
-     * @param customColumns Customized column configs, containing filter, sorting and references to the respective column.
+     * @param customColumns Customized column configs, containing
+     *      filter, sorting and references to the respective column.
      * @param qId Query id.
      * @return List of result maps.
      */
-    @SuppressWarnings("unchecked")
     public List<Map<String, Object>> getResultForQuery(
         List<GridColumnValue> customColumns,
         Integer qId
@@ -72,7 +70,8 @@ public class QueryTools
             BaseQuery.class
         );
         builder.and("id", qId);
-        BaseQuery query = repository.filterPlain(builder.getQuery(), Strings.STAMM).get(0);
+        BaseQuery query =
+            repository.filterPlain(builder.getQuery(), Strings.STAMM).get(0);
 
         String sql = query.getSql();
 
@@ -80,7 +79,8 @@ public class QueryTools
         //Map containing all sort statements, sorted by sortIndex
         TreeMap<Integer, String> sortIndMap = new TreeMap<Integer, String>();
         //Map containing all filters and filter values
-        MultivaluedMap<String, Object> filterValues = new MultivaluedHashMap<String, Object>();
+        MultivaluedMap<String, Object> filterValues =
+            new MultivaluedHashMap<String, Object>();
         String filterSql = "";
         String genericFilterSql = "";
         String sortSql = "";
@@ -92,20 +92,24 @@ public class QueryTools
             columns.add(customColumn.getGridColumn());
             if (customColumn.getSort() != null
                 && !customColumn.getSort().isEmpty()) {
-                    String sortValue = customColumn.getGridColumn().getDataIndex() + " "
+                    String sortValue =
+                        customColumn.getGridColumn().getDataIndex() + " "
                         + customColumn.getSort() + " ";
-                Integer key = customColumn.getSortIndex() != null ? customColumn.getSortIndex() : -1;
+                Integer key =
+                    customColumn.getSortIndex() != null
+                    ? customColumn.getSortIndex() : -1;
                 String value = sortIndMap.get(key);
                 value = value != null ? value + ", "  + sortValue : sortValue;
                 sortIndMap.put(key, value);
             }
 
             if (customColumn.getFilterActive() != null
-                    && customColumn.getFilterActive() == true
-                    && customColumn.getFilterValue() != null
-                    && !customColumn.getFilterValue().isEmpty()
-                    && customColumn.getFilterIsNull() != null
-                    && customColumn.getFilterIsNull() == false) {
+                && customColumn.getFilterActive()
+                && customColumn.getFilterValue() != null
+                && !customColumn.getFilterValue().isEmpty()
+                && customColumn.getFilterIsNull() != null
+                && !customColumn.getFilterIsNull()
+            ) {
 
                 Filter filter = customColumn.getGridColumn().getFilter();
                 String filterValue = customColumn.getFilterValue();
@@ -114,7 +118,7 @@ public class QueryTools
                 String filterType = filter.getFilterType().getType();
 
                 if (customColumn.getFilterNegate() != null
-                    &&customColumn.getFilterNegate() == true
+                    && customColumn.getFilterNegate()
                 ) {
                     currentFilterString = "NOT(" + currentFilterString + ")";
                 }
@@ -122,14 +126,21 @@ public class QueryTools
                 if (filterType.equals("generictext")) {
                     String genTextParam = ":" + filter.getParameter() + "Param";
                     String genTextValue = filter.getParameter() + "Value";
-                    currentFilterString = currentFilterString.replace(genTextParam, customColumn.getGridColumn().getDataIndex());
-                    currentFilterParam = genTextValue + customColumn.getGridColumnId();
-                    currentFilterString = currentFilterString.replace(":" + genTextValue, ":" + currentFilterParam);
+                    currentFilterString =
+                        currentFilterString.replace(
+                            genTextParam,
+                            customColumn.getGridColumn().getDataIndex());
+                    currentFilterParam =
+                        genTextValue + customColumn.getGridColumnId();
+                    currentFilterString =
+                        currentFilterString.replace(
+                            ":" + genTextValue, ":" + currentFilterParam);
                     subquery = true;
                     generic = true;
                 }
 
-                // If a tag filter is applied, split param into n numbered params for n tags to filter
+                // If a tag filter is applied, split param into n
+                // numbered params for n tags to filter
                 if (filterType.equals("tag")) {
                     String[] tagIds = filterValue.split(",");
                     int tagNumber = tagIds.length;
@@ -137,7 +148,11 @@ public class QueryTools
                     String param = filter.getParameter();
                     String tagFilterSql = filter.getSql();
                     for (int i = 0; i < tagNumber; i++) {
-                        String tag = repository.getByIdPlain(Tag.class, Integer.parseInt(tagIds[i]), Strings.STAMM).getTag();
+                        String tag =
+                            repository.getByIdPlain(
+                                Tag.class,
+                                Integer.parseInt(tagIds[i]),
+                                Strings.STAMM).getTag();
                         if (i != tagNumber - 1) {
                             paramlist += " :" + param + i + " , ";
                         } else {
@@ -145,7 +160,9 @@ public class QueryTools
                         }
                         filterValues.add(param + i, tag);
                     }
-                    tagFilterSql = tagFilterSql.replace(":" + filter.getParameter(), paramlist);
+                    tagFilterSql =
+                        tagFilterSql.replace(
+                            ":" + filter.getParameter(), paramlist);
                     if (filterSql.isEmpty()) {
                         filterSql += " WHERE ";
                     } else {
@@ -156,64 +173,77 @@ public class QueryTools
                 }
 
                 //Check if Filter is an in filter
-                if (filterType.equals("generictext") || filterType.equals("text")) {
-                    if (customColumn.getFilterRegex() != null &&
-                        !customColumn.getFilterRegex()
+                if (filterType.equals("generictext")
+                    || filterType.equals("text")
+                ) {
+                    if (customColumn.getFilterRegex() != null
+                        && !customColumn.getFilterRegex()
                     ) {
                         filterValue += "%";
                         filterValue = translateToRegex(filterValue);
                     }
                     try {
                         Pattern.compile(filterValue);
-                    }
-                    catch(IllegalArgumentException e) {
+                    } catch (IllegalArgumentException e) {
                         return null;
                     }
                 }
 
-                if (filter.getFilterType().getMultiselect() == false) {
+                if (!filter.getFilterType().getMultiselect()) {
                     if (filter.getFilterType().getType().equals("number")) {
                         String[] params = filter.getParameter().split(",");
-                        Matcher matcher = multiselectNumberPattern.matcher(filterValue);
+                        Matcher matcher =
+                            multiselectNumberPattern.matcher(filterValue);
                         if (matcher.find()) {
                             String[] values = matcher.group(0).split(",", -1);
-                            double from = values[0].equals("") ? 0: Double.valueOf(values[0]);
-                            double to = values[1].equals("") ? Double.MAX_VALUE: Double.valueOf(values[1]);
+                            double from =
+                                values[0].equals("")
+                                ? 0 : Double.valueOf(values[0]);
+                            double to =
+                                values[1].equals("")
+                                ? Double.MAX_VALUE : Double.valueOf(values[1]);
                             //Add parameters and values to filter map
                             filterValues.add(params[0], from);
                             filterValues.add(params[1], to);
                         }
-                    }
-                    else {
+                    } else {
                         filterValues.add(currentFilterParam, filterValue);
                     }
-                }
-                else {
+                } else {
                     //If filter is a multiselect date filter
-                    if (filter.getFilterType().getType().equals("listdatetime")) {
-                        //Get parameters as comma separated values, expected to be in milliseconds
+                    if (filter.getFilterType().getType()
+                            .equals("listdatetime")
+                    ) {
+                        // Get parameters as comma separated values,
+                        // expected to be in milliseconds
                         String[] params = filter.getParameter().split(",");
-                        Matcher matcher = multiselectPattern.matcher(filterValue);
+                        Matcher matcher =
+                            multiselectPattern.matcher(filterValue);
                         if (matcher.find()) {
                             String[] values = matcher.group(0).split(",", -1);
                             //Get filter values and convert to seconds
-                            long from = values[0].equals("") ? 0: Long.valueOf(values[0])/1000;
-                            long to = values[1].equals("") ? Integer.MAX_VALUE: Long.valueOf(values[1])/1000;
+                            long from = values[0].equals("")
+                                ? 0 : Long.valueOf(values[0]) / 1000;
+                            long to = values[1].equals("")
+                                ? Integer.MAX_VALUE
+                                : Long.valueOf(values[1]) / 1000;
                             //Add parameters and values to filter map
                             filterValues.add(params[0], String.valueOf(from));
                             filterValues.add(params[1], String.valueOf(to));
                         }
-                    }
-                    else {
+                    } else {
                         //else add all filtervalues to the same parameter name
                         String[] multiselect = filterValue.split(",");
-                        if (filter.getFilterType().getType().equals("listnumber")) {
+                        if (filter.getFilterType().getType()
+                                .equals("listnumber")
+                        ) {
                             for (Object value : multiselect) {
-                                Integer vNumber = Integer.valueOf(value.toString());
-                                filterValues.add(filter.getParameter(), vNumber);
+                                Integer vNumber =
+                                    Integer.valueOf(value.toString());
+                                filterValues.add(
+                                    filter.getParameter(), vNumber);
                             }
-                        }
-                        else {
+                        } else {
                             for (String value : multiselect) {
                                 filterValues.add(filter.getParameter(), value);
                             }
@@ -235,14 +265,17 @@ public class QueryTools
                     }
                     filterSql += currentFilterString;
                 }
-            }
-            else if(customColumn.getFilterActive() != null
-                && customColumn.getFilterActive() == true
+            } else if (customColumn.getFilterActive() != null
+                && customColumn.getFilterActive()
                 && customColumn.getFilterIsNull() != null
-                && customColumn.getFilterIsNull() == true
+                && customColumn.getFilterIsNull()
             ) {
-                String currentFilterString = customColumn.getGridColumn().getFilter().getSql();
-                currentFilterString = currentFilterString.replaceAll("( IN | LIKE | >= | <= | = | BETWEEN | ~ ).*", " IS NULL ");
+                String currentFilterString =
+                    customColumn.getGridColumn().getFilter().getSql();
+                currentFilterString =
+                    currentFilterString.replaceAll(
+                        "( IN | LIKE | >= | <= | = | BETWEEN | ~ ).*",
+                        " IS NULL ");
                 if (customColumn.getFilterNegate()) {
                     currentFilterString = "NOT(" + currentFilterString + ")";
                 }
@@ -256,18 +289,19 @@ public class QueryTools
         }
 
         if (sortIndMap.size() > 0) {
-            NavigableMap <Integer, String> orderedSorts = sortIndMap.tailMap(0, true);
+            NavigableMap <Integer, String> orderedSorts =
+                sortIndMap.tailMap(0, true);
             String unorderedSorts = sortIndMap.get(-1);
             sortSql += "";
             for (String sortString : orderedSorts.values()) {
-                if (sortSql.isEmpty()){
+                if (sortSql.isEmpty()) {
                     sortSql += " ORDER BY " + sortString;
                 } else {
                     sortSql += ", " + sortString;
                 }
             }
-            if (unorderedSorts!= null && !unorderedSorts.isEmpty()) {
-                if (sortSql.isEmpty()){
+            if (unorderedSorts != null && !unorderedSorts.isEmpty()) {
+                if (sortSql.isEmpty()) {
                     sortSql += " ORDER BY " + unorderedSorts;
                 } else {
                     sortSql += ", " + unorderedSorts;
@@ -276,14 +310,14 @@ public class QueryTools
 
         }
 
-        if (!filterSql.isEmpty()){
+        if (!filterSql.isEmpty()) {
             sql += filterSql + " ";
         }
         sql += sortSql;
-        //TODO: Avoid using subqueries to use aliases in the where clause
+        //TODO Avoid using subqueries to use aliases in the where clause
         //Append generic and/or tag filter sql seperated from other filters
         if (subquery) {
-            sql = "SELECT * FROM ( " + sql + " ) AS inner_query " ;
+            sql = "SELECT * FROM ( " + sql + " ) AS inner_query ";
             sql += genericFilterSql;
         }
         sql += " ;";
@@ -309,6 +343,7 @@ public class QueryTools
      * @param sql The query sql string
      * @param params A map containing parameter names and values
      * @param manager Entity manager
+     * @return The query
      */
     public javax.persistence.Query prepareQuery(
         String sql,
@@ -317,7 +352,7 @@ public class QueryTools
     ) {
         javax.persistence.Query query = manager.createNativeQuery(sql);
         Set<String> keys = params.keySet();
-        for(String key : keys) {
+        for (String key : keys) {
             List<Object> values = new ArrayList<>();
             for (Object value: params.get(key)) {
                 values.add(value);
@@ -329,7 +364,7 @@ public class QueryTools
     }
 
     /**
-     * Prepares the query result for the client,
+     * Prepares the query result for the client.
      * @param result A list of query results
      * @param names The columns queried by the client
      * @return List of result maps, containing only the configured columns
@@ -345,7 +380,9 @@ public class QueryTools
         for (Object[] row: result) {
             Map<String, Object> set = new HashMap<String, Object>();
             for (int i = 0; i < names.size(); i++) {
-                set.put(names.get(i).getDataIndex(), row[names.get(i).getPosition() - 1]);
+                set.put(
+                    names.get(i).getDataIndex(),
+                    row[names.get(i).getPosition() - 1]);
             }
             ret.add(set);
         }

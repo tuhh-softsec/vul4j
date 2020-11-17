@@ -23,7 +23,7 @@ public class HasDatenbasis implements Rule {
 
     @Override
     public Violation execute(Object object) {
-        Probe probe = (Probe)object;
+        Probe probe = (Probe) object;
         if (probe.getDatenbasisId() == null) {
             Violation violation = new Violation();
             violation.addError("datenbasis", 631);

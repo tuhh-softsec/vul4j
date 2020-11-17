@@ -7,8 +7,6 @@
  */
 package de.intevation.lada.rest.stamm;
 
-import java.util.List;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -21,16 +19,12 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import de.intevation.lada.model.stammdaten.Filter;
-import de.intevation.lada.model.stammdaten.FilterValue;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
-import de.intevation.lada.util.auth.UserInfo;
-import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
-import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 
 @Path("rest/filter")
@@ -38,11 +32,11 @@ import de.intevation.lada.util.rest.Response;
 public class FilterService {
 
     @Inject
-    @AuthorizationConfig(type=AuthorizationType.HEADER)
+    @AuthorizationConfig(type = AuthorizationType.HEADER)
     private Authorization authorization;
 
     @Inject
-    @RepositoryConfig(type=RepositoryType.RW)
+    @RepositoryConfig(type = RepositoryType.RW)
     private Repository repository;
 
     @PUT
@@ -55,14 +49,17 @@ public class FilterService {
         /*
         UserInfo userInfo = authorization.getInfo(request);
         String value = filter.getValue();
-        Filter f = repository.getByIdPlain(Filter.class, filter.getId(), Strings.STAMM);
+        Filter f =
+            repository.getByIdPlain(
+                Filter.class, filter.getId(), Strings.STAMM);
         QueryBuilder<FilterValue> builder = new QueryBuilder<FilterValue>(
             repository.entityManager(Strings.STAMM),
             FilterValue.class
         );
         builder.and("userId", userInfo.getUserId());
         builder.and("filterId", f.getId());
-        List<FilterValue> values = repository.filterPlain(builder.getQuery(), Strings.STAMM);
+        List<FilterValue> values =
+            repository.filterPlain(builder.getQuery(), Strings.STAMM);
         if (values == null || values.isEmpty()) {
             FilterValue newValue = new FilterValue();
             newValue.setFilterId(f.getId());
@@ -100,7 +97,8 @@ public class FilterService {
         );
         builder.and("userId", userInfo.getUserId());
         builder.and("filterId", f.getId());
-        List<FilterValue> values = repository.filterPlain(builder.getQuery(), Strings.STAMM);
+        List<FilterValue> values =
+            repository.filterPlain(builder.getQuery(), Strings.STAMM);
         if (values == null || values.isEmpty()) {
             return new Response(false, 618, "not existing");
         }
@@ -108,7 +106,8 @@ public class FilterService {
         QueryBuilder<FilterValue> fvBuilder = builder.getEmptyBuilder();
         fvBuilder.and("userId", 0);
         fvBuilder.and("filterId", f.getId());
-        List<FilterValue> basicValues = repository.filterPlain(fvBuilder.getQuery(), Strings.STAMM);
+        List<FilterValue> basicValues =
+            repository.filterPlain(fvBuilder.getQuery(), Strings.STAMM);
         if (basicValues == null || basicValues.isEmpty()) {
             f.setValue(null);
             return new Response(true, 200, f);

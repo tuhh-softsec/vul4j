@@ -15,14 +15,15 @@ import javax.persistence.Basic;
 import javax.persistence.FetchType;
 
 /**
- * Persistent class containing user column definitions, used for executing Queries
+ * Persistent class containing user column definitions, used for
+ * executing Queries.
  */
-public class QueryColumns{
+public class QueryColumns {
 
-    @Basic(fetch=FetchType.EAGER)
+    @Basic(fetch = FetchType.EAGER)
     private List<GridColumnValue> columns;
 
-    public QueryColumns(){}
+    public QueryColumns() { }
 
     public void setColumns(List<GridColumnValue> columns) {
         this.columns = columns;

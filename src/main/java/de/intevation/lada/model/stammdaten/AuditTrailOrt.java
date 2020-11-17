@@ -29,7 +29,7 @@ import de.intevation.lada.util.data.JsonObjectType;
  *
  */
 @Entity
-@Table(name="audit_trail_ort")
+@Table(name = "audit_trail_ort")
 @TypeDefs({ @TypeDef(name = "JsonObject", typeClass = JsonObjectType.class) })
 public class AuditTrailOrt implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -39,24 +39,24 @@ public class AuditTrailOrt implements Serializable {
 
     private String action;
 
-    @Column(name="tstamp")
+    @Column(name = "tstamp")
     private Timestamp tstamp;
 
-    @Column(name="changed_fields")
-    @Type(type="JsonObject")
+    @Column(name = "changed_fields")
+    @Type(type = "JsonObject")
     private JsonNode changedFields;
 
-    @Column(name="ort_id")
+    @Column(name = "ort_id")
     private String ortId;
 
-    @Column(name="object_id")
+    @Column(name = "object_id")
     private Integer objectId;
 
-    @Column(name="row_data")
-    @Type(type="JsonObject")
+    @Column(name = "row_data")
+    @Type(type = "JsonObject")
     private JsonNode rowData;
 
-    @Column(name="table_name")
+    @Column(name = "table_name")
     private String tableName;
 
     public AuditTrailOrt() {

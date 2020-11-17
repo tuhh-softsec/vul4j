@@ -76,11 +76,11 @@ public class StatusKombiService {
      * The data repository granting read access.
      */
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type = RepositoryType.RO)
     private Repository repository;
 
     @Inject
-    @AuthorizationConfig(type=AuthorizationType.HEADER)
+    @AuthorizationConfig(type = AuthorizationType.HEADER)
     private Authorization authorization;
 
     /**
@@ -157,7 +157,8 @@ public class StatusKombiService {
         List<Messung> messungen = repository.filterPlain(
             messungQuery.getQuery(), Strings.LAND);
 
-        Map<Integer, StatusErreichbar> erreichbare = new HashMap<Integer,StatusErreichbar>();
+        Map<Integer, StatusErreichbar> erreichbare =
+            new HashMap<Integer, StatusErreichbar>();
         for (Messung messung : messungen) {
             StatusProtokoll status = repository.getByIdPlain(
                 StatusProtokoll.class, messung.getStatus(), Strings.LAND);
@@ -171,7 +172,7 @@ public class StatusKombiService {
             errFilter.andIn("stufeId", user.getFunktionen());
             errFilter.and("curStufe", kombi.getStatusStufe().getId());
             errFilter.and("curWert", kombi.getStatusWert().getId());
-            List<StatusErreichbar> err= repository.filterPlain(
+            List<StatusErreichbar> err = repository.filterPlain(
                     errFilter.getQuery(), Strings.STAMM);
             for (StatusErreichbar e : err) {
                 erreichbare.put(e.getId(), e);
@@ -186,7 +187,9 @@ public class StatusKombiService {
             new QueryBuilder<StatusKombi>(
                 repository.entityManager(Strings.STAMM),
                 StatusKombi.class);
-        for (Entry<Integer, StatusErreichbar> erreichbar : erreichbare.entrySet()) {
+        for (Entry<Integer, StatusErreichbar> erreichbar
+            : erreichbare.entrySet()
+        ) {
                 QueryBuilder<StatusKombi> tmp = kombiFilter.getEmptyBuilder();
                 tmp.and("statusWert", erreichbar.getValue().getWertId())
                     .and("statusStufe", erreichbar.getValue().getStufeId());

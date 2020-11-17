@@ -21,19 +21,20 @@ import de.intevation.lada.util.auth.UserInfo;
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-public interface Exporter
-{
+public interface Exporter {
     /**
      * Export proben and referenced messung records.
      *
-     * Note: This method may not be implemented by the implementing class. The default implementation returns null.
+     * Note: This method may not be implemented by the implementing class.
+     * The default implementation returns null.
+     *
      * @param proben Proben to export
      * @param messungen Messungen to export
      * @param encoding Encoding to use
      * @param userInfo Requesting user info
      * @return Exported data as InputStream or null if not implemented
      */
-    default public InputStream exportProben(
+    default InputStream exportProben(
         List<Integer> proben,
         List<Integer> messungen,
         String encoding,
@@ -44,15 +45,23 @@ public interface Exporter
     /**
      * Export a query result.
      *
-     * Note: This method may not be implemented by the implementing class. The default implementation returns null.
-     * @param result Result to export as list of maps. Every list item represents a row,
+     * Note: This method may not be implemented by the implementing class.
+     * The default implementation returns null.
+     * @param result Result to export as list of maps. Every list item
+     *               represents a row,
      *               while every map key represents a column
      * @param encoding Encoding to use
      * @param options Export options. Depend on the actual output format
-     * @param columnsToInclude List of column names to include in the export. If not set, all columns will be exported
+     * @param columnsToInclude List of column names to include in the export.
+     *                         If not set, all columns will be exported
      * @return Export result as input stream or null if not implemented
      */
-    default public InputStream export(List<Map<String, Object>> result, String encoding, JsonObject options, ArrayList<String> columnsToInclude) {
+    default InputStream export(
+        List<Map<String, Object>> result,
+        String encoding,
+        JsonObject options,
+        ArrayList<String> columnsToInclude
+    ) {
         return null;
     }
 }

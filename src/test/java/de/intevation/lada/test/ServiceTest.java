@@ -41,21 +41,44 @@ import de.intevation.lada.BaseTest;
 import de.intevation.lada.Protocol;
 import de.intevation.lada.test.land.ProbeTest;
 
+/**
+ * Class for Lada service tests.
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 public class ServiceTest {
 
     private static final String LAT_KEY = "latitude";
     private static final String LONG_KEY = "longitude";
 
+    /**
+     * Test protocol for output of results.
+     */
     protected List<Protocol> protocol;
 
+    /**
+     * Timestamp attributes.
+     */
     protected List<String> timestampAttributes = new ArrayList<String>();
+
+    /**
+     * Geometry attributes.
+     */
     protected List<String> geomPointAttributes = new ArrayList<String>();
 
+    /**
+     * Base url of the server.
+     */
     protected URL baseUrl;
 
-    public void init(URL baseUrl, List<Protocol> protocol) {
-        this.baseUrl = baseUrl;
-        this.protocol = protocol;
+    /**
+     * Initialize the tests.
+     * @param bUrl The server url used for the request.
+     * @param p The resulting test protocol
+     */
+    public void init(URL bUrl, List<Protocol> p) {
+        this.baseUrl = bUrl;
+        this.protocol = p;
     }
 
     /**
@@ -65,6 +88,11 @@ public class ServiceTest {
         return protocol;
     }
 
+    /**
+     * Load JSON resource file.
+     * @param resource the resource location
+     * @return Object containing the resource.
+     */
     protected JsonObject readJsonResource(String resource) {
         InputStream stream =
             ProbeTest.class.getResourceAsStream(resource);
@@ -78,19 +106,23 @@ public class ServiceTest {
         return content;
     }
 
+    /**
+     * Convert geometries and timestamps.
+     * @param object The current version.
+     * @return Builder with the new version.
+     */
     protected JsonObjectBuilder convertObject(JsonObject object) {
         JsonObjectBuilder builder = Json.createObjectBuilder();
         for (Entry<String, JsonValue> entry : object.entrySet()) {
             String key = WordUtils.capitalize(
-                entry.getKey(), new char[]{'_'}).replaceAll("_","");
+                entry.getKey(), new char[]{'_'}).replaceAll("_", "");
             key = key.replaceFirst(
                 key.substring(0, 1), key.substring(0, 1).toLowerCase());
             if (timestampAttributes.contains(key)) {
                 Timestamp timestamp = Timestamp.valueOf(
                     entry.getValue().toString().replaceAll("\"", ""));
                 builder.add(key, timestamp.getTime());
-            }
-            else if (geomPointAttributes.contains(key)) {
+            } else if (geomPointAttributes.contains(key)) {
                 // Convert EWKT to latitude and longitude
                 String wkt = entry.getValue().toString().split(";")[1];
                 try {
@@ -99,7 +131,7 @@ public class ServiceTest {
                         throw new IllegalArgumentException(
                             "WKT does not represent a point");
                     }
-                    Point point = (Point)geom;
+                    Point point = (Point) geom;
                     builder.add(LONG_KEY, point.getX());
                     builder.add(LAT_KEY, point.getY());
                 } catch (ParseException | IllegalArgumentException e) {
@@ -110,14 +142,19 @@ public class ServiceTest {
                         + wkt + "':\n"
                         + e.getMessage());
                 }
-            }
-            else {
+            } else {
                 builder.add(key, entry.getValue());
             }
         }
         return builder;
     }
 
+    /**
+     * Base for all the get all requests.
+     * @param name of the entity to request
+     * @param parameter the url parameter used in the request.
+     * @return the json object returned by the serive.
+     */
     public JsonObject getAll(String name, String parameter) {
         System.out.print(".");
         Protocol prot = new Protocol();
@@ -130,11 +167,11 @@ public class ServiceTest {
         WebTarget target = client.target(baseUrl + parameter);
         /* Request all objects*/
         Response response = target.request()
-            .header("X-SHIB-user", BaseTest.TEST_USER)
-            .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+            .header("X-SHIB-user", BaseTest.testUser)
+            .header("X-SHIB-roles", BaseTest.testRoles)
             .get();
         String entity = response.readEntity(String.class);
-        try{
+        try {
             /* Try to parse the response*/
             JsonReader reader = Json.createReader(new StringReader(entity));
             JsonObject content = reader.readObject();
@@ -148,8 +185,7 @@ public class ServiceTest {
             prot.addInfo("objects", content.getJsonArray("data").size());
             prot.setPassed(true);
             return content;
-        }
-        catch(JsonException je) {
+        } catch (JsonException je) {
             prot.addInfo("exception", je.getMessage());
             Assert.fail("Exception while parsing '" + entity + "':\n"
                 + je.getMessage());
@@ -158,7 +194,10 @@ public class ServiceTest {
     }
     /**
      * Test the GET Service by requesting a single object by id.
-     *
+     * @param name the name of the entity to request.
+     * @param parameter the parameters used in the request.
+     * @param expected the expected json result.
+     * @return The resulting json object.
      */
     public JsonObject getById(
         String name,
@@ -177,8 +216,8 @@ public class ServiceTest {
         prot.addInfo("parameter", parameter);
         /* Request a object by id*/
         Response response = target.request()
-            .header("X-SHIB-user", BaseTest.TEST_USER)
-            .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+            .header("X-SHIB-user", BaseTest.testUser)
+            .header("X-SHIB-roles", BaseTest.testRoles)
             .get();
         String entity = response.readEntity(String.class);
         try {
@@ -195,19 +234,20 @@ public class ServiceTest {
             Assert.assertFalse(content.getJsonObject("data").isEmpty());
             JsonObject object = content.getJsonObject("data");
             for (Entry<String, JsonValue> entry : expected.entrySet()) {
-                if (entry.getKey().equals("parentModified") ||
-                    entry.getKey().equals("treeModified") ||
-                    entry.getKey().equals("letzteAenderung")) {
+                if (entry.getKey().equals("parentModified")
+                    || entry.getKey().equals("treeModified")
+                    || entry.getKey().equals("letzteAenderung")) {
                     continue;
                 }
-                Assert.assertEquals(entry.getValue(), object.get(entry.getKey()));
+                Assert.assertEquals(
+                    entry.getValue(),
+                    object.get(entry.getKey()));
             }
             prot.addInfo("object", "equals");
             prot.setPassed(true);
             return content;
-        }
-        catch(JsonException je) {
-            prot.addInfo("exception",je.getMessage());
+        } catch (JsonException je) {
+            prot.addInfo("exception", je.getMessage());
             Assert.fail("Exception while parsing '" + entity + "':\n"
                 + je.getMessage());
         }
@@ -216,7 +256,9 @@ public class ServiceTest {
 
     /**
      * Test the GET service using filters.
-     *
+     * @param name the name of the requested entity.
+     * @param parameter the parameters used in the request.
+     * @return the resulting json object.
      */
     public JsonObject filter(String name, String parameter) {
         System.out.print(".");
@@ -232,8 +274,8 @@ public class ServiceTest {
         prot.addInfo("filter", parameter);
         /* Request the objects using the filter*/
         Response response = target.request()
-            .header("X-SHIB-user", BaseTest.TEST_USER)
-            .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+            .header("X-SHIB-user", BaseTest.testUser)
+            .header("X-SHIB-roles", BaseTest.testRoles)
             .get();
         String entity = response.readEntity(String.class);
         try {
@@ -250,8 +292,7 @@ public class ServiceTest {
             prot.addInfo("objects", content.getJsonArray("data").size());
             prot.setPassed(true);
             return content;
-        }
-        catch(JsonException je) {
+        } catch (JsonException je) {
             prot.addInfo("exception", je.getMessage());
             Assert.fail("Exception while parsing '" + entity + "':\n"
                 + je.getMessage());
@@ -261,6 +302,10 @@ public class ServiceTest {
 
     /**
      * Test the CREATE Service.
+     * @param name the name of the entity to request.
+     * @param parameter the parameters used in the request.
+     * @param create the object to create, embedded in POST body.
+     * @return The resulting json object.
      *
      */
     public JsonObject create(String name, String parameter, JsonObject create) {
@@ -275,8 +320,8 @@ public class ServiceTest {
         WebTarget target = client.target(baseUrl + parameter);
         /* Send a post request containing a new object*/
         Response response = target.request()
-            .header("X-SHIB-user", BaseTest.TEST_USER)
-            .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+            .header("X-SHIB-user", BaseTest.testUser)
+            .header("X-SHIB-roles", BaseTest.testRoles)
             .post(Entity.entity(create.toString(), MediaType.APPLICATION_JSON));
         String entity = response.readEntity(String.class);
         try {
@@ -292,8 +337,7 @@ public class ServiceTest {
             prot.addInfo("message", content.getString("message"));
             prot.setPassed(true);
             return content;
-        }
-        catch(JsonException je) {
+        } catch (JsonException je) {
             prot.addInfo("exception", je.getMessage());
             Assert.fail("Exception while parsing '" + entity + "':\n"
                 + je.getMessage());
@@ -303,7 +347,12 @@ public class ServiceTest {
 
     /**
      * Test an update service.
-     *
+     * @param name the name of the entity to request.
+     * @param parameter the parameters used in the request.
+     * @param updateAttribute the name of the attribute to update.
+     * @param oldValue the value to replace.
+     * @param newValue the new value to set.
+     * @return The resulting json object.
      */
     public JsonObject update(
         String name,
@@ -324,8 +373,8 @@ public class ServiceTest {
             WebTarget target = client.target(baseUrl + parameter);
             /* Request object corresponding to id in URL */
             Response response = target.request()
-                .header("X-SHIB-user", BaseTest.TEST_USER)
-                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+                .header("X-SHIB-user", BaseTest.testUser)
+                .header("X-SHIB-roles", BaseTest.testRoles)
                 .get();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
@@ -342,8 +391,8 @@ public class ServiceTest {
             /* Send modified object via put request*/
             WebTarget putTarget = client.target(baseUrl + parameter);
             Response updated = putTarget.request()
-                .header("X-SHIB-user", BaseTest.TEST_USER)
-                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+                .header("X-SHIB-user", BaseTest.testUser)
+                .header("X-SHIB-roles", BaseTest.testRoles)
                 .put(Entity.entity(updatedEntity, MediaType.APPLICATION_JSON));
 
             /* Try to parse the response*/
@@ -361,8 +410,7 @@ public class ServiceTest {
                 updatedObject.getJsonObject("data").getString(updateAttribute));
             prot.setPassed(true);
             return updatedObject;
-        }
-        catch(JsonException je) {
+        } catch (JsonException je) {
             prot.addInfo("exception", je.getMessage());
             Assert.fail(je.getMessage());
         }
@@ -371,7 +419,9 @@ public class ServiceTest {
 
     /**
      * Test the DELETE Service.
-     *
+     * @param name the name of the entity to delete.
+     * @param parameter the parameters used in the request.
+     * @return The resulting json object.
      */
     public JsonObject delete(String name, String parameter) {
         System.out.print(".");
@@ -387,8 +437,8 @@ public class ServiceTest {
         prot.addInfo("parameter", parameter);
         /* Delete object with ID given in URL */
         Response response = target.request()
-            .header("X-SHIB-user", BaseTest.TEST_USER)
-            .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+            .header("X-SHIB-user", BaseTest.testUser)
+            .header("X-SHIB-roles", BaseTest.testRoles)
             .delete();
         String entity = response.readEntity(String.class);
         try {
@@ -403,8 +453,7 @@ public class ServiceTest {
             prot.addInfo("message", content.getString("message"));
             prot.setPassed(true);
             return content;
-        }
-        catch(JsonException je) {
+        } catch (JsonException je) {
             prot.addInfo("exception", je.getMessage());
             Assert.fail("Exception while parsing '" + entity + "':\n"
                 + je.getMessage());

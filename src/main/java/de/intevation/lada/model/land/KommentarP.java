@@ -24,20 +24,20 @@ import javax.persistence.Transient;
  *
  */
 @Entity
-@Table(name="kommentar_p", schema="land")
+@Table(name = "kommentar_p", schema = "land")
 public class KommentarP implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private Timestamp datum;
 
-    @Column(name="mst_id")
+    @Column(name = "mst_id")
     private String mstId;
 
-    @Column(name="probe_id")
+    @Column(name = "probe_id")
     private Integer probeId;
 
     private String text;

@@ -18,7 +18,6 @@ import org.hibernate.annotations.Type;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.locationtech.jts.geom.Point;
 
-
 /**
  * The persistent class for the verwaltungseinheit database table.
  *
@@ -34,16 +33,16 @@ public class Verwaltungseinheit implements Serializable {
 
     private String bundesland;
 
-    @Column(name="is_bundesland")
+    @Column(name = "is_bundesland")
     private Boolean isBundesland;
 
-    @Column(name="is_gemeinde")
+    @Column(name = "is_gemeinde")
     private Boolean isGemeinde;
 
-    @Column(name="is_landkreis")
+    @Column(name = "is_landkreis")
     private Boolean isLandkreis;
 
-    @Column(name="is_regbezirk")
+    @Column(name = "is_regbezirk")
     private Boolean isRegbezirk;
 
     private String kreis;
@@ -56,7 +55,7 @@ public class Verwaltungseinheit implements Serializable {
 
 
     @Type(type = "jts_geometry")
-    @Column(columnDefinition="geometry(Point, 4326)")
+    @Column(columnDefinition = "geometry(Point, 4326)")
     private Point mittelpunkt;
 
     public Verwaltungseinheit() {

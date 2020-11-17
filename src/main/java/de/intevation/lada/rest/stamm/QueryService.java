@@ -83,21 +83,22 @@ import de.intevation.lada.util.rest.Response;
 public class QueryService {
 
     @Inject
-    @RepositoryConfig(type=RepositoryType.RW)
+    @RepositoryConfig(type = RepositoryType.RW)
     private Repository repository;
 
     @Inject
-    @AuthorizationConfig(type=AuthorizationType.HEADER)
+    @AuthorizationConfig(type = AuthorizationType.HEADER)
     private Authorization authorization;
 
     @Inject
     Logger logger;
 
-    final Integer DEFAULT_USER_ID = 0;
+    static final Integer DEFAULT_USER_ID = 0;
 
     /**
      * Request all queries (query_user table).
-     * @return All queries owned by the user, connected to the user's messstelle or owned by the default user.
+     * @return All queries owned by the user, connected to the user's
+     *         messstelle or owned by the default user.
      */
     @GET
     @Path("/")
@@ -108,31 +109,41 @@ public class QueryService {
         UserInfo userInfo = authorization.getInfo(request);
         EntityManager em = repository.entityManager(Strings.STAMM);
         CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<QueryUser> criteriaQuery = builder.createQuery(QueryUser.class);
+        CriteriaQuery<QueryUser> criteriaQuery =
+            builder.createQuery(QueryUser.class);
         Root<QueryUser> root = criteriaQuery.from(QueryUser.class);
-        Join<MessStelle, QueryUser> mess = root.join("messStelles", javax.persistence.criteria.JoinType.LEFT);
-        Predicate filter = builder.equal(root.get("userId"), userInfo.getUserId());
+        Join<MessStelle, QueryUser> mess =
+            root.join("messStelles", javax.persistence.criteria.JoinType.LEFT);
+        Predicate filter =
+            builder.equal(root.get("userId"), userInfo.getUserId());
         filter = builder.or(filter, root.get("userId").in(DEFAULT_USER_ID));
-        if (userInfo.getMessstellen() != null &&
-            !userInfo.getMessstellen().isEmpty()
+        if (userInfo.getMessstellen() != null
+            && !userInfo.getMessstellen().isEmpty()
         ) {
-            filter = builder.or(filter, mess.get("messStelle").in(userInfo.getMessstellen()));
+            filter = builder.or(
+                filter, mess.get("messStelle").in(userInfo.getMessstellen()));
         }
-        if (userInfo.getLaborMessstellen() != null &&
-            !userInfo.getLaborMessstellen().isEmpty()
+        if (userInfo.getLaborMessstellen() != null
+            && !userInfo.getLaborMessstellen().isEmpty()
         ) {
-            filter = builder.or(filter, mess.get("messStelle").in(userInfo.getLaborMessstellen()));
+            filter = builder.or(
+                filter,
+                mess.get("messStelle").in(userInfo.getLaborMessstellen()));
         }
         criteriaQuery.where(filter);
 
-        List<QueryUser> queries = repository.filterPlain(criteriaQuery, Strings.STAMM);
+        List<QueryUser> queries =
+            repository.filterPlain(criteriaQuery, Strings.STAMM);
         for (QueryUser query: queries) {
-            if (query.getMessStelles() != null && query.getMessStelles().size() > 0) {
+            if (query.getMessStelles() != null
+                && query.getMessStelles().size() > 0
+            ) {
                 List<String> mstIds = new ArrayList<String>();
                 for (QueryMessstelle mst: query.getMessStelles()) {
                     mstIds.add(mst.getMessStelle());
                 }
-                query.setMessStellesIds(mstIds.toArray(new String[mstIds.size()]));
+                query.setMessStellesIds(
+                    mstIds.toArray(new String[mstIds.size()]));
             }
         }
         return new Response(true, 200, queries);
@@ -150,13 +161,13 @@ public class QueryService {
         QueryUser query
     ) {
         UserInfo userInfo = authorization.getInfo(request);
-        if (query.getUserId() != null &&
-            !query.getUserId().equals(userInfo.getUserId())) {
+        if (query.getUserId() != null
+            && !query.getUserId().equals(userInfo.getUserId())
+        ) {
             return new Response(false, 699, null);
-        }
-        else {
+        } else {
             query.setUserId(userInfo.getUserId());
-            for (String m : query.getMessStellesIds()){
+            for (String m : query.getMessStellesIds()) {
                 QueryMessstelle qms = new QueryMessstelle();
                 qms.setMessStelle(m);
                 qms.setQueryUser(query);
@@ -177,8 +188,9 @@ public class QueryService {
         QueryUser query
     ) {
         UserInfo userInfo = authorization.getInfo(request);
-        if (query.getUserId() != null &&
-            !query.getUserId().equals(userInfo.getUserId())) {
+        if (query.getUserId() != null
+            && !query.getUserId().equals(userInfo.getUserId())
+        ) {
             return new Response(false, 699, null);
         }
 
@@ -187,7 +199,8 @@ public class QueryService {
                 repository.entityManager(Strings.STAMM),
                 QueryMessstelle.class);
         builder.and("queryUser", query.getId());
-        List<QueryMessstelle> qms = repository.filterPlain(builder.getQuery(), Strings.STAMM);
+        List<QueryMessstelle> qms =
+            repository.filterPlain(builder.getQuery(), Strings.STAMM);
         List<QueryMessstelle> delete = new ArrayList<>();
         List<String> create = new ArrayList<>();
         for (String mst : query.getMessStellesIds()) {
@@ -212,11 +225,14 @@ public class QueryService {
                 delete.add(qm);
             }
         }
-        List<QueryMessstelle> dbMesstelles = repository.getByIdPlain(QueryUser.class, query.getId(), Strings.STAMM).getMessStelles();
+        List<QueryMessstelle> dbMesstelles =
+            repository.getByIdPlain(
+                QueryUser.class, query.getId(), Strings.STAMM).getMessStelles();
         query.setMessStelles(dbMesstelles);
 
         for (QueryMessstelle qm : delete) {
-            Iterator<QueryMessstelle> qmIter = query.getMessStelles().iterator();
+            Iterator<QueryMessstelle> qmIter =
+                query.getMessStelles().iterator();
             while (qmIter.hasNext()) {
                 QueryMessstelle qmi = qmIter.next();
                 if (qmi.getId().equals(qm.getId())) {

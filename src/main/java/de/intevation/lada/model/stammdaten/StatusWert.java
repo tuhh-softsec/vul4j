@@ -19,7 +19,7 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name="status_wert")
+@Table(name = "status_wert")
 public class StatusWert implements Serializable {
     private static final long serialVersionUID = 1L;
 

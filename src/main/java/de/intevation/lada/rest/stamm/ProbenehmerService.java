@@ -68,11 +68,11 @@ public class ProbenehmerService {
      * The data repository granting read access.
      */
     @Inject
-    @RepositoryConfig(type=RepositoryType.RW)
+    @RepositoryConfig(type = RepositoryType.RW)
     private Repository repository;
 
     @Inject
-    @AuthorizationConfig(type=AuthorizationType.HEADER)
+    @AuthorizationConfig(type = AuthorizationType.HEADER)
     private Authorization authorization;
 
     /**
@@ -89,7 +89,8 @@ public class ProbenehmerService {
         @Context HttpServletRequest request,
         @Context UriInfo info
     ) {
-        List<Probenehmer> nehmer = repository.getAllPlain(Probenehmer.class, Strings.STAMM);
+        List<Probenehmer> nehmer =
+            repository.getAllPlain(Probenehmer.class, Strings.STAMM);
         for (Probenehmer p : nehmer) {
             p.setReadonly(
                 !authorization.isAuthorized(
@@ -156,7 +157,7 @@ public class ProbenehmerService {
         builder.and("prnId", probenehmer.getPrnId());
         builder.and("netzbetreiberId", probenehmer.getNetzbetreiberId());
 
-        List<Probenehmer> nehmer=
+        List<Probenehmer> nehmer =
             repository.filterPlain(builder.getQuery(), Strings.STAMM);
         if (nehmer.isEmpty()) {
             return repository.create(probenehmer, Strings.STAMM);
@@ -193,8 +194,8 @@ public class ProbenehmerService {
     ) {
         Probenehmer probenehmer = repository.getByIdPlain(
             Probenehmer.class, Integer.valueOf(id), Strings.STAMM);
-        if (probenehmer == null ||
-            !authorization.isAuthorized(
+        if (probenehmer == null
+            || !authorization.isAuthorized(
                 request,
                 probenehmer,
                 RequestMethod.DELETE,

@@ -20,7 +20,7 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name="messgroessen_gruppe")
+@Table(name = "messgroessen_gruppe")
 public class MessgroessenGruppe implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -29,7 +29,7 @@ public class MessgroessenGruppe implements Serializable {
 
     private String bezeichnung;
 
-    @Column(name="ist_leitnuklidgruppe")
+    @Column(name = "ist_leitnuklidgruppe")
     private String istLeitnuklidgruppe;
 
     public MessgroessenGruppe() {

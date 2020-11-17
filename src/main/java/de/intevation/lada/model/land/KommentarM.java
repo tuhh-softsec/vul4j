@@ -24,20 +24,20 @@ import javax.persistence.Transient;
  *
  */
 @Entity
-@Table(name="kommentar_m", schema="land")
+@Table(name = "kommentar_m", schema = "land")
 public class KommentarM implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private Timestamp datum;
 
-    @Column(name="messungs_id")
+    @Column(name = "messungs_id")
     private Integer messungsId;
 
-    @Column(name="mst_id")
+    @Column(name = "mst_id")
     private String mstId;
 
     private String text;
@@ -103,20 +103,20 @@ public class KommentarM implements Serializable {
      */
     public void setOwner(boolean owner) {
         this.owner = owner;
-	}
+    }
 
-	/**
-	 * @return the readonly
-	 */
-	public boolean isReadonly() {
-		return readonly;
-	}
+    /**
+     * @return the readonly
+     */
+    public boolean isReadonly() {
+        return readonly;
+    }
 
-	/**
-	 * @param readonly the readonly to set
-	 */
-	public void setReadonly(boolean readonly) {
-		this.readonly = readonly;
-	}
+    /**
+     * @param readonly the readonly to set
+     */
+    public void setReadonly(boolean readonly) {
+        this.readonly = readonly;
+    }
 
 }

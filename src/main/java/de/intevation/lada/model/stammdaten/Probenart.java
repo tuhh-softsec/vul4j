@@ -29,7 +29,7 @@ public class Probenart implements Serializable {
 
     private String probenart;
 
-    @Column(name="probenart_eudf_id")
+    @Column(name = "probenart_eudf_id")
     private String probenartEudfId;
 
     public Probenart() {

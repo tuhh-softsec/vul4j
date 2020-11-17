@@ -38,88 +38,90 @@ import de.intevation.lada.util.data.Strings;
 public abstract class QueryExportJob extends ExportJob {
 
     /**
-     * True if subdata shall be fetched from the database and exported
+     * True if subdata shall be fetched from the database and exported.
      */
     protected boolean exportSubdata;
 
     /**
-     * Sub data column names to export
+     * Sub data column names to export.
      */
     protected List<String> subDataColumns;
 
     /**
-     * Column containing the id
+     * Column containing the id.
      */
     protected String idColumn;
 
     /**
-     * Identifier type
+     * Identifier type.
      */
     protected String idType;
 
     /**
-     * Ids of record that shall be exported
+     * Ids of record that shall be exported.
      */
     private Integer[] idsToExport;
 
     /**
-     * Query result
+     * Query result.
      */
     protected List<GridColumnValue> columns;
 
     /**
-     * Columns to use for export
+     * Columns to use for export.
      */
     protected List<String> columnsToExport;
 
     /**
-     * Map of data types and the according sub data types
+     * Map of data types and the according sub data types.
      */
     private Map<String, String> mapPrimaryToSubDataTypes;
 
     /**
-     * Timezone to convert timestamps to
+     * Timezone to convert timestamps to.
      */
     protected String timezone;
 
     /**
-     * Map id result types to filter sql statements for the id columns
+     * Map id result types to filter sql statements for the id columns.
      */
-    private Map<String, String> dataTypeToIdFilterQuery = new HashMap<String, String>() {
-        private static final long serialVersionUID = 1L;
-        {
-            put("probeId", "probe.id");
-            put("messungId", "messung.id");
-            put("mpId", "messprogramm.id");
-            put("ortId", "ort.id");
-            put("dsatzerz", "datensatz_erzeuger.id");
-            put("mprkat", "messprogramm_kategorie.id");
-            put("probenehmer", "probenehmer.id");
-    }};;
+    private Map<String, String> dataTypeToIdFilterQuery =
+        new HashMap<String, String>() {
+            private static final long serialVersionUID = 1L;
+            {
+                put("probeId", "probe.id");
+                put("messungId", "messung.id");
+                put("mpId", "messprogramm.id");
+                put("ortId", "ort.id");
+                put("dsatzerz", "datensatz_erzeuger.id");
+                put("mprkat", "messprogramm_kategorie.id");
+                put("probenehmer", "probenehmer.id");
+            }
+        };;
 
     /**
-     * Query id
+     * Query id.
      */
     private Integer qId;
 
     /**
-     * Query tools used to load query data
+     * Query tools used to load query data.
      */
     private QueryTools queryTools;
 
     /**
-     * Primary data query result
+     * Primary data query result.
      */
     protected List<Map<String, Object>> primaryData;
 
     /**
-     * Constructor
+     * Constructor.
      * @param jobId Job id
      * @param queryTools Query tools instance
      */
-    public QueryExportJob (String jobId, QueryTools queryTools) {
+    public QueryExportJob(String jobId, QueryTools qTools) {
         super(jobId);
-        this.queryTools = queryTools;
+        this.queryTools = qTools;
         columns = new ArrayList <GridColumnValue>();
         columnsToExport = new ArrayList<String>();
 
@@ -131,23 +133,27 @@ public abstract class QueryExportJob extends ExportJob {
     }
 
     /**
-     * Creates a id list filter for the given dataIndex
+     * Creates a id list filter for the given dataIndex.
      * @param dataType ID column data type, e.g. mpId
      * @return Filter object
      */
     private Filter createIdListFilter(String dataType) {
 
         //Get Filter type from db
-        QueryBuilder<FilterType> builder = new QueryBuilder<FilterType>(repository.entityManager(Strings.STAMM), FilterType.class);
+        QueryBuilder<FilterType> builder =
+            new QueryBuilder<FilterType>(
+                repository.entityManager(Strings.STAMM), FilterType.class);
         builder.and("type", "listnumber");
-        FilterType filterType = repository.filterPlain(builder.getQuery(), Strings.STAMM).get(0);
+        FilterType filterType =
+            repository.filterPlain(builder.getQuery(), Strings.STAMM).get(0);
 
         //Create filter object
         String parameter = dataType + "s";
         Filter filter = new Filter();
         filter.setFilterType(filterType);
         filter.setParameter(parameter);
-        filter.setSql(String.format("%s in ( :%s )", dataTypeToIdFilterQuery.get(dataType), parameter));
+        filter.setSql(String.format(
+            "%s in ( :%s )", dataTypeToIdFilterQuery.get(dataType), parameter));
         return filter;
     }
 
@@ -163,16 +169,21 @@ public abstract class QueryExportJob extends ExportJob {
         String methodName = "";
         Method method;
         try {
-            capitalizedName = fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+            capitalizedName =
+                fieldName.substring(0, 1).toUpperCase()
+                + fieldName.substring(1);
             methodName = "get" + capitalizedName;
             method = object.getClass().getMethod(methodName);
             return method.invoke(object);
         } catch (NoSuchMethodException nsme) {
-            logger.error(String.format("Can not get field %s(%s) for class %s", fieldName, methodName, object.getClass().toString()));
+            logger.error(String.format(
+                "Can not get field %s(%s) for class %s",
+                fieldName, methodName, object.getClass().toString()));
             return null;
-        }
-        catch (IllegalAccessException | InvocationTargetException exc) {
-            logger.error(String.format("Can not call %s for class %s", methodName, object.getClass().toString()));
+        } catch (IllegalAccessException | InvocationTargetException exc) {
+            logger.error(String.format(
+                "Can not call %s for class %s",
+                methodName, object.getClass().toString()));
             return null;
         }
     }
@@ -182,10 +193,13 @@ public abstract class QueryExportJob extends ExportJob {
      * @throws QueryExportException Thrown if loading the query data fails
      * @return Query result as list
      */
-    protected List<Map<String, Object>> getQueryResult() throws QueryExportException{
+    protected List<Map<String, Object>> getQueryResult()
+    throws QueryExportException {
         try {
-            List<Map<String, Object>> result = queryTools.getResultForQuery(columns, qId);
-            logger.debug(String.format("Fetched %d primary records", result.size()));
+            List<Map<String, Object>> result =
+                queryTools.getResultForQuery(columns, qId);
+            logger.debug(String.format(
+                "Fetched %d primary records", result.size()));
             return result;
         } catch (Exception e) {
             logger.error("Failed loading query result");
@@ -195,11 +209,11 @@ public abstract class QueryExportJob extends ExportJob {
     }
 
     /**
-     * Get the sub data for the query
-     * @throw QueryExportException Thrown if fetching subdata fails
+     * Get the sub data for the query.
+     * @throws QueryExportException Thrown if fetching subdata fails
      * @return Query result as list
      */
-    protected List<?> getSubData() throws QueryExportException{
+    protected List<?> getSubData() throws QueryExportException {
         if (primaryData == null) {
             return null;
         }
@@ -212,7 +226,8 @@ public abstract class QueryExportJob extends ExportJob {
         //Get subdata
         String subDataType = mapPrimaryToSubDataTypes.get(idType);
         if (subDataType == null) {
-            throw new QueryExportException(String.format("Unknown id type: %s", idType));
+            throw new QueryExportException(
+                String.format("Unknown id type: %s", idType));
         }
         switch (subDataType) {
             case "messung": return getMessungSubData(primaryDataIds);
@@ -252,15 +267,19 @@ public abstract class QueryExportJob extends ExportJob {
      * @return Status as string
      */
     protected String getStatusString(Messung messung) {
-        StatusProtokoll protokoll = repository.getByIdPlain(StatusProtokoll.class, messung.getStatus(), Strings.LAND);
-        StatusKombi kombi = repository.getByIdPlain(StatusKombi.class, protokoll.getStatusKombi(), Strings.STAMM);
+        StatusProtokoll protokoll =
+            repository.getByIdPlain(
+                StatusProtokoll.class, messung.getStatus(), Strings.LAND);
+        StatusKombi kombi =
+            repository.getByIdPlain(
+                StatusKombi.class, protokoll.getStatusKombi(), Strings.STAMM);
         StatusStufe stufe = kombi.getStatusStufe();
         StatusWert wert = kombi.getStatusWert();
         return String.format("%s - %s", stufe.getStufe(), wert.getWert());
     }
 
     /**
-     * Get the number of messwerte records referencing the given messung
+     * Get the number of messwerte records referencing the given messung.
      * @param messung Messung to get messwert count for
      * @return Number of messwert records
      */
@@ -282,17 +301,19 @@ public abstract class QueryExportJob extends ExportJob {
     }
 
     /**
-     * Merge sub data into the primary query result
+     * Merge sub data into the primary query result.
      * @param subData Data to merge into result
      * @throws QueryExportException Thrown if merging fails
      * @return Merged data as list
      */
-    protected abstract List<Map<String, Object>> mergeSubData(List<?> subData) throws QueryExportException;
+    protected abstract List<Map<String, Object>> mergeSubData(
+        List<?> subData
+    ) throws QueryExportException;
 
     /**
-     * Parse export parameters
+     * Parse export parameters.
      */
-    protected void parseExportParameters(){
+    protected void parseExportParameters() {
         if (exportParameters == null) {
             return;
         }
@@ -307,13 +328,15 @@ public abstract class QueryExportJob extends ExportJob {
         if (exportSubdata
             && !exportParameters.containsKey("subDataColumns")
             && exportParameters.get("subDataColumns") != null) {
-            throw new IllegalArgumentException("Subdata is exported but no subdata columns are present");
+            throw new IllegalArgumentException(
+                "Subdata is exported but no subdata columns are present");
         }
 
         //Get sub data columns
         if (exportSubdata && exportParameters.containsKey("subDataColumns")) {
             subDataColumns = new ArrayList<String>();
-            JsonArray columnJson = exportParameters.getJsonArray("subDataColumns");
+            JsonArray columnJson =
+                exportParameters.getJsonArray("subDataColumns");
             int columnCount = columnJson.size();
             for (int i = 0; i < columnCount; i++) {
                 subDataColumns.add(columnJson.getString(i));
@@ -322,7 +345,7 @@ public abstract class QueryExportJob extends ExportJob {
         ArrayList<Integer> idFilterList = new ArrayList<Integer>();
         JsonArray idJsonArray = exportParameters.getJsonArray("idFilter");
         int idJsonArrayCount = idJsonArray.size();
-        for (int i = 0; i< idJsonArrayCount; i++) {
+        for (int i = 0; i < idJsonArrayCount; i++) {
             idFilterList.add(idJsonArray.getInt(i));
         }
 
@@ -335,12 +358,12 @@ public abstract class QueryExportJob extends ExportJob {
             GridColumn gridColumn;
             columnValue.setgridColumnId(columnObj.getInt("gridColumnId"));
             String sort = columnObj.get("sort") != null
-                && columnObj.get("sort").getValueType() == ValueType.STRING ?
-                columnObj.getString("sort"): null;
+                && columnObj.get("sort").getValueType() == ValueType.STRING
+                ? columnObj.getString("sort") : null;
             columnValue.setSort(sort);
             Integer sortIndex = columnObj.get("sortIndex") != null
-                && columnObj.get("sortIndex").getValueType() == ValueType.NUMBER ?
-                columnObj.getInt("sortIndex"): null;
+                && columnObj.get("sortIndex").getValueType() == ValueType.NUMBER
+                ? columnObj.getInt("sortIndex") : null;
             columnValue.setSortIndex(sortIndex);
             columnValue.setFilterValue(columnObj.getString("filterValue"));
             columnValue.setFilterActive(columnObj.getBoolean("filterActive"));
@@ -366,7 +389,7 @@ public abstract class QueryExportJob extends ExportJob {
                     StringBuilder filterValue = new StringBuilder();
                     for (int i = 0; i < idsToExport.length; i++) {
                         filterValue.append(idsToExport[i]);
-                        if (i != idsToExport.length -1) {
+                        if (i != idsToExport.length - 1) {
                             filterValue.append(",");
                         }
                     }
@@ -400,6 +423,9 @@ public abstract class QueryExportJob extends ExportJob {
         super.run();
     }
 
+    /**
+     * Thrown if merging fails.
+     */
     public static class QueryExportException extends Exception {
         private static final long serialVersionUID = 1L;
 

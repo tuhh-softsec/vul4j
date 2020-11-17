@@ -24,26 +24,26 @@ import javax.persistence.Transient;
  *
  */
 @Entity
-@Table(name="datensatz_erzeuger")
+@Table(name = "datensatz_erzeuger")
 public class DatensatzErzeuger implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String bezeichnung;
 
-    @Column(name="datensatz_erzeuger_id")
+    @Column(name = "datensatz_erzeuger_id")
     private String datensatzErzeugerId;
 
-    @Column(name="letzte_aenderung", insertable=false)
+    @Column(name = "letzte_aenderung", insertable = false)
     private Timestamp letzteAenderung;
 
-    @Column(name="mst_id")
+    @Column(name = "mst_id")
     private String mstId;
 
-    @Column(name="netzbetreiber_id")
+    @Column(name = "netzbetreiber_id")
     private String netzbetreiberId;
 
     @Transient

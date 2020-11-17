@@ -58,11 +58,11 @@ import de.intevation.lada.util.rest.Response;
 public class ColumnValueService {
 
     @Inject
-    @RepositoryConfig(type=RepositoryType.RW)
+    @RepositoryConfig(type = RepositoryType.RW)
     private Repository repository;
 
     @Inject
-    @AuthorizationConfig(type=AuthorizationType.HEADER)
+    @AuthorizationConfig(type = AuthorizationType.HEADER)
     private Authorization authorization;
 
     /**
@@ -83,34 +83,41 @@ public class ColumnValueService {
         Integer id = null;
         try {
             id = Integer.valueOf(params.getFirst("qid"));
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return new Response(false, 603, "Not a valid filter id");
         }
         UserInfo userInfo = authorization.getInfo(request);
         EntityManager em = repository.entityManager(Strings.STAMM);
         CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<GridColumnValue> criteriaQuery = builder.createQuery(GridColumnValue.class);
+        CriteriaQuery<GridColumnValue> criteriaQuery =
+            builder.createQuery(GridColumnValue.class);
         Root<GridColumnValue> root = criteriaQuery.from(GridColumnValue.class);
-        Join<GridColumnValue, QueryUser> value = root.join("queryUser", javax.persistence.criteria.JoinType.LEFT);
-        Join<MessStelle, QueryUser> mess = value.join("messStelles", javax.persistence.criteria.JoinType.LEFT);
+        Join<GridColumnValue, QueryUser> value =
+            root.join("queryUser", javax.persistence.criteria.JoinType.LEFT);
+        Join<MessStelle, QueryUser> mess =
+            value.join("messStelles", javax.persistence.criteria.JoinType.LEFT);
         Predicate filter = builder.equal(root.get("queryUser"), id);
         Predicate uId = builder.equal(root.get("userId"), userInfo.getUserId());
         Predicate zeroIdFilter = builder.equal(root.get("userId"), "0");
         Predicate userFilter = builder.or(uId, zeroIdFilter);
-        if (userInfo.getMessstellen() != null &&
-            !userInfo.getMessstellen().isEmpty()
+        if (userInfo.getMessstellen() != null
+            && !userInfo.getMessstellen().isEmpty()
         ) {
-            userFilter = builder.or(userFilter, mess.get("messStelle").in(userInfo.getMessstellen()));
+            userFilter = builder.or(
+                userFilter,
+                mess.get("messStelle").in(userInfo.getMessstellen()));
         }
-        if (userInfo.getLaborMessstellen() != null &&
-            !userInfo.getLaborMessstellen().isEmpty()
+        if (userInfo.getLaborMessstellen() != null
+            && !userInfo.getLaborMessstellen().isEmpty()
         ) {
-            userFilter = builder.or(userFilter, mess.get("messStelle").in(userInfo.getLaborMessstellen()));
+            userFilter = builder.or(
+                userFilter,
+                mess.get("messStelle").in(userInfo.getLaborMessstellen()));
         }
         filter = builder.and(filter, userFilter);
         criteriaQuery.where(filter).distinct(true);
-        List<GridColumnValue> queries = repository.filterPlain(criteriaQuery, Strings.STAMM);
+        List<GridColumnValue> queries =
+            repository.filterPlain(criteriaQuery, Strings.STAMM);
 
         for (GridColumnValue gcv : queries) {
             gcv.setgridColumnId(gcv.getGridColumn().getId());
@@ -133,8 +140,9 @@ public class ColumnValueService {
         GridColumnValue gridColumnValue
     ) {
         UserInfo userInfo = authorization.getInfo(request);
-        if (gridColumnValue.getUserId() != null &&
-            !gridColumnValue.getUserId().equals(userInfo.getUserId())) {
+        if (gridColumnValue.getUserId() != null
+            && !gridColumnValue.getUserId().equals(userInfo.getUserId())
+        ) {
                 return new Response(false, 699, null);
         } else {
             gridColumnValue.setUserId(userInfo.getUserId());
@@ -167,8 +175,9 @@ public class ColumnValueService {
         GridColumnValue gridColumnValue
     ) {
         UserInfo userInfo = authorization.getInfo(request);
-        if (gridColumnValue.getUserId() != null &&
-            !gridColumnValue.getUserId().equals(userInfo.getUserId())) {
+        if (gridColumnValue.getUserId() != null
+            && !gridColumnValue.getUserId().equals(userInfo.getUserId())
+        ) {
                 return new Response(false, 699, null);
         } else {
             gridColumnValue.setUserId(userInfo.getUserId());
@@ -200,7 +209,7 @@ public class ColumnValueService {
     public Response delete(
         @Context HttpServletRequest request,
         @PathParam("id") String id
-    ){
+    ) {
         UserInfo userInfo = authorization.getInfo(request);
         GridColumnValue gridColumnValue = repository.getByIdPlain(
             GridColumnValue.class,
@@ -211,5 +220,4 @@ public class ColumnValueService {
         }
         return new Response(false, 699, null);
     }
-
 }

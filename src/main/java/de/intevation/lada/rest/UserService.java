@@ -56,12 +56,12 @@ import org.apache.log4j.Logger;
  */
 @Path("rest/user")
 @RequestScoped
-public class UserService{
+public class UserService {
 
     @Inject
     private Logger logger = Logger.getLogger(UserService.class);
     @Inject
-    @AuthorizationConfig(type=AuthorizationType.HEADER)
+    @AuthorizationConfig(type = AuthorizationType.HEADER)
     private Authorization authorization;
 
     /**
@@ -105,8 +105,8 @@ public class UserService{
         response.put("userId", userInfo.getUserId());
 
         logger.debug(
-            request.getAttribute("lada.user.name") + " - " +
-            request.getAttribute("lada.user.roles")
+            request.getAttribute("lada.user.name") + " - "
+            + request.getAttribute("lada.user.roles")
         );
 
         return new Response(true, 200, response);

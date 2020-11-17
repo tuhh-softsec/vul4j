@@ -20,6 +20,10 @@ import org.junit.Assert;
 import de.intevation.lada.Protocol;
 import de.intevation.lada.test.ServiceTest;
 
+/**
+ * Test messprogramm entities.
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 public class MessprogrammTest extends ServiceTest {
     private JsonObject expectedById;
     private JsonObject create;
@@ -44,8 +48,10 @@ public class MessprogrammTest extends ServiceTest {
         });
 
         // Prepare expected object
-        JsonObject content = readJsonResource("/datasets/dbUnit_messprogramm.json");
-        JsonObject messprogramm = content.getJsonArray("land.messprogramm").getJsonObject(0);
+        JsonObject content =
+            readJsonResource("/datasets/dbUnit_messprogramm.json");
+        JsonObject messprogramm =
+            content.getJsonArray("land.messprogramm").getJsonObject(0);
         JsonObjectBuilder builder = convertObject(messprogramm);
         builder.add("baId", JsonValue.NULL);
         builder.add("gueltigVon", JsonValue.NULL);
@@ -62,12 +68,23 @@ public class MessprogrammTest extends ServiceTest {
         Assert.assertNotNull(create);
     }
 
+    /**
+     * Execute the tests.
+     */
     public final void execute() {
         getAll("messprogramm", "rest/messprogramm");
         getById("messprogramm", "rest/messprogramm/1000", expectedById);
         filter("messprogramm", "rest/messprogramm?qid=9");
-        update("messprogramm", "rest/messprogramm/1000", "mediaDesk", "D: 50 90 01 06 02 05 00 00 00 00 00 00", "D: 50 90 01 06 02 05 00 00 00 00 00 01");
-        JsonObject created = create("messprogramm", "rest/messprogramm", create);
-        delete("messprogramm", "rest/messprogramm/" + created.getJsonObject("data").get("id"));
+        update(
+            "messprogramm",
+            "rest/messprogramm/1000",
+            "mediaDesk",
+            "D: 50 90 01 06 02 05 00 00 00 00 00 00",
+            "D: 50 90 01 06 02 05 00 00 00 00 00 01");
+        JsonObject created =
+            create("messprogramm", "rest/messprogramm", create);
+        delete(
+            "messprogramm",
+            "rest/messprogramm/" + created.getJsonObject("data").get("id"));
     }
 }

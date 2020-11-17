@@ -19,32 +19,33 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name="base_query")
+@Table(name = "base_query")
 public class BaseQuery implements Serializable {
-	private static final long serialVersionUID = 1L;
 
-	@Id
-	private Integer id;
+    private static final long serialVersionUID = 1L;
 
-	private String sql;
+    @Id
+    private Integer id;
 
-	public BaseQuery() {
-	}
+    private String sql;
 
-	public Integer getId() {
-		return this.id;
-	}
+    public BaseQuery() {
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public Integer getId() {
+        return this.id;
+    }
 
-	public String getSql() {
-		return this.sql;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public void setSql(String sql) {
-		this.sql = sql;
-	}
+    public String getSql() {
+        return this.sql;
+    }
+
+    public void setSql(String sql) {
+        this.sql = sql;
+    }
 
 }

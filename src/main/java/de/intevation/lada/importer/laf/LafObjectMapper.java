@@ -26,7 +26,6 @@ import java.util.Map.Entry;
 import javax.inject.Inject;
 import javax.management.modelmbean.InvalidTargetObjectTypeException;
 
-import de.intevation.lada.model.stammdaten.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -45,6 +44,28 @@ import de.intevation.lada.model.land.Ortszuordnung;
 import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.model.land.StatusProtokoll;
 import de.intevation.lada.model.land.ZusatzWert;
+import de.intevation.lada.model.stammdaten.Datenbasis;
+import de.intevation.lada.model.stammdaten.DatensatzErzeuger;
+import de.intevation.lada.model.stammdaten.ImporterConfig;
+import de.intevation.lada.model.stammdaten.KoordinatenArt;
+import de.intevation.lada.model.stammdaten.MessEinheit;
+import de.intevation.lada.model.stammdaten.MessMethode;
+import de.intevation.lada.model.stammdaten.MessStelle;
+import de.intevation.lada.model.stammdaten.Messgroesse;
+import de.intevation.lada.model.stammdaten.MessprogrammKategorie;
+import de.intevation.lada.model.stammdaten.MessprogrammTransfer;
+import de.intevation.lada.model.stammdaten.Ort;
+import de.intevation.lada.model.stammdaten.Ortszusatz;
+import de.intevation.lada.model.stammdaten.ProbenZusatz;
+import de.intevation.lada.model.stammdaten.Probenart;
+import de.intevation.lada.model.stammdaten.Probenehmer;
+import de.intevation.lada.model.stammdaten.ReiProgpunktGruppe;
+import de.intevation.lada.model.stammdaten.Staat;
+import de.intevation.lada.model.stammdaten.StatusErreichbar;
+import de.intevation.lada.model.stammdaten.StatusKombi;
+import de.intevation.lada.model.stammdaten.Umwelt;
+import de.intevation.lada.model.stammdaten.Verwaltungseinheit;
+import de.intevation.lada.model.stammdaten.Zeitbasis;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
@@ -60,48 +81,51 @@ import de.intevation.lada.validation.Validator;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationConfig;
 
+/**
+ * Create database objects and map the attributes from laf raw data.
+ */
 public class LafObjectMapper {
 
     @Inject
     private Logger logger;
 
     @Inject
-    @AuthorizationConfig(type=AuthorizationType.HEADER)
+    @AuthorizationConfig(type = AuthorizationType.HEADER)
     private Authorization authorizer;
 
     @Inject
-    @ValidationConfig(type="Probe")
+    @ValidationConfig(type = "Probe")
     private Validator probeValidator;
 
     @Inject
-    @ValidationConfig(type="Messung")
+    @ValidationConfig(type = "Messung")
     private Validator messungValidator;
 
     @Inject
-    @ValidationConfig(type="Ort")
+    @ValidationConfig(type = "Ort")
     private Validator ortValidator;
 
     @Inject
-    @IdentifierConfig(type="Probe")
+    @IdentifierConfig(type = "Probe")
     private Identifier probeIdentifier;
 
     @Inject
-    @IdentifierConfig(type="Messung")
+    @IdentifierConfig(type = "Messung")
     private Identifier messungIdentifier;
 
     @Inject
-    @ValidationConfig(type="Messwert")
+    @ValidationConfig(type = "Messwert")
     private Validator messwertValidator;
 
     @Inject
-    @ValidationConfig(type="Status")
+    @ValidationConfig(type = "Status")
     private Validator statusValidator;
 
     @Inject
     private ObjectMerger merger;
 
     @Inject
-    @RepositoryConfig(type=RepositoryType.RW)
+    @RepositoryConfig(type = RepositoryType.RW)
     private Repository repository;
 
     @Inject
@@ -119,15 +143,18 @@ public class LafObjectMapper {
 
     private int currentZeitbasis;
 
-
     private UserInfo userInfo;
 
     private List<ImporterConfig> config;
 
+    /**
+     * Map the raw data to database objects.
+     * @param data the raw data from laf parser
+     */
     public void mapObjects(LafRawData data) {
         errors = new HashMap<>();
         warnings = new HashMap<>();
-	notifications = new HashMap<>();
+        notifications = new HashMap<>();
         importProbeIds = new ArrayList<Integer>();
         for (int i = 0; i < data.getProben().size(); i++) {
             create(data.getProben().get(i));
@@ -147,9 +174,9 @@ public class LafObjectMapper {
             if ("ZEITBASIS".equals(current.getName().toUpperCase())) {
                 currentZeitbasis = Integer.valueOf(current.getToValue());
             }
-            if ("PROBE".equals(current.getName().toUpperCase()) &&
-                    "MSTID".equals(current.getAttribute().toUpperCase()) &&
-                    "DEFAULT".equals(current.getAction().toUpperCase())) {
+            if ("PROBE".equals(current.getName().toUpperCase())
+                && "MSTID".equals(current.getAttribute().toUpperCase())
+                && "DEFAULT".equals(current.getAction().toUpperCase())) {
                 probe.setMstId(current.getToValue());
             }
         }
@@ -157,24 +184,29 @@ public class LafObjectMapper {
             probe.setMstId(object.getAttributes().get("MESSSTELLE"));
         }
         if (probe.getMstId() == null){
-            currentErrors.add(new ReportItem( "MESSSTELLE", "", 673));
-            errors.put(object.getIdentifier(), new ArrayList<ReportItem>(currentErrors));
+            currentErrors.add(new ReportItem("MESSSTELLE", "", 673));
+            errors.put(object.getIdentifier(),
+                new ArrayList<ReportItem>(currentErrors));
             return;
         } else {
             MessStelle mst = repository.getByIdPlain(
                     MessStelle.class,
                     probe.getMstId(),
                     Strings.STAMM);
-            if ( mst == null) {
-                currentErrors.add(new ReportItem("MESSSTELLE", probe.getMstId(), 675));
-                errors.put(object.getIdentifier(), new ArrayList<ReportItem>(currentErrors));
+            if (mst == null) {
+                currentErrors.add(
+                    new ReportItem("MESSSTELLE", probe.getMstId(), 675));
+                errors.put(
+                    object.getIdentifier(),
+                    new ArrayList<ReportItem>(currentErrors));
                 return;
             }
             netzbetreiberId = mst.getNetzbetreiberId();
         }
 
         if (object.getAttributes().containsKey("ZEITBASIS")) {
-            List<ImporterConfig> cfg = getImporterConfigByAttributeUpper("ZEITBASIS");
+            List<ImporterConfig> cfg =
+            getImporterConfigByAttributeUpper("ZEITBASIS");
             String attribute = object.getAttributes().get("ZEITBASIS");
             if (!cfg.isEmpty() && attribute.equals(cfg.get(0).getFromValue())) {
                 attribute = cfg.get(0).getToValue();
@@ -188,25 +220,32 @@ public class LafObjectMapper {
                     builder.getQuery(),
                     Strings.STAMM);
             if (zb == null || zb.isEmpty()) {
-                currentWarnings.add(new ReportItem("ZEITBASIS", object.getAttributes().get("ZEITBASIS"), 675));
-            }
-            else {
+                currentWarnings.add(
+                    new ReportItem(
+                        "ZEITBASIS",
+                        object.getAttributes().get("ZEITBASIS"), 675));
+            } else {
                 currentZeitbasis = zb.get(0).getId();
             }
-        }
-        else if (object.getAttributes().containsKey("ZEITBASIS_S")) {
-            currentZeitbasis = Integer.valueOf(object.getAttributes().get("ZEITBASIS_S"));
+        } else if (object.getAttributes().containsKey("ZEITBASIS_S")) {
+            currentZeitbasis =
+                Integer.valueOf(object.getAttributes().get("ZEITBASIS_S"));
             Zeitbasis zeitbasis = repository.getByIdPlain(
                 Zeitbasis.class,
                 currentZeitbasis,
                 Strings.STAMM);
-            if ( zeitbasis == null) {
-                currentWarnings.add(new ReportItem("ZEITBASIS_S", object.getAttributes().get("ZEITBASIS_S"), 675));
+            if (zeitbasis == null) {
+                currentWarnings.add(
+                    new ReportItem(
+                        "ZEITBASIS_S",
+                        object.getAttributes().get("ZEITBASIS_S"), 675));
             }
         }
 
         // Fill the object with data
-        for (Entry<String, String> attribute : object.getAttributes().entrySet()) {
+        for (Entry<String, String> attribute
+            : object.getAttributes().entrySet()
+        ) {
             addProbeAttribute(attribute, probe, netzbetreiberId);
         }
         doDefaults(probe);
@@ -222,7 +261,8 @@ public class LafObjectMapper {
         }
 
         // Check if the user is authorized to create the probe
-        boolean isAuthorized = authorizer.isAuthorized(userInfo, probe, Probe.class);
+        boolean isAuthorized =
+            authorizer.isAuthorized(userInfo, probe, Probe.class);
         if (!isAuthorized) {
             ReportItem err = new ReportItem();
             err.setCode(699);
@@ -230,7 +270,9 @@ public class LafObjectMapper {
             err.setValue("Messstelle " + probe.getMstId());
             currentWarnings.clear();
             currentErrors.add(err);
-            errors.put(object.getIdentifier(), new ArrayList<ReportItem>(currentErrors));
+            errors.put(
+                object.getIdentifier(),
+                new ArrayList<ReportItem>(currentErrors));
             return;
         }
         // logProbe(probe);
@@ -240,58 +282,61 @@ public class LafObjectMapper {
         // Compare the probe with objects in the db
         Probe newProbe = null;
         boolean oldProbeIsReadonly = false;
-	boolean isAuthorizedOld = false;
+        boolean isAuthorizedOld = false;
 
         try {
             Identified i = probeIdentifier.find(probe);
-            Probe old = (Probe)probeIdentifier.getExisting();
+            Probe old = (Probe) probeIdentifier.getExisting();
             // Matching probe was found in the db. Update it!
-            if(i == Identified.UPDATE) {
-		isAuthorizedOld = authorizer.isAuthorized(userInfo, old, Probe.class);
+            if (i == Identified.UPDATE) {
+                isAuthorizedOld =
+                    authorizer.isAuthorized(userInfo, old, Probe.class);
                 oldProbeIsReadonly = authorizer.isReadOnly(old.getId());
-		if (isAuthorizedOld){
-                	if(oldProbeIsReadonly) {
-                    		newProbe = old;
-                    		currentNotifications.add(new ReportItem("probe", old.getExterneProbeId(), 676));
-                	}
-                	else {
-                    		if(merger.merge(old, probe)) {
-                        		newProbe = old;
-                    		} else {
-                        		ReportItem err = new ReportItem();
-                        		err.setCode(605);
-                        		err.setKey("Database error");
-                        		err.setValue("");
-                        		currentErrors.add(err);
-                        		if (!currentErrors.isEmpty() ) {
-                            			errors.put(object.getIdentifier(),
-                                		new ArrayList<ReportItem>(currentErrors));
-                        		}
-                        		if (!currentWarnings.isEmpty()) {
-                            			warnings.put(object.getIdentifier(),
-                                		new ArrayList<ReportItem>(currentWarnings));
-                        		}
-					if (!currentNotifications.isEmpty()) {
-                                          notifications.put(object.getIdentifier(),
-                                          new ArrayList<ReportItem>(currentNotifications));
-                                        }
-                        	  return;
+                if (isAuthorizedOld) {
+                    if (oldProbeIsReadonly) {
+                        newProbe = old;
+                        currentNotifications.add(
+                            new ReportItem(
+                                "probe", old.getExterneProbeId(), 676));
+                    } else {
+                        if (merger.merge(old, probe)) {
+                            newProbe = old;
+                        } else {
+                            ReportItem err = new ReportItem();
+                            err.setCode(605);
+                            err.setKey("Database error");
+                            err.setValue("");
+                            currentErrors.add(err);
+                            if (!currentErrors.isEmpty()) {
+                                errors.put(object.getIdentifier(),
+                                new ArrayList<ReportItem>(currentErrors));
                             }
-                	}
-            	}else{
-		        ReportItem err = new ReportItem();
-            		err.setCode(699);
-            		err.setKey(userInfo.getName());
-            		err.setValue("Messstelle " + old.getMstId());
-            		currentWarnings.clear();
-            		currentErrors.add(err);
-            		errors.put(object.getIdentifier(), new ArrayList<ReportItem>(currentErrors));
-            		return;
-
-		}
-	    }
-            // Probe was found but some data does not match
-            else if(i == Identified.REJECT){
+                            if (!currentWarnings.isEmpty()) {
+                                warnings.put(object.getIdentifier(),
+                                new ArrayList<ReportItem>(currentWarnings));
+                            }
+                            if (!currentNotifications.isEmpty()) {
+                                notifications.put(object.getIdentifier(),
+                                new ArrayList<ReportItem>(
+                                    currentNotifications));
+                            }
+                            return;
+                        }
+                    }
+                } else {
+                ReportItem err = new ReportItem();
+                    err.setCode(699);
+                    err.setKey(userInfo.getName());
+                    err.setValue("Messstelle " + old.getMstId());
+                    currentWarnings.clear();
+                    currentErrors.add(err);
+                    errors.put(
+                        object.getIdentifier(),
+                        new ArrayList<ReportItem>(currentErrors));
+                    return;
+                }
+            } else if (i == Identified.REJECT) {
+                // Probe was found but some data does not match
                 ReportItem err = new ReportItem();
                 err.setCode(671);
                 err.setKey("duplicate");
@@ -312,27 +357,38 @@ public class LafObjectMapper {
                 return;
             }
             // It is a brand new probe!
-            else if(i == Identified.NEW){
+            else if (i == Identified.NEW) {
                 Violation violation = probeValidator.validate(probe);
                 if (!violation.hasErrors()) {
                     Response created = repository.create(probe, Strings.LAND);
-                    newProbe = ((Probe)created.getData());
-                }
-                else {
-                    for (Entry<String, List<Integer>> err : violation.getErrors().entrySet()) {
+                    newProbe = ((Probe) created.getData());
+                } else {
+                    for (Entry<String, List<Integer>> err
+                        : violation.getErrors().entrySet()
+                    ) {
                         for (Integer code : err.getValue()) {
-                            currentErrors.add(new ReportItem("validation", err.getKey(), code));
+                            currentErrors.add(
+                                new ReportItem(
+                                    "validation", err.getKey(), code));
                         }
                     }
-                    for (Entry<String, List<Integer>> warn : violation.getWarnings().entrySet()) {
+                    for (Entry<String, List<Integer>> warn
+                        :violation.getWarnings().entrySet()
+                    ) {
                         for (Integer code : warn.getValue()) {
-                            currentWarnings.add(new ReportItem("validation", warn.getKey(), code));
+                            currentWarnings.add(
+                                new ReportItem(
+                                    "validation", warn.getKey(), code));
                         }
                     }
-                    for (Entry<String, List<Integer>> notes : violation.getNotifications().entrySet()) {
-                      for (Integer code :notes.getValue()) {
-                        currentNotifications.add(new ReportItem("validation", notes.getKey(), code));
-                      }
+                    for (Entry<String, List<Integer>> notes
+                        : violation.getNotifications().entrySet()
+                    ) {
+                        for (Integer code :notes.getValue()) {
+                            currentNotifications.add(
+                                new ReportItem(
+                                    "validation", notes.getKey(), code));
+                        }
                     }
                 }
             }
@@ -361,11 +417,13 @@ public class LafObjectMapper {
         }
 
         if (newProbe != null) {
-            if(!oldProbeIsReadonly) {
+            if (!oldProbeIsReadonly) {
                 // Create kommentar objects
                 List<KommentarP> kommentare = new ArrayList<>();
                 for (int i = 0; i < object.getKommentare().size(); i++) {
-                    KommentarP tmp = createProbeKommentar(object.getKommentare().get(i), newProbe);
+                    KommentarP tmp =
+                        createProbeKommentar(
+                            object.getKommentare().get(i), newProbe);
                     if (tmp != null) {
                         kommentare.add(tmp);
                     }
@@ -376,7 +434,9 @@ public class LafObjectMapper {
                 // Create zusatzwert objects
                 List<ZusatzWert> zusatzwerte = new ArrayList<>();
                 for (int i = 0; i < object.getZusatzwerte().size(); i++) {
-                    ZusatzWert tmp = createZusatzwert(object.getZusatzwerte().get(i), newProbe.getId());
+                    ZusatzWert tmp =
+                        createZusatzwert(
+                            object.getZusatzwerte().get(i), newProbe.getId());
                     if (tmp != null) {
                         zusatzwerte.add(tmp);
                     }
@@ -385,19 +445,21 @@ public class LafObjectMapper {
                 merger.mergeZusatzwerte(newProbe, zusatzwerte);
 
                 // Special things for REI-Messpunkt
-                if (probe.getReiProgpunktGrpId() != null ||
-                    Integer.valueOf(3).equals(probe.getDatenbasisId()) ||
-                    Integer.valueOf(4).equals(probe.getDatenbasisId())) {
+                if (probe.getReiProgpunktGrpId() != null
+                    || Integer.valueOf(3).equals(probe.getDatenbasisId())
+                    || Integer.valueOf(4).equals(probe.getDatenbasisId())
+                ) {
                     createReiMesspunkt(object, newProbe);
-                }
-                else {
+                } else {
                     // Merge entnahmeOrt
                     createEntnahmeOrt(object.getEntnahmeOrt(), newProbe);
 
                     // Create ursprungsOrte
                     List<Ortszuordnung> uOrte = new ArrayList<>();
                     for (int i = 0; i < object.getUrsprungsOrte().size(); i++) {
-                        Ortszuordnung tmp = createUrsprungsOrt(object.getUrsprungsOrte().get(i), newProbe);
+                        Ortszuordnung tmp =
+                            createUrsprungsOrt(
+                                object.getUrsprungsOrte().get(i), newProbe);
                         if (tmp != null) {
                             uOrte.add(tmp);
                         }
@@ -409,31 +471,42 @@ public class LafObjectMapper {
 
             // Validate probe object
             Violation violation = probeValidator.validate(newProbe);
-            for (Entry<String, List<Integer>> err : violation.getErrors().entrySet()) {
+            for (Entry<String, List<Integer>> err
+                : violation.getErrors().entrySet()
+            ) {
                 for (Integer code : err.getValue()) {
-                    currentErrors.add(new ReportItem("validation", err.getKey(), code));
+                    currentErrors.add(
+                        new ReportItem("validation", err.getKey(), code));
                 }
             }
-            for (Entry<String, List<Integer>> warn : violation.getWarnings().entrySet()) {
+            for (Entry<String, List<Integer>> warn
+                : violation.getWarnings().entrySet()
+            ) {
                 for (Integer code : warn.getValue()) {
-                    currentWarnings.add(new ReportItem("validation", warn.getKey(), code));
+                    currentWarnings.add(
+                        new ReportItem("validation", warn.getKey(), code));
                 }
             }
-            for (Entry<String, List<Integer>> notes : violation.getNotifications().entrySet()) {
+            for (Entry<String, List<Integer>> notes
+                : violation.getNotifications().entrySet()
+            ) {
               for (Integer code: notes.getValue()) {
-                currentNotifications.add(new ReportItem("validation", notes.getKey(), code));
+                currentNotifications.add(
+                    new ReportItem("validation", notes.getKey(), code));
               }
             }
             // Create messung objects
             for (int i = 0; i < object.getMessungen().size(); i++) {
-                       create(object.getMessungen().get(i), newProbe, newProbe.getMstId());
+                create(
+                    object.getMessungen().get(i),
+                    newProbe,
+                    newProbe.getMstId());
             }
         }
         if (!currentErrors.isEmpty()) {
             if (errors.containsKey(object.getIdentifier())) {
                 errors.get(object.getIdentifier()).addAll(currentErrors);
-            }
-            else {
+            } else {
                 errors.put(object.getIdentifier(),
                     new ArrayList<ReportItem>(currentErrors));
             }
@@ -441,17 +514,16 @@ public class LafObjectMapper {
         if (!currentWarnings.isEmpty()) {
             if (warnings.containsKey(object.getIdentifier())) {
                 warnings.get(object.getIdentifier()).addAll(currentWarnings);
-            }
-            else {
+            } else {
                 warnings.put(object.getIdentifier(),
                     new ArrayList<ReportItem>(currentWarnings));
             }
         }
         if (!currentNotifications.isEmpty()) {
           if (notifications.containsKey(object.getIdentifier())) {
-            notifications.get(object.getIdentifier()).addAll(currentNotifications);
-          }
-          else {
+            notifications.get(
+                object.getIdentifier()).addAll(currentNotifications);
+          } else {
             notifications.put(object.getIdentifier(),
             new ArrayList<ReportItem>(currentNotifications));
           }
@@ -546,19 +618,19 @@ public class LafObjectMapper {
         Iterator<ImporterConfig> i = config.iterator();
         while (i.hasNext()) {
             ImporterConfig current = i.next();
-            if (table.equals(current.getName()) &&
-                "default".equals(current.getAction())
-                ) {
+            if (table.equals(current.getName())
+                && "default".equals(current.getAction())
+            ) {
                 String attribute = current.getAttribute();
                 Method getter;
                 Method setter = null;
                 try {
-                    getter = clazz.getMethod("get" +
-                        attribute.substring(0, 1).toUpperCase() +
-                        attribute.substring(1));
-                    String methodName = "set" +
-                        attribute.substring(0, 1).toUpperCase() +
-                        attribute.substring(1);
+                    getter = clazz.getMethod("get"
+                        + attribute.substring(0, 1).toUpperCase()
+                        + attribute.substring(1));
+                    String methodName = "set"
+                        + attribute.substring(0, 1).toUpperCase()
+                        + attribute.substring(1);
                     for (Method method : clazz.getMethods()) {
                         String name = method.getName();
                         if (!methodName.equals(name)) {
@@ -567,8 +639,7 @@ public class LafObjectMapper {
                         setter = method;
                         break;
                     }
-                }
-                catch(NoSuchMethodException | SecurityException e) {
+                } catch (NoSuchMethodException | SecurityException e) {
                     logger.debug("attribute " + attribute + " does not exist");
                     return;
                 }
@@ -576,20 +647,24 @@ public class LafObjectMapper {
                     Object value = getter.invoke(object);
                     if (value == null && setter != null) {
                         Class<?>[] types = setter.getParameterTypes();
-                        if (types.length == 1) { // we have exactly one parameter, thats fine.
-                            if (types[0].isAssignableFrom(Integer.class)) { // the parameter is of type Integer!
+                        if (types.length == 1) {
+                            // we have exactly one parameter, thats fine.
+                            if (types[0].isAssignableFrom(Integer.class)) {
+                                // the parameter is of type Integer!
                                 // Cast to integer
-                                setter.invoke(object, Integer.valueOf(current.getToValue()));
-                            }
-                            else { // we handle the default as string. Other parameter types are not implemented!
+                                setter.invoke(
+                                    object,
+                                    Integer.valueOf(current.getToValue()));
+                            } else {
+                                // we handle the default as string.
+                                // Other parameter types are not implemented!
                                 setter.invoke(object, current.getToValue());
                             }
                         }
                     }
-                }
-                catch(IllegalAccessException |
-                    IllegalArgumentException |
-                    InvocationTargetException e
+                } catch (IllegalAccessException
+                    | IllegalArgumentException
+                    | InvocationTargetException e
                 ) {
                     logger.debug("Could not set attribute " + attribute);
                     return;
@@ -598,7 +673,9 @@ public class LafObjectMapper {
         }
     }
 
-    private List<ImporterConfig> getImporterConfigByAttributeUpper(String attribute) {
+    private List<ImporterConfig> getImporterConfigByAttributeUpper(
+        String attribute
+    ) {
         Iterator<ImporterConfig> i = config.iterator();
         List<ImporterConfig> result = new ArrayList<ImporterConfig>();
         while (i.hasNext()) {
@@ -614,19 +691,19 @@ public class LafObjectMapper {
         Iterator<ImporterConfig> i = config.iterator();
         while (i.hasNext()) {
             ImporterConfig current = i.next();
-            if (table.equals(current.getName()) &&
-                "convert".equals(current.getAction())
-                ) {
+            if (table.equals(current.getName())
+                && "convert".equals(current.getAction())
+            ) {
                 String attribute = current.getAttribute();
                 Method getter;
                 Method setter = null;
                 try {
-                    getter = clazz.getMethod("get" +
-                        attribute.substring(0, 1).toUpperCase() +
-                        attribute.substring(1));
-                    String methodName = "set" +
-                        attribute.substring(0, 1).toUpperCase() +
-                        attribute.substring(1);
+                    getter = clazz.getMethod("get"
+                        + attribute.substring(0, 1).toUpperCase()
+                        + attribute.substring(1));
+                    String methodName = "set"
+                        + attribute.substring(0, 1).toUpperCase()
+                        + attribute.substring(1);
                     for (Method method : clazz.getMethods()) {
                         String name = method.getName();
                         if (!methodName.equals(name)) {
@@ -635,22 +712,20 @@ public class LafObjectMapper {
                         setter = method;
                         break;
                     }
-                }
-                catch(NoSuchMethodException | SecurityException e) {
+                } catch (NoSuchMethodException | SecurityException e) {
                     logger.warn("attribute " + attribute + " does not exist");
                     return;
                 }
                 try {
                     Object value = getter.invoke(object);
-                    if (value.equals(current.getFromValue()) &&
-                        setter != null
+                    if (value.equals(current.getFromValue())
+                        && setter != null
                     ) {
                         setter.invoke(object, current.getToValue());
                     }
-                }
-                catch(IllegalAccessException |
-                    IllegalArgumentException |
-                    InvocationTargetException e
+                } catch (IllegalAccessException
+                    | IllegalArgumentException
+                    | InvocationTargetException e
                 ) {
                     logger.warn("Could not convert attribute " + attribute);
                     return;
@@ -659,23 +734,27 @@ public class LafObjectMapper {
         }
     }
 
-    private <T> void doTransformations(Object object, Class<T> clazz, String table) {
+    private <T> void doTransformations(
+        Object object,
+        Class<T> clazz,
+        String table
+    ) {
         Iterator<ImporterConfig> i = config.iterator();
         while (i.hasNext()) {
             ImporterConfig current = i.next();
-            if (table.equals(current.getName()) &&
-                "transform".equals(current.getAction())
-                ) {
+            if (table.equals(current.getName())
+                && "transform".equals(current.getAction())
+            ) {
                 String attribute = current.getAttribute();
                 Method getter;
                 Method setter = null;
                 try {
-                    getter = clazz.getMethod("get" +
-                        attribute.substring(0, 1).toUpperCase() +
-                        attribute.substring(1));
-                    String methodName = "set" +
-                        attribute.substring(0, 1).toUpperCase() +
-                        attribute.substring(1);
+                    getter = clazz.getMethod("get"
+                        + attribute.substring(0, 1).toUpperCase()
+                        + attribute.substring(1));
+                    String methodName = "set"
+                        + attribute.substring(0, 1).toUpperCase()
+                        + attribute.substring(1);
                     for (Method method : clazz.getMethods()) {
                         String name = method.getName();
                         if (methodName.equals(name)) {
@@ -684,11 +763,11 @@ public class LafObjectMapper {
                         }
                     }
                     if (setter == null) {
-                        logger.warn("Could not transform attribute " + attribute);
+                        logger.warn(
+                            "Could not transform attribute " + attribute);
                         return;
                     }
-                }
-                catch(NoSuchMethodException | SecurityException e) {
+                } catch (NoSuchMethodException | SecurityException e) {
                     logger.warn("attribute " + attribute + " does not exist");
                     return;
                 }
@@ -698,14 +777,16 @@ public class LafObjectMapper {
                         logger.warn("Attribute " + attribute + " is not set");
                         return;
                     }
-                    char from = (char) Integer.parseInt(current.getFromValue(), 16);
-                    char to = (char) Integer.parseInt(current.getToValue(), 16);
-                    value = value.toString().replaceAll("[" + String.valueOf(from) + "]", String.valueOf(to));
+                    char from = (char) Integer.parseInt(
+                        current.getFromValue(), 16);
+                    char to = (char) Integer.parseInt(
+                        current.getToValue(), 16);
+                    value = value.toString().replaceAll(
+                        "[" + String.valueOf(from) + "]", String.valueOf(to));
                     setter.invoke(object, value);
-                }
-                catch(IllegalAccessException |
-                    IllegalArgumentException |
-                    InvocationTargetException e
+                } catch (IllegalAccessException
+                    | IllegalArgumentException
+                    | InvocationTargetException e
                 ) {
                     logger.warn("Could not transform attribute " + attribute);
                     return;
@@ -714,12 +795,17 @@ public class LafObjectMapper {
         }
     }
 
-    private void create(LafRawData.Messung object, Probe probe, String mstId) {
+    private void create(
+        LafRawData.Messung object,
+        Probe probe, String mstId
+    ) {
         Messung messung = new Messung();
         messung.setProbeId(probe.getId());
 
         // Fill the new messung with data
-        for (Entry<String, String> attribute : object.getAttributes().entrySet()) {
+        for (Entry<String, String> attribute
+            : object.getAttributes().entrySet()
+        ) {
             addMessungAttribute(attribute, messung);
         }
         doDefaults(messung);
@@ -740,11 +826,14 @@ public class LafObjectMapper {
         boolean oldMessungIsReadonly = false;
         try {
             Identified i = messungIdentifier.find(messung);
-            Messung old = (Messung)messungIdentifier.getExisting();
+            Messung old = (Messung) messungIdentifier.getExisting();
             if (i == Identified.UPDATE) {
-                oldMessungIsReadonly = authorizer.isMessungReadOnly(old.getId());
+                oldMessungIsReadonly =
+                    authorizer.isMessungReadOnly(old.getId());
                 if (oldMessungIsReadonly) {
-                    currentNotifications.add(new ReportItem("messung", old.getExterneMessungsId(), 676));
+                    currentNotifications.add(
+                        new ReportItem(
+                            "messung", old.getExterneMessungsId(), 676));
                     return;
                 } else {
                     merger.mergeMessung(old, messung);
@@ -760,7 +849,8 @@ public class LafObjectMapper {
                 return;
             }
             else if (i == Identified.NEW) {
-                // Check if Messung has all fields that have db constraints (validation rule?)
+                // Check if Messung has all fields that have db constraints
+                // (validation rule?)
                 if (messung.getMmtId() == null) {
                     ReportItem err = new ReportItem();
                     err.setCode(631);
@@ -772,12 +862,13 @@ public class LafObjectMapper {
 
                 // Create a new messung and the first status
                 Response created = repository.create(messung, Strings.LAND);
-                newMessung = ((Messung)created.getData());
-                created = repository.getById(Messung.class, newMessung.getId(), Strings.LAND);
-                newMessung = ((Messung)created.getData());
+                newMessung = ((Messung) created.getData());
+                created =
+                    repository.getById(
+                        Messung.class, newMessung.getId(), Strings.LAND);
+                newMessung = ((Messung) created.getData());
             }
-        }
-        catch(InvalidTargetObjectTypeException e) {
+        } catch (InvalidTargetObjectTypeException e) {
             ReportItem err = new ReportItem();
             err.setCode(604);
             err.setKey("not valid");
@@ -787,7 +878,9 @@ public class LafObjectMapper {
         }
         List<KommentarM> kommentare = new ArrayList<KommentarM>();
         for (int i = 0; i < object.getKommentare().size(); i++) {
-            KommentarM tmp = createMessungKommentar(object.getKommentare().get(i), newMessung.getId(), probe);
+            KommentarM tmp =
+                createMessungKommentar(
+                    object.getKommentare().get(i), newMessung.getId(), probe);
             if (tmp != null) {
                 kommentare.add(tmp);
             }
@@ -796,124 +889,157 @@ public class LafObjectMapper {
         List<Messwert> messwerte = new ArrayList<Messwert>();
         List<Integer> messgroessenListe = new ArrayList<Integer>();
         for (int i = 0; i < object.getMesswerte().size(); i++) {
-            Messwert tmp = createMesswert(object.getMesswerte().get(i), newMessung.getId());
+            Messwert tmp =
+                createMesswert(
+                    object.getMesswerte().get(i), newMessung.getId());
             if (tmp != null) {
                 //find duplicates
                 if (messgroessenListe.contains(tmp.getMessgroesseId())) {
                     currentWarnings.add(new ReportItem(
-                        (object.getMesswerte().get(i).get("MESSGROESSE_ID") == null) ?
-                            "MESSWERT - MESSGROESSE" :
-                            "MESSWERT - MESSGROESSE_ID",
-                        (object.getMesswerte().get(i).get("MESSGROESSE_ID") == null) ?
-                            object.getMesswerte().get(i).get("MESSGROESSE").toString():
-                            object.getMesswerte().get(i).get("MESSGROESSE_ID").toString(),
-                        672));
-                }
-                else {
-                //temporary messwertobjects
+                        (object.getMesswerte().get(i).get("MESSGROESSE_ID")
+                            == null)
+                        ? "MESSWERT - MESSGROESSE"
+                        : "MESSWERT - MESSGROESSE_ID",
+                        (object.getMesswerte().get(i).get("MESSGROESSE_ID")
+                            == null)
+                        ? object.getMesswerte().get(i).get(
+                            "MESSGROESSE").toString()
+                        : object.getMesswerte().get(i).get(
+                            "MESSGROESSE_ID").toString(),
+                            672));
+                } else {
+                   //temporary messwertobjects
                     messwerte.add(tmp);
                     messgroessenListe.add(tmp.getMessgroesseId());
                 }
             }
         }
-        messwerte = MesswertNormalizer.normalizeMesswerte(messwerte, probe.getUmwId(), repository);
+        messwerte = MesswertNormalizer.normalizeMesswerte(
+            messwerte, probe.getUmwId(), repository);
         //persist messwerte
         merger.mergeMesswerte(newMessung, messwerte);
         // Check for warnings and errors for messung ...
         Violation violation = messungValidator.validate(newMessung);
-        for (Entry<String, List<Integer>> err : violation.getErrors().entrySet()) {
+        for (Entry<String, List<Integer>> err
+            : violation.getErrors().entrySet()
+        ) {
             for (Integer code : err.getValue()) {
-                currentErrors.add(new ReportItem("validation", err.getKey(), code));
+                currentErrors.add(
+                    new ReportItem("validation", err.getKey(), code));
             }
         }
-        for (Entry<String, List<Integer>> warn : violation.getWarnings().entrySet()) {
+        for (Entry<String, List<Integer>> warn
+            : violation.getWarnings().entrySet()
+        ) {
             for (Integer code : warn.getValue()) {
-                currentWarnings.add(new ReportItem("validation", warn.getKey(), code));
+                currentWarnings.add(
+                    new ReportItem("validation", warn.getKey(), code));
             }
         }
-        for (Entry<String, List<Integer>> notes : violation.getNotifications().entrySet()) {
-          for (Integer code : notes.getValue()) {
-            currentNotifications.add(new ReportItem("validation", notes.getKey(), code));
-          }
+        for (Entry<String, List<Integer>> notes
+            : violation.getNotifications().entrySet()
+        ) {
+            for (Integer code : notes.getValue()) {
+                currentNotifications.add(
+                    new ReportItem("validation", notes.getKey(), code));
+            }
         }
         // ... and messwerte
-        QueryBuilder<Messwert> messw_builder = new QueryBuilder<Messwert>(
-          repository.entityManager(Strings.LAND), Messwert.class);
-        messw_builder.and("messungsId", newMessung.getId());
-        Response response = repository.filter(messw_builder.getQuery(), Strings.LAND);
+        QueryBuilder<Messwert> messwBuilder =
+            new QueryBuilder<Messwert>(
+                repository.entityManager(Strings.LAND), Messwert.class);
+        messwBuilder.and("messungsId", newMessung.getId());
+        Response response =
+            repository.filter(messwBuilder.getQuery(), Strings.LAND);
         @SuppressWarnings("unchecked")
         List<Messwert> messwerteList = (List<Messwert>) response.getData();
         for (Messwert messwert: messwerte) {
-          Violation messw_violation = messwertValidator.validate(messwert);
-          if (messw_violation.hasWarnings()) {
-            messw_violation.getWarnings().forEach((k,v)->{
-              v.forEach((value)->{
-                currentWarnings.add(new ReportItem("Status ", k, value));
-              });
-            });
-          }
+            Violation messwViolation = messwertValidator.validate(messwert);
+            if (messwViolation.hasWarnings()) {
+                messwViolation.getWarnings().forEach((k, v) -> {
+                    v.forEach((value) -> {
+                        currentWarnings.add(
+                            new ReportItem("Status ", k, value));
+                    });
+                });
+            }
 
-          if (messw_violation.hasErrors()) {
-            messw_violation.getErrors().forEach((k,v)->{
-              v.forEach((value)->{
-                currentErrors.add(new ReportItem("Status ", k, value));
-              });
-            });
-          }
+            if (messwViolation.hasErrors()) {
+                messwViolation.getErrors().forEach((k, v) -> {
+                    v.forEach((value) -> {
+                        currentErrors.add(new ReportItem("Status ", k, value));
+                    });
+                });
+            }
 
-          if (messw_violation.hasNotifications()) {
-            messw_violation.getNotifications().forEach((k,v)->{
-              v.forEach((value)->{
-                currentNotifications.add(new ReportItem("Status ", k, value));
-              });
-            });
-          }
+            if (messwViolation.hasNotifications()) {
+                messwViolation.getNotifications().forEach((k, v) -> {
+                    v.forEach((value) -> {
+                        currentNotifications.add(
+                            new ReportItem("Status ", k, value));
+                    });
+                });
+            }
         }
 
         // Validate / Create Status
         if (!object.hasErrors()) {
             if (object.getAttributes().containsKey("BEARBEITUNGSSTATUS")) {
-                createStatusProtokoll(object.getAttributes().get("BEARBEITUNGSSTATUS"), newMessung, mstId);
+                createStatusProtokoll(
+                    object.getAttributes().get(
+                        "BEARBEITUNGSSTATUS"), newMessung, mstId);
             }
         }
     }
 
-    private KommentarP createProbeKommentar(Map<String, String> attributes, Probe probe) {
+    private KommentarP createProbeKommentar(
+        Map<String, String> attributes,
+        Probe probe
+    ) {
         if (attributes.get("TEXT").equals("")) {
             currentWarnings.add(new ReportItem("PROBENKOMMENTAR", "Text", 631));
             return null;
-        };
+        }
         KommentarP kommentar = new KommentarP();
         kommentar.setProbeId(probe.getId());
         kommentar.setText(attributes.get("TEXT"));
         if (attributes.containsKey("MST_ID")) {
             kommentar.setMstId(attributes.get("MST_ID"));
-        }
-        else {
+        } else {
             kommentar.setMstId(probe.getMstId());
         }
         if (attributes.containsKey("DATE")) {
             String date = attributes.get("DATE") + " " + attributes.get("TIME");
             kommentar.setDatum(getDate(date));
-        }
-        else {
-            kommentar.setDatum(Timestamp.from(Instant.now().atZone(ZoneOffset.UTC).toInstant()));
+        } else {
+            kommentar.setDatum(
+                Timestamp.from(
+                    Instant.now().atZone(ZoneOffset.UTC).toInstant()));
         }
         doDefaults(kommentar);
         doConverts(kommentar);
         doTransforms(kommentar);
         if (!userInfo.getMessstellen().contains(kommentar.getMstId())) {
-            currentWarnings.add(new ReportItem(userInfo.getName(), "Kommentar: " + kommentar.getMstId(), 699));
+            currentWarnings.add(
+                new ReportItem(
+                    userInfo.getName(),
+                    "Kommentar: " + kommentar.getMstId(),
+                    699));
             return null;
         }
         return kommentar;
     }
 
-    private ZusatzWert createZusatzwert(Map<String, String> attributes, int probeId) {
+    private ZusatzWert createZusatzwert(
+        Map<String, String> attributes,
+        int probeId
+    ) {
         ZusatzWert zusatzwert = new ZusatzWert();
         zusatzwert.setProbeId(probeId);
         if (attributes.containsKey("MESSFEHLER")) {
-            zusatzwert.setMessfehler(Float.valueOf(attributes.get("MESSFEHLER").replaceAll(",", ".")));
+            zusatzwert.setMessfehler(
+                Float.valueOf(
+                    attributes.get("MESSFEHLER").replaceAll(",", ".")));
         }
         String wert = attributes.get("MESSWERT_PZS");
         if (wert.startsWith("<")) {
@@ -921,7 +1047,8 @@ public class LafObjectMapper {
             zusatzwert.setKleinerAls("<");
         }
         zusatzwert.setMesswertPzs(Double.valueOf(wert.replaceAll(",", ".")));
-        List<ImporterConfig> cfgs = getImporterConfigByAttributeUpper("ZUSATZWERT");
+        List<ImporterConfig> cfgs =
+            getImporterConfigByAttributeUpper("ZUSATZWERT");
         String attribute = attributes.get("PZS");
         boolean isId = false;
         if (attribute == null) {
@@ -930,15 +1057,16 @@ public class LafObjectMapper {
         }
         for (int i = 0; i < cfgs.size(); i++) {
             ImporterConfig cfg = cfgs.get(i);
-            if (cfg.getAction().equals("convert") &&
-                cfg.getFromValue().equals(attribute)
+            if (cfg.getAction().equals("convert")
+                && cfg.getFromValue().equals(attribute)
             ) {
                 attribute = cfg.getToValue();
             }
             if (cfg.getAction().equals("transform")) {
                 char from = (char) Integer.parseInt(cfg.getFromValue(), 16);
                 char to = (char) Integer.parseInt(cfg.getToValue(), 16);
-                attribute = attribute.replaceAll("[" + String.valueOf(from) + "]", String.valueOf(to));
+                attribute = attribute.replaceAll(
+                    "[" + String.valueOf(from) + "]", String.valueOf(to));
             }
         }
         QueryBuilder<ProbenZusatz> builder =
@@ -952,7 +1080,7 @@ public class LafObjectMapper {
             builder.and("zusatzwert", attribute);
         }
         List<ProbenZusatz> zusatz =
-            (List<ProbenZusatz>)repository.filterPlain(
+            (List<ProbenZusatz>) repository.filterPlain(
                 builder.getQuery(),
                 Strings.STAMM);
 
@@ -970,7 +1098,10 @@ public class LafObjectMapper {
         return zusatzwert;
     }
 
-    private Messwert createMesswert(Map<String, String> attributes, int messungsId) {
+    private Messwert createMesswert(
+        Map<String, String> attributes,
+        int messungsId
+    ) {
         Messwert messwert = new Messwert();
         messwert.setMessungsId(messungsId);
         if (attributes.containsKey("MESSGROESSE_ID")) {
@@ -978,49 +1109,61 @@ public class LafObjectMapper {
                     Messgroesse.class,
                     Integer.valueOf(attributes.get("MESSGROESSE_ID")),
                     Strings.STAMM);
-            if ( messgreosse == null) {
-                currentWarnings.add(new ReportItem("MESSWERT - MESSGROESSE_ID", attributes.get("MESSGROESSE_ID"), 675));
+            if (messgreosse == null) {
+                currentWarnings.add(
+                    new ReportItem(
+                        "MESSWERT - MESSGROESSE_ID",
+                        attributes.get("MESSGROESSE_ID"),
+                        675));
                 return null;
             }
-            messwert.setMessgroesseId(Integer.valueOf(attributes.get("MESSGROESSE_ID")));
-        }
-        else if (attributes.containsKey("MESSGROESSE")) {
-            List<ImporterConfig> cfgs = getImporterConfigByAttributeUpper("MESSGROESSE");
+            messwert.setMessgroesseId(
+                Integer.valueOf(attributes.get("MESSGROESSE_ID")));
+        } else if (attributes.containsKey("MESSGROESSE")) {
+            List<ImporterConfig> cfgs =
+                getImporterConfigByAttributeUpper("MESSGROESSE");
             String attribute = attributes.get("MESSGROESSE");
-            for (int i = 0; i< cfgs.size(); i++) {
+            for (int i = 0; i < cfgs.size(); i++) {
                 ImporterConfig cfg = cfgs.get(i);
-                if (cfg != null &&
-                    cfg.getAction().equals("convert") &&
-                    cfg.getFromValue().equals(attribute)
+                if (cfg != null
+                    && cfg.getAction().equals("convert")
+                    && cfg.getFromValue().equals(attribute)
                 ) {
                     attribute = cfg.getToValue();
                 }
                 if (cfg != null && cfg.getAction().equals("transform")) {
                     char from = (char) Integer.parseInt(cfg.getFromValue(), 16);
                     char to = (char) Integer.parseInt(cfg.getToValue(), 16);
-                    attribute = attribute.replaceAll("[" + String.valueOf(from) + "]", String.valueOf(to));
+                    attribute = attribute.replaceAll(
+                        "[" + String.valueOf(from) + "]", String.valueOf(to));
                 }
             }
             QueryBuilder<Messgroesse> builder =
                 new QueryBuilder<Messgroesse>(
                     repository.entityManager(Strings.STAMM),
                     Messgroesse.class);
-            // accept various nuclide notations (e.g. "Cs-134", "CS 134", "Cs134", "SC134", ...)
+            // accept various nuclide notations (e.g.
+            // "Cs-134", "CS 134", "Cs134", "SC134", ...)
             String messgroesseString = attribute;
             if (attribute.matches("^[A-Za-z]+( |-)?[0-9].*")) {
-                messgroesseString = attribute.substring(0,1).toUpperCase() +
-                                    attribute.replaceAll("(-| )?[0-9].*","").substring(1).toLowerCase() +
-                                    '-' +
-                                    attribute.replaceFirst("^[A-Za-z]*(-| )?","").toLowerCase();
+                messgroesseString = attribute.substring(0, 1).toUpperCase()
+                    + attribute.replaceAll("(-| )?[0-9].*", "")
+                        .substring(1).toLowerCase()
+                    + '-'
+                    + attribute.replaceFirst("^[A-Za-z]*(-| )?", "")
+                        .toLowerCase();
             }
 
             builder.and("messgroesse", messgroesseString);
             List<Messgroesse> groesse =
-                (List<Messgroesse>)repository.filterPlain(
+                (List<Messgroesse>) repository.filterPlain(
                     builder.getQuery(),
                     Strings.STAMM);
             if (groesse == null || groesse.isEmpty()) {
-                currentWarnings.add(new ReportItem("MESSWERT - MESSGROESSE", attributes.get("MESSGROESSE"), 675));
+                currentWarnings.add(
+                    new ReportItem(
+                        "MESSWERT - MESSGROESSE",
+                        attributes.get("MESSGROESSE"), 675));
                 return null;
             }
             messwert.setMessgroesseId(groesse.get(0).getId());
@@ -1030,27 +1173,33 @@ public class LafObjectMapper {
                     MessEinheit.class,
                     Integer.valueOf(attributes.get("MESSEINHEIT_ID")),
                     Strings.STAMM);
-            if ( messEinheit == null) {
-                currentWarnings.add(new ReportItem("MESSWERT - MESSEINHEIT_ID", attributes.get("MESSEINHEIT_ID"), 675));
+            if (messEinheit == null) {
+                currentWarnings.add(
+                    new ReportItem(
+                        "MESSWERT - MESSEINHEIT_ID",
+                        attributes.get("MESSEINHEIT_ID"),
+                        675));
                 return null;
             }
-            messwert.setMehId(Integer.valueOf(attributes.get("MESSEINHEIT_ID")));
-        }
-        else if (attributes.containsKey("MESSEINHEIT")) {
-            List<ImporterConfig> cfgs = getImporterConfigByAttributeUpper("MESSEINHEIT");
+            messwert.setMehId(
+                Integer.valueOf(attributes.get("MESSEINHEIT_ID")));
+        } else if (attributes.containsKey("MESSEINHEIT")) {
+            List<ImporterConfig> cfgs =
+                getImporterConfigByAttributeUpper("MESSEINHEIT");
             String attribute = attributes.get("MESSEINHEIT");
             for (int i = 0; i < cfgs.size(); i++) {
                 ImporterConfig cfg = cfgs.get(i);
-                if (cfg != null &&
-                    cfg.getAction().equals("convert") &&
-                    cfg.getFromValue().equals(attribute)
+                if (cfg != null
+                    && cfg.getAction().equals("convert")
+                    && cfg.getFromValue().equals(attribute)
                 ) {
                     attribute = cfg.getToValue();
                 }
                 if (cfg != null && cfg.getAction().equals("transform")) {
                     char from = (char) Integer.parseInt(cfg.getFromValue(), 16);
                     char to = (char) Integer.parseInt(cfg.getToValue(), 16);
-                    attribute = attribute.replaceAll("[" + String.valueOf(from) + "]", String.valueOf(to));
+                    attribute = attribute.replaceAll(
+                        "[" + String.valueOf(from) + "]", String.valueOf(to));
                 }
             }
             QueryBuilder<MessEinheit> builder =
@@ -1059,11 +1208,12 @@ public class LafObjectMapper {
                     MessEinheit.class);
             builder.and("einheit", attribute);
             List<MessEinheit> einheit =
-                (List<MessEinheit>)repository.filterPlain(
+                (List<MessEinheit>) repository.filterPlain(
                     builder.getQuery(),
                     Strings.STAMM);
             if (einheit == null || einheit.isEmpty()) {
-                currentWarnings.add(new ReportItem("MESSWERT - MESSEINHEIT", attribute, 675));
+                currentWarnings.add(
+                    new ReportItem("MESSWERT - MESSEINHEIT", attribute, 675));
                 return null;
             }
             messwert.setMehId(einheit.get(0).getId());
@@ -1076,82 +1226,115 @@ public class LafObjectMapper {
         }
         messwert.setMesswert(Double.valueOf(wert.replaceAll(",", ".")));
         if (attributes.containsKey("MESSFEHLER")) {
-            messwert.setMessfehler(Double.valueOf(attributes.get("MESSFEHLER").replaceAll(",", ".")).floatValue());
+            messwert.setMessfehler(
+                Double.valueOf(
+                    attributes.get("MESSFEHLER")
+                        .replaceAll(",", ".")).floatValue());
         }
         if (attributes.containsKey("NWG")) {
-            messwert.setNwgZuMesswert(Double.valueOf(attributes.get("NWG").replaceAll(",", ".")));
+            messwert.setNwgZuMesswert(
+                Double.valueOf(attributes.get("NWG").replaceAll(",", ".")));
         }
         if (attributes.containsKey("GRENZWERT")) {
-            messwert.setGrenzwertueberschreitung(attributes.get("GRENZWERT").toUpperCase() == "J" ? true : false);
+            messwert.setGrenzwertueberschreitung(
+                attributes.get("GRENZWERT").toUpperCase() == "J"
+                    ? true : false);
         }
         doDefaults(messwert);
         doConverts(messwert);
         doTransforms(messwert);
-        if (messwert.getMesswertNwg() != null && messwert.getNwgZuMesswert() == null) {
+        if (messwert.getMesswertNwg() != null
+            && messwert.getNwgZuMesswert() == null
+        ) {
             messwert.setNwgZuMesswert(messwert.getMesswert());
             messwert.setMesswert(null);
-        }
-        else if (messwert.getMesswertNwg() != null && messwert.getMesswert().equals(messwert.getNwgZuMesswert()) ||
-                 messwert.getMesswertNwg() != null && messwert.getMesswert() == 0.0) {
+        } else if (messwert.getMesswertNwg() != null
+            && messwert.getMesswert().equals(messwert.getNwgZuMesswert())
+            || messwert.getMesswertNwg() != null
+            && messwert.getMesswert() == 0.0
+        ) {
             messwert.setMesswert(null);
         }
         if (messwert.getMessfehler() != null) {
-            if (messwert.getMesswertNwg() != null && messwert.getMessfehler() == 0) {
+            if (messwert.getMesswertNwg() != null
+                && messwert.getMessfehler() == 0
+            ) {
                 messwert.setMessfehler(null);
             }
         }
         return messwert;
     }
 
-    private KommentarM createMessungKommentar(Map<String, String> attributes, int messungsId, Probe probe) {
+    private KommentarM createMessungKommentar(
+        Map<String, String> attributes,
+        int messungsId,
+        Probe probe
+    ) {
         if (attributes.get("TEXT").equals("")) {
             currentWarnings.add(new ReportItem("KOMMENTAR", "Text", 631));
             return null;
-        };
+        }
         KommentarM kommentar = new KommentarM();
         kommentar.setMessungsId(messungsId);
         if (attributes.containsKey("MST_ID")) {
             kommentar.setMstId(attributes.get("MST_ID"));
-        }
-        else {
+        } else {
             kommentar.setMstId(probe.getMstId());
         }
         if (attributes.containsKey("DATE")) {
             String date = attributes.get("DATE") + " " + attributes.get("TIME");
             kommentar.setDatum(getDate(date));
-        }
-        else {
-            kommentar.setDatum(Timestamp.from(Instant.now().atZone(ZoneOffset.UTC).toInstant()));
+        } else {
+            kommentar.setDatum(
+                Timestamp.from(
+                    Instant.now().atZone(ZoneOffset.UTC).toInstant()));
         }
         kommentar.setText(attributes.get("TEXT"));
         doDefaults(kommentar);
         doConverts(kommentar);
         doTransforms(kommentar);
         if (!userInfo.getMessstellen().contains(kommentar.getMstId())) {
-            currentWarnings.add(new ReportItem(userInfo.getName(), "Messungs Kommentar: " + kommentar.getMstId(), 699));
+            currentWarnings.add(
+                new ReportItem(
+                    userInfo.getName(),
+                    "Messungs Kommentar: " + kommentar.getMstId(),
+                    699));
             return null;
         }
         return kommentar;
     }
 
-    private void createStatusProtokoll(String status, Messung messung, String mstId) {
+    private void createStatusProtokoll(
+        String status,
+        Messung messung,
+        String mstId
+    ) {
         for (int i = 1; i <= 3; i++) {
-            if (status.substring(i-1, i).equals("0")) {
+            if (status.substring(i - 1, i).equals("0")) {
                 // no further status settings
                 return;
-            }
-            else if (currentErrors.isEmpty() && currentWarnings.isEmpty()) {
-              if (!addStatusProtokollEntry(i, Integer.valueOf(status.substring(i-1, i)), messung, mstId)) {
-                return;
-              }
+            } else if (currentErrors.isEmpty() && currentWarnings.isEmpty()) {
+                if (!addStatusProtokollEntry(
+                        i,
+                        Integer.valueOf(status.substring(i - 1, i)),
+                        messung,
+                        mstId)
+                ) {
+                    return;
+                }
             } else {
              currentErrors.add(new ReportItem("Statusvergabe", "Status", 631));
-	     return;
+         return;
             }
         }
     }
 
-    private boolean addStatusProtokollEntry(int statusStufe, int statusWert, Messung messung, String mstId) {
+    private boolean addStatusProtokollEntry(
+        int statusStufe,
+        int statusWert,
+        Messung messung,
+        String mstId
+    ) {
         // validation check of new status entries
         int newKombi = 0;
         QueryBuilder<StatusKombi> builder =
@@ -1161,13 +1344,14 @@ public class LafObjectMapper {
         builder.and("statusWert", statusWert);
         builder.and("statusStufe", statusStufe);
         List<StatusKombi> kombi =
-            (List<StatusKombi>)repository.filterPlain(
+            (List<StatusKombi>) repository.filterPlain(
                 builder.getQuery(),
                 Strings.STAMM);
         if (kombi != null && !kombi.isEmpty()) {
             newKombi = kombi.get(0).getId();
         } else {
-            currentWarnings.add(new ReportItem("status#" + statusStufe, statusWert, 675));
+            currentWarnings.add(
+                new ReportItem("status#" + statusStufe, statusWert, 675));
             return false;
         }
         // get current status kombi
@@ -1184,54 +1368,62 @@ public class LafObjectMapper {
         errFilter.and("wertId", statusWert);
         errFilter.and("curStufe", currentKombi.getStatusStufe().getId());
         errFilter.and("curWert", currentKombi.getStatusWert().getId());
-        List<StatusErreichbar> erreichbar = repository.filterPlain(errFilter.getQuery(), Strings.STAMM);
+        List<StatusErreichbar> erreichbar =
+            repository.filterPlain(errFilter.getQuery(), Strings.STAMM);
         if (erreichbar.isEmpty()) {
-            currentWarnings.add(new ReportItem("status#" + statusStufe, statusWert, 675));
+            currentWarnings.add(
+                new ReportItem("status#" + statusStufe, statusWert, 675));
             return false;
         }
 
-	    // Validator: StatusAssignment
+        // Validator: StatusAssignment
         StatusProtokoll tmpStatus = new StatusProtokoll();
         tmpStatus = currentStatus;
         tmpStatus.setStatusKombi(newKombi);
-        Violation status_violation = statusValidator.validate(tmpStatus);
+        Violation statusViolation = statusValidator.validate(tmpStatus);
 
-        if (status_violation.hasWarnings()) {
-            status_violation.getWarnings().forEach((k,v)->{
-                v.forEach((value)-> {
-                    currentErrors.add(new ReportItem("Status ", k , value));
+        if (statusViolation.hasWarnings()) {
+            statusViolation.getWarnings().forEach((k, v) -> {
+                v.forEach((value) -> {
+                    currentErrors.add(new ReportItem("Status ", k, value));
                 });
             });
         }
 
-        if (status_violation.hasNotifications()){
-           status_violation.getNotifications().forEach((k,v)->{
-	     v.forEach((value)->{
-               currentNotifications.add(new ReportItem("Status ", k, value));
-             });
-           });
-        }
-
-        if (status_violation.hasErrors()) {
-            status_violation.getErrors().forEach((k,v)->{
-                v.forEach((value)-> {
-                    currentErrors.add(new ReportItem("Status ", k , value));
+        if (statusViolation.hasNotifications()) {
+            statusViolation.getNotifications().forEach((k, v) -> {
+                v.forEach((value) -> {
+                    currentNotifications.add(
+                        new ReportItem("Status ", k, value));
                 });
             });
         }
 
-        if (status_violation.hasErrors() || status_violation.hasWarnings() ) {
+        if (statusViolation.hasErrors()) {
+            statusViolation.getErrors().forEach((k, v) -> {
+                v.forEach((value) -> {
+                    currentErrors.add(new ReportItem("Status ", k, value));
+                });
+            });
+        }
+
+        if (statusViolation.hasErrors() || statusViolation.hasWarnings()) {
           return false;
         }
 
         // check auth
-        MessStelle messStelle = repository.getByIdPlain(MessStelle.class, mstId, Strings.STAMM);
-        if ((statusStufe == 1 && userInfo.getFunktionenForMst(mstId).contains(1)) ||
-            (statusStufe == 2 &&
-                userInfo.getNetzbetreiber().contains(messStelle.getNetzbetreiberId()) &&
-                userInfo.getFunktionenForNetzbetreiber(messStelle.getNetzbetreiberId()).contains(2)) ||
-            (statusStufe == 3 &&
-                userInfo.getFunktionen().contains(3))) {
+        MessStelle messStelle =
+            repository.getByIdPlain(MessStelle.class, mstId, Strings.STAMM);
+        if ((statusStufe == 1
+            && userInfo.getFunktionenForMst(mstId).contains(1))
+            || (statusStufe == 2
+                && userInfo.getNetzbetreiber().contains(
+                    messStelle.getNetzbetreiberId())
+                && userInfo.getFunktionenForNetzbetreiber(
+                    messStelle.getNetzbetreiberId()).contains(2))
+            || (statusStufe == 3
+                && userInfo.getFunktionen().contains(3))
+        ) {
             StatusProtokoll newStatus = new StatusProtokoll();
             newStatus.setDatum(new Timestamp(new Date().getTime()));
             newStatus.setMessungsId(messung.getId());
@@ -1247,7 +1439,8 @@ public class LafObjectMapper {
             repository.update(messung, Strings.LAND);
             return true;
         } else {
-            currentWarnings.add(new ReportItem("status#" + statusStufe, statusWert, 699));
+            currentWarnings.add(
+                new ReportItem("status#" + statusStufe, statusWert, 699));
             return false;
         }
     }
@@ -1266,8 +1459,8 @@ public class LafObjectMapper {
         }
 
         List<Map<String, String>> uort = object.getUrsprungsOrte();
-        if (uort.size() > 0 &&
-            uort.get(0).containsKey("U_ORTS_ZUSATZCODE")
+        if (uort.size() > 0
+            && uort.get(0).containsKey("U_ORTS_ZUSATZCODE")
         ) {
             // WE HAVE A REI-MESSPUNKT!
             // Search for the ort in db
@@ -1315,8 +1508,8 @@ public class LafObjectMapper {
             ort.setOrtId(o.getId());
             ort.setOrtszuordnungTyp("R");
             ort.setProbeId(probe.getId());
-            if (uort.size() > 0 &&
-                uort.get(0).containsKey("U_ORTS_ZUSATZCODE")
+            if (uort.size() > 0
+                && uort.get(0).containsKey("U_ORTS_ZUSATZCODE")
             ) {
                 Map<String, String> uo = uort.get(0);
                 o.setOrtId(uo.get("U_ORTS_ZUSATZCODE"));
@@ -1379,40 +1572,52 @@ public class LafObjectMapper {
         merger.mergeEntnahmeOrt(probe.getId(), ort);
     }
 
-    private Ort findOrCreateOrt(Map<String, String> attributes, String type, Probe probe) {
+    private Ort findOrCreateOrt(
+        Map<String, String> attributes,
+        String type,
+        Probe probe
+    ) {
         Ort o = new Ort();
         // If laf contains coordinates, find a ort with matching coordinates or
         // create one.
-        if ((attributes.get(type + "KOORDINATEN_ART") != null ||
-             attributes.get(type + "KOORDINATEN_ART_S") != null) &&
-            !attributes.get(type + "KOORDINATEN_X").equals("") &&
-            attributes.get(type + "KOORDINATEN_X") != null &&
-            !attributes.get(type + "KOORDINATEN_X").equals("") &&
-            attributes.get(type + "KOORDINATEN_Y") != null
+        if ((attributes.get(type + "KOORDINATEN_ART") != null
+            || attributes.get(type + "KOORDINATEN_ART_S") != null)
+            && !attributes.get(type + "KOORDINATEN_X").equals("")
+            && attributes.get(type + "KOORDINATEN_X") != null
+            && !attributes.get(type + "KOORDINATEN_X").equals("")
+            && attributes.get(type + "KOORDINATEN_Y") != null
         ) {
             if (attributes.get(type + "KOORDINATEN_ART_S") != null) {
-                o.setKdaId(Integer.valueOf(attributes.get(type + "KOORDINATEN_ART_S")));
+                o.setKdaId(Integer.valueOf(
+                    attributes.get(type + "KOORDINATEN_ART_S")));
                 KoordinatenArt koordinatenArt = repository.getByIdPlain(
                     KoordinatenArt.class,
                     o.getKdaId(),
                     Strings.STAMM);
-                if ( koordinatenArt == null) {
-                    currentWarnings.add(new ReportItem(type + "KOORDINATEN_ART_S", attributes.get(type + "KOORDINATEN_ART_S"), 675));
+                if (koordinatenArt == null) {
+                    currentWarnings.add(
+                        new ReportItem(
+                            type + "KOORDINATEN_ART_S",
+                            attributes.get(type + "KOORDINATEN_ART_S"), 675));
                     o.setKdaId(null);
                 }
-            }
-            else {
+            } else {
                 QueryBuilder<KoordinatenArt> kdaBuilder =
                     new QueryBuilder<KoordinatenArt>(
                         repository.entityManager(Strings.STAMM),
                         KoordinatenArt.class);
-                kdaBuilder.and("koordinatenart", attributes.get(type + "KOORDINATEN_ART"));
-                List<KoordinatenArt> arten = repository.filterPlain(kdaBuilder.getQuery(), Strings.STAMM);
+                kdaBuilder.and(
+                    "koordinatenart", attributes.get(type + "KOORDINATEN_ART"));
+                List<KoordinatenArt> arten =
+                    repository.filterPlain(
+                        kdaBuilder.getQuery(), Strings.STAMM);
                 if (arten == null || arten.isEmpty()) {
-                    currentWarnings.add(new ReportItem(type + "KOORDINATEN_ART", attributes.get(type + "KOORDINATEN_ART"), 675));
+                    currentWarnings.add(
+                        new ReportItem(
+                            type + "KOORDINATEN_ART",
+                            attributes.get(type + "KOORDINATEN_ART"), 675));
                     o.setKdaId(null);
-                }
-                else {
+                } else {
                     o.setKdaId(arten.get(0).getId());
                 }
             }
@@ -1421,7 +1626,9 @@ public class LafObjectMapper {
         }
         // If laf contains gemeinde attributes, find a ort with matching gemId
         // or create one.
-        if (attributes.get(type + "GEMEINDENAME") != null && !attributes.get(type + "GEMEINDENAME").equals("")) {
+        if (attributes.get(type + "GEMEINDENAME") != null
+            && !attributes.get(type + "GEMEINDENAME").equals("")
+        ) {
             QueryBuilder<Verwaltungseinheit> builder =
                 new QueryBuilder<Verwaltungseinheit>(
                     repository.entityManager(Strings.STAMM),
@@ -1430,34 +1637,43 @@ public class LafObjectMapper {
             List<Verwaltungseinheit> ves =
                 repository.filterPlain(builder.getQuery(), Strings.STAMM);
             if (ves == null || ves.size() == 0) {
-                currentWarnings.add(new ReportItem("GEMEINDENAME", attributes.get(type + "GEMEINDENAME"), 675));
-            }
-            else {
+                currentWarnings.add(
+                    new ReportItem(
+                        "GEMEINDENAME",
+                        attributes.get(type + "GEMEINDENAME"), 675));
+            } else {
                 o.setGemId(ves.get(0).getId());
             }
-        }
-        else if (attributes.get(type + "GEMEINDESCHLUESSEL") != null && !attributes.get(type + "GEMEINDESCHLUESSEL").equals("")) {
+        } else if (attributes.get(type + "GEMEINDESCHLUESSEL") != null
+            && !attributes.get(type + "GEMEINDESCHLUESSEL").equals("")
+        ) {
             o.setGemId(attributes.get(type + "GEMEINDESCHLUESSEL"));
-            Verwaltungseinheit v = repository.getByIdPlain(Verwaltungseinheit.class, o.getGemId(), Strings.STAMM);
+            Verwaltungseinheit v =
+                repository.getByIdPlain(
+                    Verwaltungseinheit.class, o.getGemId(), Strings.STAMM);
             if (v == null) {
-                currentWarnings.add(new ReportItem(type + "GEMEINDESCHLUESSEL", o.getGemId(), 675));
+                currentWarnings.add(
+                    new ReportItem(
+                        type + "GEMEINDESCHLUESSEL", o.getGemId(), 675));
                 o.setGemId(null);
             }
         }
         String key = "";
         String hLand = "";
         String staatFilter = "";
-        if (attributes.get(type + "HERKUNFTSLAND_S") != null && !attributes.get(type + "HERKUNFTSLAND_S").equals("")) {
+        if (attributes.get(type + "HERKUNFTSLAND_S") != null
+            && !attributes.get(type + "HERKUNFTSLAND_S").equals("")) {
             staatFilter = "id";
             key = "HERKUNFTSLAND_S";
             hLand = attributes.get(type + "HERKUNFTSLAND_S");
-        }
-        else if (attributes.get(type + "HERKUNFTSLAND_KURZ") != null && !attributes.get(type + "HERKUNFTSLAND_KURZ").equals("")) {
+        } else if (attributes.get(type + "HERKUNFTSLAND_KURZ") != null
+            && !attributes.get(type + "HERKUNFTSLAND_KURZ").equals("")
+        ) {
             staatFilter = "staatKurz";
             key = "HERKUNFTSLAND_KURZ";
             hLand = attributes.get(type + "HERKUNFTSLAND_KURZ");
-        }
-        else if (attributes.get(type + "HERKUNFTSLAND_LANG") != null && !attributes.get(type + "HERKUNFTSLAND_LANG").equals("")) {
+        } else if (attributes.get(type + "HERKUNFTSLAND_LANG") != null
+            && !attributes.get(type + "HERKUNFTSLAND_LANG").equals("")) {
             staatFilter = "staat";
             key = "HERKUNFTSLAND_LANG";
             hLand = attributes.get(type + "HERKUNFTSLAND_LANG");
@@ -1481,25 +1697,33 @@ public class LafObjectMapper {
         if (attributes.containsKey(type + "HOEHE_NN")) {
             o.setHoeheUeberNn(Float.valueOf(attributes.get(type + "HOEHE_NN")));
         }
-        if (attributes.containsKey(type + "ORTS_ZUSATZCODE") && !attributes.get(type + "ORTS_ZUSATZCODE").equals("")) {
+        if (attributes.containsKey(type + "ORTS_ZUSATZCODE")
+            && !attributes.get(type + "ORTS_ZUSATZCODE").equals("")) {
             Ortszusatz zusatz = repository.getByIdPlain(
                 Ortszusatz.class,
                 attributes.get(type + "ORTS_ZUSATZCODE"),
                 Strings.STAMM);
-            if ( zusatz == null) {
-                currentWarnings.add(new ReportItem(type + "ORTS_ZUSATZCODE", attributes.get(type + "ORTS_ZUSATZCODE"), 675));
-            }
-            else {
+            if (zusatz == null) {
+                currentWarnings.add(
+                    new ReportItem(
+                        type + "ORTS_ZUSATZCODE",
+                        attributes.get(type + "ORTS_ZUSATZCODE"),
+                        675));
+            } else {
                 o.setOzId(zusatz.getOzsId());
             }
         }
 
         // checkk if all attributes are empty
-        if (o.getKdaId() == null && o.getGemId() == null && o.getStaatId() == null && o.getOzId() == null) {
+        if (o.getKdaId() == null
+            && o.getGemId() == null
+            && o.getStaatId() == null
+            && o.getOzId() == null) {
             return null;
         }
 
-        MessStelle mst = repository.getByIdPlain(MessStelle.class, probe.getMstId(), Strings.STAMM);
+        MessStelle mst = repository.getByIdPlain(
+            MessStelle.class, probe.getMstId(), Strings.STAMM);
         o.setNetzbetreiberId(mst.getNetzbetreiberId());
         o = ortFactory.completeOrt(o);
         if (o == null || o.getGeom() == null) {
@@ -1507,16 +1731,17 @@ public class LafObjectMapper {
             return null;
         }
         Violation violation = ortValidator.validate(o);
-        for (Entry<String, List<Integer>> warn :
-                 violation.getWarnings().entrySet()) {
+        for (Entry<String, List<Integer>> warn
+            : violation.getWarnings().entrySet()
+        ) {
             for (Integer code : warn.getValue()) {
                 currentWarnings.add(
                     new ReportItem("validation", warn.getKey(), code));
             }
         }
         if (violation.hasErrors()) {
-            for (Entry<String, List<Integer>> err :
-                     violation.getErrors().entrySet()) {
+            for (Entry<String, List<Integer>> err
+                : violation.getErrors().entrySet()) {
                 for (Integer code : err.getValue()) {
                     // Add to warnings because Probe object might be imported
                     currentWarnings.add(
@@ -1543,7 +1768,8 @@ public class LafObjectMapper {
                     break;
             default: break;
         }
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HHmm").withZone(fromLaf);
+        DateTimeFormatter formatter =
+            DateTimeFormatter.ofPattern("yyyyMMdd HHmm").withZone(fromLaf);
         ZonedDateTime orig = ZonedDateTime.parse(date, formatter);
         ZonedDateTime utc = orig.withZoneSameInstant(ZoneOffset.UTC);
         return Timestamp.from(utc.toInstant());
@@ -1574,42 +1800,54 @@ public class LafObjectMapper {
         logger.debug("umw: " + probe.getUmwId());
     }
 
-    private void addProbeAttribute(Entry<String, String> attribute, Probe probe, String netzbetreiberId) {
+    private void addProbeAttribute(
+        Entry<String, String> attribute,
+        Probe probe,
+        String netzbetreiberId
+    ) {
         String key = attribute.getKey();
         String value = attribute.getValue();
 
-        if ("DATENBASIS_S".equals(key) && !value.equals("") && probe.getDatenbasisId() == null) {
+        if ("DATENBASIS_S".equals(key)
+            && !value.equals("")
+            && probe.getDatenbasisId() == null
+        ) {
             Datenbasis datenbasis = repository.getByIdPlain(
                 Datenbasis.class,
                 Integer.valueOf(value.toString()),
                 Strings.STAMM);
-            if ( datenbasis == null) {
+            if (datenbasis == null) {
                 currentWarnings.add(new ReportItem(key, value.toString(), 675));
                 return;
             }
             Integer v = Integer.valueOf(value.toString());
             probe.setDatenbasisId(v);
-        }
-        else if ("DATENBASIS_S".equals(key) && probe.getDatenbasisId() != null){
+        } else if ("DATENBASIS_S".equals(key)
+            && probe.getDatenbasisId() != null) {
             currentWarnings.add(new ReportItem(key, value.toString(), 672));
         }
 
 
-        if ("DATENBASIS".equals(key)&& !value.equals("") && probe.getDatenbasisId() == null) {
-            List<ImporterConfig> cfgs = getImporterConfigByAttributeUpper("DATENBASIS");
+        if ("DATENBASIS".equals(key)
+            && !value.equals("")
+            && probe.getDatenbasisId() == null
+        ) {
+            List<ImporterConfig> cfgs =
+                getImporterConfigByAttributeUpper("DATENBASIS");
             String attr = value.toString();
             for (int i = 0; i < cfgs.size(); i++) {
                 ImporterConfig cfg = cfgs.get(i);
-                if (cfg != null &&
-                    cfg.getAction().equals("convert") &&
-                    cfg.getFromValue().equals(attr)
+                if (cfg != null
+                    && cfg.getAction().equals("convert")
+                    && cfg.getFromValue().equals(attr)
                 ) {
                     attr = cfg.getToValue();
                 }
                 if (cfg != null && cfg.getAction().equals("transform")) {
                     char from = (char) Integer.parseInt(cfg.getFromValue(), 16);
                     char to = (char) Integer.parseInt(cfg.getToValue(), 16);
-                    attr = attr.replaceAll("[" + String.valueOf(from) + "]", String.valueOf(to));
+                    attr = attr.replaceAll(
+                        "[" + String.valueOf(from) + "]", String.valueOf(to));
                 }
             }
             QueryBuilder<Datenbasis> builder =
@@ -1618,7 +1856,7 @@ public class LafObjectMapper {
                     Datenbasis.class);
             builder.and("datenbasis", attr);
             List<Datenbasis> datenbasis =
-                (List<Datenbasis>)repository.filterPlain(
+                (List<Datenbasis>) repository.filterPlain(
                     builder.getQuery(),
                     Strings.STAMM);
             if (datenbasis == null || datenbasis.isEmpty()) {
@@ -1627,8 +1865,10 @@ public class LafObjectMapper {
             }
             Integer v = datenbasis.get(0).getId();
             probe.setDatenbasisId(v);
-        }
-        else if ("DATENBASIS".equals(key) && !value.equals("") && probe.getDatenbasisId() != null){
+        } else if ("DATENBASIS".equals(key)
+            && !value.equals("")
+            && probe.getDatenbasisId() != null
+        ) {
             currentWarnings.add(new ReportItem(key, value.toString(), 672));
         }
 
@@ -1650,21 +1890,24 @@ public class LafObjectMapper {
                 MessStelle.class,
                 value.toString(),
                 Strings.STAMM);
-            if ( mst == null) {
+            if (mst == null) {
                 currentWarnings.add(new ReportItem(key, value.toString(), 675));
                 return;
             }
             probe.setLaborMstId(value.toString());
         }
 
-        if ("MESSPROGRAMM_S".equals(key) && !value.equals("") && probe.getBaId() == null) {
+        if ("MESSPROGRAMM_S".equals(key)
+            && !value.equals("")
+            && probe.getBaId() == null
+        ) {
             QueryBuilder<MessprogrammTransfer> builder =
                 new QueryBuilder<MessprogrammTransfer>(
                     repository.entityManager(Strings.STAMM),
                     MessprogrammTransfer.class);
             builder.and("messprogrammS", value);
-            List<MessprogrammTransfer> transfer=
-                (List<MessprogrammTransfer>)repository.filterPlain(
+            List<MessprogrammTransfer> transfer =
+                (List<MessprogrammTransfer>) repository.filterPlain(
                     builder.getQuery(),
                     Strings.STAMM);
             if (transfer == null || transfer.isEmpty()) {
@@ -1682,8 +1925,8 @@ public class LafObjectMapper {
                     repository.entityManager(Strings.STAMM),
                     MessprogrammTransfer.class);
             builder.and("messprogrammC", value);
-            List<MessprogrammTransfer> transfer=
-                (List<MessprogrammTransfer>)repository.filterPlain(
+            List<MessprogrammTransfer> transfer =
+                (List<MessprogrammTransfer>) repository.filterPlain(
                     builder.getQuery(),
                     Strings.STAMM);
             if (transfer == null || transfer.isEmpty()) {
@@ -1704,7 +1947,7 @@ public class LafObjectMapper {
             builder.and("netzbetreiberId", netzbetreiberId);
             builder.and("datensatzErzeugerId", value);
             List<DatensatzErzeuger> datensatzErzeuger =
-                    (List<DatensatzErzeuger>)repository.filterPlain(
+                    (List<DatensatzErzeuger>) repository.filterPlain(
                             builder.getQuery(),
                             Strings.STAMM);
             if (datensatzErzeuger == null || datensatzErzeuger.isEmpty()) {
@@ -1722,7 +1965,7 @@ public class LafObjectMapper {
             builder.and("netzbetreiberId", netzbetreiberId);
             builder.and("code", value);
             List<MessprogrammKategorie> kategorie =
-                    (List<MessprogrammKategorie>)repository.filterPlain(
+                    (List<MessprogrammKategorie>) repository.filterPlain(
                             builder.getQuery(),
                             Strings.STAMM);
             if (kategorie == null || kategorie.isEmpty()) {
@@ -1740,7 +1983,7 @@ public class LafObjectMapper {
             builder.and("netzbetreiberId", netzbetreiberId);
             builder.and("prnId", value);
             List<Probenehmer> prn =
-                    (List<Probenehmer>)repository.filterPlain(
+                    (List<Probenehmer>) repository.filterPlain(
                             builder.getQuery(),
                             Strings.STAMM);
             if (prn == null || prn.isEmpty()) {
@@ -1766,35 +2009,36 @@ public class LafObjectMapper {
             probe.setUrsprungszeit(getDate(value.toString()));
         }
 
-        if ("UMWELTBEREICH_S".equals(key) &&
-            probe.getUmwId() == null &&
-            !value.equals("")
+        if ("UMWELTBEREICH_S".equals(key)
+            && probe.getUmwId() == null
+            && !value.equals("")
         ) {
             Umwelt umw = repository.getByIdPlain(
                 Umwelt.class,
                 value.toString(),
                 Strings.STAMM);
-            if ( umw == null) {
+            if (umw == null) {
                 currentWarnings.add(new ReportItem(key, value.toString(), 675));
                 return;
             }
             probe.setUmwId(value.toString());
-        }
-        else if ("UMWELTBEREICH_S".equals(key) && probe.getUmwId() != null){
+        } else if ("UMWELTBEREICH_S".equals(key) && probe.getUmwId() != null){
             currentWarnings.add(new ReportItem(key, value.toString(), 672));
         }
-        if ("UMWELTBEREICH_C".equals(key) &&
-            probe.getUmwId() == null &&
-            !value.equals("")
+        if ("UMWELTBEREICH_C".equals(key)
+            && probe.getUmwId() == null
+            && !value.equals("")
         ) {
             QueryBuilder<Umwelt> builder =
                 new QueryBuilder<Umwelt>(
                     repository.entityManager(Strings.STAMM),
                     Umwelt.class);
-            int length = value.toString().length() > 80 ? 80 : value.toString().length();
+            int length = value.toString().length() > 80
+                ? 80
+                : value.toString().length();
             builder.and("umweltBereich", value.toString().substring(0, length));
             List<Umwelt> umwelt =
-                (List<Umwelt>)repository.filterPlain(
+                (List<Umwelt>) repository.filterPlain(
                     builder.getQuery(),
                     Strings.STAMM);
             if (umwelt == null || umwelt.isEmpty()) {
@@ -1808,9 +2052,12 @@ public class LafObjectMapper {
         }
 
         if ("DESKRIPTOREN".equals(key)) {
-            if (value.length() > 24) value = value.substring(0,24); // ignore deskriptor S12 at the laf import
+            // ignore deskriptor S12 at the laf import
+            if (value.length() > 24) {
+                value = value.substring(0, 24);
+            }
             if (value.length() < 26) {
-                for (int i = value.length(); i <= 26 ; i++) {
+                for (int i = value.length(); i <= 26; i++) {
                     value += " ";
                 }
             }
@@ -1819,7 +2066,7 @@ public class LafObjectMapper {
             List<String> tmp = new ArrayList<String>();
             tmp.add("D:");
             for (int i =  0; i < value.length() - 4; i += 2) {
-                tmp.add(value.substring(i, i+2));
+                tmp.add(value.substring(i, i + 2));
             }
             probe.setMediaDesk(StringUtils.join(tmp.toArray(), " "));
         }
@@ -1827,11 +2074,9 @@ public class LafObjectMapper {
         if ("TESTDATEN".equals(key)) {
             if (value.toString().equals("1")) {
                 probe.setTest(true);
-            }
-            else if (value.toString().equals("0")) {
+            } else if (value.toString().equals("0")) {
                 probe.setTest(false);
-            }
-            else if (!value.toString().equals("")) {
+            } else if (!value.toString().equals("")) {
                 currentWarnings.add(new ReportItem(key, value.toString(), 675));
             }
         }
@@ -1858,20 +2103,22 @@ public class LafObjectMapper {
         }
 
         if ("PROBENART".equals(key) && !value.equals("")) {
-            List<ImporterConfig> cfgs = getImporterConfigByAttributeUpper("PROBENART");
+            List<ImporterConfig> cfgs =
+                getImporterConfigByAttributeUpper("PROBENART");
             String attr = value.toString();
             for (int i = 0; i < cfgs.size(); i++) {
                 ImporterConfig cfg = cfgs.get(i);
-                if (cfg != null &&
-                    cfg.getAction().equals("convert") &&
-                    cfg.getFromValue().equals(attr)
+                if (cfg != null
+                    && cfg.getAction().equals("convert")
+                    && cfg.getFromValue().equals(attr)
                 ) {
                     attr = cfg.getToValue();
                 }
                 if (cfg != null && cfg.getAction().equals("transform")) {
                     char from = (char) Integer.parseInt(cfg.getFromValue(), 16);
                     char to = (char) Integer.parseInt(cfg.getToValue(), 16);
-                    attr = attr.replaceAll("[" + String.valueOf(from) + "]", String.valueOf(to));
+                    attr = attr.replaceAll(
+                        "[" + String.valueOf(from) + "]", String.valueOf(to));
                 }
             }
             QueryBuilder<Probenart> builder =
@@ -1880,7 +2127,7 @@ public class LafObjectMapper {
                     Probenart.class);
             builder.and("probenart", attr);
             List<Probenart> probenart =
-                (List<Probenart>)repository.filterPlain(
+                (List<Probenart>) repository.filterPlain(
                     builder.getQuery(),
                     Strings.STAMM);
             if (probenart == null || probenart.isEmpty()) {
@@ -1893,8 +2140,7 @@ public class LafObjectMapper {
     /**
      * Add an attribute to the given LMessung object.
      *
-     * @param key       The key mapping to a object member.
-     * @param value     The value to set.
+     * @param attribute The attributes to map
      * @param messung   The entity object.
      * @return The updated entity object.
      */
@@ -1909,34 +2155,29 @@ public class LafObjectMapper {
         }
         if ("NEBENPROBENNUMMER".equals(key) && !value.equals("")) {
             messung.setNebenprobenNr(value.toString());
-        }
-        else if ("MESS_DATUM_UHRZEIT".equals(key) && !value.equals("")) {
+        } else if ("MESS_DATUM_UHRZEIT".equals(key) && !value.equals("")) {
             messung.setMesszeitpunkt(getDate(value.toString()));
-        }
-        else if ("MESSZEIT_SEKUNDEN".equals(key) && !value.equals("")) {
+        } else if ("MESSZEIT_SEKUNDEN".equals(key) && !value.equals("")) {
             Integer i = Integer.valueOf(value.toString());
             messung.setMessdauer(i);
-        }
-        else if ("MESSMETHODE_S".equals(key) && !value.equals("")) {
+        } else if ("MESSMETHODE_S".equals(key) && !value.equals("")) {
             MessMethode mmt = repository.getByIdPlain(
                 MessMethode.class,
                 value.toString(),
                 Strings.STAMM);
-            if ( mmt == null) {
+            if (mmt == null) {
                 currentWarnings.add(new ReportItem(key, value.toString(), 675));
-            }
-            else {
+            } else {
                 messung.setMmtId(value.toString());
             }
-        }
-        else if ("MESSMETHODE_C".equals(key) && !value.equals("")) {
+        } else if ("MESSMETHODE_C".equals(key) && !value.equals("")) {
             QueryBuilder<MessMethode> builder =
                 new QueryBuilder<MessMethode>(
                     repository.entityManager(Strings.STAMM),
                     MessMethode.class);
             builder.and("messmethode", value.toString());
             List<MessMethode> mm =
-                (List<MessMethode>)repository.filterPlain(
+                (List<MessMethode>) repository.filterPlain(
                     builder.getQuery(),
                     Strings.STAMM);
             if (mm == null || mm.isEmpty()) {
@@ -1945,19 +2186,15 @@ public class LafObjectMapper {
                 warn.setKey("messmethode");
                 warn.setValue(key);
                 currentWarnings.add(warn);
-            }
-            else {
+            } else {
                 messung.setMmtId(mm.get(0).getId());
             }
-        }
-        else if ("ERFASSUNG_ABGESCHLOSSEN".equals(key)) {
+        } else if ("ERFASSUNG_ABGESCHLOSSEN".equals(key)) {
             if (value.toString().equals("1")) {
                 messung.setFertig(true);
-            }
-            else if (value.toString().equals("0")) {
+            } else if (value.toString().equals("0")) {
                 messung.setFertig(false);
-            }
-            else if (!value.toString().equals("")) {
+            } else if (!value.toString().equals("")) {
                 currentWarnings.add(new ReportItem(key, value.toString(), 675));
             }
         }

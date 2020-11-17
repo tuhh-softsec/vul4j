@@ -14,6 +14,5 @@ package de.intevation.lada.validation;
  * @author <a href="mailto:raimund.renkert@intevation.de">Raimund Renkert</a>
  */
 public interface Validator {
-
-    public Violation validate(Object object);
+    Violation validate(Object object);
 }

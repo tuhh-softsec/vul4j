@@ -10,8 +10,6 @@ package de.intevation.lada.util.auth;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.OverridesAttribute;
-
 import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.model.stammdaten.MessStelle;
 import de.intevation.lada.util.data.Strings;
@@ -27,11 +25,11 @@ public class ProbeAuthorizer extends BaseAuthorizer {
         UserInfo userInfo,
         Class<T> clazz
     ) {
-        Probe probe = (Probe)data;
-        if (method == RequestMethod.PUT ||
-            method == RequestMethod.DELETE) {
-            return !isProbeReadOnly(probe.getId()) &&
-                getAuthorization(userInfo, probe);
+        Probe probe = (Probe) data;
+        if (method == RequestMethod.PUT
+            || method == RequestMethod.DELETE) {
+            return !isProbeReadOnly(probe.getId())
+                && getAuthorization(userInfo, probe);
         }
         return getAuthorization(userInfo, probe);
     }
@@ -56,13 +54,12 @@ public class ProbeAuthorizer extends BaseAuthorizer {
     ) {
         if (data.getData() instanceof List<?>) {
             List<Probe> proben = new ArrayList<Probe>();
-            for (Probe probe :(List<Probe>)data.getData()) {
+            for (Probe probe :(List<Probe>) data.getData()) {
                 proben.add(setAuthData(userInfo, probe));
             }
             data.setData(proben);
-        }
-        else if (data.getData() instanceof Probe) {
-            Probe probe = (Probe)data.getData();
+        } else if (data.getData() instanceof Probe) {
+            Probe probe = (Probe) data.getData();
             data.setData(setAuthData(userInfo, probe));
         }
         return data;
@@ -76,7 +73,9 @@ public class ProbeAuthorizer extends BaseAuthorizer {
      * @return The probe.
      */
     private Probe setAuthData(UserInfo userInfo, Probe probe) {
-        MessStelle mst = repository.getByIdPlain(MessStelle.class, probe.getMstId(), Strings.STAMM);
+        MessStelle mst =
+            repository.getByIdPlain(
+                MessStelle.class, probe.getMstId(), Strings.STAMM);
         if (!userInfo.getNetzbetreiber().contains(mst.getNetzbetreiberId())) {
             probe.setOwner(false);
             probe.setReadonly(true);
@@ -84,8 +83,7 @@ public class ProbeAuthorizer extends BaseAuthorizer {
         }
         if (userInfo.belongsTo(probe.getMstId(), probe.getLaborMstId())) {
             probe.setOwner(true);
-        }
-        else {
+        } else {
             probe.setOwner(false);
         }
         probe.setReadonly(this.isProbeReadOnly(probe.getId()));

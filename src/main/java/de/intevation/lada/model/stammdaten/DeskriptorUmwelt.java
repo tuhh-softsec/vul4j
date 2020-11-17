@@ -20,7 +20,7 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name="deskriptor_umwelt")
+@Table(name = "deskriptor_umwelt")
 public class DeskriptorUmwelt implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -51,7 +51,7 @@ public class DeskriptorUmwelt implements Serializable {
 
     private Integer s11;
 
-    @Column(name="umw_id")
+    @Column(name = "umw_id")
     private String umwId;
 
     public DeskriptorUmwelt() {

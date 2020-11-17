@@ -23,9 +23,10 @@ public class HasHauptprobenNr implements Rule {
 
     @Override
     public Violation execute(Object object) {
-        Probe probe = (Probe)object;
-        if (probe.getHauptprobenNr() == null ||
-            probe.getHauptprobenNr().equals("")) {
+        Probe probe = (Probe) object;
+        if (probe.getHauptprobenNr() == null
+            || probe.getHauptprobenNr().equals("")
+        ) {
             Violation violation = new Violation();
             violation.addNotification("hauptprobenNr", 631);
             return violation;
