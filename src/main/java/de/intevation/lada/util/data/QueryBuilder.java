@@ -192,9 +192,7 @@ public class QueryBuilder<T> {
             }
             return this;
         }
-        for (String v: values) {
-            this.or(id, v);
-        }
+        this.orIn(id, values);
         return this;
     }
 
