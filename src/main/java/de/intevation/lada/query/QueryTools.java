@@ -61,10 +61,18 @@ public class QueryTools {
         List<GridColumnValue> customColumns,
         Integer qId
     ) {
-        //A pattern for finding multiselect date filter values
-        Pattern multiselectPattern = Pattern.compile("[0-9]*,[0-9]*");
-        Pattern multiselectNumberPattern = Pattern.compile("[0-9.]*,[0-9.]*");
+        String sql = prepareSql(customColumns, qId);
+        MultivaluedMap<String, Object> filterValues =
+            prepareFilters(customColumns, qId);
+        List<GridColumn> columns = new ArrayList<GridColumn>();
+        for (GridColumnValue customColumn : customColumns) {
+            columns.add(customColumn.getGridColumn());
+        }
+        return execQuery(sql, filterValues, columns);
 
+    }
+
+    public String prepareSql(List<GridColumnValue> customColumns, Integer qId) {
         QueryBuilder<BaseQuery> builder = new QueryBuilder<BaseQuery>(
             repository.entityManager(Strings.STAMM),
             BaseQuery.class
@@ -74,22 +82,13 @@ public class QueryTools {
             repository.filterPlain(builder.getQuery(), Strings.STAMM).get(0);
 
         String sql = query.getSql();
-
-        List<GridColumn> columns = new ArrayList<GridColumn>();
-        //Map containing all sort statements, sorted by sortIndex
-        TreeMap<Integer, String> sortIndMap = new TreeMap<Integer, String>();
-        //Map containing all filters and filter values
-        MultivaluedMap<String, Object> filterValues =
-            new MultivaluedHashMap<String, Object>();
         String filterSql = "";
         String genericFilterSql = "";
         String sortSql = "";
         boolean subquery = false;
+        TreeMap<Integer, String> sortIndMap = new TreeMap<Integer, String>();
 
         for (GridColumnValue customColumn : customColumns) {
-            boolean generic = false;
-            //Build ORDER BY clause
-            columns.add(customColumn.getGridColumn());
             if (customColumn.getSort() != null
                 && !customColumn.getSort().isEmpty()) {
                     String sortValue =
@@ -103,6 +102,7 @@ public class QueryTools {
                 sortIndMap.put(key, value);
             }
 
+            boolean generic = false;
             if (customColumn.getFilterActive() != null
                 && customColumn.getFilterActive()
                 && customColumn.getFilterValue() != null
@@ -110,19 +110,16 @@ public class QueryTools {
                 && customColumn.getFilterIsNull() != null
                 && !customColumn.getFilterIsNull()
             ) {
-
                 Filter filter = customColumn.getGridColumn().getFilter();
                 String filterValue = customColumn.getFilterValue();
                 String currentFilterString = filter.getSql();
                 String currentFilterParam = filter.getParameter();
                 String filterType = filter.getFilterType().getType();
-
                 if (customColumn.getFilterNegate() != null
                     && customColumn.getFilterNegate()
                 ) {
                     currentFilterString = "NOT(" + currentFilterString + ")";
                 }
-                //Check if filter is generic and replace param and value param
                 if (filterType.equals("generictext")) {
                     String genTextParam = ":" + filter.getParameter() + "Param";
                     String genTextValue = filter.getParameter() + "Value";
@@ -138,9 +135,6 @@ public class QueryTools {
                     subquery = true;
                     generic = true;
                 }
-
-                // If a tag filter is applied, split param into n
-                // numbered params for n tags to filter
                 if (filterType.equals("tag")) {
                     String[] tagIds = filterValue.split(",");
                     int tagNumber = tagIds.length;
@@ -148,17 +142,11 @@ public class QueryTools {
                     String param = filter.getParameter();
                     String tagFilterSql = filter.getSql();
                     for (int i = 0; i < tagNumber; i++) {
-                        String tag =
-                            repository.getByIdPlain(
-                                Tag.class,
-                                Integer.parseInt(tagIds[i]),
-                                Strings.STAMM).getTag();
                         if (i != tagNumber - 1) {
                             paramlist += " :" + param + i + " , ";
                         } else {
                             paramlist += " :" + param + i;
                         }
-                        filterValues.add(param + i, tag);
                     }
                     tagFilterSql =
                         tagFilterSql.replace(
@@ -169,6 +157,111 @@ public class QueryTools {
                         filterSql += " AND ";
                     }
                     filterSql += tagFilterSql;
+                    continue;
+                }
+                if (generic) {
+                    if (genericFilterSql.isEmpty()) {
+                        genericFilterSql += " WHERE " + currentFilterString;
+                    } else {
+                        genericFilterSql += " AND " + currentFilterString;
+                    }
+                } else {
+                    //Build WHERE clause
+                    if (filterSql.isEmpty()) {
+                        filterSql += " WHERE ";
+                    } else {
+                        filterSql += " AND ";
+                    }
+                    filterSql += currentFilterString;
+                }
+            }
+        }
+
+
+        if (sortIndMap.size() > 0) {
+            NavigableMap <Integer, String> orderedSorts =
+                sortIndMap.tailMap(0, true);
+            String unorderedSorts = sortIndMap.get(-1);
+            sortSql += "";
+            for (String sortString : orderedSorts.values()) {
+                if (sortSql.isEmpty()) {
+                    sortSql += " ORDER BY " + sortString;
+                } else {
+                    sortSql += ", " + sortString;
+                }
+            }
+            if (unorderedSorts != null && !unorderedSorts.isEmpty()) {
+                if (sortSql.isEmpty()) {
+                    sortSql += " ORDER BY " + unorderedSorts;
+                } else {
+                    sortSql += ", " + unorderedSorts;
+                }
+            }
+
+        }
+
+
+        if (!filterSql.isEmpty()) {
+            sql += filterSql + " ";
+        }
+        sql += sortSql;
+        //TODO Avoid using subqueries to use aliases in the where clause
+        //Append generic and/or tag filter sql seperated from other filters
+        if (subquery) {
+            sql = "SELECT * FROM ( " + sql + " ) AS inner_query ";
+            sql += genericFilterSql;
+        }
+        sql += " ;";
+        return sql;
+    }
+
+    public MultivaluedMap<String, Object> prepareFilters(
+        List<GridColumnValue> customColumns,
+        Integer qId
+    ) {
+        //A pattern for finding multiselect date filter values
+        Pattern multiselectPattern = Pattern.compile("[0-9]*,[0-9]*");
+        Pattern multiselectNumberPattern = Pattern.compile("[0-9.]*,[0-9.]*");
+
+        //Map containing all filters and filter values
+        MultivaluedMap<String, Object> filterValues =
+            new MultivaluedHashMap<String, Object>();
+
+        for (GridColumnValue customColumn : customColumns) {
+            if (customColumn.getFilterActive() != null
+                && customColumn.getFilterActive()
+                && customColumn.getFilterValue() != null
+                && !customColumn.getFilterValue().isEmpty()
+                && customColumn.getFilterIsNull() != null
+                && !customColumn.getFilterIsNull()
+            ) {
+
+                Filter filter = customColumn.getGridColumn().getFilter();
+                String filterValue = customColumn.getFilterValue();
+                String currentFilterParam = filter.getParameter();
+                String filterType = filter.getFilterType().getType();
+
+                //Check if filter is generic and replace param and value param
+                if (filterType.equals("generictext")) {
+                    String genTextValue = filter.getParameter() + "Value";
+                    currentFilterParam =
+                        genTextValue + customColumn.getGridColumnId();
+                }
+
+                // If a tag filter is applied, split param into n
+                // numbered params for n tags to filter
+                if (filterType.equals("tag")) {
+                    String[] tagIds = filterValue.split(",");
+                    int tagNumber = tagIds.length;
+                    String param = filter.getParameter();
+                    for (int i = 0; i < tagNumber; i++) {
+                        String tag =
+                            repository.getByIdPlain(
+                                Tag.class,
+                                Integer.parseInt(tagIds[i]),
+                                Strings.STAMM).getTag();
+                        filterValues.add(param + i, tag);
+                    }
                     continue;
                 }
 
@@ -250,77 +343,17 @@ public class QueryTools {
                         }
                     }
                 }
-                if (generic) {
-                    if (genericFilterSql.isEmpty()) {
-                        genericFilterSql += " WHERE " + currentFilterString;
-                    } else {
-                        genericFilterSql += " AND " + currentFilterString;
-                    }
-                } else {
-                    //Build WHERE clause
-                    if (filterSql.isEmpty()) {
-                        filterSql += " WHERE ";
-                    } else {
-                        filterSql += " AND ";
-                    }
-                    filterSql += currentFilterString;
-                }
-            } else if (customColumn.getFilterActive() != null
-                && customColumn.getFilterActive()
-                && customColumn.getFilterIsNull() != null
-                && customColumn.getFilterIsNull()
-            ) {
-                String currentFilterString =
-                    customColumn.getGridColumn().getFilter().getSql();
-                currentFilterString =
-                    currentFilterString.replaceAll(
-                        "( IN | LIKE | >= | <= | = | BETWEEN | ~ ).*",
-                        " IS NULL ");
-                if (customColumn.getFilterNegate()) {
-                    currentFilterString = "NOT(" + currentFilterString + ")";
-                }
-                if (filterSql.isEmpty()) {
-                    filterSql += " WHERE ";
-                } else {
-                    filterSql += " AND ";
-                }
-                filterSql += currentFilterString;
             }
         }
 
-        if (sortIndMap.size() > 0) {
-            NavigableMap <Integer, String> orderedSorts =
-                sortIndMap.tailMap(0, true);
-            String unorderedSorts = sortIndMap.get(-1);
-            sortSql += "";
-            for (String sortString : orderedSorts.values()) {
-                if (sortSql.isEmpty()) {
-                    sortSql += " ORDER BY " + sortString;
-                } else {
-                    sortSql += ", " + sortString;
-                }
-            }
-            if (unorderedSorts != null && !unorderedSorts.isEmpty()) {
-                if (sortSql.isEmpty()) {
-                    sortSql += " ORDER BY " + unorderedSorts;
-                } else {
-                    sortSql += ", " + unorderedSorts;
-                }
-            }
+        return filterValues;
+    }
 
-        }
-
-        if (!filterSql.isEmpty()) {
-            sql += filterSql + " ";
-        }
-        sql += sortSql;
-        //TODO Avoid using subqueries to use aliases in the where clause
-        //Append generic and/or tag filter sql seperated from other filters
-        if (subquery) {
-            sql = "SELECT * FROM ( " + sql + " ) AS inner_query ";
-            sql += genericFilterSql;
-        }
-        sql += " ;";
+    private List<Map<String, Object>> execQuery(
+        String sql,
+        MultivaluedMap<String, Object> filterValues,
+        List<GridColumn> columns
+    ) {
         try {
             javax.persistence.Query q = prepareQuery(
                     sql,
