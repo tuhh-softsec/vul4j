@@ -130,13 +130,17 @@ public class SqlService {
         String sql,
         MultivaluedMap<String, Object> filters
     ) {
-        String stmt1 = "PREPARE request(text) AS ";
-        String stmt2 = "EXECUTE request(";
-        String stmt3 = "); DEALLOCATE request;";
+        String stmt1 = "PREPARE request AS ";
+        String stmt2 = "EXECUTE request";
+        String stmt3 = "; DEALLOCATE request;";
 
         sql = sql.replaceAll("\n", " ");
 
         Set<String> filterKeys = filters.keySet();
+        if (!filterKeys.isEmpty()) {
+            stmt2 += "(";
+            stmt3 = ")" + stmt3;
+        }
         int i = 1;
         for (String key : filterKeys) {
             List<Object> v = filters.get(key);
@@ -159,7 +163,9 @@ public class SqlService {
             sql = sql.replace(":" + key, "$" + i);
             i++;
         }
-        stmt2 = stmt2.substring(0, stmt2.length() - 1);
+        if (stmt2.endsWith(",")) {
+            stmt2 = stmt2.substring(0, stmt2.length() - 1);
+        }
 
         return stmt1 + sql + stmt2 + stmt3;
     }
