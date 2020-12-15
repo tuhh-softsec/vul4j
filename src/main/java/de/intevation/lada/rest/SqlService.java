@@ -130,11 +130,9 @@ public class SqlService {
         String sql,
         MultivaluedMap<String, Object> filters
     ) {
-        String stmt1 = "PREPARE request AS ";
-        String stmt2 = "EXECUTE request";
-        String stmt3 = "; DEALLOCATE request;";
-
-        sql = sql.replaceAll("\n", " ");
+        String stmt1 = "PREPARE request AS \n";
+        String stmt2 = "\nEXECUTE request";
+        String stmt3 = ";\nDEALLOCATE request;";
 
         Set<String> filterKeys = filters.keySet();
         if (!filterKeys.isEmpty()) {
