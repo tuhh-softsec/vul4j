@@ -48,6 +48,7 @@ import de.intevation.lada.model.stammdaten.Datenbasis;
 import de.intevation.lada.model.stammdaten.DatensatzErzeuger;
 import de.intevation.lada.model.stammdaten.ImporterConfig;
 import de.intevation.lada.model.stammdaten.KoordinatenArt;
+import de.intevation.lada.model.stammdaten.KtaGruppe;
 import de.intevation.lada.model.stammdaten.MessEinheit;
 import de.intevation.lada.model.stammdaten.MessMethode;
 import de.intevation.lada.model.stammdaten.MessStelle;
@@ -1482,6 +1483,36 @@ public class LafObjectMapper {
                 repository.create(ort, "land");
                 probe.setKtaGruppeId(messpunkte.get(0).getKtaGruppeId());
                 repository.update(probe, "land");
+            } else if (uo.get("U_ORTS_ZUSATZCODE").length()==4){
+
+                QueryBuilder<KtaGruppe> builderKta = new QueryBuilder<KtaGruppe>(
+                  repository.entityManager("stamm"),
+                  KtaGruppe.class);
+                builderKta.and("ktaGruppe", uo.get("U_ORTS_ZUSATZCODE"));
+                  List<KtaGruppe> KtaGrp = repository.filterPlain(builderKta.getQuery(), "stamm");
+                if (!KtaGrp.isEmpty()){
+                Ort o = null;
+                o = findOrCreateOrt(uort.get(0), "U_", probe);
+                o.setOrtTyp(1);
+                o.setKtaGruppeId(KtaGrp.get(0).getId());
+                repository.update(o, "stamm");
+
+                Ortszuordnung ort = new Ortszuordnung();
+                ort.setOrtId(o.getId());
+                ort.setOrtszuordnungTyp("R");
+                ort.setProbeId(probe.getId());
+
+                repository.create(ort, "land");
+
+                probe.setKtaGruppeId(KtaGrp.get(0).getId());
+                repository.update(probe, "land");
+                } else {
+                ReportItem warn = new ReportItem();
+                warn.setCode(632);
+                warn.setKey("Ort");
+                warn.setValue(uo.get("U_ORTS_ZUSATZCODE"));
+                currentWarnings.add(warn);
+             }
             }
             else {
                 ReportItem warn = new ReportItem();
