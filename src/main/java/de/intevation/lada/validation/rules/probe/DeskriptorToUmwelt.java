@@ -173,6 +173,8 @@ public class DeskriptorToUmwelt implements Rule {
                                     && data.get(i).getS00() == null
                                 ) {
                                     matches += 1;
+                                } else if (!media.get(0).equals(-1) && data.get(i).getS00() == null) {
+                                    break;
                                 } else {
                                     j = 12;
                                     matches = -12;
@@ -183,6 +185,8 @@ public class DeskriptorToUmwelt implements Rule {
                                     && data.get(i).getS01() == null
                                 ) {
                                     matches += 1;
+                                } else if (!media.get(1).equals(-1) && data.get(i).getS01() == null) {
+                                    break;
                                 } else {
                                     j = 12;
                                     matches = -12;
@@ -193,6 +197,8 @@ public class DeskriptorToUmwelt implements Rule {
                                     && data.get(i).getS02() == null
                                 ) {
                                     matches += 1;
+                                } else if (!media.get(2).equals(-1) && data.get(i).getS02() == null) {
+                                    break;
                                 } else {
                                     j = 12;
                                     matches = -12;
@@ -203,6 +209,8 @@ public class DeskriptorToUmwelt implements Rule {
                                     && data.get(i).getS03() == null
                                 ) {
                                     matches += 1;
+                                } else if (!media.get(3).equals(-1) && data.get(i).getS03() == null) {
+                                    break;
                                 } else {
                                     j = 12; matches = -12;
                                 }
@@ -212,6 +220,8 @@ public class DeskriptorToUmwelt implements Rule {
                                     && data.get(i).getS04() == null
                                 ) {
                                     matches += 1;
+                                } else if (!media.get(4).equals(-1) && data.get(i).getS04() == null) {
+                                    break;
                                 } else {
                                     j = 12;
                                     matches = -12;
@@ -222,6 +232,8 @@ public class DeskriptorToUmwelt implements Rule {
                                     && data.get(i).getS05() == null
                                 ) {
                                     matches +=1;
+                                } else if (!media.get(5).equals(-1) && data.get(i).getS05() == null) {
+                                    break;
                                 } else {
                                     j = 12;
                                     matches = -12;
@@ -232,6 +244,8 @@ public class DeskriptorToUmwelt implements Rule {
                                     && data.get(i).getS06() == null
                                 ) {
                                     matches += 1;
+                                } else if (!media.get(6).equals(-1) && data.get(i).getS06() == null) {
+                                    break;
                                 } else {
                                     j = 12;
                                     matches = -12;
@@ -242,6 +256,8 @@ public class DeskriptorToUmwelt implements Rule {
                                     && data.get(i).getS07() == null
                                 ) {
                                     matches += 1;
+                                } else if (!media.get(7).equals(-1) && data.get(i).getS07() == null) {
+                                    break;
                                 } else {
                                     j = 12;
                                     matches = -12;
@@ -252,6 +268,8 @@ public class DeskriptorToUmwelt implements Rule {
                                     && data.get(i).getS08() == null
                                 ) {
                                     matches += 1;
+                                } else if (!media.get(8).equals(-1) && data.get(i).getS08() == null) {
+                                    break;
                                 } else {
                                     j = 12;
                                     matches = -12;
@@ -262,6 +280,8 @@ public class DeskriptorToUmwelt implements Rule {
                                     && data.get(i).getS09() == null
                                 ) {
                                     matches += 1;
+                                } else if (!media.get(9).equals(-1) && data.get(i).getS09() == null) {
+                                    break;
                                 } else  {
                                     j = 12;
                                     matches = -12;
@@ -272,6 +292,8 @@ public class DeskriptorToUmwelt implements Rule {
                                     && data.get(i).getS10() == null
                                 ) {
                                     matches += 1;
+                                } else if (!media.get(10).equals(-1) && data.get(i).getS10() == null) {
+                                    break;
                                 } else {
                                     j = 12; matches = -12;
                                 }
@@ -281,6 +303,8 @@ public class DeskriptorToUmwelt implements Rule {
                                     && data.get(i).getS11() == null
                                 ) {
                                     matches += 1;
+                                } else if (!media.get(11).equals(-1) && data.get(i).getS11() == null) {
+                                    break;
                                 } else {
                                     j = 12;
                                     matches = -12;
