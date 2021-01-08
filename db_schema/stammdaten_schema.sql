@@ -37,7 +37,7 @@ CREATE FUNCTION update_letzte_aenderung() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
     BEGIN
-        NEW.letzte_aenderung = now();
+        NEW.letzte_aenderung = now() AT TIME ZONE 'utc';
         RETURN NEW;
     END;
 $$;
@@ -236,7 +236,7 @@ CREATE TABLE datensatz_erzeuger (
     datensatz_erzeuger_id character varying(2) NOT NULL,
     mst_id character varying(5) NOT NULL REFERENCES mess_stelle,
     bezeichnung character varying(120) NOT NULL,
-    letzte_aenderung timestamp without time zone DEFAULT now(),
+    letzte_aenderung timestamp without time zone DEFAULT (now() AT TIME ZONE 'utc'),
     UNIQUE(datensatz_erzeuger_id, netzbetreiber_id, mst_id)
 
 );
@@ -356,7 +356,7 @@ CREATE TABLE messprogramm_kategorie (
     netzbetreiber_id character varying(2) NOT NULL REFERENCES netz_betreiber,
     code character varying(3) NOT NULL,
     bezeichnung character varying(120) NOT NULL,
-    letzte_aenderung timestamp without time zone DEFAULT now(),
+    letzte_aenderung timestamp without time zone DEFAULT (now() AT TIME ZONE 'utc'),
     UNIQUE(code, netzbetreiber_id)
 );
 CREATE TRIGGER letzte_aenderung_messprogramm_kategorie BEFORE UPDATE ON messprogramm_kategorie FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
@@ -462,7 +462,7 @@ CREATE TABLE gemeindeuntergliederung (
     koord_y_extern character varying(22),
     geom public.geometry(Point,4326),
     shape public.geometry(MultiPolygon,4326),
-    letzte_aenderung timestamp without time zone DEFAULT now()
+    letzte_aenderung timestamp without time zone DEFAULT (now() AT TIME ZONE 'utc')
 );
 CREATE TRIGGER letzte_aenderung_gemeindeuntergliederung BEFORE UPDATE ON gemeindeuntergliederung FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
 
@@ -479,7 +479,7 @@ CREATE TABLE ort (
     koord_x_extern character varying(22) NOT NULL,
     koord_y_extern character varying(22) NOT NULL,
     hoehe_land real,
-    letzte_aenderung timestamp without time zone DEFAULT now(),
+    letzte_aenderung timestamp without time zone DEFAULT (now() AT TIME ZONE 'utc'),
     geom public.geometry(Point,4326) NOT NULL,
     shape public.geometry(MultiPolygon,4326),
     ort_typ smallint REFERENCES ort_typ,
@@ -551,7 +551,7 @@ CREATE TABLE probenehmer (
     telefon character varying(20),
     tp character varying(3),
     typ character(1),
-    letzte_aenderung timestamp without time zone DEFAULT now(),
+    letzte_aenderung timestamp without time zone DEFAULT (now() AT TIME ZONE 'utc'),
     UNIQUE(prn_id, netzbetreiber_id)
 );
 CREATE TRIGGER letzte_aenderung_probenehmer BEFORE UPDATE ON probenehmer FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
