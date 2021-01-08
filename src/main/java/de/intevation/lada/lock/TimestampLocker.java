@@ -13,8 +13,6 @@ import java.sql.Timestamp;
 
 import javax.inject.Inject;
 
-import org.apache.log4j.Logger;
-
 import de.intevation.lada.model.land.Messung;
 import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.util.annotation.RepositoryConfig;
@@ -30,12 +28,6 @@ import de.intevation.lada.util.rest.Response;
  */
 @LockConfig(type = LockType.TIMESTAMP)
 public class TimestampLocker implements ObjectLocker {
-
-    /**
-     * The logger used in this class.
-     */
-    @Inject
-    private Logger logger;
 
     /**
      * The repository used to read data.
@@ -58,8 +50,6 @@ public class TimestampLocker implements ObjectLocker {
                 Probe.class,
                 newProbe.getId(),
                 Strings.LAND).getData();
-            logger.debug("old: " + oldProbe.getTreeModified().getTime());
-            logger.debug("new: " + newProbe.getTreeModified().getTime());
             if (oldProbe.getTreeModified().getTime()
                 > newProbe.getTreeModified().getTime()) {
                 return true;
