@@ -17,6 +17,9 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- GeoTools Version
+             Note: GeoTools >= 20 is no longer compatible with JTS < 1.15 -->
+        <geotools.version>20.0</geotools.version>
     </properties>
 
     <dependencyManagement>
@@ -84,7 +87,17 @@
             <artifactId>opensaml</artifactId>
             <version>2.6.4</version>
         </dependency>
-
+        <!-- JDK 11 dependencies-->
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-core</artifactId>
+            <version>2.3.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>1.3.2</version>
+        </dependency>
         <!-- Hibernate -->
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -136,23 +149,23 @@
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-referencing</artifactId>
-            <version>14.5</version>
+            <version>${geotools.version}</version>
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-epsg-hsql</artifactId>
-            <version>14.5</version>
+            <version>${geotools.version}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-api</artifactId>
-            <version>14.5</version>
+            <version>${geotools.version}</version>
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-opengis</artifactId>
-            <version>14.5</version>
+            <version>${geotools.version}</version>
         </dependency>
 
         <!-- Logging -->
@@ -283,10 +296,8 @@
                         <configuration>
                             <showDeprecation>true</showDeprecation>
                             <showWarnings>true</showWarnings>
-                            <compilerArguments>
-                                <source>1.8</source>
-                                <target>1.8</target>
-                            </compilerArguments>
+                            <source>11</source>
+                            <target>11</target>
                         </configuration>
                     </plugin>
                     <plugin>
