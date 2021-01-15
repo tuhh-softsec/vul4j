@@ -960,7 +960,7 @@ public class LafObjectMapper {
                 messwViolation.getWarnings().forEach((k, v) -> {
                     v.forEach((value) -> {
                         currentWarnings.add(
-                            new ReportItem("Status ", k, value));
+                            new ReportItem("validation ", k, value));
                     });
                 });
             }
@@ -968,7 +968,7 @@ public class LafObjectMapper {
             if (messwViolation.hasErrors()) {
                 messwViolation.getErrors().forEach((k, v) -> {
                     v.forEach((value) -> {
-                        currentErrors.add(new ReportItem("Status ", k, value));
+                        currentErrors.add(new ReportItem("validation ", k, value));
                     });
                 });
             }
@@ -977,7 +977,7 @@ public class LafObjectMapper {
                 messwViolation.getNotifications().forEach((k, v) -> {
                     v.forEach((value) -> {
                         currentNotifications.add(
-                            new ReportItem("Status ", k, value));
+                            new ReportItem("validation ", k, value));
                     });
                 });
             }
