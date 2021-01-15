@@ -1314,7 +1314,9 @@ public class LafObjectMapper {
             if (status.substring(i - 1, i).equals("0")) {
                 // no further status settings
                 return;
-            } else if (currentErrors.isEmpty() && currentWarnings.isEmpty()) {
+            } else if (currentErrors.isEmpty() && currentWarnings.isEmpty()
+                       || status.substring(i - 1, i).equals("7")
+              ) {
                 if (!addStatusProtokollEntry(
                         i,
                         Integer.valueOf(status.substring(i - 1, i)),
@@ -1375,6 +1377,35 @@ public class LafObjectMapper {
             currentWarnings.add(
                 new ReportItem("status#" + statusStufe, statusWert, 675));
             return false;
+        }
+        //Cleanup Messwerte for Status 7
+            QueryBuilder<Messwert> builderMW = new QueryBuilder<Messwert>(
+                    repository.entityManager(Strings.LAND), Messwert.class);
+            builderMW.and("messungsId", messung.getId());
+            Response messwertQry =
+                repository.filter(builderMW.getQuery(), Strings.LAND);
+            @SuppressWarnings("unchecked")
+            List<Messwert> messwerte = (List<Messwert>) messwertQry.getData();
+            boolean hasValidMesswerte = false;
+            if (!messwerte.isEmpty() && statusWert == 7){
+            for (Messwert messwert: messwerte) {
+                boolean hasNoMesswert = messwert.getMesswert() == null;
+                if ( !hasNoMesswert
+                ) {
+                    hasValidMesswerte = true;
+                    currentWarnings.add(
+                         new ReportItem("status#" + statusStufe, statusWert, 654));
+                }
+                if (hasValidMesswerte) {
+                    return false;
+                }
+            }
+
+            if (statusWert == 7 && !hasValidMesswerte) {
+                for (int i = 0; i < messwerte.size(); i++) {
+                    repository.delete(messwerte.get(i), Strings.LAND);
+                }
+            }
         }
 
         // Validator: StatusAssignment

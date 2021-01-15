@@ -347,6 +347,7 @@ public class StatusService {
             @SuppressWarnings("unchecked")
             List<Messwert> messwerte = (List<Messwert>) messwertQry.getData();
             boolean hasValidMesswerte = false;
+            if (!messwerte.isEmpty()){
             for (Messwert messwert: messwerte) {
                 violation = messwertValidator.validate(messwert);
                 boolean hasNoMesswert = messwert.getMesswert() == null;
@@ -367,6 +368,12 @@ public class StatusService {
                 if (hasValidMesswerte) {
                     break;
                 }
+            }
+            } else if (newStatusWert != 7){
+                    Violation error = new Violation();
+                    error.addError("messwert", 631);
+                    violation.addErrors(error.getErrors());
+                    violationCollection.addErrors(violation.getErrors());
             }
             if (newStatusWert == 7 && !hasValidMesswerte) {
                 for (int i = 0; i < messwerte.size(); i++) {
