@@ -28,10 +28,10 @@ public class CheckUrsprungszeit implements Rule {
         Probe probe = (Probe) object;
         Timestamp uZeit = probe.getUrsprungszeit();
         Timestamp begin = probe.getProbeentnahmeBeginn();
-        if (uZeit != null && !uZeit.before(begin)
+        if (uZeit != null && uZeit.after(begin)
         ) {
             Violation violation = new Violation();
-            violation.addWarning("Ursprungszeit", 632);
+            violation.addWarning("ursprungszeit", 632);
             return violation;
         }
         return null;
