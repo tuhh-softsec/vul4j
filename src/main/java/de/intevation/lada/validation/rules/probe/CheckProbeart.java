@@ -8,7 +8,6 @@
 package de.intevation.lada.validation.rules.probe;
 
 import java.sql.Timestamp;
-
 import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
@@ -16,33 +15,29 @@ import de.intevation.lada.validation.rules.Rule;
 
 /**
  * Validation rule for probe.
- * Validates if the probe has a "probeentnahmeEnde".
- *
+ * Validates if the "probeart" matches date values.
  *
  */
 @ValidationRule("Probe")
-public class HasProbeentnahmeEnde implements Rule {
+public class CheckProbeart implements Rule {
 
     @Override
     public Violation execute(Object object) {
         Probe probe = (Probe) object;
-        Timestamp ende = probe.getProbeentnahmeEnde();
+        Timestamp end = probe.getProbeentnahmeEnde();
         Timestamp begin = probe.getProbeentnahmeBeginn();
-        if (probe.getDatenbasisId() != null
-            && probe.getProbenartId() != null
-            && ((probe.getDatenbasisId() == 4
-            && probe.getProbenartId() == 9
-            && ende == null)
-            || ((probe.getProbenartId() == 9
-                || probe.getProbenartId() == 3)
-            && probe.getDatenbasisId() != 4
-            && (ende == null || ende.before(begin))))
-        ) {
+        if (probe.getProbenartId() != null
+             && probe.getDatenbasisId() != 1) {
+          if (begin != null && end != null
+              && !begin.equals(end)
+              && probe.getProbenartId() == 1) {
             Violation violation = new Violation();
-            violation.addWarning("probeentnahmeEnde", 631);
+            violation.addWarning("probenartId", 639);
             return violation;
-        }
+          }
+        } else {
+            return null;
+          }
         return null;
     }
-
 }

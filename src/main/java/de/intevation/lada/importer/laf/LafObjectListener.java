@@ -853,13 +853,28 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);
             return;
         }
-        String hnr = value.substring(0, 9);
-        String nnr = value.substring(9, value.length());
-        currentProbe.addAttribute("HAUPTPROBENNUMMER", hnr);
-        if (currentMessung == null) {
-            currentMessung = data.new Messung();
+        String hnr = "";
+        String nnr = "";
+        if (value.length() <= 9) {
+            hnr = value;
         }
-        currentMessung.addAttribute("NEBENPROBENNUMMER", nnr);
+        else if (value.length() > 9 && value.length() <= 13) {
+            hnr = value.substring(0, 9);
+            nnr = value.substring(9, value.length());
+            if (currentMessung == null) {
+                currentMessung = data.new Messung();
+            }
+            currentMessung.addAttribute("NEBENPROBENNUMMER", nnr);
+        }
+        else {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(WARN673);
+            currentWarnings.add(warn);
+            return;
+        }
+        currentProbe.addAttribute("HAUPTPROBENNUMMER", hnr);
         probenNrContext = true;
     }
 

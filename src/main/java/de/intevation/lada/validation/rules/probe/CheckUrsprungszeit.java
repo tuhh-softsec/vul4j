@@ -21,25 +21,17 @@ import de.intevation.lada.validation.rules.Rule;
  *
  */
 @ValidationRule("Probe")
-public class HasProbeentnahmeEnde implements Rule {
+public class CheckUrsprungszeit implements Rule {
 
     @Override
     public Violation execute(Object object) {
         Probe probe = (Probe) object;
-        Timestamp ende = probe.getProbeentnahmeEnde();
+        Timestamp uZeit = probe.getUrsprungszeit();
         Timestamp begin = probe.getProbeentnahmeBeginn();
-        if (probe.getDatenbasisId() != null
-            && probe.getProbenartId() != null
-            && ((probe.getDatenbasisId() == 4
-            && probe.getProbenartId() == 9
-            && ende == null)
-            || ((probe.getProbenartId() == 9
-                || probe.getProbenartId() == 3)
-            && probe.getDatenbasisId() != 4
-            && (ende == null || ende.before(begin))))
+        if (uZeit != null && uZeit.after(begin)
         ) {
             Violation violation = new Violation();
-            violation.addWarning("probeentnahmeEnde", 631);
+            violation.addWarning("ursprungszeit", 632);
             return violation;
         }
         return null;

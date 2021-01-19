@@ -48,6 +48,7 @@ import de.intevation.lada.model.stammdaten.Datenbasis;
 import de.intevation.lada.model.stammdaten.DatensatzErzeuger;
 import de.intevation.lada.model.stammdaten.ImporterConfig;
 import de.intevation.lada.model.stammdaten.KoordinatenArt;
+import de.intevation.lada.model.stammdaten.KtaGruppe;
 import de.intevation.lada.model.stammdaten.MessEinheit;
 import de.intevation.lada.model.stammdaten.MessMethode;
 import de.intevation.lada.model.stammdaten.MessStelle;
@@ -959,7 +960,7 @@ public class LafObjectMapper {
                 messwViolation.getWarnings().forEach((k, v) -> {
                     v.forEach((value) -> {
                         currentWarnings.add(
-                            new ReportItem("Status ", k, value));
+                            new ReportItem("validation ", k, value));
                     });
                 });
             }
@@ -967,7 +968,7 @@ public class LafObjectMapper {
             if (messwViolation.hasErrors()) {
                 messwViolation.getErrors().forEach((k, v) -> {
                     v.forEach((value) -> {
-                        currentErrors.add(new ReportItem("Status ", k, value));
+                        currentErrors.add(new ReportItem("validation ", k, value));
                     });
                 });
             }
@@ -976,7 +977,7 @@ public class LafObjectMapper {
                 messwViolation.getNotifications().forEach((k, v) -> {
                     v.forEach((value) -> {
                         currentNotifications.add(
-                            new ReportItem("Status ", k, value));
+                            new ReportItem("validation ", k, value));
                     });
                 });
             }
@@ -1313,7 +1314,9 @@ public class LafObjectMapper {
             if (status.substring(i - 1, i).equals("0")) {
                 // no further status settings
                 return;
-            } else if (currentErrors.isEmpty() && currentWarnings.isEmpty()) {
+            } else if (currentErrors.isEmpty() && currentWarnings.isEmpty()
+                       || status.substring(i - 1, i).equals("7")
+              ) {
                 if (!addStatusProtokollEntry(
                         i,
                         Integer.valueOf(status.substring(i - 1, i)),
@@ -1374,6 +1377,35 @@ public class LafObjectMapper {
             currentWarnings.add(
                 new ReportItem("status#" + statusStufe, statusWert, 675));
             return false;
+        }
+        //Cleanup Messwerte for Status 7
+            QueryBuilder<Messwert> builderMW = new QueryBuilder<Messwert>(
+                    repository.entityManager(Strings.LAND), Messwert.class);
+            builderMW.and("messungsId", messung.getId());
+            Response messwertQry =
+                repository.filter(builderMW.getQuery(), Strings.LAND);
+            @SuppressWarnings("unchecked")
+            List<Messwert> messwerte = (List<Messwert>) messwertQry.getData();
+            boolean hasValidMesswerte = false;
+            if (!messwerte.isEmpty() && statusWert == 7){
+            for (Messwert messwert: messwerte) {
+                boolean hasNoMesswert = messwert.getMesswert() == null;
+                if ( !hasNoMesswert
+                ) {
+                    hasValidMesswerte = true;
+                    currentWarnings.add(
+                         new ReportItem("status#" + statusStufe, statusWert, 654));
+                }
+                if (hasValidMesswerte) {
+                    return false;
+                }
+            }
+
+            if (statusWert == 7 && !hasValidMesswerte) {
+                for (int i = 0; i < messwerte.size(); i++) {
+                    repository.delete(messwerte.get(i), Strings.LAND);
+                }
+            }
         }
 
         // Validator: StatusAssignment
@@ -1482,6 +1514,36 @@ public class LafObjectMapper {
                 repository.create(ort, "land");
                 probe.setKtaGruppeId(messpunkte.get(0).getKtaGruppeId());
                 repository.update(probe, "land");
+            } else if (uo.get("U_ORTS_ZUSATZCODE").length()==4){
+
+                QueryBuilder<KtaGruppe> builderKta = new QueryBuilder<KtaGruppe>(
+                  repository.entityManager("stamm"),
+                  KtaGruppe.class);
+                builderKta.and("ktaGruppe", uo.get("U_ORTS_ZUSATZCODE"));
+                  List<KtaGruppe> KtaGrp = repository.filterPlain(builderKta.getQuery(), "stamm");
+                if (!KtaGrp.isEmpty()){
+                Ort o = null;
+                o = findOrCreateOrt(uort.get(0), "U_", probe);
+                o.setOrtTyp(1);
+                o.setKtaGruppeId(KtaGrp.get(0).getId());
+                repository.update(o, "stamm");
+
+                Ortszuordnung ort = new Ortszuordnung();
+                ort.setOrtId(o.getId());
+                ort.setOrtszuordnungTyp("R");
+                ort.setProbeId(probe.getId());
+
+                repository.create(ort, "land");
+
+                probe.setKtaGruppeId(KtaGrp.get(0).getId());
+                repository.update(probe, "land");
+                } else {
+                ReportItem warn = new ReportItem();
+                warn.setCode(632);
+                warn.setKey("Ort");
+                warn.setValue(uo.get("U_ORTS_ZUSATZCODE"));
+                currentWarnings.add(warn);
+             }
             }
             else {
                 ReportItem warn = new ReportItem();
