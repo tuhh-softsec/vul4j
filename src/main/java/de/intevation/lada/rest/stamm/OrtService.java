@@ -300,11 +300,11 @@ public class OrtService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getById(
         @Context HttpServletRequest request,
-        @PathParam("id") String id
+        @PathParam("id") int id
     ) {
         Ort ort = repository.getByIdPlain(
             Ort.class,
-            Integer.valueOf(id),
+            id,
             Strings.STAMM
         );
 
