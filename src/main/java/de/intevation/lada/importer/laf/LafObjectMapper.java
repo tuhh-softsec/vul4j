@@ -1389,7 +1389,13 @@ public class LafObjectMapper {
             boolean hasValidMesswerte = false;
             if (!messwerte.isEmpty() && statusWert == 7){
             for (Messwert messwert: messwerte) {
-                boolean hasNoMesswert = messwert.getMesswert() == null;
+
+                boolean hasNoMesswert = false;
+
+                if ( messwert.getMesswert() == null
+                     && messwert.getMesswertNwg() == null){
+                     hasNoMesswert = true;
+                }
                 if ( !hasNoMesswert
                 ) {
                     hasValidMesswerte = true;

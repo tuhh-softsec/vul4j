@@ -350,7 +350,13 @@ public class StatusService {
             if (!messwerte.isEmpty()){
             for (Messwert messwert: messwerte) {
                 violation = messwertValidator.validate(messwert);
-                boolean hasNoMesswert = messwert.getMesswert() == null;
+
+                boolean hasNoMesswert = false;
+
+                if ( messwert.getMesswert() == null
+                     && messwert.getMesswertNwg() == null){
+                     hasNoMesswert = true;
+                }
                 if (newStatusWert == 7
                     && !hasNoMesswert
                 ) {
