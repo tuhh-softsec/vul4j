@@ -9,8 +9,10 @@ package de.intevation.lada.validation.rules.messung;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Date;
 
 import javax.inject.Inject;
+import java.sql.Timestamp;
 
 import de.intevation.lada.model.land.Messung;
 import de.intevation.lada.model.land.Probe;
@@ -31,7 +33,7 @@ import de.intevation.lada.validation.rules.Rule;
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
 @ValidationRule("Messung")
-public class Date implements Rule {
+public class DateMesszeitpunkt implements Rule {
 
     @Inject
     @RepositoryConfig(type=RepositoryType.RO)
@@ -51,6 +53,12 @@ public class Date implements Rule {
         }
 
         if (messung.getMesszeitpunkt() == null) return null;
+
+        if (messung.getMesszeitpunkt().after(new Date())) {
+            Violation violation = new Violation();
+            violation.addWarning("messzeitpunkt", 661);
+            return violation;
+        }
 
         if (probe.getProbeentnahmeBeginn() == null && probe.getProbeentnahmeEnde() == null) return null;
 
