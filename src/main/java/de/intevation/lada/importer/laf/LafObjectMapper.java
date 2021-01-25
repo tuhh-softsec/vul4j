@@ -1530,19 +1530,27 @@ public class LafObjectMapper {
                 if (!KtaGrp.isEmpty()){
                 Ort o = null;
                 o = findOrCreateOrt(uort.get(0), "U_", probe);
-                o.setOrtTyp(1);
-                o.setKtaGruppeId(KtaGrp.get(0).getId());
-                repository.update(o, "stamm");
+                 if (o != null) {
+                  o.setOrtTyp(1);
+                  o.setKtaGruppeId(KtaGrp.get(0).getId());
+                  repository.update(o, "stamm");
 
-                Ortszuordnung ort = new Ortszuordnung();
-                ort.setOrtId(o.getId());
-                ort.setOrtszuordnungTyp("R");
-                ort.setProbeId(probe.getId());
+                  Ortszuordnung ort = new Ortszuordnung();
+                  ort.setOrtId(o.getId());
+                  ort.setOrtszuordnungTyp("R");
+                  ort.setProbeId(probe.getId());
 
-                repository.create(ort, "land");
+                  repository.create(ort, "land");
 
-                probe.setKtaGruppeId(KtaGrp.get(0).getId());
-                repository.update(probe, "land");
+                  probe.setKtaGruppeId(KtaGrp.get(0).getId());
+                  repository.update(probe, "land");
+                 } else {
+                  ReportItem warn = new ReportItem();
+                  warn.setCode(631);
+                  warn.setKey("Ort");
+                  warn.setValue("Kein Messpunkt angelegt");
+                  currentWarnings.add(warn);
+                 }
                 } else {
                 ReportItem warn = new ReportItem();
                 warn.setCode(632);
