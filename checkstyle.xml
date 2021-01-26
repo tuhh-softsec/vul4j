@@ -213,9 +213,7 @@ Maven Checkstyle plugin. Some design related checks where removed.
       <property name="constantWaiverParentToken" value="ASSIGN,ARRAY_INIT,EXPR,
       UNARY_PLUS, UNARY_MINUS, TYPECAST, ELIST, DIV, PLUS "/>
     </module>
-    <module name="MissingSwitchDefault">
-      <property name="severity" value="warning"/>
-    </module>
+    <module name="MissingSwitchDefault"/>
     <module name="SimplifyBooleanExpression">
       <property name="severity" value="warning"/>
     </module>
