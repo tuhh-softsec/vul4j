@@ -185,9 +185,7 @@ Maven Checkstyle plugin. Some design related checks where removed.
     <module name="LeftCurly">
       <property name="severity" value="warning"/>
     </module>
-    <module name="NeedBraces">
-      <property name="severity" value="warning"/>
-    </module>
+    <module name="NeedBraces"/>
     <module name="RightCurly">
       <property name="severity" value="warning"/>
     </module>

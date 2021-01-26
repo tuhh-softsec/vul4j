@@ -52,7 +52,9 @@ public class DateMesszeitpunkt implements Rule {
             return null;
         }
 
-        if (messung.getMesszeitpunkt() == null) return null;
+        if (messung.getMesszeitpunkt() == null) {
+            return null;
+        }
 
         if (messung.getMesszeitpunkt().after(new Date())) {
             Violation violation = new Violation();
@@ -60,7 +62,10 @@ public class DateMesszeitpunkt implements Rule {
             return violation;
         }
 
-        if (probe.getProbeentnahmeBeginn() == null && probe.getProbeentnahmeEnde() == null) return null;
+        if (probe.getProbeentnahmeBeginn() == null
+            && probe.getProbeentnahmeEnde() == null) {
+            return null;
+        }
 
         if ( (probe.getProbeentnahmeBeginn() != null && probe.getProbeentnahmeBeginn().after(messung.getMesszeitpunkt()) ||
             probe.getProbeentnahmeEnde() != null && probe.getProbeentnahmeEnde().after(messung.getMesszeitpunkt()))
