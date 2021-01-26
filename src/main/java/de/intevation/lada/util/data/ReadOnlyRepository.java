@@ -181,8 +181,6 @@ public class ReadOnlyRepository implements Repository {
             if ("like".equals(operator.getString())) {
                 query.andLike(
                     property.getString(), "%" + value.getString() + "%");
-            } else if ("in".equals(operator.getString())) {
-//                query.andIn(property.getString(), value.getString());
             }
         }
         return transaction.entityManager(dataSource)
