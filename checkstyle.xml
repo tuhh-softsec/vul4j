@@ -42,7 +42,6 @@ Maven Checkstyle plugin. Some design related checks where removed.
   </module>
 
   <module name="FileTabCharacter">
-    <property name="severity" value="warning"/>
     <property name="eachLine" value="true"/>
   </module>
 
