@@ -23,7 +23,6 @@ import javax.ws.rs.core.MultivaluedMap;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.locationtech.jts.algorithm.BoundaryNodeRule.MultiValentEndPointBoundaryNodeRule;
 import org.locationtech.jts.geom.Point;
 
 import org.hibernate.annotations.Type;

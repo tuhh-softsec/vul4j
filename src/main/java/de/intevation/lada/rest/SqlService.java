@@ -7,7 +7,6 @@
  */
 package de.intevation.lada.rest;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -25,7 +24,6 @@ import javax.ws.rs.core.UriInfo;
 import de.intevation.lada.model.QueryColumns;
 import de.intevation.lada.model.stammdaten.GridColumn;
 import de.intevation.lada.model.stammdaten.GridColumnValue;
-import de.intevation.lada.model.stammdaten.ResultType;
 import de.intevation.lada.query.QueryTools;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;

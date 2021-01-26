@@ -7,8 +7,6 @@
  */
 package de.intevation.lada.validation.rules.probe;
 
-import java.sql.Timestamp;
-
 import de.intevation.lada.model.land.Messung;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;

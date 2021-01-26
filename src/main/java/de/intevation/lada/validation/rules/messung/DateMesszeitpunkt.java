@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Date;
 
 import javax.inject.Inject;
-import java.sql.Timestamp;
 
 import de.intevation.lada.model.land.Messung;
 import de.intevation.lada.model.land.Probe;
