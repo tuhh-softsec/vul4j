@@ -70,7 +70,7 @@ import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationConfig;
 
 /**
- * REST service for SOrt objects.
+ * REST service for Ort objects.
  * <p>
  * The services produce data in the application/json media type.
  * A typical response holds information about the action performed and the data.
@@ -133,15 +133,15 @@ public class OrtService {
     private Validator validator;
 
     /**
-     * Get all SOrt objects.
+     * Get all Ort objects.
      * <p>
      * The requested objects can be filtered using a URL parameter named
      * ortId.
      * To return all objects, the URL paramter query=all can be used.
      * <p>
-     * Example: http://example.com/location?ortId=[ID]
+     * Example: http://example.com/rest/ort?ortId=[ID]
      *
-     * @return Response object containing all (filtered) SOrt objects.
+     * @return Response object containing all (filtered) Ort objects.
      */
     @GET
     @Path("/")
@@ -287,13 +287,13 @@ public class OrtService {
     }
 
     /**
-     * Get a single SOrt object by id.
+     * Get a single Ort object by id.
      * <p>
      * The id is appended to the URL as a path parameter.
      * <p>
-     * Example: http://example.com/location/{id}
+     * Example: http://example.com/rest/ort/{id}
      *
-     * @return Response object containing a single SOrt.
+     * @return Response object containing a single Ort.
      */
     @GET
     @Path("/{id}")
@@ -379,7 +379,7 @@ public class OrtService {
     }
 
     /**
-     * Create a SOrt object.
+     * Create a Ort object.
      * <p>
      * The new object is embedded in the post data as JSON formatted string.
      * <p>
@@ -402,7 +402,7 @@ public class OrtService {
      * }
      * </code>
      * </pre>
-     * @return A response object containing the created SOrt.
+     * @return A response object containing the created Ort.
      */
     @POST
     @Path("/")
@@ -451,7 +451,7 @@ public class OrtService {
     }
 
     /**
-     * Update an existing SOrt object.
+     * Update an existing Ort object.
      * <p>
      * The object to update should come as JSON formatted string.
      * <pre>
@@ -475,7 +475,7 @@ public class OrtService {
      * </code>
      * </pre>
      *
-     * @return Response object containing the updated SOrt object.
+     * @return Response object containing the updated Ort object.
      */
     @PUT
     @Path("/{id}")
@@ -546,11 +546,11 @@ public class OrtService {
     }
 
     /**
-     * Delete an existing SOrt object by id.
+     * Delete an existing Ort object by id.
      * <p>
      * The id is appended to the URL as a path parameter.
      * <p>
-     * Example: http://example.com/location/{id}
+     * Example: http://example.com/rest/ort/{id}
      *
      * @return Response object.
      */
