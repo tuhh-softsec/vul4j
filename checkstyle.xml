@@ -217,9 +217,7 @@ Maven Checkstyle plugin. Some design related checks where removed.
     <module name="SimplifyBooleanExpression">
       <property name="severity" value="warning"/>
     </module>
-    <module name="SimplifyBooleanReturn">
-      <property name="severity" value="warning"/>
-    </module>
+    <module name="SimplifyBooleanReturn"/>
 
     <!-- Checks for class design                         -->
     <!-- See http://checkstyle.sf.net/config_design.html -->

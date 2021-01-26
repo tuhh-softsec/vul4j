@@ -39,12 +39,8 @@ public abstract class BaseAuthorizer implements Authorizer {
      * @param probe     The probe to authorize.
      */
     protected boolean getAuthorization(UserInfo userInfo, Probe probe) {
-        if (probe.getMstId() != null
-            && userInfo.getMessstellen().contains(probe.getMstId())) {
-            return true;
-        } else {
-            return false;
-        }
+        return (probe.getMstId() != null
+            && userInfo.getMessstellen().contains(probe.getMstId()));
     }
 
     /**
