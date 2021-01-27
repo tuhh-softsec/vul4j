@@ -19,9 +19,37 @@ import de.intevation.lada.util.auth.UserInfo;
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
 public interface Importer {
+    /**
+     * Reset the importer values and status.
+     */
     void reset();
+
+    /**
+     * Get the warnings occured during import.
+     * @return list of warnings
+     */
     Map<String, List<ReportItem>> getWarnings();
+
+    /**
+     * Get the errors occured during import.
+     * @return list of errors
+     */
     Map<String, List<ReportItem>> getErrors();
+
+    /**
+     * Get the notifications occured during import.
+     * @return list of notifications
+     */
     Map<String, List<ReportItem>> getNotifications();
-    void doImport(String content, UserInfo userInfo, List<ImporterConfig> config);
+
+    /**
+     * Start the import.
+     * @param content the data to be imported
+     * @param userInfo the current user info
+     * @param config the import configuration
+     */
+    void doImport(
+        String content,
+        UserInfo userInfo,
+        List<ImporterConfig> config);
 }

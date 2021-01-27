@@ -1,3 +1,10 @@
+/* Copyright (C) 2015 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.model.land;
 
 import java.io.Serializable;
@@ -17,28 +24,28 @@ import org.hibernate.annotations.TypeDefs;
 import de.intevation.lada.util.data.IntegerArrayType;
 /**
  * The persistent class for the messprogramm_mmt database table.
- * 
+ *
  */
 @Entity
-@Table(name="messprogramm_mmt", schema="land")
-@TypeDefs({@TypeDef(name="IntegerArray", typeClass=IntegerArrayType.class)})
+@Table(name = "messprogramm_mmt", schema = "land")
+@TypeDefs({@TypeDef(name = "IntegerArray", typeClass = IntegerArrayType.class)})
 public class MessprogrammMmt implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name="letzte_aenderung", insertable=false)
+    @Column(name = "letzte_aenderung", insertable = false)
     private Timestamp letzteAenderung;
 
-    @Type(type="IntegerArray")
+    @Type(type = "IntegerArray")
     private Integer[] messgroessen;
 
-    @Column(name="messprogramm_id")
+    @Column(name = "messprogramm_id")
     private Integer messprogrammId;
 
-    @Column(name="mmt_id")
+    @Column(name = "mmt_id")
     private String mmtId;
 
     public MessprogrammMmt() {

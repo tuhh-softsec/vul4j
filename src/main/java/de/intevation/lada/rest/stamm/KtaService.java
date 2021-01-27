@@ -64,7 +64,7 @@ public class KtaService {
      * The data repository granting read access.
      */
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type = RepositoryType.RO)
     private Repository repository;
 
     /**
@@ -88,8 +88,7 @@ public class KtaService {
         Integer id = null;
         try {
             id = Integer.valueOf(params.getFirst("ktagruppe"));
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return new Response(false, 603, "Not a valid filter id");
         }
         QueryBuilder<KtaGrpZuord> builder =

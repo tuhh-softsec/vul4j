@@ -1,3 +1,10 @@
+/* Copyright (C) 2015 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.model.land;
 
 import java.io.Serializable;
@@ -16,39 +23,39 @@ import javax.persistence.Transient;
 
 /**
  * The persistent class for the zusatz_wert database table.
- * 
+ *
  */
 @Entity
-@Table(name="zusatz_wert", schema="land")
+@Table(name = "zusatz_wert", schema = "land")
 public class ZusatzWert implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name="letzte_aenderung", insertable=false)
+    @Column(name = "letzte_aenderung", insertable = false)
     private Timestamp letzteAenderung;
 
     private Float messfehler;
 
-    @Column(name="messwert_pzs")
+    @Column(name = "messwert_pzs")
     private Double messwertPzs;
 
-    @Column(name="kleiner_als")
+    @Column(name = "kleiner_als")
     private String kleinerAls;
 
-    @Column(name="probe_id")
+    @Column(name = "probe_id")
     private Integer probeId;
 
-    @Column(name="pzs_id")
+    @Column(name = "pzs_id")
     private String pzsId;
 
-    @Column(name="tree_modified", insertable=false, updatable=false)
+    @Column(name = "tree_modified", insertable = false, updatable = false)
     private Timestamp treeModified;
 
     @OneToOne
-    @JoinColumn(name="probe_id", insertable=false, updatable=false)
+    @JoinColumn(name = "probe_id", insertable = false, updatable = false)
     private Probe probe;
 
     @Transient
@@ -155,6 +162,10 @@ public class ZusatzWert implements Serializable {
         this.readonly = readonly;
     }
 
+    /**
+     * Check if a parent object was modified.
+     * @return timestamp when the parent was modified
+     */
     public Timestamp getParentModified() {
         if (this.parentModified == null && this.probe != null) {
             return this.probe.getTreeModified();

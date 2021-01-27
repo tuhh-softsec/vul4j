@@ -16,10 +16,10 @@ import javax.persistence.Table;
 
 /**
  * The persistent class for the kta database table.
- * 
+ *
  */
 @Entity
-@Table(name="kta")
+@Table(name = "kta")
 public class Kta implements Serializable {
     private static final long serialVersionUID = 1L;
 

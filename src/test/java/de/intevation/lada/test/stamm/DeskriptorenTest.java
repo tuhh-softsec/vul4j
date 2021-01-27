@@ -18,9 +18,12 @@ import org.junit.Assert;
 import de.intevation.lada.Protocol;
 import de.intevation.lada.test.ServiceTest;
 
+/**
+ * Test Deskriptor entities.
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 public class DeskriptorenTest extends ServiceTest {
     private JsonObject expectedById;
-    private JsonObject create;
 
     /**
      * @return The test protocol
@@ -37,13 +40,17 @@ public class DeskriptorenTest extends ServiceTest {
         super.init(baseUrl, protocol);
 
         // Prepare expected object
-        JsonObject content = readJsonResource("/datasets/dbUnit_deskriptor.json")
-            .getJsonArray("stamm.deskriptoren").getJsonObject(0);
+        JsonObject content =
+            readJsonResource("/datasets/dbUnit_deskriptor.json")
+                .getJsonArray("stamm.deskriptoren").getJsonObject(0);
         JsonObjectBuilder builder = convertObject(content);
         expectedById = builder.build();
         Assert.assertNotNull(expectedById);
     }
 
+    /**
+     * Execute the tests.
+     */
     public final void execute() {
         getAll("deskriptor", "rest/deskriptor");
         getAll("deskriptor", "rest/deskriptor?layer=1");

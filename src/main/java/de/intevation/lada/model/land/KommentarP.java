@@ -1,3 +1,10 @@
+/* Copyright (C) 2015 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.model.land;
 
 import java.io.Serializable;
@@ -14,23 +21,23 @@ import javax.persistence.Transient;
 
 /**
  * The persistent class for the kommentar_p database table.
- * 
+ *
  */
 @Entity
-@Table(name="kommentar_p", schema="land")
+@Table(name = "kommentar_p", schema = "land")
 public class KommentarP implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private Timestamp datum;
 
-    @Column(name="mst_id")
+    @Column(name = "mst_id")
     private String mstId;
 
-    @Column(name="probe_id")
+    @Column(name = "probe_id")
     private Integer probeId;
 
     private String text;

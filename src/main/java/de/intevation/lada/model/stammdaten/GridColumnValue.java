@@ -1,3 +1,10 @@
+/* Copyright (C) 2018 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.model.stammdaten;
 
 import java.io.Serializable;
@@ -20,38 +27,38 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  *
  */
 @Entity
-@Table(name="grid_column_values")
+@Table(name = "grid_column_values")
 public class GridColumnValue implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name="column_index")
+    @Column(name = "column_index")
     private Integer columnIndex;
 
-    @Column(name="filter_active")
+    @Column(name = "filter_active")
     private Boolean filterActive;
 
-    @Column(name="filter_value")
+    @Column(name = "filter_value")
     private String filterValue;
 
-    @Column(name="filter_negate")
+    @Column(name = "filter_negate")
     private Boolean filterNegate;
 
-    @Column(name="filter_regex")
+    @Column(name = "filter_regex")
     private Boolean filterRegex;
 
-    @Column(name="filter_is_null")
+    @Column(name = "filter_is_null")
     private Boolean filterIsNull;
 
     private String sort;
 
-    @Column(name="sort_index")
+    @Column(name = "sort_index")
     private Integer sortIndex;
 
-    @Column(name="user_id")
+    @Column(name = "user_id")
     private Integer userId;
 
     private Boolean visible;
@@ -60,11 +67,11 @@ public class GridColumnValue implements Serializable {
 
     //bi-directional one-to-one association to GridColumn
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="grid_column")
+    @JoinColumn(name = "grid_column")
     private GridColumn gridColumn;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="query_user")
+    @JoinColumn(name = "query_user")
     private QueryUser queryUser;
 
     //Connected grid column's id, used for creating/updating grid_column_values
@@ -153,8 +160,12 @@ public class GridColumnValue implements Serializable {
         return gridColumnId;
     }
 
-    public void setgridColumnId(int gridColumnId) {
-        this.gridColumnId = gridColumnId;
+    /**
+     * Set the grid column id.
+     * @param gid the id
+     */
+    public void setgridColumnId(int gid) {
+        this.gridColumnId = gid;
     }
 
     @JsonIgnore

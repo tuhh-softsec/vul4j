@@ -81,21 +81,21 @@ public class ZusatzwertService {
      * The data repository granting read/write access.
      */
     @Inject
-    @RepositoryConfig(type=RepositoryType.RW)
+    @RepositoryConfig(type = RepositoryType.RW)
     private Repository defaultRepo;
 
     /**
      * The object lock mechanism.
      */
     @Inject
-    @LockConfig(type=LockType.TIMESTAMP)
+    @LockConfig(type = LockType.TIMESTAMP)
     private ObjectLocker lock;
 
     /**
      * The authorization module.
      */
     @Inject
-    @AuthorizationConfig(type=AuthorizationType.HEADER)
+    @AuthorizationConfig(type = AuthorizationType.HEADER)
     private Authorization authorization;
 
     /**
@@ -152,7 +152,8 @@ public class ZusatzwertService {
     ) {
         return authorization.filter(
             request,
-            defaultRepo.getById(ZusatzWert.class, Integer.valueOf(id), Strings.LAND),
+            defaultRepo.getById(
+                ZusatzWert.class, Integer.valueOf(id), Strings.LAND),
             ZusatzWert.class);
     }
 
@@ -251,7 +252,7 @@ public class ZusatzwertService {
         }
         Response updated = defaultRepo.getById(
             ZusatzWert.class,
-            ((ZusatzWert)response.getData()).getId(), Strings.LAND);
+            ((ZusatzWert) response.getData()).getId(), Strings.LAND);
         return authorization.filter(
             request,
             updated,
@@ -277,8 +278,9 @@ public class ZusatzwertService {
     ) {
         /* Get the object by id*/
         Response object =
-            defaultRepo.getById(ZusatzWert.class, Integer.valueOf(id), Strings.LAND);
-        ZusatzWert obj = (ZusatzWert)object.getData();
+            defaultRepo.getById(
+                ZusatzWert.class, Integer.valueOf(id), Strings.LAND);
+        ZusatzWert obj = (ZusatzWert) object.getData();
         if (!authorization.isAuthorized(
                 request,
                 obj,

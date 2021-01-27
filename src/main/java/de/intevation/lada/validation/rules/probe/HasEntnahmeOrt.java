@@ -33,21 +33,21 @@ import de.intevation.lada.validation.rules.Rule;
 public class HasEntnahmeOrt implements Rule {
 
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type = RepositoryType.RO)
     private Repository repo;
 
     @Override
     public Violation execute(Object object) {
-        Probe probe = (Probe)object;
+        Probe probe = (Probe) object;
         Integer id = probe.getId();
         if (id == null) {
             Violation violation = new Violation();
             violation.addWarning("entnahmeOrt", 631);
             return violation;
         }
-        if (probe.getReiProgpunktGrpId() != null ||
-            Integer.valueOf(3).equals(probe.getDatenbasisId()) ||
-            Integer.valueOf(4).equals(probe.getDatenbasisId())) {
+        if (probe.getReiProgpunktGrpId() != null
+            || Integer.valueOf(3).equals(probe.getDatenbasisId())
+            || Integer.valueOf(4).equals(probe.getDatenbasisId())) {
                 return null;
         }
         QueryBuilder<Ortszuordnung> builder =
@@ -56,7 +56,7 @@ public class HasEntnahmeOrt implements Rule {
         builder.and("probeId", id);
         Response response = repo.filter(builder.getQuery(), Strings.LAND);
         @SuppressWarnings("unchecked")
-        List<Ortszuordnung> orte = (List<Ortszuordnung>)response.getData();
+        List<Ortszuordnung> orte = (List<Ortszuordnung>) response.getData();
         for (Ortszuordnung ort: orte) {
             if ("E".equals(ort.getOrtszuordnungTyp())) {
                 return null;

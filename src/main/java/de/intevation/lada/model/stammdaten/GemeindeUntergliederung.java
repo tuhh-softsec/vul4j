@@ -1,3 +1,10 @@
+/* Copyright (C) 2018 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.model.stammdaten;
 
 import java.io.Serializable;
@@ -23,40 +30,40 @@ import org.locationtech.jts.geom.Point;
  *
  */
 @Entity
-@Table(name="gemeindeuntergliederung")
+@Table(name = "gemeindeuntergliederung")
 public class GemeindeUntergliederung implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name="netzbetreiber_id")
+    @Column(name = "netzbetreiber_id")
     private String netzbetreiberId;
 
-    @Column(name="gem_id")
+    @Column(name = "gem_id")
     private String gemId;
 
-    @Column(name="ozk_id")
+    @Column(name = "ozk_id")
     private Integer ozkId;
 
-    @Column(name="gemeindeuntergliederung")
+    @Column(name = "gemeindeuntergliederung")
     private String gemeindeUntergliederung;
 
-    @Column(name="kda_id")
+    @Column(name = "kda_id")
     private Integer kdaId;
 
-    @Column(name="koord_x_extern")
+    @Column(name = "koord_x_extern")
     private String koordXExtern;
 
-    @Column(name="koord_y_extern")
+    @Column(name = "koord_y_extern")
     private String koordYExtern;
 
-    @Column(name="letzte_aenderung", insertable=false)
+    @Column(name = "letzte_aenderung", insertable = false)
     private Timestamp letzteAenderung;
 
     @Type(type = "jts_geometry")
-    @Column(columnDefinition="geometry(Point, 4326)")
+    @Column(columnDefinition = "geometry(Point, 4326)")
     private Point geom;
 
     @Transient
@@ -135,6 +142,10 @@ public class GemeindeUntergliederung implements Serializable {
         this.koordYExtern = koordYExtern;
     }
 
+    /**
+     * Get the lat.
+     * @return the lat.
+     */
     public Double getLatitude() {
         // We might want to serialize an object without geom
         return this.geom != null
@@ -150,6 +161,10 @@ public class GemeindeUntergliederung implements Serializable {
         this.letzteAenderung = letzteAenderung;
     }
 
+    /**
+     * Get the lon.
+     * @return the lon
+     */
     public Double getLongitude() {
         // We might want to serialize an object without geom
         return this.geom != null

@@ -13,14 +13,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import org.apache.log4j.Logger;
-import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SessionImplementor;
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
-import org.hibernate.usertype.UserType;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.usertype.UserType;
 
 /**
  * Implementation for a new data type in the postgresql/postgis jdbc driver.
@@ -29,7 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class JsonObjectType implements UserType {
 
-    private static final Logger logger = Logger.getLogger(JsonObjectType.class);
+    private final Logger logger = Logger.getLogger(JsonObjectType.class);
 
     /**
      * Reconstruct an object from the cacheable representation. At the very
@@ -44,7 +44,10 @@ public class JsonObjectType implements UserType {
      * @throws HibernateException
      */
     @Override
-    public Object assemble(Serializable cached, Object owner) throws HibernateException {
+    public Object assemble(
+        Serializable cached,
+        Object owner)
+    throws HibernateException {
         return this.deepCopy(cached);
     }
 
@@ -68,7 +71,9 @@ public class JsonObjectType implements UserType {
      * Transform the object into its cacheable representation. At the very least
      * this method should perform a deep copy if the type is mutable. That may
      * not be enough for some implementations, however; for example,
-     * <span id="IL_AD11" class="IL_AD">associations</span> must be cached as <span id="IL_AD9" class="IL_AD">identifier</span> values. (optional operation)
+     * <span id="IL_AD11" class="IL_AD">associations</span> must be cached as
+     * <span id="IL_AD9" class="IL_AD">identifier</span> values.
+     * (optional operation)
      *
      * @param value
      *            the object to be cached
@@ -116,7 +121,8 @@ public class JsonObjectType implements UserType {
     }
 
     /**
-     * During merge, <span id="IL_AD7" class="IL_AD">replace</span> the existing (target) values in the entity we are
+     * During merge, <span id="IL_AD7" class="IL_AD">replace</span>
+     * the existing (target) values in the entity we are
      * merging to with a new (original) value from the detched entity we are
      * merging. For immutable objects, or null values, it is safe to return a
      * copy of the first parameter. For the objects with component values, it
@@ -131,7 +137,11 @@ public class JsonObjectType implements UserType {
      * @throws HibernateException
      */
     @Override
-    public Object replace(Object original, Object target, Object owner) throws HibernateException {
+    public Object replace(
+        Object original,
+        Object target,
+        Object owner)
+    throws HibernateException {
         return original;
     }
 
@@ -146,7 +156,8 @@ public class JsonObjectType implements UserType {
     }
 
     /**
-     * Returns the SQL type <span id="IL_AD3" class="IL_AD">codes</span> for the columns mapped by this type. The codes
+     * Returns the SQL type <span id="IL_AD3" class="IL_AD">codes</span>
+     * for the columns mapped by this type. The codes
      * are defined on <tt>java.sql.Types</tt>
      *
      * @return int[] the typecodes
@@ -154,12 +165,16 @@ public class JsonObjectType implements UserType {
      */
     @Override
     public int[] sqlTypes() {
-        return new int[] { Types.JAVA_OBJECT };
+        return new int[] {Types.JAVA_OBJECT};
     }
 
     @Override
-    public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner)
-            throws HibernateException, SQLException {
+    public Object nullSafeGet(
+        ResultSet rs,
+        String[] names,
+        SharedSessionContractImplementor session,
+        Object owner)
+    throws HibernateException, SQLException {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode node = null;
         try {
@@ -172,12 +187,16 @@ public class JsonObjectType implements UserType {
     }
 
     @Override
-    public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session)
-            throws HibernateException, SQLException {
+    public void nullSafeSet(
+        PreparedStatement st,
+        Object value,
+        int index,
+        SharedSessionContractImplementor session)
+    throws HibernateException, SQLException {
         if (value == null) {
             st.setNull(index, Types.OTHER);
             return;
         }
         st.setObject(index, value, Types.OTHER);
-	}
+    }
 }

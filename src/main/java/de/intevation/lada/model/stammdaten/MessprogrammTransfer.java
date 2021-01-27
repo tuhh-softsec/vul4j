@@ -1,9 +1,9 @@
 /* Copyright (C) 2013 by Bundesamt fuer Strahlenschutz
  * Software engineering by Intevation GmbH
  *
- * This file is Free Software under the GNU GPL (v>=3) 
- * and comes with ABSOLUTELY NO WARRANTY! Check out 
- * the documentation coming with IMIS-Labordaten-Application for details. 
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
  */
 package de.intevation.lada.model.stammdaten;
 
@@ -19,27 +19,27 @@ import javax.persistence.Table;
 
 /**
  * The persistent class for the messprogramm_transfer database table.
- * 
+ *
  */
 @Entity
-@Table(name="messprogramm_transfer")
+@Table(name = "messprogramm_transfer")
 public class MessprogrammTransfer implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name="ba_id")
+    @Column(name = "ba_id")
     private Integer baId;
 
-    @Column(name="datenbasis_id")
+    @Column(name = "datenbasis_id")
     private Integer datenbasisId;
 
-    @Column(name="messprogramm_c")
+    @Column(name = "messprogramm_c")
     private String messprogrammC;
 
-    @Column(name="messprogramm_s")
+    @Column(name = "messprogramm_s")
     private String messprogrammS;
 
     public MessprogrammTransfer() {

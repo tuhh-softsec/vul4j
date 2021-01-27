@@ -35,13 +35,15 @@ import de.intevation.lada.validation.rules.Rule;
 public class DeskriptorToUmwelt implements Rule {
 
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type = RepositoryType.RO)
     private Repository repository;
 
     @Override
     public Violation execute(Object object) {
-        Messprogramm messprogramm = (Messprogramm)object;
-        if (messprogramm.getMediaDesk() == null || messprogramm.getMediaDesk().equals("")) {
+        Messprogramm messprogramm = (Messprogramm) object;
+        if (messprogramm.getMediaDesk() == null
+            || messprogramm.getMediaDesk().equals("")
+        ) {
             return null;
         }
         if (messprogramm.getUmwId() == null) {
@@ -66,11 +68,9 @@ public class DeskriptorToUmwelt implements Rule {
             }
             if (zebs && i < 5) {
                 parent = hdParent;
-            }
-            else if (!zebs && i < 3) {
+            } else if (!zebs && i < 3) {
                 parent = hdParent;
-            }
-            else {
+            } else {
                 parent = ndParent;
             }
             QueryBuilder<Deskriptoren> builder = new QueryBuilder<Deskriptoren>(
@@ -80,9 +80,10 @@ public class DeskriptorToUmwelt implements Rule {
             }
             builder.and("sn", mediaDesk[i]);
             builder.and("ebene", i - 1);
-            Response response = repository.filter(builder.getQuery(), Strings.STAMM);
+            Response response = repository.filter(
+                builder.getQuery(), Strings.STAMM);
             @SuppressWarnings("unchecked")
-            List<Deskriptoren> data = (List<Deskriptoren>)response.getData();
+            List<Deskriptoren> data = (List<Deskriptoren>) response.getData();
             if (data.isEmpty()) {
                 Violation violation = new Violation();
                 violation.addWarning("mediaDesk", 633);
@@ -94,14 +95,21 @@ public class DeskriptorToUmwelt implements Rule {
                 ndParent = data.get(0).getId();
             }
         }
-        Violation violation = validateUmwelt(mediaIds, messprogramm.getUmwId(), zebs, 0);
+        Violation violation =
+            validateUmwelt(mediaIds, messprogramm.getUmwId(), zebs, 0);
         return violation;
     }
 
-    private Violation validateUmwelt(List<Integer> media, String umwId, boolean isZebs, int ndx) {
+    private Violation validateUmwelt(
+        List<Integer> media,
+        String umwId,
+        boolean isZebs,
+        int ndx
+    ) {
         QueryBuilder<DeskriptorUmwelt> builder =
             new QueryBuilder<DeskriptorUmwelt>(
-                repository.entityManager(Strings.STAMM), DeskriptorUmwelt.class);
+                repository.entityManager(Strings.STAMM),
+                DeskriptorUmwelt.class);
 
         if (media.size() == 0) {
             Violation violation = new Violation();
@@ -117,14 +125,15 @@ public class DeskriptorToUmwelt implements Rule {
                 tmp.and(field, media.get(i));
                 tmp.or(field, null);
                 builder.and(tmp);
-            }
-            else {
+            } else {
                 builder.and(field, null);
             }
         }
-        Response response = repository.filter(builder.getQuery(), Strings.STAMM);
+        Response response =
+            repository.filter(builder.getQuery(), Strings.STAMM);
         @SuppressWarnings("unchecked")
-        List<DeskriptorUmwelt> data = (List<DeskriptorUmwelt>)response.getData();
+        List<DeskriptorUmwelt> data =
+            (List<DeskriptorUmwelt>) response.getData();
         if (data.isEmpty()) {
             Violation violation = new Violation();
             violation.addWarning("umwId#" + umwId, 632);
@@ -134,13 +143,11 @@ public class DeskriptorToUmwelt implements Rule {
         boolean unique = isUnique(data);
         if (unique && umwId.equals(data.get(0).getUmwId())) {
             return null;
-        }
-        else if (unique && !umwId.equals(data.get(0).getUmwId())) {
+        } else if (unique && !umwId.equals(data.get(0).getUmwId())) {
             Violation violation = new Violation();
             violation.addWarning("umwId#" + umwId, 632);
             return violation;
-        }
-        else {
+        } else {
             Violation violation = new Violation();
             violation.addWarning("umwId#" + umwId, 632);
 
@@ -149,62 +156,85 @@ public class DeskriptorToUmwelt implements Rule {
             for (int i = 0; i < data.size(); i++) {
                 int matches = -12;
                 for (int j = size; j < 12; j++) {
-                    switch(j) {
-                        case 1: if (media.get(1).equals(data.get(i).getS01()) ||
-                                    media.get(1).equals(-1) && data.get(i).getS01() == null
-                                )
+                    switch (j) {
+                        case 1: if (media.get(1).equals(data.get(i).getS01())
+                                    || media.get(1).equals(-1)
+                                    && data.get(i).getS01() == null
+                                ) {
                                     matches += 1;
+                                }
                                 break;
-                        case 2: if (media.get(2).equals(data.get(i).getS02()) ||
-                                    media.get(2).equals(-1) && data.get(i).getS02() == null
-                                )
+                        case 2: if (media.get(2).equals(data.get(i).getS02())
+                                    || media.get(2).equals(-1)
+                                    && data.get(i).getS02() == null
+                                ) {
                                     matches += 1;
+                                }
                                 break;
-                        case 3: if (media.get(3).equals(data.get(i).getS03()) ||
-                                    media.get(3).equals(-1) && data.get(i).getS03() == null
-                                )
+                        case 3: if (media.get(3).equals(data.get(i).getS03())
+                                    || media.get(3).equals(-1)
+                                    && data.get(i).getS03() == null
+                                ) {
                                     matches += 1;
+                                }
                                 break;
-                        case 4: if (media.get(4).equals(data.get(i).getS04()) ||
-                                    media.get(4).equals(-1) && data.get(i).getS04() == null
-                                )
+                        case 4: if (media.get(4).equals(data.get(i).getS04())
+                                    || media.get(4).equals(-1)
+                                    && data.get(i).getS04() == null
+                                ) {
                                     matches += 1;
+                                }
                                 break;
-                        case 5: if (media.get(5).equals(data.get(i).getS05()) ||
-                                    media.get(5).equals(-1) && data.get(i).getS05() == null
-                                )
-                                    matches +=1;
-                                break;
-                        case 6: if (media.get(6).equals(data.get(i).getS06()) ||
-                                    media.get(6).equals(-1) && data.get(i).getS06() == null
-                                )
+                        case 5: if (media.get(5).equals(data.get(i).getS05())
+                                    || media.get(5).equals(-1)
+                                    && data.get(i).getS05() == null
+                                ) {
                                     matches += 1;
+                                }
                                 break;
-                        case 7: if (media.get(7).equals(data.get(i).getS07()) ||
-                                    media.get(7).equals(-1) && data.get(i).getS07() == null
-                                )
+                        case 6: if (media.get(6).equals(data.get(i).getS06())
+                                    || media.get(6).equals(-1)
+                                    && data.get(i).getS06() == null
+                                ) {
                                     matches += 1;
+                                }
                                 break;
-                        case 8: if (media.get(8).equals(data.get(i).getS08()) ||
-                                    media.get(8).equals(-1) && data.get(i).getS08() == null
-                                )
+                        case 7: if (media.get(7).equals(data.get(i).getS07())
+                                    || media.get(7).equals(-1)
+                                    && data.get(i).getS07() == null
+                                ) {
                                     matches += 1;
+                                }
                                 break;
-                        case 9: if (media.get(9).equals(data.get(i).getS09()) ||
-                                    media.get(9).equals(-1) && data.get(i).getS09() == null
-                                )
+                        case 8: if (media.get(8).equals(data.get(i).getS08())
+                                    || media.get(8).equals(-1)
+                                    && data.get(i).getS08() == null
+                                ) {
                                     matches += 1;
+                                }
                                 break;
-                        case 10: if (media.get(10).equals(data.get(i).getS10()) ||
-                                    media.get(10).equals(-1) && data.get(i).getS10() == null
-                                )
+                        case 9: if (media.get(9).equals(data.get(i).getS09())
+                                    || media.get(9).equals(-1)
+                                    && data.get(i).getS09() == null
+                                ) {
                                     matches += 1;
+                                }
                                 break;
-                        case 11: if (media.get(11).equals(data.get(i).getS11()) ||
-                                    media.get(11).equals(-1) && data.get(i).getS11() == null
-                                )
+                        case 10: if (media.get(10).equals(data.get(i).getS10())
+                                    || media.get(10).equals(-1)
+                                    && data.get(i).getS10() == null
+                                ) {
                                     matches += 1;
+                                }
                                 break;
+                        case 11: if (media.get(11).equals(data.get(i).getS11())
+                                    || media.get(11).equals(-1)
+                                    && data.get(i).getS11() == null
+                                ) {
+                                    matches += 1;
+                                }
+                                break;
+                        default: break;
                     }
                     if (matches > lastMatch) {
                         lastMatch = matches;

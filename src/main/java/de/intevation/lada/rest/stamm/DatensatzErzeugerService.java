@@ -71,11 +71,11 @@ public class DatensatzErzeugerService {
      * The data repository granting read access.
      */
     @Inject
-    @RepositoryConfig(type=RepositoryType.RW)
+    @RepositoryConfig(type = RepositoryType.RW)
     private Repository repository;
 
     @Inject
-    @AuthorizationConfig(type=AuthorizationType.HEADER)
+    @AuthorizationConfig(type = AuthorizationType.HEADER)
     private Authorization authorization;
 
     /**
@@ -92,7 +92,8 @@ public class DatensatzErzeugerService {
         @Context HttpServletRequest request,
         @Context UriInfo info
     ) {
-        List<DatensatzErzeuger> erzeuger = repository.getAllPlain(DatensatzErzeuger.class, Strings.STAMM);
+        List<DatensatzErzeuger> erzeuger =
+            repository.getAllPlain(DatensatzErzeuger.class, Strings.STAMM);
 
         for (DatensatzErzeuger erz : erzeuger) {
             erz.setReadonly(
@@ -102,7 +103,7 @@ public class DatensatzErzeugerService {
                     RequestMethod.POST,
                     DatensatzErzeuger.class));
         }
-        return new Response (true, 200, erzeuger, erzeuger.size());
+        return new Response(true, 200, erzeuger, erzeuger.size());
     }
 
     /**
@@ -157,7 +158,8 @@ public class DatensatzErzeugerService {
                 repository.entityManager(Strings.STAMM),
                 DatensatzErzeuger.class
             );
-        builder.and("datensatzErzeugerId", datensatzerzeuger.getDatensatzErzeugerId());
+        builder.and(
+            "datensatzErzeugerId", datensatzerzeuger.getDatensatzErzeugerId());
         builder.and("netzbetreiberId", datensatzerzeuger.getNetzbetreiberId());
 
         List<DatensatzErzeuger> erzeuger =
@@ -196,8 +198,8 @@ public class DatensatzErzeugerService {
     ) {
         DatensatzErzeuger datensatzerzeuger = repository.getByIdPlain(
             DatensatzErzeuger.class, Integer.valueOf(id), Strings.STAMM);
-        if (datensatzerzeuger == null ||
-            !authorization.isAuthorized(
+        if (datensatzerzeuger == null
+            || !authorization.isAuthorized(
                 request,
                 datensatzerzeuger,
                 RequestMethod.DELETE,

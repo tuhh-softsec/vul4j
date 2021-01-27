@@ -1,3 +1,10 @@
+/* Copyright (C) 2015 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.model.land;
 
 import java.io.Serializable;
@@ -18,32 +25,32 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * The persistent class for the status_protokoll database table.
- * 
+ *
  */
 @Entity
-@Table(name="status_protokoll", schema="land")
+@Table(name = "status_protokoll", schema = "land")
 public class StatusProtokoll implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name="datum", insertable=false, updatable=false)
+    @Column(name = "datum", insertable = false, updatable = false)
     private Timestamp datum;
 
-    @Column(name="messungs_id")
+    @Column(name = "messungs_id")
     private Integer messungsId;
 
-    @Column(name="mst_id")
+    @Column(name = "mst_id")
     private String mstId;
 
-    @Column(name="status_kombi")
+    @Column(name = "status_kombi")
     private Integer statusKombi;
 
     private String text;
 
-    @Column(name="tree_modified", insertable=false, updatable=false)
+    @Column(name = "tree_modified", insertable = false, updatable = false)
     private Timestamp treeModified;
 
     @Transient

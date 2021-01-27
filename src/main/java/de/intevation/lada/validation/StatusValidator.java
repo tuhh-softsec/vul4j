@@ -24,7 +24,7 @@ import de.intevation.lada.validation.rules.Rule;
  *
  * @author <a href="mailto:raimund.renkert@intevation.de">Raimund Renkert</a>
  */
-@ValidationConfig(type="Status")
+@ValidationConfig(type = "Status")
 @ApplicationScoped
 public class StatusValidator implements Validator {
 
@@ -39,7 +39,7 @@ public class StatusValidator implements Validator {
             violations.addError("status", 602);
             return violations;
         }
-        for(Rule rule: rules) {
+        for (Rule rule : rules) {
             Violation result = rule.execute(object);
             if (result != null) {
                 if (result.hasWarnings()) {

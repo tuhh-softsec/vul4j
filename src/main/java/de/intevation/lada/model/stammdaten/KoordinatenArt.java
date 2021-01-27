@@ -17,17 +17,17 @@ import javax.persistence.Table;
 
 /**
  * The persistent class for the koordinaten_art database table.
- * 
+ *
  */
 @Entity
-@Table(name="koordinaten_art")
+@Table(name = "koordinaten_art")
 public class KoordinatenArt implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
     private Integer id;
 
-    @Column(name="idf_geo_key")
+    @Column(name = "idf_geo_key")
     private String idfGeoKey;
 
     private String koordinatenart;

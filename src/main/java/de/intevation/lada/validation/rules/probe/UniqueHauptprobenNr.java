@@ -36,13 +36,13 @@ public class UniqueHauptprobenNr implements Rule {
 //    private Logger logger;
 
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type = RepositoryType.RO)
     private Repository repo;
 
     @SuppressWarnings("unchecked")
     @Override
     public Violation execute(Object object) {
-        Probe probe = (Probe)object;
+        Probe probe = (Probe) object;
         if (probe.getHauptprobenNr() != null) {
             QueryBuilder<Probe> builder = new QueryBuilder<Probe>(
                repo.entityManager(Strings.LAND),
@@ -50,10 +50,12 @@ public class UniqueHauptprobenNr implements Rule {
             builder.and("hauptprobenNr", probe.getHauptprobenNr());
             builder.and("mstId", probe.getMstId());
             Response response = repo.filter(builder.getQuery(), Strings.LAND);
-            if (!((List<Probe>)response.getData()).isEmpty()) {
-                Probe found = ((List<Probe>)response.getData()).get(0);
+            if (!((List<Probe>) response.getData()).isEmpty()) {
+                Probe found = ((List<Probe>) response.getData()).get(0);
                 // The probe found in the db equals the new probe. (Update)
-                if (probe.getId() != null && probe.getId().equals(found.getId())) {
+                if (probe.getId() != null
+                    && probe.getId().equals(found.getId())
+                ) {
                     return null;
                 }
                 Violation violation = new Violation();

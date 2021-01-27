@@ -7,14 +7,10 @@
  */
 package de.intevation.lada.validation.rules.messprogramm;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import de.intevation.lada.model.land.Messprogramm;
-import de.intevation.lada.model.land.OrtszuordnungMp;
 import de.intevation.lada.util.annotation.RepositoryConfig;
-import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.validation.Violation;
@@ -29,12 +25,12 @@ import de.intevation.lada.validation.rules.Rule;
 public class HasAllMandatory implements Rule {
 
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type = RepositoryType.RO)
     Repository repository;
 
     @Override
     public Violation execute(Object object) {
-        Messprogramm messprogramm = (Messprogramm)object;
+        Messprogramm messprogramm = (Messprogramm) object;
         Violation violation = new Violation();
 
         if (messprogramm.getMstId() == null
@@ -70,6 +66,6 @@ public class HasAllMandatory implements Rule {
 
         return violation.hasErrors()
             ? violation
-            :null;
+            : null;
     }
 }

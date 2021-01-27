@@ -1,3 +1,10 @@
+/* Copyright (C) 2015 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.model.stammdaten;
 
 import java.io.Serializable;
@@ -9,7 +16,7 @@ import javax.persistence.Id;
 
 /**
  * The persistent class for the staat database table.
- * 
+ *
  */
 @Entity
 public class Staat implements Serializable {
@@ -20,24 +27,24 @@ public class Staat implements Serializable {
 
     private Boolean eu;
 
-    @Column(name="hkl_id")
+    @Column(name = "hkl_id")
     private Integer hklId;
 
-    @Column(name="kda_id")
+    @Column(name = "kda_id")
     private Integer kdaId;
 
-    @Column(name="koord_x_extern")
+    @Column(name = "koord_x_extern")
     private String koordXExtern;
 
-    @Column(name="koord_y_extern")
+    @Column(name = "koord_y_extern")
     private String koordYExtern;
 
     private String staat;
 
-    @Column(name="staat_iso")
+    @Column(name = "staat_iso")
     private String staatIso;
 
-    @Column(name="staat_kurz")
+    @Column(name = "staat_kurz")
     private String staatKurz;
 
     public Staat() {

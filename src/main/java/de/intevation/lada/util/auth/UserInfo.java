@@ -179,8 +179,8 @@ public class UserInfo {
     public List<Integer> getFunktionenForNetzbetreiber(String nId) {
         List<Integer> ret = new ArrayList<Integer>();
         for (Auth a : auth) {
-            if (a.getNetzbetreiberId() != null &&
-                a.getNetzbetreiberId().equals(nId)) {
+            if (a.getNetzbetreiberId() != null
+                && a.getNetzbetreiberId().equals(nId)) {
                 ret.add(a.getFunktionId());
             }
         }

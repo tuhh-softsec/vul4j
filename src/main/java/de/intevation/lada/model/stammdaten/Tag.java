@@ -1,7 +1,13 @@
+/* Copyright (C) 2018 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.model.stammdaten;
 
 import de.intevation.lada.model.land.TagZuordnung;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -16,31 +22,29 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
- * The persistent class for the tag database table
+ * The persistent class for the tag database table.
  */
 @Entity
-@Table(name="tag", schema="stamm")
+@Table(name = "tag", schema = "stamm")
 public class Tag {
-    private static final long serialVersionUID = 1L;
-
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name="tag")
+    @Column(name = "tag")
     private String tag;
 
-    @Column(name="mst_id")
+    @Column(name = "mst_id")
     private String mstId;
 
-    @OneToMany(mappedBy="tag", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "tag", fetch = FetchType.EAGER)
     @JsonIgnore
     private Set<TagZuordnung> tagZuordnungs;
 
     private Boolean generated;
 
 
-    public Tag() {}
+    public Tag() { }
 
     public Integer getId() {
         return this.id;

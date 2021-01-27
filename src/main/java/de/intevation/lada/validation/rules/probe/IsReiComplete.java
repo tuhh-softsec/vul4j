@@ -27,18 +27,19 @@ import de.intevation.lada.validation.rules.Rule;
 public class IsReiComplete implements Rule {
 
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type = RepositoryType.RO)
     private Repository repository;
 
     @Override
     public Violation execute(Object object) {
-        Probe probe = (Probe)object;
+        Probe probe = (Probe) object;
         Violation violation = new Violation();
         if (probe.getDatenbasisId() == null) {
             return null;
         }
-        if (probe.getDatenbasisId() != 3 &&
-            probe.getDatenbasisId() != 4) {
+        if (probe.getDatenbasisId() != 3
+            && probe.getDatenbasisId() != 4
+        ) {
             if (probe.getReiProgpunktGrpId() != null) {
                 violation.addError("reiProgpunktGrpId", 632);
             }

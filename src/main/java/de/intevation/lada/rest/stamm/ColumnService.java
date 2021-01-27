@@ -14,31 +14,22 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
-
 import de.intevation.lada.model.stammdaten.GridColumn;
-import de.intevation.lada.model.stammdaten.GridColumnValue;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
-import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.data.Strings;
@@ -78,11 +69,11 @@ import de.intevation.lada.util.rest.Response;
 public class ColumnService {
 
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type = RepositoryType.RO)
     private Repository repository;
 
     @Inject
-    @AuthorizationConfig(type=AuthorizationType.HEADER)
+    @AuthorizationConfig(type = AuthorizationType.HEADER)
     private Authorization authorization;
 
     /**
@@ -104,18 +95,19 @@ public class ColumnService {
         Integer id = null;
         try {
             id = Integer.valueOf(params.getFirst("qid"));
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return new Response(false, 603, "Not a valid filter id");
         }
         EntityManager em = repository.entityManager(Strings.STAMM);
         CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<GridColumn> criteriaQuery = builder.createQuery(GridColumn.class);
+        CriteriaQuery<GridColumn> criteriaQuery =
+            builder.createQuery(GridColumn.class);
         Root<GridColumn> root = criteriaQuery.from(GridColumn.class);
         Predicate filter = builder.equal(root.get("baseQuery"), id);
         criteriaQuery.where(filter);
-        
-        List<GridColumn> queries = repository.filterPlain(criteriaQuery, Strings.STAMM);
+
+        List<GridColumn> queries =
+            repository.filterPlain(criteriaQuery, Strings.STAMM);
 
         return new Response(true, 200, queries);
     }

@@ -46,9 +46,9 @@ public class ShibbolethFilter implements Filter {
             properties.load(stream);
             stream.close();
         } catch (java.io.FileNotFoundException e) {
-            logger.error ("Failed to find config file: " + CONFIG_FILE);
+            logger.error("Failed to find config file: " + CONFIG_FILE);
         } catch (java.io.IOException e) {
-            logger.error ("Failed to read config file: " + CONFIG_FILE);
+            logger.error("Failed to read config file: " + CONFIG_FILE);
         }
         //applicationId = properties.getProperty("applicationId");
 
@@ -64,13 +64,14 @@ public class ShibbolethFilter implements Filter {
             throw new ServletException("Unsupported request!");
         }
 
-        HttpServletRequest httpRequest = (HttpServletRequest)request;
-        HttpServletResponse httpResponse = (HttpServletResponse)response;
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         //Enumeration<String> headers = httpRequest.getHeaderNames();
         //while(headers.hasMoreElements()) {
         //    String name = headers.nextElement();
-        //    logger.debug("key: " + name + " value: " + httpRequest.getHeader(name));
+        //    logger.debug("key: " + name + " value: " +
+        //        httpRequest.getHeader(name));
         //}
 
         String user = httpRequest.getHeader("X-SHIB-user");
@@ -80,8 +81,10 @@ public class ShibbolethFilter implements Filter {
         //if (!applicationId.equals(appId)) {
         //        httpResponse.reset();
         //        httpResponse.setStatus(401);
-        //        httpResponse.getOutputStream().print("{\"success\":false,\"message\":\"698\",\"data\":" +
-        //                "\"Not authenticated via the Lada application!\",\"errors\":{},\"warnings\":{}," +
+        //        httpResponse.getOutputStream().print(
+        //            "{\"success\":false,\"message\":\"698\",\"data\":" +
+        //            "\"Not authenticated via the Lada application!\"," +
+        //            "\"errors\":{},\"warnings\":{}," +
         //                "\"readonly\":false,\"totalCount\":0}");
         //        httpResponse.getOutputStream().flush();
         //        return;
@@ -90,9 +93,10 @@ public class ShibbolethFilter implements Filter {
         if (user == null || "".equals(user)) {
                 httpResponse.reset();
                 httpResponse.setStatus(401);
-                httpResponse.getOutputStream().print("{\"success\":false,\"message\":\"698\",\"data\":" +
-                        "\"No valid user found!\",\"errors\":{},\"warnings\":{}," +
-                        "\"readonly\":false,\"totalCount\":0}");
+                httpResponse.getOutputStream().print(
+                    "{\"success\":false,\"message\":\"698\",\"data\":"
+                    + "\"No valid user found!\",\"errors\":{},\"warnings\":{},"
+                    + "\"readonly\":false,\"totalCount\":0}");
                 httpResponse.getOutputStream().flush();
                 return;
         }
@@ -101,9 +105,10 @@ public class ShibbolethFilter implements Filter {
         if (rolesValue == null || rolesValue.isEmpty()) {
                 httpResponse.reset();
                 httpResponse.setStatus(401);
-                httpResponse.getOutputStream().print("{\"success\":false,\"message\":\"698\",\"data\":" +
-                        "\"No valid role found!\",\"errors\":{},\"warnings\":{}," +
-                        "\"readonly\":false,\"totalCount\":0}");
+                httpResponse.getOutputStream().print(
+                    "{\"success\":false,\"message\":\"698\",\"data\":"
+                    + "\"No valid role found!\",\"errors\":{},\"warnings\":{},"
+                    + "\"readonly\":false,\"totalCount\":0}");
                 httpResponse.getOutputStream().flush();
                 return;
         }
@@ -131,7 +136,6 @@ public class ShibbolethFilter implements Filter {
             return groups;
         } else {
             String[] groupStrings = roles.split(";");
-            String item;
             for (int i = 0; i < groupStrings.length; i++) {
                 String[] items = groupStrings[i].trim().split(",");
                 for (int j = 0; j < items.length; j++) {

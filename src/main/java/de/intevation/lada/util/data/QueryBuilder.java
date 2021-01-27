@@ -35,12 +35,12 @@ public class QueryBuilder<T> {
     /**
      * Create a new QueryBuilder for the specified class.
      *
-     * @param manager
-     * @param clazz
+     * @param m
+     * @param c
      */
-    public QueryBuilder(EntityManager manager, Class<T> clazz) {
-        this.manager = manager;
-        this.clazz = clazz;
+    public QueryBuilder(EntityManager m, Class<T> c) {
+        this.manager = m;
+        this.clazz = c;
         this.builder = this.manager.getCriteriaBuilder();
         this.query = this.builder.createQuery(this.clazz);
         this.root = this.query.from(this.clazz);
@@ -71,14 +71,12 @@ public class QueryBuilder<T> {
         Predicate p;
         if (value == null) {
             p = this.builder.isNull(this.root.get(id));
-        }
-        else {
+        } else {
             p = this.builder.equal(this.root.get(id), value);
         }
         if (this.filter != null) {
             this.filter = this.builder.and(this.filter, p);
-        }
-        else {
+        } else {
             this.filter = this.builder.and(p);
         }
         return this;
@@ -105,11 +103,11 @@ public class QueryBuilder<T> {
      */
     public QueryBuilder<T> andLike(String id, String value) {
         Path<String> path = this.root.get(id);
-        Predicate p = this.builder.like(this.builder.lower(path), value.toLowerCase());
+        Predicate p =
+            this.builder.like(this.builder.lower(path), value.toLowerCase());
         if (this.filter != null) {
             this.filter = this.builder.and(this.filter, p);
-        }
-        else {
+        } else {
             this.filter = this.builder.and(p);
         }
         return this;
@@ -126,14 +124,12 @@ public class QueryBuilder<T> {
         Predicate p;
         if (value == null) {
             p = this.builder.isNull(this.root.get(id));
-        }
-        else {
+        } else {
             p = this.builder.equal(this.root.get(id), value);
         }
         if (this.filter != null) {
             this.filter = this.builder.or(this.filter, p);
-        }
-        else {
+        } else {
             this.filter = this.builder.or(p);
         }
         return this;
@@ -148,11 +144,11 @@ public class QueryBuilder<T> {
      */
     public QueryBuilder<T> orLike(String id, String value) {
         Path<String> path = this.root.get(id);
-        Predicate p = this.builder.like(this.builder.lower(path), value.toLowerCase());
+        Predicate p =
+            this.builder.like(this.builder.lower(path), value.toLowerCase());
         if (this.filter != null) {
             this.filter = this.builder.or(this.filter, p);
-        }
-        else {
+        } else {
             this.filter = this.builder.or(p);
         }
         return this;
@@ -174,7 +170,7 @@ public class QueryBuilder<T> {
             }
             return this;
         }
-        for(String v: values) {
+        for (String v : values) {
             this.and(id, v);
         }
         return this;
@@ -196,9 +192,7 @@ public class QueryBuilder<T> {
             }
             return this;
         }
-        for (String v: values) {
-            this.or(id, v);
-        }
+        this.orIn(id, values);
         return this;
     }
 
@@ -231,8 +225,7 @@ public class QueryBuilder<T> {
         }
         if (this.filter != null) {
             this.filter = this.builder.and(this.filter, b.filter);
-        }
-        else {
+        } else {
             this.filter = this.builder.and(b.filter);
         }
         return this;
@@ -252,8 +245,7 @@ public class QueryBuilder<T> {
         }
         if (this.filter != null) {
             this.filter = this.builder.or(this.filter, b.filter);
-        }
-        else {
+        } else {
             this.filter = this.builder.or(b.filter);
         }
         return this;
@@ -273,8 +265,7 @@ public class QueryBuilder<T> {
         Predicate p = exp.in(values);
         if (this.filter == null) {
             this.filter = this.builder.or(p);
-        }
-        else {
+        } else {
             this.filter = this.builder.or(this.filter, p);
         }
         return this;
@@ -294,8 +285,7 @@ public class QueryBuilder<T> {
         Predicate p = exp.in(values);
         if (this.filter == null) {
             this.filter = this.builder.and(p);
-        }
-        else {
+        } else {
             this.filter = this.builder.and(this.filter, p);
         }
         return this;
@@ -317,8 +307,7 @@ public class QueryBuilder<T> {
     public void orderBy(String id, boolean asc) {
         if (asc) {
             this.query.orderBy(this.builder.asc(this.root.get(id)));
-        }
-        else {
+        } else {
             this.query.orderBy(this.builder.desc(this.root.get(id)));
         }
     }
@@ -333,8 +322,7 @@ public class QueryBuilder<T> {
         for (String id : ids.keySet()) {
             if (ids.get(id)) {
                 order.add(this.builder.asc(this.root.get(id)));
-            }
-            else {
+            } else {
                 order.add(this.builder.desc(this.root.get(id)));
             }
         }
@@ -346,7 +334,7 @@ public class QueryBuilder<T> {
      *
      * @return An empty instance of this builder.
      */
-    public QueryBuilder<T> getEmptyBuilder(){
+    public QueryBuilder<T> getEmptyBuilder() {
         QueryBuilder<T> copy = new QueryBuilder<T>(manager, clazz);
         copy.builder = this.builder;
         copy.root = this.root;

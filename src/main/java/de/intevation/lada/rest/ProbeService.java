@@ -112,28 +112,28 @@ public class ProbeService {
      * The data repository granting read/write access.
      */
     @Inject
-    @RepositoryConfig(type=RepositoryType.RW)
+    @RepositoryConfig(type = RepositoryType.RW)
     private Repository repository;
 
     /**
      * The authorization module.
      */
     @Inject
-    @AuthorizationConfig(type=AuthorizationType.HEADER)
+    @AuthorizationConfig(type = AuthorizationType.HEADER)
     private Authorization authorization;
 
     /**
      * The object lock mechanism.
      */
     @Inject
-    @LockConfig(type=LockType.TIMESTAMP)
+    @LockConfig(type = LockType.TIMESTAMP)
     private ObjectLocker lock;
 
     /**
      * The validator used for Probe objects.
      */
     @Inject
-    @ValidationConfig(type="Probe")
+    @ValidationConfig(type = "Probe")
     private Validator validator;
 
     /**
@@ -152,8 +152,8 @@ public class ProbeService {
      *  * start: The first Probe item.<br>
      *  * limit: The count of Probe items.<br>
      *  <br>
-     *  The response data contains a stripped set of Probe objects. The returned fields
-     *  are defined in the query used in the request.
+     *  The response data contains a stripped set of Probe objects.
+     *  The returned fields are defined in the query used in the request.
      * <p>
      * Example:
      * http://example.com/probe?page=[PAGE]&start=[START]&limit=[LIMIT]
@@ -170,7 +170,7 @@ public class ProbeService {
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         List<Probe> probes = repository.getAllPlain(Probe.class, Strings.LAND);
-        
+
         int size = probes.size();
         if (params.containsKey("start") && params.containsKey("limit")) {
             int start = Integer.valueOf(params.getFirst("start"));
@@ -184,7 +184,10 @@ public class ProbeService {
 
         for (Probe probe: probes) {
             Violation violation = validator.validate(probe);
-            if (violation.hasWarnings() || violation.hasErrors() || violation.hasNotifications()) {
+            if (violation.hasWarnings()
+                || violation.hasErrors()
+                || violation.hasNotifications()
+            ) {
                 probe.setWarnings(violation.getWarnings());
                 probe.setErrors(violation.getErrors());
                 probe.setNotifications(violation.getNotifications());
@@ -292,13 +295,13 @@ public class ProbeService {
         /* Persist the new probe object*/
         Response newProbe = repository.create(probe, Strings.LAND);
 
-        if(violation.hasWarnings()) {
+        if (violation.hasWarnings()) {
             newProbe.setWarnings(violation.getWarnings());
         }
-        if(violation.hasNotifications()) {
+        if (violation.hasNotifications()) {
             newProbe.setNotifications(violation.getNotifications());
         }
-        
+
         return authorization.filter(
             request,
             newProbe,
@@ -365,8 +368,8 @@ public class ProbeService {
                 return;
             }
 
-            // Use a dummy probe with same mstId as the messprogramm to authorize
-            // the user to create probe objects.
+            // Use a dummy probe with same mstId as the messprogramm to
+            // authorize the user to create probe objects.
             Probe testProbe = new Probe();
             testProbe.setMstId(messprogramm.getMstId());
             if (!authorization.isAuthorized(
@@ -407,10 +410,11 @@ public class ProbeService {
                 start,
                 end,
                 dryrun);
-    
+
             for (Probe probe : proben) {
-                if (!probe.isFound())
+                if (!probe.isFound()) {
                     generatedProbeIds.add(probe.getId());
+                }
             }
             List<Map<String, Object>> returnValue = factory.getProtocol();
             data.put("success", true);
@@ -423,10 +427,12 @@ public class ProbeService {
         Tag newTag = null;
         //Generate Tags
         if (generatedProbeIds.size() > 0) {
-            Response tagCreation = TagUtil.generateTag("PEP", mstId, repository);
+            Response tagCreation =
+                TagUtil.generateTag("PEP", mstId, repository);
             if (tagCreation.getSuccess()) {
                 newTag = (Tag) tagCreation.getData();
-                TagUtil.setTagsByProbeIds(generatedProbeIds, newTag.getId(), repository);
+                TagUtil.setTagsByProbeIds(
+                    generatedProbeIds, newTag.getId(), repository);
             }
             responseData.put("tag", newTag.getTag());
         }
@@ -510,7 +516,7 @@ public class ProbeService {
         }
         Response updated = repository.getById(
             Probe.class,
-            ((Probe)response.getData()).getId(), Strings.LAND);
+            ((Probe) response.getData()).getId(), Strings.LAND);
         if (violation.hasWarnings()) {
             updated.setWarnings(violation.getWarnings());
         }
@@ -546,7 +552,7 @@ public class ProbeService {
         if (!probe.getSuccess()) {
             return probe;
         }
-        Probe probeObj = (Probe)probe.getData();
+        Probe probeObj = (Probe) probe.getData();
         if (!authorization.isAuthorized(
                 request,
                 probeObj,
@@ -559,9 +565,10 @@ public class ProbeService {
         try {
             Response response = repository.delete(probeObj, Strings.LAND);
             return response;
-        }
-        catch(IllegalArgumentException | EJBTransactionRolledbackException |
-            TransactionRequiredException e) {
+        } catch (IllegalArgumentException
+            | EJBTransactionRolledbackException
+            | TransactionRequiredException e
+        ) {
             return new Response(false, 600, "");
         }
     }

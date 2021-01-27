@@ -17,20 +17,20 @@ import javax.persistence.Table;
 
 /**
  * The persistent class for the kta_grp_zuord database table.
- * 
+ *
  */
 @Entity
-@Table(name="kta_grp_zuord")
+@Table(name = "kta_grp_zuord")
 public class KtaGrpZuord implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
     private Integer id;
 
-    @Column(name="kta_grp_id")
+    @Column(name = "kta_grp_id")
     private Integer ktaGrpId;
 
-    @Column(name="kta_id")
+    @Column(name = "kta_id")
     private Integer ktaId;
 
     public KtaGrpZuord() {

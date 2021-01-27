@@ -41,8 +41,8 @@ public class EntityManagerProducer {
      * @param jndiEnv The jndi path to search for datasources.
      *     Defaults to 'java:app/entitymanager'.
      */
-    public EntityManagerProducer(String jndiPath) {
-        this.jndiPath = jndiPath;
+    public EntityManagerProducer(String jndi) {
+        this.jndiPath = jndi;
     }
 
     /**
@@ -54,12 +54,12 @@ public class EntityManagerProducer {
      */
     public EntityManager entityManager(String dataSourceName) {
 
-        EntityManager entityManager = 
+        EntityManager entityManager =
             (EntityManager) this.ctx.lookup(this.jndiPath + dataSourceName);
 
         if (entityManager == null) {
-            throw new UnexpectedTypeException("Unknown data source name '" +
-                dataSourceName + "'.");
+            throw new UnexpectedTypeException("Unknown data source name '"
+                + dataSourceName + "'.");
         }
 
         return entityManager;

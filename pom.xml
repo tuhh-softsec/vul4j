@@ -168,6 +168,12 @@
             <version>${geotools.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>1.8</version>
+        </dependency>
+
         <!-- Logging -->
         <dependency>
             <groupId>log4j</groupId>
@@ -221,6 +227,12 @@
             <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
             <scope>test</scope>
         </dependency>
+    
+      <dependency>
+        <groupId>javax</groupId>
+        <artifactId>javaee-api</artifactId>
+        <version>8.0.1</version>
+      </dependency>
     </dependencies>
 
     <profiles>
@@ -363,9 +375,8 @@
                             <includeTestSourceDirectory>true</includeTestSourceDirectory>
                             <includeResources>false</includeResources>
                             <includeTestResources>false</includeTestResources>
-                            <excludes>**/LafBaseListener.java,**/LafListener.java,**/LafParser.java</excludes>
-                            <logViolationsToConsole>false</logViolationsToConsole>
-                            <failOnViolation>false</failOnViolation>
+                            <excludes>**/LafBaseListener.java,**/LafListener.java,**/LafParser.java,**/LafLexer.java</excludes>
+                            <logViolationsToConsole>true</logViolationsToConsole>
                         </configuration>
                     </plugin>
                 </plugins>

@@ -70,7 +70,7 @@ import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationConfig;
 
 /**
- * REST service for SOrt objects.
+ * REST service for Ort objects.
  * <p>
  * The services produce data in the application/json media type.
  * A typical response holds information about the action performed and the data.
@@ -118,35 +118,34 @@ public class OrtService {
      * The data repository granting read/write access.
      */
     @Inject
-    @RepositoryConfig(type=RepositoryType.RW)
+    @RepositoryConfig(type = RepositoryType.RW)
     private Repository repository;
 
     @Inject
-    @AuthorizationConfig(type=AuthorizationType.HEADER)
+    @AuthorizationConfig(type = AuthorizationType.HEADER)
     private Authorization authorization;
 
     @Inject
     private OrtFactory ortFactory;
 
     @Inject
-    @ValidationConfig(type="Ort")
+    @ValidationConfig(type = "Ort")
     private Validator validator;
 
     /**
-     * Get all SOrt objects.
+     * Get all Ort objects.
      * <p>
      * The requested objects can be filtered using a URL parameter named
      * ortId.
      * To return all objects, the URL paramter query=all can be used.
      * <p>
-     * Example: http://example.com/location?ortId=[ID]
+     * Example: http://example.com/rest/ort?ortId=[ID]
      *
-     * @return Response object containing all (filtered) SOrt objects.
+     * @return Response object containing all (filtered) Ort objects.
      */
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    @SuppressWarnings("unchecked")
     public Response get(
         @Context HttpServletRequest request,
         @Context UriInfo info
@@ -158,8 +157,7 @@ public class OrtService {
             Integer id;
             try {
                 id = Integer.valueOf(params.getFirst("ortId"));
-            }
-            catch (NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 return new Response(false, 603, "Not a valid filter id");
             }
 
@@ -190,23 +188,31 @@ public class OrtService {
         Predicate filter = null;
         if (params.containsKey("netzbetreiberId")) {
             Predicate netzbetreiberFilter =
-                    builder.equal(root.get("netzbetreiberId"), params.getFirst("netzbetreiberId"));
+                builder.equal(
+                    root.get("netzbetreiberId"),
+                    params.getFirst("netzbetreiberId"));
             filter = builder.and(netzbetreiberFilter);
-        }
-        else {
+        } else {
             for (String nb : user.getNetzbetreiber()) {
                 builder.or(builder.equal(root.get("netzbetreiberId"), nb));
             }
         }
         if (params.containsKey("search")) {
-            Join<Ort, Verwaltungseinheit> join = root.join("gemeinde", JoinType.LEFT);
-            String pattern = "%"+params.getFirst("search")+"%";
+            Join<Ort, Verwaltungseinheit> join =
+                root.join("gemeinde", JoinType.LEFT);
+            String pattern = "%" + params.getFirst("search") + "%";
             Predicate idFilter = builder.like(root.get("ortId"), pattern);
-            Predicate kurzTextFilter = builder.like(root.get("kurztext"), pattern);
-            Predicate langtextFilter = builder.like(root.get("langtext"), pattern);
-            Predicate bezFilter = builder.like(join.get("bezeichnung"), pattern);
-            Predicate searchFilter = builder.or(idFilter, kurzTextFilter, langtextFilter, bezFilter);
-            filter = filter == null? searchFilter: builder.and(filter, searchFilter);
+            Predicate kurzTextFilter =
+                builder.like(root.get("kurztext"), pattern);
+            Predicate langtextFilter =
+                builder.like(root.get("langtext"), pattern);
+            Predicate bezFilter =
+                builder.like(join.get("bezeichnung"), pattern);
+            Predicate searchFilter =
+                builder.or(idFilter, kurzTextFilter, langtextFilter, bezFilter);
+            filter =
+                filter == null
+                ? searchFilter : builder.and(filter, searchFilter);
         }
         if (params.containsKey("filter")) {
             String json = params.getFirst("filter");
@@ -226,17 +232,23 @@ public class OrtService {
                     }
                     if ("like".equals(operator.getString())) {
                         Predicate f = builder.like(
-                            root.get(property.getString()), "%"+value.getString()+"%");
+                            root.get(
+                                property.getString()),
+                                "%" + value.getString() + "%");
                         jsonPredicates.add(f);
                     }
                 });
                 if (jsonPredicates.size() > 0) {
-                    Predicate jsonFilterPredicate = builder.and((Predicate[])jsonPredicates.toArray());
-                    filter = filter == null? jsonFilterPredicate: builder.and(filter, jsonFilterPredicate);
+                    Predicate jsonFilterPredicate =
+                        builder.and((Predicate[]) jsonPredicates.toArray());
+                    filter =
+                        filter == null
+                        ? jsonFilterPredicate
+                        : builder.and(filter, jsonFilterPredicate);
                 }
-            }
-            catch (JsonException |
-                IllegalStateException e) {
+            } catch (JsonException
+                | IllegalStateException e
+            ) {
                 logger.warn("Use JSON filter at this place.", e);
             }
         }
@@ -244,7 +256,7 @@ public class OrtService {
             query.where(filter);
         }
         orte = repository.filterPlain(query, Strings.STAMM);
-        
+
         int size = orte.size();
         if (params.containsKey("start") && params.containsKey("limit")) {
             int start = Integer.valueOf(params.getFirst("start"));
@@ -275,31 +287,33 @@ public class OrtService {
     }
 
     /**
-     * Get a single SOrt object by id.
+     * Get a single Ort object by id.
      * <p>
      * The id is appended to the URL as a path parameter.
      * <p>
-     * Example: http://example.com/location/{id}
+     * Example: http://example.com/rest/ort/{id}
      *
-     * @return Response object containing a single SOrt.
+     * @return Response object containing a single Ort.
      */
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getById(
         @Context HttpServletRequest request,
-        @PathParam("id") String id
+        @PathParam("id") int id
     ) {
         Ort ort = repository.getByIdPlain(
             Ort.class,
-            Integer.valueOf(id),
+            id,
             Strings.STAMM
         );
 
         QueryBuilder<Ortszuordnung> builder =
-                new QueryBuilder<Ortszuordnung>(repository.entityManager(Strings.LAND), Ortszuordnung.class);
+            new QueryBuilder<Ortszuordnung>(
+                repository.entityManager(Strings.LAND), Ortszuordnung.class);
         builder.and("ortId", ort.getId());
-        List<Ortszuordnung> zuordnungs = repository.filterPlain(builder.getQuery(), Strings.LAND);
+        List<Ortszuordnung> zuordnungs =
+            repository.filterPlain(builder.getQuery(), Strings.LAND);
         ort.setReferenceCount(zuordnungs.size());
         ort.setPlausibleReferenceCount(getPlausibleRefCount(zuordnungs));
         ort.setReadonly(
@@ -345,7 +359,8 @@ public class OrtService {
 
             builder.andIn("id", intList);
 
-            List<Ort> orte = repository.filterPlain(builder.getQuery(), Strings.STAMM);
+            List<Ort> orte =
+                repository.filterPlain(builder.getQuery(), Strings.STAMM);
             for (Ort o : orte) {
                 List<Ortszuordnung> zuordnungs = getOrtsZuordnungs(o);
                 o.setReferenceCount(zuordnungs.size());
@@ -364,7 +379,7 @@ public class OrtService {
     }
 
     /**
-     * Create a SOrt object.
+     * Create a Ort object.
      * <p>
      * The new object is embedded in the post data as JSON formatted string.
      * <p>
@@ -387,7 +402,7 @@ public class OrtService {
      * }
      * </code>
      * </pre>
-     * @return A response object containing the created SOrt.
+     * @return A response object containing the created Ort.
      */
     @POST
     @Path("/")
@@ -428,7 +443,7 @@ public class OrtService {
         if (ort.getId() == null) {
             response = repository.create(ort, Strings.STAMM);
         }
-        if(violation.hasWarnings()) {
+        if (violation.hasWarnings()) {
             response.setWarnings(violation.getWarnings());
         }
 
@@ -436,7 +451,7 @@ public class OrtService {
     }
 
     /**
-     * Update an existing SOrt object.
+     * Update an existing Ort object.
      * <p>
      * The object to update should come as JSON formatted string.
      * <pre>
@@ -460,7 +475,7 @@ public class OrtService {
      * </code>
      * </pre>
      *
-     * @return Response object containing the updated SOrt object.
+     * @return Response object containing the updated Ort object.
      */
     @PUT
     @Path("/{id}")
@@ -479,7 +494,8 @@ public class OrtService {
             return new Response(false, 699, ort);
         }
 
-        Ort dbOrt = repository.getByIdPlain(Ort.class, ort.getId(), Strings.STAMM);
+        Ort dbOrt = repository.getByIdPlain(
+            Ort.class, ort.getId(), Strings.STAMM);
         if (dbOrt == null) {
             return new Response(false, 600, ort);
         }
@@ -489,7 +505,8 @@ public class OrtService {
         if (getPlausibleRefCount(getOrtsZuordnungs(dbOrt)) > 0
                 && (!dbCoordX.equals(ort.getKoordXExtern())
                 || !dbCoordY.equals(ort.getKoordYExtern()))) {
-            MultivaluedMap<String, Integer> error = new MultivaluedHashMap<String,Integer>();
+            MultivaluedMap<String, Integer> error =
+                new MultivaluedHashMap<String, Integer>();
             if (!dbCoordX.equals(ort.getKoordXExtern())) {
                 error.add("koordXExtern", 653);
             }
@@ -521,7 +538,7 @@ public class OrtService {
         }
 
         Response response = repository.update(ort, Strings.STAMM);
-        if(violation.hasWarnings()) {
+        if (violation.hasWarnings()) {
             response.setWarnings(violation.getWarnings());
         }
 
@@ -529,11 +546,11 @@ public class OrtService {
     }
 
     /**
-     * Delete an existing SOrt object by id.
+     * Delete an existing Ort object by id.
      * <p>
      * The id is appended to the URL as a path parameter.
      * <p>
-     * Example: http://example.com/location/{id}
+     * Example: http://example.com/rest/ort/{id}
      *
      * @return Response object.
      */
@@ -549,7 +566,7 @@ public class OrtService {
         if (!response.getSuccess()) {
             return response;
         }
-        Ort ort = (Ort)response.getData();
+        Ort ort = (Ort) response.getData();
         if (getOrtsZuordnungs(ort).size() > 0) {
             return new Response(false, 606, ort);
         }
@@ -559,6 +576,7 @@ public class OrtService {
             RequestMethod.DELETE,
             Ort.class)
         ) {
+            return new Response(false, 699, ort);
         }
 
         return repository.delete(ort, Strings.STAMM);
@@ -571,30 +589,39 @@ public class OrtService {
      */
     public List<Ortszuordnung> getOrtsZuordnungs(Ort o) {
         QueryBuilder<Ortszuordnung> refBuilder =
-                new QueryBuilder<Ortszuordnung>(repository.entityManager(Strings.LAND), Ortszuordnung.class);
+            new QueryBuilder<Ortszuordnung>(
+                repository.entityManager(Strings.LAND), Ortszuordnung.class);
         refBuilder.and("ortId", o.getId());
-        List<Ortszuordnung> zuordnungs = repository.filterPlain(refBuilder.getQuery(), Strings.LAND);
+        List<Ortszuordnung> zuordnungs =
+            repository.filterPlain(refBuilder.getQuery(), Strings.LAND);
         return zuordnungs;
     }
 
     /**
      * Get the number of plausible Messung objects referencing an ort.
-     * @param zuordnungs List of Ortszuordnung objects referencing the ort to check
+     * @param zuordnungs List of Ortszuordnung objects referencing
+     *                   the ort to check
      * @return Number of references as int
      */
-    public int getPlausibleRefCount (List<Ortszuordnung> zuordnungs) {
+    public int getPlausibleRefCount(List<Ortszuordnung> zuordnungs) {
         Map<Integer, Integer> plausibleMap = new HashMap<Integer, Integer>();
         for (Ortszuordnung zuordnung: zuordnungs) {
             EntityManager em = repository.entityManager(Strings.LAND);
 
             CriteriaBuilder mesBuilder = em.getCriteriaBuilder();
-            CriteriaQuery<Messung> criteriaQuery = mesBuilder.createQuery(Messung.class);
+            CriteriaQuery<Messung> criteriaQuery =
+                mesBuilder.createQuery(Messung.class);
             Root<Messung> root = criteriaQuery.from(Messung.class);
-            Join<Messung, StatusProtokoll> join = root.join("statusProtokoll", JoinType.LEFT);
-            Predicate filter = mesBuilder.equal(root.get("probeId"), zuordnung.getProbeId());
-            filter = mesBuilder.and(filter, join.get("statusKombi").in(Arrays.asList("2", "6", "10")));
+            Join<Messung, StatusProtokoll> join =
+                root.join("statusProtokoll", JoinType.LEFT);
+            Predicate filter =
+                mesBuilder.equal(root.get("probeId"), zuordnung.getProbeId());
+            filter = mesBuilder
+                .and(filter, join.get("statusKombi")
+                .in(Arrays.asList("2", "6", "10")));
             criteriaQuery.where(filter);
-            List<Messung> messungs = repository.filterPlain(criteriaQuery, Strings.LAND);
+            List<Messung> messungs =
+                repository.filterPlain(criteriaQuery, Strings.LAND);
             if (messungs.size() > 0) {
                 plausibleMap.put(zuordnung.getProbeId(), 1);
             }

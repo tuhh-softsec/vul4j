@@ -23,9 +23,10 @@ public class HasUmwelt implements Rule {
 
     @Override
     public Violation execute(Object object) {
-        Probe probe = (Probe)object;
-        if (probe.getUmwId() == null ||
-            probe.getUmwId().equals("")) {
+        Probe probe = (Probe) object;
+        if (probe.getUmwId() == null
+            || probe.getUmwId().equals("")
+        ) {
             Violation violation = new Violation();
             violation.addWarning("umwId", 631);
             return violation;

@@ -17,5 +17,6 @@ db_schema/private*
 src/main/java/de/intevation/lada/importer/laf/LafBaseListener.java
 src/main/java/de/intevation/lada/importer/laf/LafListener.java
 src/main/java/de/intevation/lada/importer/laf/LafParser.java
+src/main/java/de/intevation/lada/importer/laf/LafLexer.java
 src/main/java/Laf.tokens
 src/main/java/LafLexer.tokens

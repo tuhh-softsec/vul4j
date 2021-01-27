@@ -1,28 +1,34 @@
+/* Copyright (C) 2017 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.model.land;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-import javax.json.JsonObject;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 import de.intevation.lada.util.data.JsonObjectType;
 
 /**
  * The persistent class for the audit_trail_probe database table.
- * 
+ *
  */
 @Entity
-@Table(name="audit_trail_probe")
+@Table(name = "audit_trail_probe")
 @TypeDefs({ @TypeDef(name = "JsonObject", typeClass = JsonObjectType.class) })
 public class AuditTrailProbe implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -30,33 +36,33 @@ public class AuditTrailProbe implements Serializable {
     @Id
     private Long id;
 
-    @Column(name="changed_fields")
-    @Type(type="JsonObject")
+    @Column(name = "changed_fields")
+    @Type(type = "JsonObject")
     private JsonNode changedFields;
 
-    @Column(name="row_data")
-    @Type(type="JsonObject")
+    @Column(name = "row_data")
+    @Type(type = "JsonObject")
     private JsonNode rowData;
 
-    @Column(name="tstamp")
+    @Column(name = "tstamp")
     private Timestamp tstamp;
 
-    @Column(name="action")
+    @Column(name = "action")
     private String action;
 
-    @Column(name="messungs_id")
+    @Column(name = "messungs_id")
     private Integer messungsId;
 
-    @Column(name="object_id")
+    @Column(name = "object_id")
     private Integer objectId;
 
-    @Column(name="ort_id")
+    @Column(name = "ort_id")
     private Integer ortId;
 
-    @Column(name="probe_id")
+    @Column(name = "probe_id")
     private Integer probeId;
 
-    @Column(name="table_name")
+    @Column(name = "table_name")
     private String tableName;
 
     public AuditTrailProbe() {

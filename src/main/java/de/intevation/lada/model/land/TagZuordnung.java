@@ -1,41 +1,45 @@
+/* Copyright (C) 2018 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.model.land;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import de.intevation.lada.model.stammdaten.Tag;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import de.intevation.lada.model.stammdaten.Tag;
+
 /**
- * The persistent class for the tagzuordnung database table
+ * The persistent class for the tagzuordnung database table.
  */
 @Entity
-@Table(name="tagzuordnung", schema="land")
+@Table(name = "tagzuordnung", schema = "land")
 public class TagZuordnung {
     public static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name="probe_id")
+    @Column(name = "probe_id")
     private Integer probeId;
 
-    @Column(name="messung_id")
+    @Column(name = "messung_id")
     private Integer messungId;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="tag_id")
+    @JoinColumn(name = "tag_id")
     private Tag tag;
 
     @Transient

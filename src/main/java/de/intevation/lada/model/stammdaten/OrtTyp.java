@@ -17,20 +17,20 @@ import javax.persistence.Table;
 
 /**
  * The persistent class for the ort_typ database table.
- * 
+ *
  */
 @Entity
-@Table(name="ort_typ")
+@Table(name = "ort_typ")
 public class OrtTyp implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
     private Integer id;
 
-    @Column(name="ort_typ")
+    @Column(name = "ort_typ")
     private String ortTyp;
 
-    @Column(name="code")
+    @Column(name = "code")
     private String code;
 
     public OrtTyp() {

@@ -13,10 +13,9 @@ import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.json.JsonArray;
-import javax.json.JsonValue;
 import javax.json.JsonNumber;
 import javax.json.JsonObject;
+import javax.json.JsonValue;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -25,21 +24,21 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
-import org.apache.log4j.Logger;
-import de.intevation.lada.model.land.Messung;
-import de.intevation.lada.model.land.Probe;
+
 import de.intevation.lada.exporter.ExportConfig;
 import de.intevation.lada.exporter.ExportFormat;
 import de.intevation.lada.exporter.Exporter;
+import de.intevation.lada.model.land.Messung;
+import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
+import de.intevation.lada.util.auth.Authorization;
+import de.intevation.lada.util.auth.AuthorizationType;
+import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.data.Strings;
-import de.intevation.lada.util.auth.Authorization;
-import de.intevation.lada.util.auth.AuthorizationType;
-import de.intevation.lada.util.auth.UserInfo;
 
 /**
  * REST service to export probe objects and the child objects associated with
@@ -54,7 +53,7 @@ import de.intevation.lada.util.auth.UserInfo;
  * </code>
  * </pre>
  *
- * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ * @author <a href = "mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
 @Path("data/export")
 @RequestScoped
@@ -64,21 +63,21 @@ public class LafExportService {
      * The data repository granting read-only access.
      */
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type = RepositoryType.RO)
     private Repository repository;
 
     /**
      * The exporter.
      */
     @Inject
-    @ExportConfig(format=ExportFormat.LAF)
+    @ExportConfig(format = ExportFormat.LAF)
     private Exporter exporter;
 
     /**
      * The authorization module.
      */
     @Inject
-    @AuthorizationConfig(type=AuthorizationType.HEADER)
+    @AuthorizationConfig(type = AuthorizationType.HEADER)
     private Authorization authorization;
 
 
@@ -105,14 +104,14 @@ public class LafExportService {
         if (objects.getJsonArray("proben") != null) {
             for (JsonValue id : objects.getJsonArray("proben")) {
                 if (id instanceof JsonNumber) {
-                    probeIds.add(((JsonNumber)id).intValue());
+                    probeIds.add(((JsonNumber) id).intValue());
                 }
             }
         }
         if (objects.getJsonArray("messungen") != null) {
             for (JsonValue id : objects.getJsonArray("messungen")) {
                 if (id instanceof JsonNumber) {
-                    messungIds.add(((JsonNumber)id).intValue());
+                    messungIds.add(((JsonNumber) id).intValue());
                 }
             }
         }
@@ -128,7 +127,7 @@ public class LafExportService {
                 pIds.add(p.getId());
             }
         }
-        
+
         List<Integer> mIds = new ArrayList<Integer>();
         if (!messungIds.isEmpty()) {
             QueryBuilder<Messung> mBuilder = new QueryBuilder<Messung>(
@@ -151,14 +150,16 @@ public class LafExportService {
         }
 
         UserInfo userInfo = authorization.getInfo(request);
-        InputStream exported = exporter.export(pIds, mIds, encoding, userInfo);
+        InputStream exported =
+            exporter.exportProben(pIds, mIds, encoding, userInfo);
 
-        ResponseBuilder response = Response.ok((Object)exported);
+        ResponseBuilder response = Response.ok((Object) exported);
         response.header(
             "Content-Disposition",
-            "attachment; filename=\"export.laf\"");
+            "attachment; filename = \"export.laf\"");
         response.encoding(encoding);
-        response.header("Content-Type", "application/octet-stream; charset=" + encoding);
+        response.header(
+            "Content-Type", "application/octet-stream; charset = " + encoding);
         return response.build();
     }
 }

@@ -25,7 +25,7 @@ import de.intevation.lada.validation.rules.Rule;
  *
  * @author <a href="mailto:raimund.renkert@intevation.de">Raimund Renkert</a>
  */
-@ValidationConfig(type="Ortszuordnung")
+@ValidationConfig(type = "Ortszuordnung")
 @ApplicationScoped
 public class OrtszuordnungValidator implements Validator {
 
@@ -36,12 +36,13 @@ public class OrtszuordnungValidator implements Validator {
     @Override
     public Violation validate(Object object) {
         Violation violations = new Violation();
-        if (!(object instanceof Ortszuordnung) &&
-            !(object instanceof OrtszuordnungMp)) {
+        if (!(object instanceof Ortszuordnung)
+            && !(object instanceof OrtszuordnungMp)
+        ) {
             violations.addError("ortszuordnung", 602);
             return violations;
         }
-        for(Rule rule: rules) {
+        for (Rule rule : rules) {
             Violation result = rule.execute(object);
             if (result != null) {
                 if (result.hasWarnings()) {

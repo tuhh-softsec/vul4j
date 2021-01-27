@@ -26,7 +26,7 @@ public class ValidFromTo implements Rule {
 
     @Override
     public Violation execute(Object object) {
-        Messprogramm messprogramm = (Messprogramm)object;
+        Messprogramm messprogramm = (Messprogramm) object;
         Violation violation = new Violation();
 
         if (messprogramm.getGueltigVon() != null
@@ -43,6 +43,6 @@ public class ValidFromTo implements Rule {
 
         return violation.hasErrors()
             ? violation
-            :null;
+            : null;
     }
 }

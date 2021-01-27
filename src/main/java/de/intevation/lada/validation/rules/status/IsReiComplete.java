@@ -32,17 +32,20 @@ public class IsReiComplete implements Rule {
     @Inject Logger logger;
 
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type = RepositoryType.RO)
     private Repository repository;
 
     @Override
     public Violation execute(Object object) {
-        StatusProtokoll status = (StatusProtokoll)object;
+        StatusProtokoll status = (StatusProtokoll) object;
 
-        Messung messung = repository.getByIdPlain(Messung.class, status.getMessungsId(), "land");
-        Probe probe = repository.getByIdPlain(Probe.class, messung.getProbeId(), "land");
-        if (!Integer.valueOf(3).equals(probe.getDatenbasisId()) &&
-            !Integer.valueOf(4).equals(probe.getDatenbasisId())) {
+        Messung messung =
+            repository.getByIdPlain(
+                Messung.class, status.getMessungsId(), "land");
+        Probe probe =
+            repository.getByIdPlain(Probe.class, messung.getProbeId(), "land");
+        if (!Integer.valueOf(3).equals(probe.getDatenbasisId())
+            && !Integer.valueOf(4).equals(probe.getDatenbasisId())) {
             return null;
         }
         Violation violation = new Violation();

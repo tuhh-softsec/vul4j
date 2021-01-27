@@ -30,17 +30,18 @@ import de.intevation.lada.validation.rules.Rule;
 public class UniqueExterneProbeId implements Rule {
 
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type = RepositoryType.RO)
     private Repository repo;
 
     @Override
     public Violation execute(Object object) {
-        Probe probe = (Probe)object;
+        Probe probe = (Probe) object;
         QueryBuilder<Probe> builder = new QueryBuilder<Probe>(
             repo.entityManager(Strings.LAND),
             Probe.class);
         builder.and("externeProbeId", probe.getExterneProbeId());
-        List<Probe> existing = repo.filterPlain(builder.getQuery(), Strings.LAND);
+        List<Probe> existing =
+            repo.filterPlain(builder.getQuery(), Strings.LAND);
         if (!existing.isEmpty()) {
             Probe found = existing.get(0);
             // The probe found in the db equals the new probe. (Update)
@@ -53,5 +54,4 @@ public class UniqueExterneProbeId implements Rule {
         }
         return null;
     }
-
 }

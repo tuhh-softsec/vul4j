@@ -10,12 +10,12 @@ package de.intevation.lada.query;
 
 /**
  * Container for result configurations.
- * Provides config for the client like column header, column with and data index.
+ * Provides config for the client like column header, column with
+ * and data index.
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-public class ResultConfig
-{
+public class ResultConfig {
     String dataIndex;
     String header;
     Integer flex;
@@ -28,37 +28,37 @@ public class ResultConfig
     }
 
     /**
-     * @param dataIndex The dataIndex
-     * @param header    The column header
-     * @param flex      Flexible with
-     * @param width     Width in px.
+     * @param di The dataIndex
+     * @param h The column header
+     * @param f Flexible with
+     * @param w Width in px.
      */
-    public ResultConfig(String dataIndex, String header, Integer flex, Integer width) {
-        this.dataIndex= dataIndex;
-        this.header= header;
-        this.flex = flex;
-        this.width = width;
+    public ResultConfig(String di, String h, Integer f, Integer w) {
+        this.dataIndex = di;
+        this.header = h;
+        this.flex = f;
+        this.width = w;
     }
 
     /**
-     * @param dataIndex The dataIndex
-     * @param header    The column header
-     * @param flex      Flexible with
+     * @param d The dataIndex
+     * @param h The column header
+     * @param f Flexible with
      */
-    public ResultConfig(String dataIndex, String header, Integer flex) {
-        this.dataIndex= dataIndex;
-        this.header= header;
-        this.flex = flex;
+    public ResultConfig(String d, String h, Integer f) {
+        this.dataIndex = d;
+        this.header = h;
+        this.flex = f;
         this.width = null;
     }
 
     /**
-     * @param dataIndex The dataIndex
-     * @param header    The column header
+     * @param d The dataIndex
+     * @param h The column header
      */
-    public ResultConfig(String dataIndex, String header) {
-        this.dataIndex= dataIndex;
-        this.header= header;
+    public ResultConfig(String d, String h) {
+        this.dataIndex = d;
+        this.header = h;
         this.flex = 0;
         this.width = null;
     }

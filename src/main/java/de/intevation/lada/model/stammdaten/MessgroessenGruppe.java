@@ -1,3 +1,10 @@
+/* Copyright (C) 2015 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.model.stammdaten;
 
 import java.io.Serializable;
@@ -10,10 +17,10 @@ import javax.persistence.Table;
 
 /**
  * The persistent class for the messgroessen_gruppe database table.
- * 
+ *
  */
 @Entity
-@Table(name="messgroessen_gruppe")
+@Table(name = "messgroessen_gruppe")
 public class MessgroessenGruppe implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -22,7 +29,7 @@ public class MessgroessenGruppe implements Serializable {
 
     private String bezeichnung;
 
-    @Column(name="ist_leitnuklidgruppe")
+    @Column(name = "ist_leitnuklidgruppe")
     private String istLeitnuklidgruppe;
 
     public MessgroessenGruppe() {

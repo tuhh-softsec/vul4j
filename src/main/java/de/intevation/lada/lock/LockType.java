@@ -13,5 +13,14 @@ package de.intevation.lada.lock;
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
 public enum LockType {
-    NONE, TIMESTAMP
+
+    /**
+     * No Locking at all.
+     */
+    NONE,
+
+    /**
+     * Lock by timestamp.
+     */
+    TIMESTAMP
 }

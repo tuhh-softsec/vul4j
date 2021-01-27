@@ -40,9 +40,9 @@ public class MessprogrammIdAuthorizer extends BaseAuthorizer {
         Integer id;
         try {
             id = (Integer) m.invoke(data);
-        } catch (IllegalAccessException |
-            IllegalArgumentException |
-            InvocationTargetException e
+        } catch (IllegalAccessException
+            | IllegalArgumentException
+            | InvocationTargetException e
         ) {
             return false;
         }
@@ -53,7 +53,8 @@ public class MessprogrammIdAuthorizer extends BaseAuthorizer {
             MessStelle mst = repository.getByIdPlain(
                 MessStelle.class, mstId, Strings.STAMM);
             if (userInfo.getFunktionenForNetzbetreiber(
-                    mst.getNetzbetreiberId()).contains(4)) {
+                    mst.getNetzbetreiberId()).contains(4)
+            ) {
                 return true;
             }
         }
@@ -61,8 +62,13 @@ public class MessprogrammIdAuthorizer extends BaseAuthorizer {
     }
 
     @Override
-    public <T> boolean isAuthorizedById(Object id, RequestMethod method, UserInfo userInfo, Class<T> clazz) {
-        //TODO: implement
+    public <T> boolean isAuthorizedById(
+        Object id,
+        RequestMethod method,
+        UserInfo userInfo,
+        Class<T> clazz
+    ) {
+        //TODO implement
         return false;
     }
 
@@ -75,12 +81,11 @@ public class MessprogrammIdAuthorizer extends BaseAuthorizer {
     ) {
         if (data.getData() instanceof List<?>) {
             List<Object> objects = new ArrayList<Object>();
-            for (Object object :(List<Object>)data.getData()) {
+            for (Object object :(List<Object>) data.getData()) {
                 objects.add(setAuthData(userInfo, object, clazz));
             }
             data.setData(objects);
-        }
-        else {
+        } else {
             Object object = data.getData();
             data.setData(setAuthData(userInfo, object, clazz));
         }
@@ -104,8 +109,7 @@ public class MessprogrammIdAuthorizer extends BaseAuthorizer {
             Integer id = null;
             if (getMessprogrammId != null) {
                 id = (Integer) getMessprogrammId.invoke(data);
-            }
-            else {
+            } else {
                 return null;
             }
             Messprogramm messprogramm = repository.getByIdPlain(
@@ -116,7 +120,8 @@ public class MessprogrammIdAuthorizer extends BaseAuthorizer {
                 MessStelle mst = repository.getByIdPlain(
                     MessStelle.class, mstId, Strings.STAMM);
                 if (userInfo.getFunktionenForNetzbetreiber(
-                        mst.getNetzbetreiberId()).contains(4)) {
+                        mst.getNetzbetreiberId()).contains(4)
+                ) {
                     owner = true;
                 }
             }

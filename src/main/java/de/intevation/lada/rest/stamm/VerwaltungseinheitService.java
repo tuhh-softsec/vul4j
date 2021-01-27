@@ -73,7 +73,7 @@ public class VerwaltungseinheitService {
      * The data repository granting read access.
      */
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type = RepositoryType.RO)
     private Repository defaultRepo;
 
     /**
@@ -100,7 +100,8 @@ public class VerwaltungseinheitService {
         String filter = params.getFirst("query");
         QueryBuilder<Verwaltungseinheit> builder =
             new QueryBuilder<Verwaltungseinheit>(
-                defaultRepo.entityManager(Strings.STAMM), Verwaltungseinheit.class);
+                defaultRepo.entityManager(
+                    Strings.STAMM), Verwaltungseinheit.class);
         builder.andLike("bezeichnung", filter + "%");
         return defaultRepo.filter(builder.getQuery(), Strings.STAMM);
     }

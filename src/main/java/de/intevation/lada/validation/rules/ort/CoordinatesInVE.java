@@ -11,12 +11,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.apache.log4j.Logger;
 import org.locationtech.jts.geom.Point;
 
-import org.apache.log4j.Logger;
-
 import de.intevation.lada.model.stammdaten.Ort;
-import de.intevation.lada.model.stammdaten.Verwaltungseinheit;
 import de.intevation.lada.model.stammdaten.Verwaltungsgrenze;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
@@ -40,13 +38,12 @@ public class CoordinatesInVE implements Rule {
     private Logger logger;
 
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type = RepositoryType.RO)
     private Repository repository;
 
-    @SuppressWarnings("unchecked")
     @Override
     public Violation execute(Object object) {
-        Ort ort = (Ort)object;
+        Ort ort = (Ort) object;
         String gemId = "".equals(ort.getGemId())
             ? null
             : ort.getGemId();
@@ -83,8 +80,8 @@ public class CoordinatesInVE implements Rule {
                         return null;
                     }
                 } else {
-                    double dist = singlevg.getShape().distance(p) ;
-                    dist = dist * (3.1415926/180) * 6378137;
+                    double dist = singlevg.getShape().distance(p);
+                    dist = dist * (3.1415926 / 180) * 6378137;
                     if (dist < 1000) {
                         ort.setUnscharf(true);
                         return null;

@@ -74,8 +74,7 @@ public class VersionService {
         try {
             version = ResourceBundle.getBundle("lada").getString("version");
             return new Response(true, 200, version);
-        }
-        catch (MissingResourceException mre) {
+        } catch (MissingResourceException mre) {
             logger.error(mre);
         }
         return new Response(false, 200, version);

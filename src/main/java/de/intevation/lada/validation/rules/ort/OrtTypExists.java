@@ -31,12 +31,12 @@ import de.intevation.lada.validation.rules.Rule;
 public class OrtTypExists implements Rule {
 
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type = RepositoryType.RO)
     private Repository repository;
 
     @Override
     public Violation execute(Object object) {
-        Ort ort = (Ort)object;
+        Ort ort = (Ort) object;
 
         if (ort.getOrtTyp() != null) {
             QueryBuilder<OrtTyp> builder =

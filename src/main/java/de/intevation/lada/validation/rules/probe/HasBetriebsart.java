@@ -23,7 +23,7 @@ public class HasBetriebsart implements Rule {
 
     @Override
     public Violation execute(Object object) {
-        Probe probe = (Probe)object;
+        Probe probe = (Probe) object;
         if (probe.getBaId() == null) {
             Violation violation = new Violation();
             violation.addError("baId", 631);

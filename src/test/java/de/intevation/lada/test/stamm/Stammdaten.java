@@ -29,6 +29,10 @@ import org.hamcrest.Matchers;
 import de.intevation.lada.BaseTest;
 import de.intevation.lada.Protocol;
 
+/**
+ * Test Stammdaten entities.
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 public class Stammdaten {
 
     @SuppressWarnings("rawtypes")
@@ -37,11 +41,9 @@ public class Stammdaten {
     @SuppressWarnings("rawtypes")
     public Stammdaten() {
         matchers = new HashMap<String, Matcher>();
-
         matchers.put("datenbasis",
-            Matchers.containsInAnyOrder("id","beschreibung","datenbasis")
+            Matchers.containsInAnyOrder("id", "beschreibung", "datenbasis")
         );
-
         matchers.put("messeinheit",
             Matchers.containsInAnyOrder(
                 "id",
@@ -52,7 +54,6 @@ public class Stammdaten {
                 "primary"
             )
         );
-
         matchers.put("messgroesse",
             Matchers.containsInAnyOrder(
                 "id",
@@ -65,11 +66,9 @@ public class Stammdaten {
                 "messgroesse"
             )
         );
-
         matchers.put("messmethode",
-            Matchers.containsInAnyOrder("id","beschreibung","messmethode")
+            Matchers.containsInAnyOrder("id", "beschreibung", "messmethode")
         );
-
         matchers.put("messstelle",
             Matchers.containsInAnyOrder(
                 "id",
@@ -80,7 +79,6 @@ public class Stammdaten {
                 "netzbetreiberId"
             )
         );
-
         matchers.put("netzbetreiber",
             Matchers.containsInAnyOrder(
                 "id",
@@ -91,7 +89,6 @@ public class Stammdaten {
                 "netzbetreiber"
             )
         );
-
         matchers.put("pflichtmessgroesse",
             Matchers.containsInAnyOrder(
                 "id",
@@ -101,7 +98,6 @@ public class Stammdaten {
                 "umwId"
             )
         );
-
         matchers.put("probenart",
             Matchers.containsInAnyOrder(
                 "id",
@@ -110,7 +106,6 @@ public class Stammdaten {
                 "probenartEudfId"
             )
         );
-
         matchers.put("probenzusatz",
             Matchers.containsInAnyOrder(
                 "id",
@@ -120,7 +115,6 @@ public class Stammdaten {
                 "messEinheitId"
             )
         );
-
         matchers.put("location",
             Matchers.containsInAnyOrder(
                 "id",
@@ -142,11 +136,9 @@ public class Stammdaten {
                 "geom"
             )
         );
-
         matchers.put("koordinatenart",
-            Matchers.containsInAnyOrder("id","idfGeoKey","koordinatenart")
+            Matchers.containsInAnyOrder("id", "idfGeoKey", "koordinatenart")
         );
-
         matchers.put("staat",
             Matchers.containsInAnyOrder(
                 "id",
@@ -160,11 +152,14 @@ public class Stammdaten {
                 "kdaId"
             )
         );
-
         matchers.put("umwelt",
-            Matchers.containsInAnyOrder("id","beschreibung","umweltBereich","mehId", "secMehId")
+            Matchers.containsInAnyOrder(
+                "id",
+                "beschreibung",
+                "umweltBereich",
+                "mehId",
+                "secMehId")
         );
-
         matchers.put("verwaltungseinheit",
             Matchers.containsInAnyOrder(
                 "id",
@@ -188,8 +183,14 @@ public class Stammdaten {
      * Test the GET Service by requesting all objects.
      *
      * @param baseUrl The url pointing to the test deployment.
+     * @param type the entity type.
+     * @param protocol the test protocol.
      */
-    public final void getAll(URL baseUrl, String type, List<Protocol> protocol) {
+    public final void getAll(
+        URL baseUrl,
+        String type,
+        List<Protocol> protocol
+    ) {
         System.out.print(".");
         Protocol prot = new Protocol();
         prot.setName(type + " service");
@@ -202,11 +203,11 @@ public class Stammdaten {
         WebTarget target = client.target(baseUrl + "rest/" + type);
         /* Request all objects*/
         Response response = target.request()
-            .header("X-SHIB-user", BaseTest.TEST_USER)
-            .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+            .header("X-SHIB-user", BaseTest.testUser)
+            .header("X-SHIB-roles", BaseTest.testRoles)
             .get();
         String entity = response.readEntity(String.class);
-        try{
+        try {
             /* Try to parse the response*/
             JsonReader reader = Json.createReader(new StringReader(entity));
             JsonObject content = reader.readObject();
@@ -217,14 +218,20 @@ public class Stammdaten {
             prot.addInfo("message", content.getString("message"));
             Assert.assertNotNull(content.getJsonArray("data"));
             prot.addInfo("objects", content.getJsonArray("data").size());
-        }
-        catch(JsonException je) {
+        } catch (JsonException je) {
             prot.addInfo("exception", je.getMessage());
             Assert.fail(je.getMessage());
         }
         prot.setPassed(true);
     }
 
+    /**
+     * Get entity by id.
+     * @param baseUrl The server base url
+     * @param type the entity type
+     * @param id the entity id
+     * @param protocol the test protocol
+     */
     @SuppressWarnings("unchecked")
     public final void getById(
         URL baseUrl,
@@ -241,12 +248,13 @@ public class Stammdaten {
         try {
             /* Create a client*/
             Client client = ClientBuilder.newClient();
-            WebTarget target = client.target(baseUrl + "rest/" + type +"/" + id);
+            WebTarget target =
+                client.target(baseUrl + "rest/" + type + "/" + id);
             prot.addInfo(type + "Id", id);
             /* Request an object by id*/
             Response response = target.request()
-                .header("X-SHIB-user", BaseTest.TEST_USER)
-                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+                .header("X-SHIB-user", BaseTest.testUser)
+                .header("X-SHIB-roles", BaseTest.testRoles)
                 .get();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
@@ -262,8 +270,7 @@ public class Stammdaten {
             Assert.assertThat(content.getJsonObject("data").keySet(),
                 matchers.get(type));
             prot.addInfo("object", "equals");
-        }
-        catch(JsonException je) {
+        } catch (JsonException je) {
             prot.addInfo("exception", je.getMessage());
             Assert.fail(je.getMessage());
         }

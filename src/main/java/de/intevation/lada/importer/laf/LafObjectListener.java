@@ -1,3 +1,10 @@
+/* Copyright (C) 2015 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.importer.laf;
 
 import java.util.ArrayList;
@@ -11,8 +18,14 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import de.intevation.lada.importer.ReportItem;
 
+/**
+ * Listener to process the LAF data items.
+ */
 public class LafObjectListener extends LafBaseListener {
 
+    private static final int ERR670 = 670;
+    private static final int WARN632 = 632;
+    private static final int WARN673 = 673;
     LafRawData data;
     LafRawData.Probe currentProbe;
     LafRawData.Messung currentMessung;
@@ -113,7 +126,7 @@ public class LafObjectListener extends LafBaseListener {
                 errors.put(currentProbe.getIdentifier(), currentErrors);
             }
             if (!currentWarnings.isEmpty()) {
-                warnings.put(currentProbe.getIdentifier(),currentWarnings);
+                warnings.put(currentProbe.getIdentifier(), currentWarnings);
             }
 
             currentErrors.clear();
@@ -172,18 +185,24 @@ public class LafObjectListener extends LafBaseListener {
         }
         if (!currentErrors.isEmpty()) {
             if (errors.containsKey(currentProbe.getIdentifier())) {
-                errors.get(currentProbe.getIdentifier()).addAll(new ArrayList<>(currentErrors));
-            }
-            else {
-                errors.put(currentProbe.getIdentifier(), new ArrayList<>(currentErrors));
+                errors.get(
+                    currentProbe.getIdentifier()).addAll(
+                        new ArrayList<>(currentErrors));
+            } else {
+                errors.put(
+                    currentProbe.getIdentifier(),
+                    new ArrayList<>(currentErrors));
             }
         }
         if (!currentWarnings.isEmpty()) {
             if (warnings.containsKey(currentProbe.getIdentifier())) {
-                warnings.get(currentProbe.getIdentifier()).addAll(new ArrayList<>(currentWarnings));
-            }
-            else {
-                warnings.put(currentProbe.getIdentifier(), new ArrayList<>(currentWarnings));
+                warnings.get(
+                    currentProbe.getIdentifier()).addAll(
+                        new ArrayList<>(currentWarnings));
+            } else {
+                warnings.put(
+                    currentProbe.getIdentifier(),
+                    new ArrayList<>(currentWarnings));
             }
         }
         currentProbe = data.new Probe();
@@ -423,7 +442,9 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterUebertragungsformat(LafParser.UebertragungsformatContext ctx) {
+    @Override public void enterUebertragungsformat(
+        LafParser.UebertragungsformatContext ctx
+    ) {
         if (this.hasUebertragungsformat()) {
             return;
         }
@@ -431,19 +452,19 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             parserWarnings.add(warn);
         }
         String value = ctx.getChild(1).toString();
         // Trim double qoutes.
         value = value.replaceAll("\"", "").trim();
-        if (!value.matches(LafDataTypes.C1) ||
-            !value.equals("7")
+        if (!value.matches(LafDataTypes.C1)
+            || !value.equals("7")
         ) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue(value);
-            warn.setCode(632);
+            warn.setCode(WARN632);
             parserWarnings.add(warn);
         }
         hasUebertragungsformat = true;
@@ -462,7 +483,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             List<ReportItem> items = new ArrayList<>();
             items.add(warn);
             parserWarnings.add(warn);
@@ -470,13 +491,13 @@ public class LafObjectListener extends LafBaseListener {
         String value = ctx.getChild(1).toString();
         // Trim double qoutes.
         value = value.replaceAll("\"", "").trim();
-        if (!value.matches(LafDataTypes.C4) ||
-            !value.equals("0084")
+        if (!value.matches(LafDataTypes.C4)
+            || !value.equals("0084")
         ) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue(value);
-            warn.setCode(632);
+            warn.setCode(WARN632);
             parserWarnings.add(warn);
         }
         hasVersion = true;
@@ -495,7 +516,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -506,11 +527,12 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentProbe.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
         this.hasDatenbasis = true;
     }
 
@@ -527,7 +549,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -537,11 +559,12 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentProbe.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
         this.hasDatenbasis = true;
     }
 
@@ -555,7 +578,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -565,11 +588,12 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentProbe.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -582,7 +606,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -592,11 +616,12 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentProbe.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -604,12 +629,14 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterStaat_der_messstelle_lang(LafParser.Staat_der_messstelle_langContext ctx) {
+    @Override public void enterStaat_der_messstelle_lang(
+        LafParser.Staat_der_messstelle_langContext ctx
+    ) {
         if (ctx.getChildCount() == 2) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -619,11 +646,12 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentProbe.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -631,12 +659,14 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterStaat_der_messstelle_kurz(LafParser.Staat_der_messstelle_kurzContext ctx) {
+    @Override public void enterStaat_der_messstelle_kurz(
+        LafParser.Staat_der_messstelle_kurzContext ctx
+    ) {
         if (ctx.getChildCount() == 2) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -646,11 +676,12 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentProbe.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -658,12 +689,14 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterStaat_der_messstelle_s(LafParser.Staat_der_messstelle_sContext ctx) {
+    @Override public void enterStaat_der_messstelle_s(
+        LafParser.Staat_der_messstelle_sContext ctx
+    ) {
         if (ctx.getChildCount() == 2) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -673,11 +706,12 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentProbe.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -690,7 +724,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -700,11 +734,12 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentProbe.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -717,7 +752,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -727,11 +762,12 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentProbe.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -744,7 +780,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -754,11 +790,12 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentProbe.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -771,7 +808,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -781,14 +818,15 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
         if (currentMessung == null) {
             currentMessung = data.new Messung();
         }
-        currentMessung.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentMessung.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -801,7 +839,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -811,17 +849,32 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
-        String hnr = value.substring(0, 9);
-        String nnr = value.substring(9, value.length());
-        currentProbe.addAttribute("HAUPTPROBENNUMMER", hnr);
-        if (currentMessung == null) {
-            currentMessung = data.new Messung();
+        String hnr = "";
+        String nnr = "";
+        if (value.length() <= 9) {
+            hnr = value;
         }
-        currentMessung.addAttribute("NEBENPROBENNUMMER", nnr);
+        else if (value.length() > 9 && value.length() <= 13) {
+            hnr = value.substring(0, 9);
+            nnr = value.substring(9, value.length());
+            if (currentMessung == null) {
+                currentMessung = data.new Messung();
+            }
+            currentMessung.addAttribute("NEBENPROBENNUMMER", nnr);
+        }
+        else {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(WARN673);
+            currentWarnings.add(warn);
+            return;
+        }
+        currentProbe.addAttribute("HAUPTPROBENNUMMER", hnr);
         probenNrContext = true;
     }
 
@@ -830,12 +883,14 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterHauptprobennummer(LafParser.HauptprobennummerContext ctx) {
+    @Override public void enterHauptprobennummer(
+        LafParser.HauptprobennummerContext ctx
+    ) {
         if (ctx.getChildCount() == 2) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -845,11 +900,12 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentProbe.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -857,12 +913,14 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterNebenprobennummer(LafParser.NebenprobennummerContext ctx) {
+    @Override public void enterNebenprobennummer(
+        LafParser.NebenprobennummerContext ctx
+    ) {
         if (ctx.getChildCount() == 2) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -872,14 +930,15 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
         if (currentMessung == null) {
             currentMessung = data.new Messung();
         }
-        currentMessung.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentMessung.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -887,7 +946,9 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterMessprogramm_c(LafParser.Messprogramm_cContext ctx) {
+    @Override public void enterMessprogramm_c(
+        LafParser.Messprogramm_cContext ctx
+    ) {
         if (this.hasMessprogramm) {
             return;
         }
@@ -895,7 +956,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -905,11 +966,12 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentProbe.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
         this.hasMessprogramm = true;
     }
 
@@ -918,7 +980,9 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterMessprogramm_s(LafParser.Messprogramm_sContext ctx) {
+    @Override public void enterMessprogramm_s(
+        LafParser.Messprogramm_sContext ctx
+    ) {
         if (this.hasMessprogramm) {
             return;
         }
@@ -926,7 +990,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -936,11 +1000,12 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentProbe.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
         this.hasMessprogramm = true;
     }
 
@@ -949,12 +1014,14 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterMessprogramm_land(LafParser.Messprogramm_landContext ctx) {
+    @Override public void enterMessprogramm_land(
+        LafParser.Messprogramm_landContext ctx
+    ) {
         if (ctx.getChildCount() == 2) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -964,11 +1031,12 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentProbe.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -976,12 +1044,14 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterProbenahmeinstitution(LafParser.ProbenahmeinstitutionContext ctx) {
+    @Override public void enterProbenahmeinstitution(
+        LafParser.ProbenahmeinstitutionContext ctx
+    ) {
         if (ctx.getChildCount() == 2) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -991,11 +1061,12 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentProbe.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -1008,7 +1079,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -1018,11 +1089,12 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentProbe.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -1038,7 +1110,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -1048,11 +1120,12 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentProbe.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
         this.hasZeitbasis = true;
     }
 
@@ -1069,7 +1142,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -1079,11 +1152,12 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentProbe.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
         this.hasZeitbasis = true;
     }
 
@@ -1092,12 +1166,14 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterSoll_datum_uhrzeit_a(LafParser.Soll_datum_uhrzeit_aContext ctx) {
+    @Override public void enterSoll_datum_uhrzeit_a(
+        LafParser.Soll_datum_uhrzeit_aContext ctx
+    ) {
         if (ctx.getChildCount() == 2) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -1110,7 +1186,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(date);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -1120,11 +1196,12 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(time);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), date + ' ' + time);
+        currentProbe.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), date + ' ' + time);
     }
 
     /**
@@ -1132,12 +1209,14 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterSoll_datum_uhrzeit_e(LafParser.Soll_datum_uhrzeit_eContext ctx) {
+    @Override public void enterSoll_datum_uhrzeit_e(
+        LafParser.Soll_datum_uhrzeit_eContext ctx
+    ) {
         if (ctx.getChildCount() == 2) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -1150,7 +1229,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(date);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -1160,11 +1239,12 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(time);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), date + ' ' + time);
+        currentProbe.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), date + ' ' + time);
     }
 
     /**
@@ -1172,13 +1252,15 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterUrsprungs_datum_uhrzeit(LafParser.Ursprungs_datum_uhrzeitContext ctx) {
+    @Override public void enterUrsprungs_datum_uhrzeit(
+        LafParser.Ursprungs_datum_uhrzeitContext ctx
+    ) {
 
         if (ctx.getChildCount() == 2) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -1191,7 +1273,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(date);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -1201,11 +1283,12 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(time);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), date + ' ' + time);
+        currentProbe.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), date + ' ' + time);
     }
 
     /**
@@ -1213,12 +1296,14 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterProbenahme_datum_uhrzeit_a(LafParser.Probenahme_datum_uhrzeit_aContext ctx) {
+    @Override public void enterProbenahme_datum_uhrzeit_a(
+        LafParser.Probenahme_datum_uhrzeit_aContext ctx
+    ) {
         if (ctx.getChildCount() == 2) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -1231,7 +1316,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(date);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -1241,11 +1326,12 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(time);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), date + ' ' + time);
+        currentProbe.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), date + ' ' + time);
     }
 
     /**
@@ -1253,12 +1339,14 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterProbenahme_datum_uhrzeit_e(LafParser.Probenahme_datum_uhrzeit_eContext ctx) {
+    @Override public void enterProbenahme_datum_uhrzeit_e(
+        LafParser.Probenahme_datum_uhrzeit_eContext ctx
+    ) {
         if (ctx.getChildCount() == 2) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -1271,7 +1359,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(date);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -1281,11 +1369,12 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(time);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), date + ' ' + time);
+        currentProbe.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), date + ' ' + time);
     }
 
     /**
@@ -1293,7 +1382,9 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterUmweltbereich_c(LafParser.Umweltbereich_cContext ctx) {
+    @Override public void enterUmweltbereich_c(
+        LafParser.Umweltbereich_cContext ctx
+    ) {
         if (this.hasUmwelt) {
             return;
         }
@@ -1301,7 +1392,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -1311,14 +1402,15 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
         if (value.equals("")) {
             value = null;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentProbe.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
         this.hasUmwelt = true;
     }
 
@@ -1327,7 +1419,9 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterUmweltbereich_s(LafParser.Umweltbereich_sContext ctx) {
+    @Override public void enterUmweltbereich_s(
+        LafParser.Umweltbereich_sContext ctx
+    ) {
         if (this.hasUmwelt) {
             return;
         }
@@ -1335,7 +1429,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -1345,14 +1439,15 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
         if (value.equals("")) {
             value = null;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentProbe.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
         this.hasUmwelt = true;
     }
 
@@ -1366,7 +1461,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -1376,11 +1471,12 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentProbe.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -1388,12 +1484,13 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterRei_programmpunkt(LafParser.Rei_programmpunktContext ctx) {
+    @Override public void enterRei_programmpunkt(
+        LafParser.Rei_programmpunktContext ctx) {
         if (ctx.getChildCount() == 2) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -1403,11 +1500,12 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentProbe.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -1415,12 +1513,14 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterRei_programmpunktgruppe(LafParser.Rei_programmpunktgruppeContext ctx) {
+    @Override public void enterRei_programmpunktgruppe(
+        LafParser.Rei_programmpunktgruppeContext ctx
+    ) {
         if (ctx.getChildCount() == 2) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -1430,11 +1530,12 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentProbe.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -1442,12 +1543,14 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterReferenz_datum_uhrzeit(LafParser.Referenz_datum_uhrzeitContext ctx) {
+    @Override public void enterReferenz_datum_uhrzeit(
+        LafParser.Referenz_datum_uhrzeitContext ctx
+    ) {
         if (ctx.getChildCount() == 2) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -1460,7 +1563,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(date);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -1470,11 +1573,12 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(time);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), date + ' ' + time);
+        currentProbe.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), date + ' ' + time);
     }
 
     /**
@@ -1487,7 +1591,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -1497,11 +1601,12 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentProbe.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -1514,7 +1619,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -1524,11 +1629,12 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentProbe.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -1536,12 +1642,14 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterSek_datenbasis(LafParser.Sek_datenbasisContext ctx) {
+    @Override public void enterSek_datenbasis(
+        LafParser.Sek_datenbasisContext ctx
+    ) {
         if (ctx.getChildCount() == 2) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -1551,11 +1659,12 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentProbe.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -1563,12 +1672,14 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterSek_datenbasis_s(LafParser.Sek_datenbasis_sContext ctx) {
+    @Override public void enterSek_datenbasis_s(
+        LafParser.Sek_datenbasis_sContext ctx
+    ) {
         if (ctx.getChildCount() == 2) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -1578,11 +1689,12 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentProbe.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -1590,12 +1702,14 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterU_herkunftsland_lang(LafParser.U_herkunftsland_langContext ctx) {
+    @Override public void enterU_herkunftsland_lang(
+        LafParser.U_herkunftsland_langContext ctx
+    ) {
         if (ctx.getChildCount() == 2) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -1605,13 +1719,14 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
         currentUOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
-        // TODO: Add to "ursprungsort"
-        //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        // TODO Add to "ursprungsort"
+        // currentProbe.addAttribute(
+        //     ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -1619,12 +1734,13 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterU_herkunftsland_kurz(LafParser.U_herkunftsland_kurzContext ctx) {
+    @Override public void enterU_herkunftsland_kurz(
+        LafParser.U_herkunftsland_kurzContext ctx) {
         if (ctx.getChildCount() == 2) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -1634,13 +1750,14 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
         currentUOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
-        // TODO: Add to "ursprungsort"
-        //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        // TODO Add to "ursprungsort"
+        // currentProbe.addAttribute(
+        //    ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -1648,12 +1765,14 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterU_herkunftsland_s(LafParser.U_herkunftsland_sContext ctx) {
+    @Override public void enterU_herkunftsland_s(
+        LafParser.U_herkunftsland_sContext ctx
+    ) {
         if (ctx.getChildCount() == 2) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -1663,13 +1782,14 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
         currentUOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
-        // TODO: Add to "ursprungsort"
-        //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        // TODO Add to "ursprungsort"
+        // currentProbe.addAttribute(
+        //    ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -1677,12 +1797,14 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterU_gemeindeschluessel(LafParser.U_gemeindeschluesselContext ctx) {
+    @Override public void enterU_gemeindeschluessel(
+        LafParser.U_gemeindeschluesselContext ctx
+    ) {
         if (ctx.getChildCount() == 2) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -1692,13 +1814,14 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
         currentUOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
-        // TODO: Add to "ursprungsort"
-        //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        // TODO Add to "ursprungsort"
+        // currentProbe.addAttribute(
+        //    ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -1706,12 +1829,14 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterU_gemeindename(LafParser.U_gemeindenameContext ctx) {
+    @Override public void enterU_gemeindename(
+        LafParser.U_gemeindenameContext ctx
+    ) {
         if (ctx.getChildCount() == 2) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -1721,13 +1846,14 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
         currentUOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
-        // TODO: Add to "ursprungsort"
-        //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        // TODO Add to "ursprungsort"
+        // currentProbe.addAttribute(
+        //    ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -1735,12 +1861,14 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterU_orts_zusatzkennzahl(LafParser.U_orts_zusatzkennzahlContext ctx) {
+    @Override public void enterU_orts_zusatzkennzahl(
+        LafParser.U_orts_zusatzkennzahlContext ctx
+    ) {
         if (ctx.getChildCount() == 2) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -1750,13 +1878,14 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
         currentUOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
-        // TODO: Add to "ursprungsort"
-        //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        // TODO Add to "ursprungsort"
+        // currentProbe.addAttribute(
+        //    ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -1764,7 +1893,9 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterU_koordinaten(LafParser.U_koordinatenContext ctx) {
+    @Override public void enterU_koordinaten(
+        LafParser.U_koordinatenContext ctx
+    ) {
         if (ctx.getChildCount() < 4) {
             return;
         }
@@ -1774,7 +1905,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(art);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -1784,7 +1915,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(koord1);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -1794,15 +1925,16 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(koord2);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
         currentUOrt.put("U_KOORDINATEN_X", koord1);
         currentUOrt.put("U_KOORDINATEN_Y", koord2);
         currentUOrt.put("U_KOORDINATEN_ART", art);
-        // TODO: Add to "ursprungsort"
-        //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        // TODO Add to "ursprungsort"
+        // currentProbe.addAttribute(
+        //    ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -1810,7 +1942,9 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterU_koordinaten_s(LafParser.U_koordinaten_sContext ctx) {
+    @Override public void enterU_koordinaten_s(
+        LafParser.U_koordinaten_sContext ctx
+    ) {
         if (ctx.getChildCount() < 4) {
             return;
         }
@@ -1820,7 +1954,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(art);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -1830,7 +1964,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(koord1);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -1840,15 +1974,16 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(koord2);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
         currentUOrt.put("U_KOORDINATEN_X", koord1);
         currentUOrt.put("U_KOORDINATEN_Y", koord2);
         currentUOrt.put("U_KOORDINATEN_ART_S", art);
-        // TODO: Add to "ursprungsort"
-        //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        // TODO Add to "ursprungsort"
+        // currentProbe.addAttribute(
+        //    ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -1856,12 +1991,14 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterU_orts_zusatzcode(LafParser.U_orts_zusatzcodeContext ctx) {
+    @Override public void enterU_orts_zusatzcode(
+        LafParser.U_orts_zusatzcodeContext ctx
+    ) {
         if (ctx.getChildCount() == 2) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -1871,13 +2008,14 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
         currentUOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
-        // TODO: Add to "ursprungsort"
-        //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        // TODO Add to "ursprungsort"
+        // currentProbe.addAttribute(
+        //    ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -1885,12 +2023,14 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterU_orts_zusatztext(LafParser.U_orts_zusatztextContext ctx) {
+    @Override public void enterU_orts_zusatztext(
+        LafParser.U_orts_zusatztextContext ctx
+    ) {
         if (ctx.getChildCount() == 2) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -1900,13 +2040,14 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
         currentUOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
-        // TODO: Add to "ursprungsort"
-        //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        // TODO Add to "ursprungsort"
+        // currentProbe.addAttribute(
+        //    ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -1919,7 +2060,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -1929,13 +2070,14 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
         currentUOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
-        // TODO: Add to "ursprungsort"
-        //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        // TODO Add to "ursprungsort"
+        // currentProbe.addAttribute(
+        //    ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -1943,7 +2085,9 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterP_herkunftsland_lang(LafParser.P_herkunftsland_langContext ctx) {
+    @Override public void enterP_herkunftsland_lang(
+        LafParser.P_herkunftsland_langContext ctx
+    ) {
         if (hasEHerkunfstland) {
             return;
         }
@@ -1951,7 +2095,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -1961,14 +2105,15 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
         currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
         hasEHerkunfstland = true;
-        // TODO: Add to "entnahmeort"
-        //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        // TODO Add to "entnahmeort"
+        // currentProbe.addAttribute(
+        //    ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -1976,7 +2121,9 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterP_herkunftsland_kurz(LafParser.P_herkunftsland_kurzContext ctx) {
+    @Override public void enterP_herkunftsland_kurz(
+        LafParser.P_herkunftsland_kurzContext ctx
+    ) {
         if (hasEHerkunfstland) {
             return;
         }
@@ -1984,7 +2131,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -1994,14 +2141,15 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
         currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
         hasEHerkunfstland = true;
-        // TODO: Add to "entnahmeort"
-        //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        // TODO Add to "entnahmeort"
+        // currentProbe.addAttribute(
+        //    ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -2009,7 +2157,9 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterP_herkunftsland_s(LafParser.P_herkunftsland_sContext ctx) {
+    @Override public void enterP_herkunftsland_s(
+        LafParser.P_herkunftsland_sContext ctx
+    ) {
         if (hasEHerkunfstland) {
             return;
         }
@@ -2017,7 +2167,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -2027,14 +2177,15 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
         currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
         hasEHerkunfstland = true;
-        // TODO: Add to "entnahmeort"
-        //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        // TODO Add to "entnahmeort"
+        // currentProbe.addAttribute(
+        //    ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -2042,7 +2193,9 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterP_gemeindeschluessel(LafParser.P_gemeindeschluesselContext ctx) {
+    @Override public void enterP_gemeindeschluessel(
+        LafParser.P_gemeindeschluesselContext ctx
+    ) {
         if (hasEGemeinde) {
             return;
         }
@@ -2050,7 +2203,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -2060,14 +2213,15 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
         currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
         hasEGemeinde = true;
-        // TODO: Add to "entnahmeort"
-        //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        // TODO Add to "entnahmeort"
+        // currentProbe.addAttribute(
+        //    ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -2075,7 +2229,9 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterP_gemeindename(LafParser.P_gemeindenameContext ctx) {
+    @Override public void enterP_gemeindename(
+        LafParser.P_gemeindenameContext ctx
+    ) {
         if (hasEGemeinde) {
             return;
         }
@@ -2083,7 +2239,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -2093,14 +2249,15 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
         currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
         hasEGemeinde = true;
-        // TODO: Add to "entnahmeort"
-        //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        // TODO Add to "entnahmeort"
+        // currentProbe.addAttribute(
+        //    ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -2108,12 +2265,14 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterP_orts_zusatzkennzahl(LafParser.P_orts_zusatzkennzahlContext ctx) {
+    @Override public void enterP_orts_zusatzkennzahl(
+        LafParser.P_orts_zusatzkennzahlContext ctx
+    ) {
         if (ctx.getChildCount() == 2) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -2123,13 +2282,14 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
         currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
-        // TODO: Add to "entnahmeort"
-        //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        // TODO Add to "entnahmeort"
+        // currentProbe.addAttribute(
+        //    ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -2137,7 +2297,9 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterP_koordinaten(LafParser.P_koordinatenContext ctx) {
+    @Override public void enterP_koordinaten(
+        LafParser.P_koordinatenContext ctx
+    ) {
         if (hasEKoordinaten) {
             return;
         }
@@ -2150,7 +2312,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(art);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -2160,7 +2322,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(koord1);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -2170,7 +2332,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(koord2);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -2178,8 +2340,9 @@ public class LafObjectListener extends LafBaseListener {
         currentEOrt.put("P_KOORDINATEN_Y", koord2);
         currentEOrt.put("P_KOORDINATEN_ART", art);
         hasEKoordinaten = true;
-        // TODO: Add to "entnahmeort"
-        //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        // TODO Add to "entnahmeort"
+        // currentProbe.addAttribute(
+        //    ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -2187,7 +2350,9 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterP_koordinaten_s(LafParser.P_koordinaten_sContext ctx) {
+    @Override public void enterP_koordinaten_s(
+        LafParser.P_koordinaten_sContext ctx
+    ) {
         if (hasEKoordinaten) {
             return;
         }
@@ -2200,7 +2365,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(art);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -2210,7 +2375,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(koord1);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -2220,7 +2385,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(koord2);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -2228,8 +2393,9 @@ public class LafObjectListener extends LafBaseListener {
         currentEOrt.put("P_KOORDINATEN_Y", koord2);
         currentEOrt.put("P_KOORDINATEN_ART_S", art);
         hasEKoordinaten = true;
-        // TODO: Add to "entnahmeort"
-        //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        // TODO Add to "entnahmeort"
+        // currentProbe.addAttribute(
+        //    ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -2237,12 +2403,14 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterP_orts_zusatzcode(LafParser.P_orts_zusatzcodeContext ctx) {
+    @Override public void enterP_orts_zusatzcode(
+        LafParser.P_orts_zusatzcodeContext ctx
+    ) {
         if (ctx.getChildCount() == 2) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -2252,13 +2420,14 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
         currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
-        // TODO: Add to "entnahmeort"
-        //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        // TODO Add to "entnahmeort"
+        // currentProbe.addAttribute(
+        //    ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -2266,12 +2435,14 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterP_orts_zusatztext(LafParser.P_orts_zusatztextContext ctx) {
+    @Override public void enterP_orts_zusatztext(
+        LafParser.P_orts_zusatztextContext ctx
+    ) {
         if (ctx.getChildCount() == 2) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -2281,13 +2452,14 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
         currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
-        // TODO: Add to "entnahmeort"
-        //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        // TODO Add to "entnahmeort"
+        // currentProbe.addAttribute(
+        //    ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -2300,7 +2472,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -2310,13 +2482,14 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
         currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
-        // TODO: Add to "entnahmeort"
-        //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        // TODO Add to "entnahmeort"
+        // currentProbe.addAttribute(
+        //    ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -2329,7 +2502,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -2339,13 +2512,14 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
         currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
-        // TODO: Add to "entnahmeort"
-        //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        // TODO Add to "entnahmeort"
+        // currentProbe.addAttribute(
+        //    ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -2358,7 +2532,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -2368,13 +2542,14 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
         currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
-        // TODO: Add to "entnahmeort"
-        //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        // TODO Add to "entnahmeort"
+        // currentProbe.addAttribute(
+        //    ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -2387,7 +2562,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -2397,13 +2572,14 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
         currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
-        // TODO: Add to "entnahmeort"
-        //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        // TODO Add to "entnahmeort"
+        // currentProbe.addAttribute(
+        //    ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -2416,7 +2592,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -2426,13 +2602,14 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
         currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
-        // TODO: Add to "entnahmeort"
-        //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        // TODO Add to "entnahmeort"
+        // currentProbe.addAttribute(
+        //    ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -2440,12 +2617,14 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterMehrzweckfeld(LafParser.MehrzweckfeldContext ctx) {
+    @Override public void enterMehrzweckfeld(
+        LafParser.MehrzweckfeldContext ctx
+    ) {
         if (ctx.getChildCount() == 2) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -2455,11 +2634,12 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentProbe.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -2467,7 +2647,9 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterMess_datum_uhrzeit(LafParser.Mess_datum_uhrzeitContext ctx) {
+    @Override public void enterMess_datum_uhrzeit(
+        LafParser.Mess_datum_uhrzeitContext ctx
+    ) {
         if (ctx.getChildCount() < 4) {
             return;
         }
@@ -2477,7 +2659,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(date);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -2487,14 +2669,15 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(time);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
         if (currentMessung == null) {
             currentMessung = data.new Messung();
         }
-        currentMessung.addAttribute(ctx.getChild(0).toString().toUpperCase(), date + ' ' + time);
+        currentMessung.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), date + ' ' + time);
     }
 
     /**
@@ -2502,12 +2685,14 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterMesszeit_sekunden(LafParser.Messzeit_sekundenContext ctx) {
+    @Override public void enterMesszeit_sekunden(
+        LafParser.Messzeit_sekundenContext ctx
+    ) {
         if (ctx.getChildCount() == 2) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -2517,14 +2702,15 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
         if (currentMessung == null) {
             currentMessung = data.new Messung();
         }
-        currentMessung.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentMessung.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -2532,12 +2718,14 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterMessmethode_c(LafParser.Messmethode_cContext ctx) {
+    @Override public void enterMessmethode_c(
+        LafParser.Messmethode_cContext ctx
+    ) {
         if (ctx.getChildCount() == 2) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -2547,14 +2735,15 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
         if (currentMessung == null) {
             currentMessung = data.new Messung();
         }
-        currentMessung.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentMessung.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -2562,12 +2751,14 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterMessmethode_s(LafParser.Messmethode_sContext ctx) {
+    @Override public void enterMessmethode_s(
+        LafParser.Messmethode_sContext ctx
+    ) {
         if (ctx.getChildCount() == 2) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -2577,14 +2768,15 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
         if (currentMessung == null) {
             currentMessung = data.new Messung();
         }
-        currentMessung.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentMessung.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -2592,12 +2784,14 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterBearbeitungsstatus(LafParser.BearbeitungsstatusContext ctx) {
+    @Override public void enterBearbeitungsstatus(
+        LafParser.BearbeitungsstatusContext ctx
+    ) {
         if (ctx.getChildCount() == 2) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -2607,14 +2801,15 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
         if (currentMessung == null) {
             currentMessung = data.new Messung();
         }
-        currentMessung.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentMessung.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -2627,7 +2822,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -2637,14 +2832,15 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
         if (currentMessung == null) {
             currentMessung = data.new Messung();
         }
-        currentMessung.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentMessung.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -2652,12 +2848,14 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterErfassung_abgeschlossen(LafParser.Erfassung_abgeschlossenContext ctx) {
+    @Override public void enterErfassung_abgeschlossen(
+        LafParser.Erfassung_abgeschlossenContext ctx
+    ) {
         if (ctx.getChildCount() == 2) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -2667,14 +2865,15 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
         if (currentMessung == null) {
             currentMessung = data.new Messung();
         }
-        currentMessung.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        currentMessung.addAttribute(
+            ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -2682,7 +2881,9 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterProbenzusatzbeschreibung(LafParser.ProbenzusatzbeschreibungContext ctx) {
+    @Override public void enterProbenzusatzbeschreibung(
+        LafParser.ProbenzusatzbeschreibungContext ctx
+    ) {
         // c7* f12 c9 f9
         if (ctx.getChildCount() < 5) {
             return;
@@ -2693,7 +2894,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(groesse);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -2703,7 +2904,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(wert);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -2713,7 +2914,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(einheit);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -2725,7 +2926,7 @@ public class LafObjectListener extends LafBaseListener {
                 ReportItem err = new ReportItem();
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(fehler);
-                err.setCode(670);
+                err.setCode(ERR670);
                 currentErrors.add(err);
                 return;
             }
@@ -2753,7 +2954,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(groesse);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -2763,7 +2964,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(wert);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -2773,7 +2974,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(einheit);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -2785,7 +2986,7 @@ public class LafObjectListener extends LafBaseListener {
                 ReportItem err = new ReportItem();
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(fehler);
-                err.setCode(670);
+                err.setCode(ERR670);
                 currentErrors.add(err);
                 return;
             }
@@ -2820,7 +3021,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(groesse);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             currentMessung.setHasErrors(true);
             return;
@@ -2831,7 +3032,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(wert);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             currentMessung.setHasErrors(true);
             return;
@@ -2842,7 +3043,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(einheit);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             currentMessung.setHasErrors(true);
             return;
@@ -2856,7 +3057,7 @@ public class LafObjectListener extends LafBaseListener {
                 ReportItem err = new ReportItem();
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(fehler);
-                err.setCode(670);
+                err.setCode(ERR670);
                 currentErrors.add(err);
                 currentMessung.setHasErrors(true);
                 return;
@@ -2896,7 +3097,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(groesse);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             currentMessung.setHasErrors(true);
             return;
@@ -2907,7 +3108,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(wert);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             currentMessung.setHasErrors(true);
             return;
@@ -2918,7 +3119,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(einheit);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             currentMessung.setHasErrors(true);
             return;
@@ -2931,7 +3132,7 @@ public class LafObjectListener extends LafBaseListener {
                 ReportItem err = new ReportItem();
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(fehler);
-                err.setCode(670);
+                err.setCode(ERR670);
                 currentErrors.add(err);
                 currentMessung.setHasErrors(true);
                 return;
@@ -2971,7 +3172,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(groesse);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             currentMessung.setHasErrors(true);
             return;
@@ -2982,7 +3183,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(wert);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             currentMessung.setHasErrors(true);
             return;
@@ -2993,7 +3194,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(einheit);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             currentMessung.setHasErrors(true);
             return;
@@ -3006,14 +3207,14 @@ public class LafObjectListener extends LafBaseListener {
                 ReportItem err = new ReportItem();
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(fehler);
-                err.setCode(670);
+                err.setCode(ERR670);
                 currentErrors.add(err);
                 currentMessung.setHasErrors(true);
                 return;
             }
             messwert.put("MESSFEHLER", fehler);
         }
-        // TODO: handle all values
+        // TODO handle all values
         messwert.put("MESSGROESSE", groesse);
         messwert.put("MESSWERT", wert);
         messwert.put("MESSEINHEIT", einheit);
@@ -3051,7 +3252,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(groesse);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             currentMessung.setHasErrors(true);
             return;
@@ -3062,7 +3263,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(wert);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             currentMessung.setHasErrors(true);
             return;
@@ -3073,7 +3274,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(einheit);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             currentMessung.setHasErrors(true);
             return;
@@ -3087,14 +3288,14 @@ public class LafObjectListener extends LafBaseListener {
                 ReportItem err = new ReportItem();
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(fehler);
-                err.setCode(670);
+                err.setCode(ERR670);
                 currentErrors.add(err);
                 currentMessung.setHasErrors(true);
                 return;
             }
             messwert.put("MESSFEHLER", fehler);
         }
-        // TODO: handle all values
+        // TODO handle all values
         messwert.put("MESSGROESSE", groesse);
         messwert.put("MESSWERT", wert);
         messwert.put("MESSEINHEIT", einheit);
@@ -3128,7 +3329,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(groesse);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             currentMessung.setHasErrors(true);
             return;
@@ -3139,7 +3340,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(wert);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             currentMessung.setHasErrors(true);
             return;
@@ -3150,7 +3351,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(einheit);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             currentMessung.setHasErrors(true);
             return;
@@ -3163,7 +3364,7 @@ public class LafObjectListener extends LafBaseListener {
                 ReportItem err = new ReportItem();
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(fehler);
-                err.setCode(670);
+                err.setCode(ERR670);
                 currentErrors.add(err);
                 currentMessung.setHasErrors(true);
                 return;
@@ -3177,7 +3378,7 @@ public class LafObjectListener extends LafBaseListener {
                 ReportItem err = new ReportItem();
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(nwg);
-                err.setCode(670);
+                err.setCode(ERR670);
                 currentErrors.add(err);
                 currentMessung.setHasErrors(true);
                 return;
@@ -3195,7 +3396,9 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterMesswert_nwg_s(LafParser.Messwert_nwg_sContext ctx) {
+    @Override public void enterMesswert_nwg_s(
+        LafParser.Messwert_nwg_sContext ctx
+    ) {
         if (currentMessung == null) {
             currentMessung = data.new Messung();
             currentMessung.setHasErrors(false);
@@ -3215,7 +3418,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(groesse);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -3225,7 +3428,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(wert);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -3235,7 +3438,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(einheit);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -3247,7 +3450,7 @@ public class LafObjectListener extends LafBaseListener {
                 ReportItem err = new ReportItem();
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(fehler);
-                err.setCode(670);
+                err.setCode(ERR670);
                 currentErrors.add(err);
                 return;
             }
@@ -3260,13 +3463,13 @@ public class LafObjectListener extends LafBaseListener {
                 ReportItem err = new ReportItem();
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(nwg);
-                err.setCode(670);
+                err.setCode(ERR670);
                 currentErrors.add(err);
                 return;
             }
             messwert.put("NWG", nwg);
         }
-        // TODO: handle all values
+        // TODO handle all values
         messwert.put("MESSGROESSE_ID", groesse);
         messwert.put("MESSWERT", wert);
         messwert.put("MESSEINHEIT_ID", einheit);
@@ -3278,7 +3481,9 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterMesswert_nwg_i(LafParser.Messwert_nwg_iContext ctx) {
+    @Override public void enterMesswert_nwg_i(
+        LafParser.Messwert_nwg_iContext ctx
+    ) {
         List<String> children = new ArrayList<String>();
         for (int i = 0; i < ctx.getChildCount(); i++) {
             if (!ctx.getChild(i).toString().startsWith(" ")) {
@@ -3294,7 +3499,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(groesse);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -3304,7 +3509,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(wert);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -3314,7 +3519,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(einheit);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -3326,7 +3531,7 @@ public class LafObjectListener extends LafBaseListener {
                 ReportItem err = new ReportItem();
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(fehler);
-                err.setCode(670);
+                err.setCode(ERR670);
                 currentErrors.add(err);
                 return;
             }
@@ -3339,13 +3544,13 @@ public class LafObjectListener extends LafBaseListener {
                 ReportItem err = new ReportItem();
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(nwg);
-                err.setCode(670);
+                err.setCode(ERR670);
                 currentErrors.add(err);
                 return;
             }
             messwert.put("NWG", nwg);
         }
-        // TODO: handle all values
+        // TODO handle all values
         messwert.put("MESSGROESSE", groesse);
         messwert.put("MESSWERT", wert);
         messwert.put("MESSEINHEIT", einheit);
@@ -3360,7 +3565,9 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterMesswert_nwg_g(LafParser.Messwert_nwg_gContext ctx) {
+    @Override public void enterMesswert_nwg_g(
+        LafParser.Messwert_nwg_gContext ctx
+    ) {
         if (currentMessung == null) {
             currentMessung = data.new Messung();
             currentMessung.setHasErrors(false);
@@ -3380,7 +3587,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(groesse);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -3390,7 +3597,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(wert);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -3400,7 +3607,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(einheit);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -3412,7 +3619,7 @@ public class LafObjectListener extends LafBaseListener {
                 ReportItem err = new ReportItem();
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(fehler);
-                err.setCode(670);
+                err.setCode(ERR670);
                 currentErrors.add(err);
                 return;
             }
@@ -3425,7 +3632,7 @@ public class LafObjectListener extends LafBaseListener {
                 ReportItem err = new ReportItem();
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(nwg);
-                err.setCode(670);
+                err.setCode(ERR670);
                 currentErrors.add(err);
                 return;
             }
@@ -3438,13 +3645,13 @@ public class LafObjectListener extends LafBaseListener {
                 ReportItem err = new ReportItem();
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(gw);
-                err.setCode(670);
+                err.setCode(ERR670);
                 currentErrors.add(err);
                 return;
             }
             messwert.put("GRENZWERT", gw);
         }
-        // TODO: handle all values
+        // TODO handle all values
         messwert.put("MESSGROESSE", groesse);
         messwert.put("MESSWERT", wert);
         messwert.put("MESSEINHEIT", einheit);
@@ -3471,7 +3678,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(mst);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -3481,7 +3688,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(date);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -3491,7 +3698,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(time);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -3501,7 +3708,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(text);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -3523,7 +3730,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -3533,7 +3740,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(text);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -3550,7 +3757,9 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterProbenkommentar(LafParser.ProbenkommentarContext ctx) {
+    @Override public void enterProbenkommentar(
+        LafParser.ProbenkommentarContext ctx
+    ) {
         // c5 d8 t4 mc300
         if (ctx.getChildCount() < 6) {
             return;
@@ -3562,7 +3771,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(mst);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -3572,7 +3781,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(date);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -3582,7 +3791,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(time);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -3592,7 +3801,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(text);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }
@@ -3609,12 +3818,14 @@ public class LafObjectListener extends LafBaseListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterProbenkommentar_t(LafParser.Probenkommentar_tContext ctx) {
+    @Override public void enterProbenkommentar_t(
+        LafParser.Probenkommentar_tContext ctx
+    ) {
         if (ctx.getChildCount() == 2) {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(673);
+            warn.setCode(WARN673);
             currentWarnings.add(warn);
             return;
         }
@@ -3624,7 +3835,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(text);
-            err.setCode(670);
+            err.setCode(ERR670);
             currentErrors.add(err);
             return;
         }

@@ -12,25 +12,25 @@ import de.intevation.lada.util.rest.Response;
 
 public interface Authorizer {
 
-    public <T> boolean isAuthorized(
+    <T> boolean isAuthorized(
         Object data,
         RequestMethod method,
         UserInfo userInfo,
         Class<T> clazz);
 
-    public <T> boolean isAuthorizedById(
+    <T> boolean isAuthorizedById(
         Object id,
         RequestMethod method,
         UserInfo userInfo,
         Class<T> clazz);
 
-    public <T> Response filter(
+    <T> Response filter(
         Response data,
         UserInfo userInfo,
         Class<T> clazz);
 
-    public boolean isProbeReadOnly(Integer probeId);
+    boolean isProbeReadOnly(Integer probeId);
 
-    public boolean isMessungReadOnly(Integer messungsId);
+    boolean isMessungReadOnly(Integer messungsId);
 
 }

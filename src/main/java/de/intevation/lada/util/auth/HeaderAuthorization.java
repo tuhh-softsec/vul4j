@@ -49,14 +49,14 @@ import de.intevation.lada.util.rest.Response;
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-@AuthorizationConfig(type=AuthorizationType.HEADER)
+@AuthorizationConfig(type = AuthorizationType.HEADER)
 public class HeaderAuthorization implements Authorization {
 
     /**
      * The Repository used to read from Database.
      */
     @Inject
-    @RepositoryConfig(type=RepositoryType.RW)
+    @RepositoryConfig(type = RepositoryType.RW)
     private Repository repository;
 
     @SuppressWarnings("rawtypes")
@@ -99,7 +99,7 @@ public class HeaderAuthorization implements Authorization {
     @Override
     public UserInfo getInfo(Object source) {
         if (source instanceof HttpServletRequest) {
-            HttpServletRequest request = (HttpServletRequest)source;
+            HttpServletRequest request = (HttpServletRequest) source;
             String roleString =
                 request.getAttribute("lada.user.roles").toString();
             UserInfo info = getGroupsFromDB(roleString);
@@ -109,12 +109,14 @@ public class HeaderAuthorization implements Authorization {
                 LadaUser.class
             );
             builder.and("name", info.getName());
-            List<LadaUser> user = repository.filterPlain(builder.getQuery(), Strings.STAMM);
+            List<LadaUser> user =
+                repository.filterPlain(builder.getQuery(), Strings.STAMM);
             if (user == null || user.isEmpty()) {
                 LadaUser newUser = new LadaUser();
                 newUser.setName(info.getName());
-                Response r = repository.create(newUser, Strings.STAMM);
-                user = repository.filterPlain(builder.getQuery(), Strings.STAMM);
+                repository.create(newUser, Strings.STAMM);
+                user =
+                    repository.filterPlain(builder.getQuery(), Strings.STAMM);
             }
             info.setUserId(user.get(0).getId());
             return info;
@@ -173,7 +175,8 @@ public class HeaderAuthorization implements Authorization {
     }
 
     /**
-     * Check whether a user is authorized to operate on the given data by the given object id.
+     * Check whether a user is authorized to operate on the given data
+     * by the given object id.
      *
      * @param source    The HttpServletRequest containing user information.
      * @param id        The data's id to test.
@@ -209,14 +212,15 @@ public class HeaderAuthorization implements Authorization {
         QueryBuilder<Auth> builder = new QueryBuilder<Auth>(
             repository.entityManager(Strings.STAMM),
             Auth.class);
-        roles = roles.replace("[","");
-        roles = roles.replace("]","");
-        roles = roles.replace(" ","");
+        roles = roles.replace("[", "");
+        roles = roles.replace("]", "");
+        roles = roles.replace(" ", "");
         String[] mst = roles.split(",");
         builder.andIn("ldapGroup", Arrays.asList(mst));
-        Response response = repository.filter(builder.getQuery(), Strings.STAMM);
+        Response response =
+            repository.filter(builder.getQuery(), Strings.STAMM);
         @SuppressWarnings("unchecked")
-        List<Auth> auth = (List<Auth>)response.getData();
+        List<Auth> auth = (List<Auth>) response.getData();
         UserInfo userInfo = new UserInfo();
         userInfo.setAuth(auth);
         return userInfo;
@@ -243,12 +247,16 @@ public class HeaderAuthorization implements Authorization {
             if (messungen.get(i).getStatus() == null) {
                 continue;
             }
-            StatusProtokoll status = repository.getByIdPlain(
-                StatusProtokoll.class, messungen.get(i).getStatus(), Strings.LAND);
+            StatusProtokoll status =
+                repository.getByIdPlain(
+                    StatusProtokoll.class,
+                    messungen.get(i).getStatus(),
+                    Strings.LAND);
             StatusKombi kombi = repository.getByIdPlain(
                 StatusKombi.class, status.getStatusKombi(), Strings.STAMM);
-            if (kombi.getStatusWert().getId() != 0 &&
-                kombi.getStatusWert().getId() != 4) {
+            if (kombi.getStatusWert().getId() != 0
+                && kombi.getStatusWert().getId() != 4
+            ) {
                 return true;
             }
         }
@@ -277,7 +285,8 @@ public class HeaderAuthorization implements Authorization {
         if (authorizer == null) {
             return false;
         }
-        return authorizer.isAuthorized(data, RequestMethod.GET, userInfo, clazz);
+        return authorizer.isAuthorized(
+            data, RequestMethod.GET, userInfo, clazz);
     }
 
     /**
@@ -297,6 +306,7 @@ public class HeaderAuthorization implements Authorization {
         if (authorizer == null) {
             return false;
         }
-        return authorizer.isAuthorized(data, RequestMethod.POST, userInfo, clazz);
+        return authorizer.isAuthorized(
+            data, RequestMethod.POST, userInfo, clazz);
     }
 }

@@ -19,7 +19,7 @@ import de.intevation.lada.util.rest.Response;
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
 @Stateless
-@AuthorizationConfig(type=AuthorizationType.NONE)
+@AuthorizationConfig(type = AuthorizationType.NONE)
 public class DefaultAuthorization implements Authorization {
 
     /**
@@ -91,7 +91,12 @@ public class DefaultAuthorization implements Authorization {
     }
 
     @Override
-    public <T> boolean isAuthorizedById(Object source, Object id, RequestMethod method, Class<T> clazz) {
+    public <T> boolean isAuthorizedById(
+        Object source,
+        Object id,
+        RequestMethod method,
+        Class<T> clazz
+    ) {
         return true;
     }
 

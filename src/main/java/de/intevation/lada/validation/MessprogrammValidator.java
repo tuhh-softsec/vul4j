@@ -23,7 +23,7 @@ import de.intevation.lada.validation.rules.Rule;
  * and uses these rules to validate the object.
  *
  */
-@ValidationConfig(type="Messprogramm")
+@ValidationConfig(type = "Messprogramm")
 @ApplicationScoped
 public class MessprogrammValidator implements Validator {
 
@@ -38,7 +38,7 @@ public class MessprogrammValidator implements Validator {
             violations.addError("messprogramm", 602);
             return violations;
         }
-        for(Rule rule: rules) {
+        for (Rule rule : rules) {
             Violation result = rule.execute(object);
             if (result != null) {
                 if (result.hasWarnings()) {
@@ -47,7 +47,7 @@ public class MessprogrammValidator implements Validator {
                 if (result.hasErrors()) {
                     violations.addErrors(result.getErrors());
                 }
-                if (result.hasNotifications()){
+                if (result.hasNotifications()) {
                    violations.addNotifications(result.getNotifications());
                 }
             }

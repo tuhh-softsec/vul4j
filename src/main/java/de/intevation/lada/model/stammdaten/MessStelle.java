@@ -1,3 +1,10 @@
+/* Copyright (C) 2015 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.model.stammdaten;
 
 import java.io.Serializable;
@@ -10,10 +17,10 @@ import javax.persistence.Table;
 
 /**
  * The persistent class for the mess_stelle database table.
- * 
+ *
  */
 @Entity
-@Table(name="mess_stelle")
+@Table(name = "mess_stelle")
 public class MessStelle implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -24,13 +31,13 @@ public class MessStelle implements Serializable {
 
     private String beschreibung;
 
-    @Column(name="mess_stelle")
+    @Column(name = "mess_stelle")
     private String messStelle;
 
-    @Column(name="mst_typ")
+    @Column(name = "mst_typ")
     private String mstTyp;
 
-    @Column(name="netzbetreiber_id")
+    @Column(name = "netzbetreiber_id")
     private String netzbetreiberId;
 
     public MessStelle() {

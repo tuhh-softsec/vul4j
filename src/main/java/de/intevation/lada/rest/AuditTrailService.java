@@ -7,11 +7,9 @@
  */
 package de.intevation.lada.rest;
 
-import java.sql.PreparedStatement;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -86,12 +84,12 @@ public class AuditTrailService {
         private String mappingTable;
         private String valueField;
 
-        public TableMapper(
-            String mappingTable,
-            String valueField
+        TableMapper(
+            String mTable,
+            String vField
         ) {
-            this.mappingTable = mappingTable;
-            this.valueField = valueField;
+            this.mappingTable = mTable;
+            this.valueField = vField;
         }
 
         public String getMappingTable() {
@@ -108,14 +106,14 @@ public class AuditTrailService {
      * The data repository granting read/write access.
      */
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type = RepositoryType.RO)
     private Repository repository;
 
     /**
      * The authorization module.
      */
     @Inject
-    @AuthorizationConfig(type=AuthorizationType.HEADER)
+    @AuthorizationConfig(type = AuthorizationType.HEADER)
     private Authorization authorization;
 
     /**
@@ -172,18 +170,17 @@ public class AuditTrailService {
         @PathParam("id") String id
     ) {
         if (id == null || "".equals(id)) {
-            String ret = "{\"success\": false," +
-                "\"message\":698,\"data\":null}";
+            String ret = "{\"success\": false,"
+                + "\"message\":698,\"data\":null}";
             return ret;
         }
 
         Integer pId = null;
-        String ret = "{\"success\": false," +
-            "\"message\":600,\"data\":null}";
+        String ret = "{\"success\": false,"
+            + "\"message\":600,\"data\":null}";
         try {
             pId = Integer.valueOf(id);
-        }
-        catch(NumberFormatException nfe) {
+        } catch (NumberFormatException nfe) {
             return ret;
         }
         // Get the plain probe object to have the hauptproben_nr.
@@ -195,10 +192,13 @@ public class AuditTrailService {
 
         //Get ort ids connected to this probe
         QueryBuilder<Ortszuordnung> refBuilder =
-        new QueryBuilder<Ortszuordnung>(repository.entityManager(Strings.LAND), Ortszuordnung.class);
+            new QueryBuilder<Ortszuordnung>(
+                repository.entityManager(Strings.LAND), Ortszuordnung.class);
         refBuilder.and("probeId", id);
         List<Integer> ortIds = new LinkedList<Integer>();
-        for (Ortszuordnung zuordnung: repository.filterPlain(refBuilder.getQuery(), Strings.LAND)) {
+        for (Ortszuordnung zuordnung
+            : repository.filterPlain(refBuilder.getQuery(), Strings.LAND)
+        ) {
             ortIds.add(zuordnung.getOrtId());
         }
 
@@ -227,17 +227,25 @@ public class AuditTrailService {
         auditJson.put("id", probe.getId());
         auditJson.put(
             "identifier",
-            (probe.getHauptprobenNr() == null) ? probe.getExterneProbeId() : probe.getHauptprobenNr()
+            (probe.getHauptprobenNr() == null)
+            ? probe.getExterneProbeId() : probe.getHauptprobenNr()
             );
         for (AuditTrailProbe a : audit) {
             //If audit entry shows a messwert, do not show if:
             // - StatusKombi is 1 (MST - nicht vergeben)
             // - User is not owner of the messung
             if (a.getTableName().equals("messwert")) {
-                Messung messung = repository.getByIdPlain(Messung.class, a.getMessungsId(), Strings.LAND);
-                StatusProtokoll status = repository.getByIdPlain(StatusProtokoll.class, messung.getStatus(), Strings.LAND);
-                if(status.getStatusKombi() == 1
-                        && !userInfo.getMessstellen().contains(probe.getMstId())) {
+                Messung messung =
+                    repository.getByIdPlain(
+                        Messung.class, a.getMessungsId(), Strings.LAND);
+                StatusProtokoll status =
+                    repository.getByIdPlain(
+                        StatusProtokoll.class,
+                        messung.getStatus(),
+                        Strings.LAND);
+                if (status.getStatusKombi() == 1
+                    && !userInfo.getMessstellen().contains(probe.getMstId())
+                ) {
                     continue;
                 }
 
@@ -258,7 +266,8 @@ public class AuditTrailService {
         node.put("timestamp", audit.getTstamp().getTime());
         node.put("type", audit.getTableName());
         node.put("action", audit.getAction());
-        ObjectNode data = translateValues((ObjectNode)audit.getChangedFields());
+        ObjectNode data =
+            translateValues((ObjectNode) audit.getChangedFields());
         node.putPOJO("changedFields", data);
         if ("ort".equals(audit.getTableName())) {
             node.put("identifier", audit.getRowData().get("ort_id").toString());
@@ -282,11 +291,11 @@ public class AuditTrailService {
             Messung m = repository.getByIdPlain(
                 Messung.class, audit.getObjectId(), Strings.LAND);
             node.put("identifier",
-                (m == null) ?
-                    "(deleted)" :
-                    (m.getNebenprobenNr() == null) ?
-                        m.getExterneMessungsId().toString() :
-                        m.getNebenprobenNr()
+                (m == null)
+                ? "(deleted)"
+                : (m.getNebenprobenNr() == null)
+                    ? m.getExterneMessungsId().toString()
+                    : m.getNebenprobenNr()
                 );
         }
         if (audit.getMessungsId() != null) {
@@ -294,7 +303,8 @@ public class AuditTrailService {
                 Messung.class, audit.getMessungsId(), Strings.LAND);
             ObjectNode identifier = node.putObject("identifier");
             identifier.put("messung",
-                (m.getNebenprobenNr() == null) ? m.getExterneMessungsId().toString() : m.getNebenprobenNr());
+                (m.getNebenprobenNr() == null)
+                ? m.getExterneMessungsId().toString() : m.getNebenprobenNr());
             if ("kommentar_m".equals(audit.getTableName())) {
                 identifier.put("identifier",
                     audit.getRowData().get("datum").toString());
@@ -323,26 +333,30 @@ public class AuditTrailService {
         @PathParam("id") String id
     ) {
         if (id == null || "".equals(id)) {
-            String ret = "{\"success\": false," +
-                "\"message\":698,\"data\":null}";
+            String ret = "{\"success\": false,"
+                + "\"message\":698,\"data\":null}";
             return ret;
         }
 
         Integer mId = null;
-        String ret = "{\"success\": false," +
-            "\"message\":600,\"data\":null}";
+        String ret = "{\"success\": false,"
+            + "\"message\":600,\"data\":null}";
         try {
             mId = Integer.valueOf(id);
-        }
-        catch(NumberFormatException nfe) {
+        } catch (NumberFormatException nfe) {
             return ret;
         }
-        Messung messung = repository.getByIdPlain(Messung.class, mId, Strings.LAND);
+        Messung messung =
+            repository.getByIdPlain(Messung.class, mId, Strings.LAND);
         if (messung == null) {
             return ret;
         }
-        StatusProtokoll status = repository.getByIdPlain(StatusProtokoll.class, messung.getStatus(), Strings.LAND);
-        Probe probe = repository.getByIdPlain(Probe.class, messung.getProbeId(), Strings.LAND);
+        StatusProtokoll status =
+            repository.getByIdPlain(
+                StatusProtokoll.class, messung.getStatus(), Strings.LAND);
+        Probe probe =
+            repository.getByIdPlain(
+                Probe.class, messung.getProbeId(), Strings.LAND);
         UserInfo userInfo = authorization.getInfo(request);
         QueryBuilder<AuditTrailMessung> builder =
             new QueryBuilder<AuditTrailMessung>(
@@ -365,8 +379,10 @@ public class AuditTrailService {
         auditJson.put("id", messung.getId());
         auditJson.put(
             "identifier",
-            (messung.getNebenprobenNr() == null) ? messung.getExterneMessungsId().toString() : messung.getNebenprobenNr()
-            );
+            (messung.getNebenprobenNr() == null)
+            ? messung.getExterneMessungsId().toString()
+            : messung.getNebenprobenNr()
+        );
         for (AuditTrailMessung a : audit) {
             //If audit entry shows a messwert, do not show if:
             // - StatusKombi is 1 (MST - nicht vergeben)
@@ -388,12 +404,15 @@ public class AuditTrailService {
      * @param audit The table entry
      * @param mapper JSON object mapper
      */
-    private ObjectNode createEntry(AuditTrailMessung audit, ObjectMapper mapper) {
+    private ObjectNode createEntry(
+        AuditTrailMessung audit,
+        ObjectMapper mapper
+    ) {
         ObjectNode node = mapper.createObjectNode();
         node.put("timestamp", audit.getTstamp().getTime());
         node.put("type", audit.getTableName());
         node.put("action", audit.getAction());
-        ObjectNode data = (ObjectNode)audit.getChangedFields();
+        ObjectNode data = (ObjectNode) audit.getChangedFields();
         node.putPOJO("changedFields", data);
         if ("kommentar_m".equals(audit.getTableName())) {
             node.put("identifier", audit.getRowData().get("datum").toString());
@@ -421,7 +440,13 @@ public class AuditTrailService {
         String source
     ) {
         EntityManager manager = repository.entityManager(source);
-        String sql = "SELECT " + field + " FROM " + table + " WHERE " + idField +" = :id ;";
+        String sql = "SELECT "
+            + field
+            + " FROM "
+            + table
+            + " WHERE "
+            + idField
+            + " = :id ;";
         javax.persistence.Query query = manager.createNativeQuery(sql);
         if (id == null) {
             return "";
@@ -429,8 +454,7 @@ public class AuditTrailService {
         try {
             int value = Integer.parseInt(id);
             query.setParameter("id", value);
-        }
-        catch (NumberFormatException nfe) {
+        } catch (NumberFormatException nfe) {
             query.setParameter("id", id);
         }
         List<?> result = query.getResultList();
@@ -438,7 +462,7 @@ public class AuditTrailService {
     }
 
     private Long formatDate(String format, String date) {
-        DateFormat inFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
+        DateFormat inFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         try {
             return inFormat.parse(date).getTime();
         } catch (ParseException e) {
@@ -455,10 +479,10 @@ public class AuditTrailService {
             if (mappings.containsKey(key)) {
                 TableMapper m = mappings.get(key);
                 if (m.getMappingTable().equals("date")) {
-                    Long value = formatDate(m.getValueField(), node.get(key).asText());
+                    Long value =
+                        formatDate(m.getValueField(), node.get(key).asText());
                     node.put(key, value);
-                }
-                else {
+                } else {
                     String value = translateId(
                         m.getMappingTable(),
                         m.getValueField(),

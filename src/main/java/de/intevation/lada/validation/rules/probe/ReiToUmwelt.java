@@ -31,15 +31,16 @@ import de.intevation.lada.validation.rules.Rule;
 public class ReiToUmwelt implements Rule {
 
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type = RepositoryType.RO)
     private Repository repository;
 
     @Override
     public Violation execute(Object object) {
-        Probe probe = (Probe)object;
-        if (probe.getDatenbasisId() != null &&
-            probe.getDatenbasisId() != 3 &&
-            probe.getDatenbasisId() != 4) {
+        Probe probe = (Probe) object;
+        if (probe.getDatenbasisId() != null
+            && probe.getDatenbasisId() != 3
+            && probe.getDatenbasisId() != 4
+        ) {
             return null;
         }
         if (probe.getUmwId() == null) {

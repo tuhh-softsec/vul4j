@@ -85,25 +85,25 @@ public class OrtszuordnungMpService {
      * The data repository granting read/write access.
      */
     @Inject
-    @RepositoryConfig(type=RepositoryType.RW)
+    @RepositoryConfig(type = RepositoryType.RW)
     private Repository defaultRepo;
 
     /**
      * The object lock mechanism.
      */
     @Inject
-    @LockConfig(type=LockType.TIMESTAMP)
+    @LockConfig(type = LockType.TIMESTAMP)
     private ObjectLocker lock;
 
     /**
      * The authorization module.
      */
     @Inject
-    @AuthorizationConfig(type=AuthorizationType.HEADER)
+    @AuthorizationConfig(type = AuthorizationType.HEADER)
     private Authorization authorization;
 
     @Inject
-    @ValidationConfig(type="Ortszuordnung")
+    @ValidationConfig(type = "Ortszuordnung")
     private Validator validator;
 
     /**
@@ -139,9 +139,10 @@ public class OrtszuordnungMpService {
             request,
             defaultRepo.filter(builder.getQuery(), Strings.LAND),
             OrtszuordnungMp.class);
-            if (r.getSuccess() == true) {
+            if (r.getSuccess()) {
                 @SuppressWarnings("unchecked")
-                List<OrtszuordnungMp> ortszuordnungs = (List<OrtszuordnungMp>) r.getData();
+                List<OrtszuordnungMp> ortszuordnungs =
+                    (List<OrtszuordnungMp>) r.getData();
                 for (OrtszuordnungMp otz: ortszuordnungs) {
                     Violation violation = validator.validate(otz);
                     if (violation.hasErrors() || violation.hasWarnings()) {
@@ -173,8 +174,9 @@ public class OrtszuordnungMpService {
         @PathParam("id") String id
     ) {
         Response response =
-            defaultRepo.getById(OrtszuordnungMp.class, Integer.valueOf(id), Strings.LAND);
-        OrtszuordnungMp ort = (OrtszuordnungMp)response.getData();
+            defaultRepo.getById(
+                OrtszuordnungMp.class, Integer.valueOf(id), Strings.LAND);
+        OrtszuordnungMp ort = (OrtszuordnungMp) response.getData();
         Violation violation = validator.validate(ort);
         if (violation.hasErrors() || violation.hasWarnings()) {
             response.setErrors(violation.getErrors());
@@ -233,7 +235,7 @@ public class OrtszuordnungMpService {
 
         /* Persist the new object*/
         Response response = defaultRepo.create(ort, Strings.LAND);
-        if(violation.hasWarnings()) {
+        if (violation.hasWarnings()) {
             response.setWarnings(violation.getWarnings());
         }
 
@@ -295,8 +297,8 @@ public class OrtszuordnungMpService {
         }
         Response updated = defaultRepo.getById(
             OrtszuordnungMp.class,
-            ((OrtszuordnungMp)response.getData()).getId(), Strings.LAND);
-        if(violation.hasWarnings()) {
+            ((OrtszuordnungMp) response.getData()).getId(), Strings.LAND);
+        if (violation.hasWarnings()) {
             updated.setWarnings(violation.getWarnings());
         }
 
@@ -324,8 +326,9 @@ public class OrtszuordnungMpService {
         @PathParam("id") String id
     ) {
         Response object =
-            defaultRepo.getById(OrtszuordnungMp.class, Integer.valueOf(id), Strings.LAND);
-        OrtszuordnungMp ortObj = (OrtszuordnungMp)object.getData();
+            defaultRepo.getById(
+                OrtszuordnungMp.class, Integer.valueOf(id), Strings.LAND);
+        OrtszuordnungMp ortObj = (OrtszuordnungMp) object.getData();
         if (!authorization.isAuthorized(
                 request,
                 ortObj,

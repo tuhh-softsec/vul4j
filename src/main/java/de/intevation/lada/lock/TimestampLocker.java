@@ -13,8 +13,6 @@ import java.sql.Timestamp;
 
 import javax.inject.Inject;
 
-import org.apache.log4j.Logger;
-
 import de.intevation.lada.model.land.Messung;
 import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.util.annotation.RepositoryConfig;
@@ -28,20 +26,14 @@ import de.intevation.lada.util.rest.Response;
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-@LockConfig(type=LockType.TIMESTAMP)
+@LockConfig(type = LockType.TIMESTAMP)
 public class TimestampLocker implements ObjectLocker {
-
-    /**
-     * The logger used in this class.
-     */
-    @Inject
-    private Logger logger;
 
     /**
      * The repository used to read data.
      */
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type = RepositoryType.RO)
     Repository repository;
 
     /**
@@ -53,19 +45,16 @@ public class TimestampLocker implements ObjectLocker {
     @Override
     public boolean isLocked(Object o) {
         if (o instanceof Probe) {
-            Probe newProbe = (Probe)o;
-            Probe oldProbe = (Probe)repository.getById(
+            Probe newProbe = (Probe) o;
+            Probe oldProbe = (Probe) repository.getById(
                 Probe.class,
                 newProbe.getId(),
                 Strings.LAND).getData();
-            logger.debug("old: " + oldProbe.getTreeModified().getTime());
-            logger.debug("new: " + newProbe.getTreeModified().getTime());
-            if (oldProbe.getTreeModified().getTime() >
-                    newProbe.getTreeModified().getTime()) {
+            if (oldProbe.getTreeModified().getTime()
+                > newProbe.getTreeModified().getTime()) {
                 return true;
             }
-        }
-        else {
+        } else {
             Method[] methods = o.getClass().getMethods();
             for (Method m: methods) {
                 if (m.getName().equals("getProbeId")) {
@@ -78,7 +67,7 @@ public class TimestampLocker implements ObjectLocker {
                     }
                     Response response =
                         repository.getById(Probe.class, id, Strings.LAND);
-                    Probe probe = (Probe)response.getData();
+                    Probe probe = (Probe) response.getData();
                     return isNewer(o, probe.getTreeModified());
                 }
                 if (m.getName().equals("getMessungsId")) {
@@ -91,8 +80,9 @@ public class TimestampLocker implements ObjectLocker {
                     }
                     Response mResponse =
                         repository.getById(Messung.class, id, Strings.LAND);
-                    Messung messung = (Messung)mResponse.getData();
-                    boolean newerMessung = isNewer(o, messung.getTreeModified());
+                    Messung messung = (Messung) mResponse.getData();
+                    boolean newerMessung =
+                        isNewer(o, messung.getTreeModified());
                     return newerMessung;
                 }
             }
@@ -111,14 +101,16 @@ public class TimestampLocker implements ObjectLocker {
         Method m;
         try {
             m = o.getClass().getMethod("getParentModified");
-            Timestamp ot = (Timestamp)m.invoke(o);
+            Timestamp ot = (Timestamp) m.invoke(o);
             if (ot == null) {
                 return true;
             }
             return t.getTime() > ot.getTime();
-        } catch (NoSuchMethodException | SecurityException |
-                 IllegalAccessException | IllegalArgumentException|
-                 InvocationTargetException e) {
+        } catch (NoSuchMethodException
+            | SecurityException
+            | IllegalAccessException
+            | IllegalArgumentException
+            | InvocationTargetException e) {
             return true;
         }
     }

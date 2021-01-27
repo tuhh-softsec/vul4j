@@ -46,6 +46,20 @@ import de.intevation.lada.util.rest.Response;
  */
 public class ProbeFactory {
 
+    private static final int LM12 = 12;
+
+    private static final int POS9 = 9;
+
+    private static final int ZEBS3 = 3;
+
+    private static final int ZEBS5 = 5;
+
+    private static final int SEC59 = 59;
+
+    private static final int MIN59 = 59;
+
+    private static final int HOD23 = 23;
+
     @Inject Logger logger;
 
     // Number of days in one week
@@ -83,35 +97,40 @@ public class ProbeFactory {
         fieldsTable.put("J", J);
     }
 
+    /**
+     * Time interval in sense of lada.
+     */
     private class Intervall {
+        private static final int DSOY = 365;
+
         /**
-         * Start of sub-intervall relative to intervall start in days (1-based)
+         * Start of sub-intervall relative to intervall start in days (1-based).
          */
         private final int teilVon;
 
         /**
-         * End of sub-intervall relative to intervall start in days (1-based)
+         * End of sub-intervall relative to intervall start in days (1-based).
          */
         private final int teilBis;
 
         /**
-         * Field number in Calendar object representing this intervall's unit
+         * Field number in Calendar object representing this intervall's unit.
          */
         private final int intervallField;
 
         /**
-         * Field number in Calendar object representing this intervall's
+         * Field number in Calendar object representing this intervall's.
          * sub-intervall unit
          */
         private final int subIntField;
 
         /**
-         * Number of units of intervallField representing this intervall's size
+         * Number of units of intervallField representing this intervall's size.
          */
         private final int intervallFactor;
 
         /**
-         * Calendar object representing the this intervall's start
+         * Calendar object representing the this intervall's start.
          */
         private Calendar from;
 
@@ -123,7 +142,7 @@ public class ProbeFactory {
          * @param Messprogramm the Messprogramm to use
          * @param Calendar initial start date
          */
-        public Intervall(
+        Intervall(
             Messprogramm messprogramm,
             Calendar start
         ) {
@@ -137,7 +156,7 @@ public class ProbeFactory {
             this.intervallFactor = fieldsTable
                 .get(messprogramm.getProbenintervall())[2];
 
-            this.from = (Calendar)start.clone();
+            this.from = (Calendar) start.clone();
 
             // Align with beginning of next interval
             if (intervallField == Calendar.DAY_OF_YEAR
@@ -220,7 +239,7 @@ public class ProbeFactory {
                 return intervallFactor;
             }
             int duration = 0;
-            Calendar tmp = (Calendar)from.clone();
+            Calendar tmp = (Calendar) from.clone();
 
             /* reset to beginning of intervall, e.g. first day of quarter
              * to compensate possible overflow if
@@ -243,21 +262,21 @@ public class ProbeFactory {
          * @return Calendar Get this intervall's sub-intervall start
          */
         public Calendar getFrom() {
-            return adjustSubIntField((Calendar)from.clone(), teilVon);
+            return adjustSubIntField((Calendar) from.clone(), teilVon);
         }
 
         /**
          * @return Calendar Get this intervall's sub-intervall end
          */
         public Calendar getTo() {
-            return adjustSubIntField((Calendar)from.clone(), teilBis);
+            return adjustSubIntField((Calendar) from.clone(), teilBis);
         }
 
         /**
          * @return boolean Does the actual intervall start in a leap year?
          */
         public boolean startInLeapYear() {
-            return from.getActualMaximum(Calendar.DAY_OF_YEAR) > 365;
+            return from.getActualMaximum(Calendar.DAY_OF_YEAR) > DSOY;
         }
 
         /**
@@ -269,7 +288,7 @@ public class ProbeFactory {
         }
 
         /**
-         * Move intervall start to start of following intervall
+         * Move intervall start to start of following intervall.
          */
         public void roll() {
             from.add(intervallField, intervallFactor);
@@ -280,7 +299,7 @@ public class ProbeFactory {
 
 
     /**
-     * The data repository
+     * The data repository.
      */
     @Inject
     @RepositoryConfig(type = RepositoryType.RW)
@@ -291,9 +310,9 @@ public class ProbeFactory {
     private Map<String, Object> currentProtocol;
 
     /**
-     * Create a list of probe objects
+     * Create a list of probe objects.
      *
-     * @param id    Messprogramm id
+     * @param messprogramm    Messprogramm
      * @param from  The start date
      * @param to    The end date
      *
@@ -308,9 +327,9 @@ public class ProbeFactory {
         end.setTimeInMillis(to);
         /* Adjust to end of the day as we want to generate Probe objects
          * before or at this day. */
-        end.set(Calendar.HOUR_OF_DAY, 23);
-        end.set(Calendar.MINUTE, 59);
-        end.set(Calendar.SECOND, 59);
+        end.set(Calendar.HOUR_OF_DAY, HOD23);
+        end.set(Calendar.MINUTE, MIN59);
+        end.set(Calendar.SECOND, SEC59);
 
         int gueltigVon = messprogramm.getGueltigVon();
         int gueltigBis = messprogramm.getGueltigBis();
@@ -450,8 +469,9 @@ public class ProbeFactory {
         createObject(probe, dryrun);
         toProtocol(probe, dryrun);
 
-        if (messprogramm.getProbeKommentar() != null &&
-            !messprogramm.getProbeKommentar().equals("")) {
+        if (messprogramm.getProbeKommentar() != null
+            && !messprogramm.getProbeKommentar().equals("")
+        ) {
             KommentarP kommentar = new KommentarP();
             kommentar.setDatum(new Timestamp(new Date().getTime()));
             kommentar.setProbeId(probe.getId());
@@ -555,9 +575,10 @@ public class ProbeFactory {
         String mediaDesk = probe.getMediaDesk();
         if (mediaDesk != null) {
             Object result = repository.queryFromString(
-                "SELECT get_media_from_media_desk( :mediaDesk );", Strings.STAMM)
-                .setParameter("mediaDesk", mediaDesk)
-                .getSingleResult();
+                "SELECT get_media_from_media_desk( :mediaDesk );",
+                 Strings.STAMM)
+                    .setParameter("mediaDesk", mediaDesk)
+                    .getSingleResult();
             probe.setMedia(result != null ? result.toString() : "");
         }
         return probe;
@@ -604,13 +625,11 @@ public class ProbeFactory {
                 mediaIds.add(-1);
                 continue;
             }
-            if (zebs && i < 5) {
+            if (zebs && i < ZEBS5) {
                 parent = hdParent;
-            }
-            else if (!zebs && i < 3) {
+            } else if (!zebs && i < ZEBS3) {
                 parent = hdParent;
-            }
-            else {
+            } else {
                 parent = ndParent;
             }
             QueryBuilder<Deskriptoren> builder = new QueryBuilder<Deskriptoren>(
@@ -620,9 +639,10 @@ public class ProbeFactory {
             }
             builder.and("sn", mediaDesk[i]);
             builder.and("ebene", i - 1);
-            Response response = repository.filter(builder.getQuery(), Strings.STAMM);
+            Response response =
+                repository.filter(builder.getQuery(), Strings.STAMM);
             @SuppressWarnings("unchecked")
-            List<Deskriptoren> data = (List<Deskriptoren>)response.getData();
+            List<Deskriptoren> data = (List<Deskriptoren>) response.getData();
             if (data.isEmpty()) {
                 return null;
             }
@@ -646,7 +666,8 @@ public class ProbeFactory {
     private String getUmwelt(List<Integer> media, boolean isZebs) {
         QueryBuilder<DeskriptorUmwelt> builder =
             new QueryBuilder<DeskriptorUmwelt>(
-                repository.entityManager(Strings.STAMM), DeskriptorUmwelt.class);
+                repository.entityManager(Strings.STAMM),
+                DeskriptorUmwelt.class);
 
         if (media.size() == 0) {
             return null;
@@ -654,20 +675,21 @@ public class ProbeFactory {
 
         int size = 1;
         for (int i = 0; i < media.size(); i++) {
-            String field = "s" + (i > 9 ? i : "0" + i);
+            String field = "s" + (i > POS9 ? i : "0" + i);
             QueryBuilder<DeskriptorUmwelt> tmp = builder.getEmptyBuilder();
             if (media.get(i) != -1) {
                 tmp.and(field, media.get(i));
                 tmp.or(field, null);
                 builder.and(tmp);
-            }
-            else {
+            } else {
                 builder.and(field, null);
             }
         }
-        Response response = repository.filter(builder.getQuery(), Strings.STAMM);
+        Response response =
+            repository.filter(builder.getQuery(), Strings.STAMM);
         @SuppressWarnings("unchecked")
-        List<DeskriptorUmwelt> data = (List<DeskriptorUmwelt>)response.getData();
+        List<DeskriptorUmwelt> data =
+            (List<DeskriptorUmwelt>) response.getData();
         if (data.isEmpty()) {
             return null;
         }
@@ -675,69 +697,91 @@ public class ProbeFactory {
         boolean unique = isUnique(data);
         if (unique) {
             return data.get(0).getUmwId();
-        }
-        else {
+        } else {
             int found = -1;
-            int lastMatch = -12;
+            int lastMatch = -LM12;
             for (int i = 0; i < data.size(); i++) {
-                int matches = -12;
-                for (int j = size; j < 12; j++) {
-                    switch(j) {
-                        case 1: if (media.get(1).equals(data.get(i).getS01()) ||
-                                    media.get(1).equals(-1) && data.get(i).getS01() == null
-                                )
+                int matches = -LM12;
+                for (int j = size; j < LM12; j++) {
+                    switch (j) {
+                        case 1: if (media.get(1).equals(data.get(i).getS01())
+                            || media.get(1).equals(-1) && data.get(i).getS01()
+                                == null
+                                ) {
                                     matches += 1;
+                                }
                                 break;
-                        case 2: if (media.get(2).equals(data.get(i).getS02()) ||
-                                    media.get(2).equals(-1) && data.get(i).getS02() == null
-                                )
+                        case 2: if (media.get(2).equals(data.get(i).getS02())
+                            || media.get(2).equals(-1) && data.get(i).getS02()
+                                == null
+                                ) {
                                     matches += 1;
+                                }
                                 break;
-                        case 3: if (media.get(3).equals(data.get(i).getS03()) ||
-                                    media.get(3).equals(-1) && data.get(i).getS03() == null
-                                )
+                        case 3: if (media.get(3).equals(data.get(i).getS03())
+                            || media.get(3).equals(-1) && data.get(i).getS03()
+                                == null
+                                ) {
                                     matches += 1;
+                                }
                                 break;
-                        case 4: if (media.get(4).equals(data.get(i).getS04()) ||
-                                    media.get(4).equals(-1) && data.get(i).getS04() == null
-                                )
+                        case 4: if (media.get(4).equals(data.get(i).getS04())
+                            || media.get(4).equals(-1) && data.get(i).getS04()
+                                == null
+                                ) {
                                     matches += 1;
+                                }
                                 break;
-                        case 5: if (media.get(5).equals(data.get(i).getS05()) ||
-                                    media.get(5).equals(-1) && data.get(i).getS05() == null
-                                )
-                                    matches +=1;
-                                break;
-                        case 6: if (media.get(6).equals(data.get(i).getS06()) ||
-                                    media.get(6).equals(-1) && data.get(i).getS06() == null
-                                )
+                        case 5: if (media.get(5).equals(data.get(i).getS05())
+                            || media.get(5).equals(-1) && data.get(i).getS05()
+                                == null
+                                ) {
                                     matches += 1;
+                                }
                                 break;
-                        case 7: if (media.get(7).equals(data.get(i).getS07()) ||
-                                    media.get(7).equals(-1) && data.get(i).getS07() == null
-                                )
+                        case 6: if (media.get(6).equals(data.get(i).getS06())
+                            || media.get(6).equals(-1) && data.get(i).getS06()
+                                == null
+                                ) {
                                     matches += 1;
+                                }
                                 break;
-                        case 8: if (media.get(8).equals(data.get(i).getS08()) ||
-                                    media.get(8).equals(-1) && data.get(i).getS08() == null
-                                )
+                        case 7: if (media.get(7).equals(data.get(i).getS07())
+                            || media.get(7).equals(-1) && data.get(i).getS07()
+                                == null
+                                ) {
                                     matches += 1;
+                                }
                                 break;
-                        case 9: if (media.get(9).equals(data.get(i).getS09()) ||
-                                    media.get(9).equals(-1) && data.get(i).getS09() == null
-                                )
+                        case 8: if (media.get(8).equals(data.get(i).getS08())
+                            || media.get(8).equals(-1) && data.get(i).getS08()
+                                == null
+                                ) {
                                     matches += 1;
+                                }
                                 break;
-                        case 10: if (media.get(10).equals(data.get(i).getS10()) ||
-                                    media.get(10).equals(-1) && data.get(i).getS10() == null
-                                )
+                        case 9: if (media.get(9).equals(data.get(i).getS09())
+                            || media.get(9).equals(-1) && data.get(i).getS09()
+                                == null
+                                ) {
                                     matches += 1;
+                                }
                                 break;
-                        case 11: if (media.get(11).equals(data.get(i).getS11()) ||
-                                    media.get(11).equals(-1) && data.get(i).getS11() == null
-                                )
+                        case 10: if (media.get(10).equals(data.get(i).getS10())
+                            || media.get(10).equals(-1) && data.get(i).getS10()
+                                == null
+                                ) {
                                     matches += 1;
+                                }
                                 break;
+                        case 11: if (media.get(11).equals(data.get(i).getS11())
+                            || media.get(11).equals(-1) && data.get(i).getS11()
+                                == null
+                                ) {
+                                    matches += 1;
+                                }
+                                break;
+                        default: break;
                     }
                     if (matches > lastMatch) {
                         lastMatch = matches;

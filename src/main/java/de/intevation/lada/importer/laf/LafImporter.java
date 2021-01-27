@@ -1,3 +1,10 @@
+/* Copyright (C) 2015 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.importer.laf;
 
 import java.io.ByteArrayInputStream;
@@ -25,8 +32,13 @@ import de.intevation.lada.importer.ReportItem;
 import de.intevation.lada.model.stammdaten.ImporterConfig;
 import de.intevation.lada.util.auth.UserInfo;
 
-@ImportConfig(format=ImportFormat.LAF)
-public class LafImporter implements Importer{
+/**
+ * Importer for the LAF file format.
+ */
+@ImportConfig(format = ImportFormat.LAF)
+public class LafImporter implements Importer {
+
+    private static final int ERR673 = 673;
 
     @Inject
     private Logger logger;
@@ -34,15 +46,28 @@ public class LafImporter implements Importer{
     @Inject
     private LafObjectMapper mapper;
 
-    private Map<String, List<ReportItem>> errors = new HashMap<String, List<ReportItem>>();
-    private Map<String, List<ReportItem>> warnings = new HashMap<String, List<ReportItem>>();
-    private Map<String, List<ReportItem>> notifications = new HashMap<String, List<ReportItem>>();
+    private Map<String, List<ReportItem>> errors =
+        new HashMap<String, List<ReportItem>>();
+    private Map<String, List<ReportItem>> warnings =
+        new HashMap<String, List<ReportItem>>();
+    private Map<String, List<ReportItem>> notifications =
+        new HashMap<String, List<ReportItem>>();
     private List<Integer> importProbeIds;
 
-    public void doImport(String lafString, UserInfo userInfo, List<ImporterConfig> config) {
+    /**
+     * Start the import of the LAF data.
+     * @param lafString The laf formated data as string
+     * @param userInfo The current user info
+     * @param config The import config to use
+     */
+    public void doImport(
+        String lafString,
+        UserInfo userInfo,
+        List<ImporterConfig> config
+    ) {
         // Append newline to avoid parser errors.
-        // Every line can be the last line, so it is easier to append a newline here
-        // than to extend the grammar with EOF for every line.
+        // Every line can be the last line, so it is easier to append a
+        // newline here than to extend the grammar with EOF for every line.
         lafString += "\r\n";
         errors = new HashMap<String, List<ReportItem>>();
         warnings = new HashMap<String, List<ReportItem>>();
@@ -50,7 +75,8 @@ public class LafImporter implements Importer{
 
         importProbeIds = new ArrayList<Integer>();
 
-        InputStream is = new ByteArrayInputStream(lafString.getBytes(StandardCharsets.UTF_8));
+        InputStream is = new ByteArrayInputStream(
+            lafString.getBytes(StandardCharsets.UTF_8));
         try {
             ANTLRInputStream ais = new ANTLRInputStream(is);
             LafLexer lexer = new LafLexer(ais);
@@ -68,14 +94,14 @@ public class LafImporter implements Importer{
                 ReportItem warn = new ReportItem();
                 warn.setKey("UEBERTRAGUNGSFORMAT");
                 warn.setValue("");
-                warn.setCode(673);
+                warn.setCode(ERR673);
                 parserWarnings.add(warn);
             }
             if (!listener.hasVersion()) {
                 ReportItem warn = new ReportItem();
                 warn.setKey("VERSION");
                 warn.setValue("");
-                warn.setCode(673);
+                warn.setCode(ERR673);
                 parserWarnings.add(warn);
             }
             if (!errorListener.getErrors().isEmpty()) {
@@ -91,31 +117,34 @@ public class LafImporter implements Importer{
             mapper.setConfig(config);
             mapper.mapObjects(listener.getData());
             importProbeIds = mapper.getImportedProbeIds();
-            for (Entry<String, List<ReportItem>> entry : mapper.getErrors().entrySet()) {
+            for (Entry<String, List<ReportItem>> entry
+                : mapper.getErrors().entrySet()
+            ) {
                 if (errors.containsKey(entry.getKey())) {
                     errors.get(entry.getKey()).addAll(entry.getValue());
-                }
-                else {
+                } else {
                     errors.put(entry.getKey(), entry.getValue());
                 }
             }
 
-            for (Entry<String, List<ReportItem>> entry : mapper.getWarnings().entrySet()) {
+            for (Entry<String, List<ReportItem>> entry
+                : mapper.getWarnings().entrySet()
+            ) {
                 if (warnings.containsKey(entry.getKey())) {
                     warnings.get(entry.getKey()).addAll(entry.getValue());
-                }
-                else {
+                } else {
                     warnings.put(entry.getKey(), entry.getValue());
                 }
             }
 
-            for (Entry<String, List<ReportItem>> entry : mapper.getNotifications().entrySet()){
-              if (notifications.containsKey(entry.getKey())) {
-                notifications.get(entry.getKey()).addAll(entry.getValue());
-              }
-              else {
-                notifications.put(entry.getKey(), entry.getValue());
-              }
+            for (Entry<String, List<ReportItem>> entry
+                : mapper.getNotifications().entrySet()
+            ) {
+                if (notifications.containsKey(entry.getKey())) {
+                    notifications.get(entry.getKey()).addAll(entry.getValue());
+                } else {
+                    notifications.put(entry.getKey(), entry.getValue());
+                }
             }
         } catch (IOException e) {
             logger.debug("Exception while reading LAF input", e);

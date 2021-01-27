@@ -60,24 +60,39 @@ import de.intevation.lada.util.rest.Response;
  */
 @Named("lafcreator")
 public class LafCreator
-implements Creator
-{
+implements Creator {
     // @Inject private Logger logger;
 
+    private static final int KOMBI15 = 15;
+    private static final int KOMBI14 = 14;
+    private static final int KOMBI9 = 9;
+    private static final int KOMBI8 = 8;
+    private static final int KOMBI7 = 7;
+    private static final int KOMBI6 = 6;
+    private static final int KOMBI5 = 5;
+    private static final int KOMBI4 = 4;
+    private static final int KOMBI3 = 3;
+    private static final int KOMBI2 = 2;
+    private static final int KOMBI1 = 1;
+    private static final int MP6 = 6;
+    private static final int BAID3 = 3;
+    private static final int MP5 = 5;
+    private static final int MP4 = 4;
+    private static final int DATENBASIS4 = 4;
     // Some format strings corresponding to LAF notation
     private static final String KEY_FORMAT = "%-30s";
     private static final String DEFAULT_FORMAT = "%s";
     private static final String CN = "\"%s\""; // cn, mcn, scn
 
     @Inject
-    @AuthorizationConfig(type=AuthorizationType.HEADER)
+    @AuthorizationConfig(type = AuthorizationType.HEADER)
     private Authorization authorization;
 
     /**
      * The repository used to read data.
      */
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type = RepositoryType.RO)
     private Repository repository;
 
     private UserInfo userInfo;
@@ -116,11 +131,12 @@ implements Creator
      * @return LAF conform string.
      */
     private String probeToLAF(String probeId, List<Integer> messungen) {
-        Response found = repository.getById(Probe.class, Integer.valueOf(probeId), Strings.LAND);
+        Response found = repository.getById(
+            Probe.class, Integer.valueOf(probeId), Strings.LAND);
         if (found.getData() == null) {
             return null;
         }
-        Probe aProbe = (Probe)found.getData();
+        Probe aProbe = (Probe) found.getData();
         String lafProbe = writeAttributes(aProbe, messungen);
         return lafProbe;
     }
@@ -137,8 +153,9 @@ implements Creator
             new QueryBuilder<KommentarP>(
                 repository.entityManager(Strings.LAND), KommentarP.class);
         kommBuilder.and("probeId", probe.getId());
-        Response kommentar = repository.filter(kommBuilder.getQuery(), Strings.LAND);
-        List<KommentarP> kommentare = (List<KommentarP>)kommentar.getData();
+        Response kommentar =
+            repository.filter(kommBuilder.getQuery(), Strings.LAND);
+        List<KommentarP> kommentare = (List<KommentarP>) kommentar.getData();
 
         String probenart = null;
         if (probe.getProbenartId() != null) {
@@ -148,78 +165,96 @@ implements Creator
                     Probenart.class);
             builder.and("id", probe.getProbenartId());
             List<Probenart> probenarten =
-                (List<Probenart>)repository.filter(
+                (List<Probenart>) repository.filter(
                     builder.getQuery(),
                     Strings.STAMM).getData();
             probenart = probenarten.get(0).getProbenart();
-        } 
+        }
 
         MessStelle messstelle =
-            repository.getByIdPlain(MessStelle.class, probe.getMstId(), Strings.STAMM);
+            repository.getByIdPlain(
+                MessStelle.class, probe.getMstId(), Strings.STAMM);
 
         QueryBuilder<ZusatzWert> zusatzBuilder =
             new QueryBuilder<ZusatzWert>(
                 repository.entityManager(Strings.LAND), ZusatzWert.class);
         zusatzBuilder.and("probeId", probe.getId());
-        Response zusatz = repository.filter(zusatzBuilder.getQuery(), Strings.LAND);
-        List<ZusatzWert> zusatzwerte = (List<ZusatzWert>)zusatz.getData();
+        Response zusatz =
+            repository.filter(zusatzBuilder.getQuery(), Strings.LAND);
+        List<ZusatzWert> zusatzwerte = (List<ZusatzWert>) zusatz.getData();
 
         String laf = "";
         laf += lafLine("PROBE_ID", probe.getExterneProbeId(), CN);
-        laf += probe.getDatenbasisId() == null ?
-            "": lafLine("DATENBASIS_S",
+        laf += probe.getDatenbasisId() == null
+            ? ""
+            : lafLine("DATENBASIS_S",
                 String.format("%02d", probe.getDatenbasisId()));
-        laf += messstelle == null ?
-            "" : lafLine("NETZKENNUNG", messstelle.getNetzbetreiberId(), CN);
-        laf += probe.getMstId() == null ?
-            "" : lafLine("MESSSTELLE", probe.getMstId(), CN);
-        laf += probe.getLaborMstId() == null ?
-            "" : lafLine("MESSLABOR", probe.getLaborMstId(), CN);
-        laf += probe.getHauptprobenNr() == null ?
-            "" : lafLine("HAUPTPROBENNUMMER", probe.getHauptprobenNr(), CN);
+        laf += messstelle == null
+            ? ""
+            : lafLine("NETZKENNUNG", messstelle.getNetzbetreiberId(), CN);
+        laf += probe.getMstId() == null
+            ? ""
+            : lafLine("MESSSTELLE", probe.getMstId(), CN);
+        laf += probe.getLaborMstId() == null
+            ? ""
+            : lafLine("MESSLABOR", probe.getLaborMstId(), CN);
+        laf += probe.getHauptprobenNr() == null
+            ? ""
+            : lafLine("HAUPTPROBENNUMMER", probe.getHauptprobenNr(), CN);
         if (probe.getBaId() != null && probe.getDatenbasisId() != null) {
-            if (probe.getDatenbasisId() == 4) {
-                if (probe.getBaId() == 1 ) {
-                    laf += lafLine("MESSPROGRAMM_S", 4, CN);
-                } else if (probe.getBaId() == 2 ) {
-                    laf += lafLine("MESSPROGRAMM_S", 5, CN);
-                } else if (probe.getBaId() == 3 ) {
-                    laf += lafLine("MESSPROGRAMM_S", 6, CN);
+            if (probe.getDatenbasisId() == DATENBASIS4) {
+                if (probe.getBaId() == 1) {
+                    laf += lafLine("MESSPROGRAMM_S", MP4, CN);
+                } else if (probe.getBaId() == 2) {
+                    laf += lafLine("MESSPROGRAMM_S", MP5, CN);
+                } else if (probe.getBaId() == BAID3) {
+                    laf += lafLine("MESSPROGRAMM_S", MP6, CN);
                 } else {
-                    laf += lafLine("MESSPROGRAMM_S", "\""+(char)probe.getBaId().intValue()+"\"");
+                    laf += lafLine("MESSPROGRAMM_S",
+                        "\"" + (char) probe.getBaId().intValue() + "\"");
                 }
             } else {
-                if (probe.getBaId() > 3 ) {
-                    laf += lafLine("MESSPROGRAMM_S", "\""+(char)probe.getBaId().intValue()+"\"");
-                } else if (probe.getBaId() == 3 ) {
+                if (probe.getBaId() > BAID3) {
+                    laf +=
+                        lafLine("MESSPROGRAMM_S", "\""
+                            + (char) probe.getBaId().intValue() + "\"");
+                } else if (probe.getBaId() == BAID3) {
                     laf += lafLine("MESSPROGRAMM_S", 2, CN);
                 } else {
                     laf += lafLine("MESSPROGRAMM_S", probe.getBaId(), CN);
                 }
             }
         }
-        laf += probe.getProbenartId() == null ?
-            "" : lafLine("PROBENART", probenart, CN);
+        laf += probe.getProbenartId() == null
+            ? ""
+            : lafLine("PROBENART", probenart, CN);
         laf += lafLine("ZEITBASIS_S", "2");
-        laf += probe.getSolldatumBeginn() == null ?
-            "" : lafLine("SOLL_DATUM_UHRZEIT_A",
+        laf += probe.getSolldatumBeginn() == null
+            ? ""
+            : lafLine("SOLL_DATUM_UHRZEIT_A",
                 toUTCString(probe.getSolldatumBeginn()));
-        laf += probe.getSolldatumEnde() == null ?
-            "" : lafLine("SOLL_DATUM_UHRZEIT_E",
+        laf += probe.getSolldatumEnde() == null
+            ? ""
+            : lafLine("SOLL_DATUM_UHRZEIT_E",
                 toUTCString(probe.getSolldatumEnde()));
-        laf += probe.getProbeentnahmeBeginn() == null ?
-            "" : lafLine("PROBENAHME_DATUM_UHRZEIT_A",
+        laf += probe.getProbeentnahmeBeginn() == null
+            ? ""
+            : lafLine("PROBENAHME_DATUM_UHRZEIT_A",
                 toUTCString(probe.getProbeentnahmeBeginn()));
-        laf += probe.getProbeentnahmeEnde() == null ?
-            "" : lafLine("PROBENAHME_DATUM_UHRZEIT_E",
+        laf += probe.getProbeentnahmeEnde() == null
+            ? ""
+            : lafLine("PROBENAHME_DATUM_UHRZEIT_E",
                 toUTCString(probe.getProbeentnahmeEnde()));
-        laf += probe.getUmwId() == null ?
-            "" : lafLine("UMWELTBEREICH_S", probe.getUmwId(), CN);
-        laf += probe.getMediaDesk() == null ?
-            "" : lafLine("DESKRIPTOREN",
+        laf += probe.getUmwId() == null
+            ? ""
+            : lafLine("UMWELTBEREICH_S", probe.getUmwId(), CN);
+        laf += probe.getMediaDesk() == null
+            ? ""
+            : lafLine("DESKRIPTOREN",
                 probe.getMediaDesk().replaceAll(" ", "").substring(2), CN);
-        laf += probe.getTest() == Boolean.TRUE ?
-            lafLine("TESTDATEN", "1") : lafLine("TESTDATEN", "0");
+        laf += probe.getTest() == Boolean.TRUE
+            ? lafLine("TESTDATEN", "1")
+            : lafLine("TESTDATEN", "0");
         if (probe.getErzeugerId() != null) {
             DatensatzErzeuger erz = repository.getByIdPlain(
                 DatensatzErzeuger.class, probe.getErzeugerId(), "stamm");
@@ -237,8 +272,11 @@ implements Creator
         }
         if (probe.getReiProgpunktGrpId() != null) {
             ReiProgpunktGruppe rpg = repository.getByIdPlain(
-                ReiProgpunktGruppe.class, probe.getReiProgpunktGrpId(), "stamm");
-            laf += lafLine("REI_PROGRAMMPUNKTGRUPPE", rpg.getReiProgPunktGruppe(), CN);
+                ReiProgpunktGruppe.class,
+                probe.getReiProgpunktGrpId(), "stamm");
+            laf += lafLine(
+                "REI_PROGRAMMPUNKTGRUPPE",
+                rpg.getReiProgPunktGruppe(), CN);
         }
         for (ZusatzWert zw : zusatzwerte) {
             laf += writeZusatzwert(zw);
@@ -265,14 +303,17 @@ implements Creator
                 ProbenZusatz.class);
         builder.and("id", zw.getPzsId());
         List<ProbenZusatz> zusatz =
-            (List<ProbenZusatz>)repository.filter(
+            (List<ProbenZusatz>) repository.filter(
                 builder.getQuery(),
                 Strings.STAMM).getData();
 
         String value = "\"" + zusatz.get(0).getId() + "\"";
-        value += ((zw.getKleinerAls() == null) ? " " : " " + zw.getKleinerAls());
+        value += ((zw.getKleinerAls() == null)
+            ? " "
+            : " " + zw.getKleinerAls());
         value += zw.getMesswertPzs();
-        value += " " + zusatz.get(0).getMessEinheitId();
+        value += " " + ((zusatz.get(0).getMessEinheitId() == null)
+            ? "\"\"" : zusatz.get(0).getMessEinheitId());
         value += " " + ((zw.getMessfehler() == null) ? "" : zw.getMessfehler());
         return lafLine("PZB_S", value);
     }
@@ -292,22 +333,20 @@ implements Creator
         builder.and("probeId", probe.getId());
         Response objects = repository.filter(builder.getQuery(), Strings.LAND);
         List<Ortszuordnung> orte =
-            (List<Ortszuordnung>)objects.getData();
+            (List<Ortszuordnung>) objects.getData();
 
         String laf = "";
-        for(Ortszuordnung o : orte) {
-            String type = "";
-            if ("E".equals(o.getOrtszuordnungTyp()) ||
-                "R".equals(o.getOrtszuordnungTyp())) {
-                laf += writeOrtData(o,"P_");
+        for (Ortszuordnung o : orte) {
+            if ("E".equals(o.getOrtszuordnungTyp())
+                || "R".equals(o.getOrtszuordnungTyp())) {
+                laf += writeOrtData(o, "P_");
             }
         }
-        for(Ortszuordnung o : orte) {
-            String type = "";
-            if ("U".equals(o.getOrtszuordnungTyp()) ||
-                "R".equals(o.getOrtszuordnungTyp())) {
+        for (Ortszuordnung o : orte) {
+            if ("U".equals(o.getOrtszuordnungTyp())
+                || "R".equals(o.getOrtszuordnungTyp())) {
                 laf += "%URSPRUNGSORT%\n";
-                laf += writeOrtData(o,"U_");
+                laf += writeOrtData(o, "U_");
             }
         }
         return laf;
@@ -322,18 +361,19 @@ implements Creator
     @SuppressWarnings("unchecked")
     private String writeOrtData(Ortszuordnung o, String typePrefix) {
         String laf = "";
-        if (o.getOrtszusatztext() != null &&
-                o.getOrtszusatztext().length() > 0) {
-                laf += lafLine(typePrefix + "ORTS_ZUSATZTEXT",
-                    o.getOrtszusatztext(), CN);
+        if (o.getOrtszusatztext() != null
+            && o.getOrtszusatztext().length() > 0
+        ) {
+            laf += lafLine(typePrefix + "ORTS_ZUSATZTEXT",
+                o.getOrtszusatztext(), CN);
         }
         QueryBuilder<Ort> oBuilder =
             new QueryBuilder<Ort>(
                 repository.entityManager(Strings.STAMM),
                 Ort.class);
         oBuilder.and("id", o.getOrtId());
-        List<Ort> sOrte=
-            (List<Ort>)repository.filter(
+        List<Ort> sOrte =
+            (List<Ort>) repository.filter(
                 oBuilder.getQuery(),
                 Strings.STAMM).getData();
 
@@ -342,21 +382,25 @@ implements Creator
                 String.format("%08d", sOrte.get(0).getStaatId()));
         }
 
-        if (sOrte.get(0).getGemId() != null && 
-            sOrte.get(0).getGemId().length() > 0) {
+        if (sOrte.get(0).getGemId() != null
+            && sOrte.get(0).getGemId().length() > 0
+        ) {
             laf += lafLine(typePrefix + "GEMEINDESCHLUESSEL",
                 sOrte.get(0).getGemId());
         }
 
-        if (sOrte.get(0).getNutsCode() != null && 
-            sOrte.get(0).getNutsCode().length() > 0) {
+        if (sOrte.get(0).getNutsCode() != null
+            && sOrte.get(0).getNutsCode().length() > 0
+        ) {
             laf += lafLine(typePrefix + "NUTS_CODE",
                 sOrte.get(0).getNutsCode());
         }
 
         if (sOrte.get(0).getGemUntId() != null) {
             GemeindeUntergliederung gu = repository.getByIdPlain(
-                GemeindeUntergliederung.class, sOrte.get(0).getGemUntId(), "stamm");
+                GemeindeUntergliederung.class,
+                sOrte.get(0).getGemUntId(),
+                "stamm");
             laf += lafLine(typePrefix + "ORTS_ZUSATZKENNZAHL",
                 gu.getOzkId(), CN);
         }
@@ -368,14 +412,25 @@ implements Creator
         laf += lafLine(typePrefix + "KOORDINATEN_S", koord);
 
         if ("P_".equals(typePrefix) && sOrte.get(0).getOzId() != null) {
-            laf += lafLine(typePrefix + "ORTS_ZUSATZCODE", sOrte.get(0).getOzId(), CN);
+            laf += lafLine(
+                typePrefix + "ORTS_ZUSATZCODE",
+                sOrte.get(0).getOzId(),
+                CN);
+        } else if ("U_".equals(typePrefix)
+            && "R".equals(o.getOrtszuordnungTyp())
+        ) {
+            laf += lafLine(
+                typePrefix + "ORTS_ZUSATZCODE",
+                sOrte.get(0).getOrtId(),
+                CN);
+        } else if ("U_".equals(typePrefix)
+            && sOrte.get(0).getOzId() != null
+        ) {
+            laf += lafLine(
+                typePrefix + "ORTS_ZUSATZCODE",
+                sOrte.get(0).getOzId(),
+                CN);
         }
-        else if ("U_".equals(typePrefix) && "R".equals(o.getOrtszuordnungTyp())) {
-            laf += lafLine(typePrefix + "ORTS_ZUSATZCODE", sOrte.get(0).getOrtId(), CN);
-        }
-        else if ("U_".equals(typePrefix) && sOrte.get(0).getOzId() != null) {
-            laf += lafLine(typePrefix + "ORTS_ZUSATZCODE", sOrte.get(0).getOzId(), CN);
-        } 
 //        if (sOrte.get(0).getHoeheUeberNn() != null) {
 //            laf += lafLine(typePrefix + "HOEHE_NN",
 //                String.format("%f", sOrte.get(0).getHoeheUeberNn()));
@@ -390,9 +445,10 @@ implements Creator
      * @return Single LAF line.
      */
     private String writeKommentar(KommentarP kp) {
-        String value = "\"" + kp.getMstId() + "\" " +
-            toUTCString(kp.getDatum()) + " " +
-            "\"" + kp.getText() + "\"";
+        String value = "\"" + kp.getMstId()
+            + "\" "
+            + toUTCString(kp.getDatum()) + " "
+            + "\"" + kp.getText() + "\"";
         return lafLine("PROBENKOMMENTAR", value);
     }
 
@@ -412,41 +468,50 @@ implements Creator
         if (messungen.isEmpty()) {
             // Get all messungen
             builder.and("probeId", probe.getId());
-        }
-        else {
+        } else {
             builder.andIn("id", messungen);
         }
         mess = repository.filterPlain(builder.getQuery(), Strings.LAND);
 
         String laf = "";
-        for(Messung m : mess) {
+        for (Messung m : mess) {
             laf += "%MESSUNG%\n";
             QueryBuilder<Messwert> wertBuilder =
                 new QueryBuilder<Messwert>(
                     repository.entityManager(Strings.LAND), Messwert.class);
             wertBuilder.and("messungsId", m.getId());
-            Response messw = repository.filter(wertBuilder.getQuery(), Strings.LAND);
-            List<Messwert> werte = (List<Messwert>)messw.getData();
+            Response messw =
+                repository.filter(wertBuilder.getQuery(), Strings.LAND);
+            List<Messwert> werte = (List<Messwert>) messw.getData();
             QueryBuilder<KommentarM> kommBuilder =
                 new QueryBuilder<KommentarM>(
                     repository.entityManager(Strings.LAND), KommentarM.class);
             kommBuilder.and("messungsId", m.getId());
-            Response kommentar = repository.filter(kommBuilder.getQuery(), Strings.LAND);
-            List<KommentarM> kommentare = (List<KommentarM>)kommentar.getData();
+            Response kommentar =
+                repository.filter(kommBuilder.getQuery(), Strings.LAND);
+            List<KommentarM> kommentare =
+                (List<KommentarM>) kommentar.getData();
             laf += lafLine("MESSUNGS_ID", m.getExterneMessungsId().toString());
-            laf += m.getNebenprobenNr() == null ?
-                "" : lafLine("NEBENPROBENNUMMER", m.getNebenprobenNr(), CN);
-            laf += m.getMesszeitpunkt() == null ?
-                "" : lafLine("MESS_DATUM_UHRZEIT", toUTCString(m.getMesszeitpunkt()));
-            laf += m.getMessdauer() == null ?
-                "" : lafLine("MESSZEIT_SEKUNDEN", m.getMessdauer().toString());
-            laf += m.getMmtId() == null ?
-                "" : lafLine("MESSMETHODE_S", m.getMmtId(), CN);
-            laf += lafLine("ERFASSUNG_ABGESCHLOSSEN", (m.getFertig() ? "1" : "0"));
+            laf += m.getNebenprobenNr() == null
+                ? ""
+                : lafLine("NEBENPROBENNUMMER", m.getNebenprobenNr(), CN);
+            laf += m.getMesszeitpunkt() == null
+                ? ""
+                : lafLine(
+                    "MESS_DATUM_UHRZEIT", toUTCString(m.getMesszeitpunkt()));
+            laf += m.getMessdauer() == null
+                ? ""
+                : lafLine("MESSZEIT_SEKUNDEN", m.getMessdauer().toString());
+            laf += m.getMmtId() == null
+                ? ""
+                : lafLine("MESSMETHODE_S", m.getMmtId(), CN);
+            laf += lafLine(
+                "ERFASSUNG_ABGESCHLOSSEN",
+                (m.getFertig() ? "1" : "0"));
 //            laf += lafLine("PEP_FLAG", (m.getGeplant() ? "1" : "0"));
             laf += lafLine("BEARBEITUNGSSTATUS", writeStatus(m));
-            if (this.userInfo != null &&
-                authorization.isAuthorized(this.userInfo, m, Messung.class)
+            if (this.userInfo != null
+                && authorization.isAuthorized(this.userInfo, m, Messung.class)
             ) {
                 for (Messwert mw : werte) {
                     laf += writeMesswert(mw);
@@ -470,41 +535,44 @@ implements Creator
      * @return 4 character string
      */
     private String writeStatus(Messung messung) {
-        Integer status[] = {0, 0, 0};
+        Integer[] status = {0, 0, 0};
         StatusProtokoll currentStatus = repository.getByIdPlain(
             StatusProtokoll.class,
             messung.getStatus(),
             Strings.LAND);
         StatusKombi currentKombi = repository.getByIdPlain(
-            StatusKombi.class, 
-            currentStatus.getStatusKombi(), 
+            StatusKombi.class,
+            currentStatus.getStatusKombi(),
             Strings.STAMM);
         Integer currenStufe = currentKombi.getStatusStufe().getId();
         if (currenStufe == 1) {
             status[0] = currentKombi.getStatusWert().getId();
-        }
-        else {
+        } else {
             QueryBuilder<StatusProtokoll> builder =
                 new QueryBuilder<StatusProtokoll>(
-                    repository.entityManager(Strings.LAND), StatusProtokoll.class);
+                    repository.entityManager(
+                        Strings.LAND), StatusProtokoll.class);
             builder.and("messungsId", messung.getId());
-            builder.andIn("statusKombi", Arrays.asList(1, 2, 3, 4, 5, 14));
+            builder.andIn(
+                "statusKombi",
+                Arrays.asList(KOMBI1, KOMBI2, KOMBI3, KOMBI4, KOMBI5, KOMBI14));
             builder.orderBy("datum", false);
-            StatusProtokoll mst = repository.filterPlain(builder.getQuery(), Strings.LAND).get(0);
-            Integer mstKombi = mst.getStatusKombi();
-            StatusKombi kombi = repository.getByIdPlain(StatusKombi.class, mstKombi, Strings.STAMM);
             if (currenStufe == 2) {
                 status[1] = currentKombi.getStatusWert().getId();
-            }
-            else {
+            } else {
                 builder = builder.getEmptyBuilder();
                 builder.and("messungsId", messung.getId());
-                builder.andIn("statusKombi", Arrays.asList(6, 7, 8, 9, 15));
+                builder.andIn(
+                    "statusKombi",
+                    Arrays.asList(KOMBI6, KOMBI7, KOMBI8, KOMBI9, KOMBI15));
                 builder.orderBy("datum", false);
-                List<StatusProtokoll> land = repository.filterPlain(builder.getQuery(), Strings.LAND);
+                List<StatusProtokoll> land =
+                    repository.filterPlain(builder.getQuery(), Strings.LAND);
                 if (!land.isEmpty()) {
                     Integer landKombi = land.get(0).getStatusKombi();
-                    StatusKombi lKombi = repository.getByIdPlain(StatusKombi.class, landKombi, Strings.STAMM);
+                    StatusKombi lKombi =
+                        repository.getByIdPlain(
+                            StatusKombi.class, landKombi, Strings.STAMM);
                     status[1] = lKombi.getStatusWert().getId();
                 }
                 status[2] = currentKombi.getStatusWert().getId();
@@ -522,9 +590,9 @@ implements Creator
      * @return Single LAF line.
      */
     private String writeKommentar(KommentarM mk) {
-        String value = "\"" + mk.getMstId() + "\" " +
-            toUTCString(mk.getDatum()) + " " +
-            "\"" + mk.getText() + "\"";
+        String value = "\"" + mk.getMstId() + "\" "
+            + toUTCString(mk.getDatum()) + " "
+            + "\"" + mk.getText() + "\"";
         return lafLine("KOMMENTAR", value);
     }
 
@@ -541,7 +609,7 @@ implements Creator
                 Messgroesse.class);
         builder.and("id", mw.getMessgroesseId());
         List<Messgroesse> groessen =
-            (List<Messgroesse>)repository.filter(
+            (List<Messgroesse>) repository.filter(
                 builder.getQuery(),
                 Strings.STAMM).getData();
 
@@ -551,7 +619,7 @@ implements Creator
                 MessEinheit.class);
         eBuilder.and("id", mw.getMehId());
         List<MessEinheit> einheiten =
-            (List<MessEinheit>)repository.filter(
+            (List<MessEinheit>) repository.filter(
                 eBuilder.getQuery(),
                 Strings.STAMM).getData();
 
@@ -559,21 +627,24 @@ implements Creator
         String value = "\"" + groessen.get(0).getMessgroesse() + "\"";
         value += " ";
         value += mw.getMesswertNwg() == null ? " " : mw.getMesswertNwg();
-        value += mw.getMesswertNwg() == null ? mw.getMesswert() : mw.getNwgZuMesswert();
+        value += mw.getMesswertNwg() == null
+            ? mw.getMesswert() : mw.getNwgZuMesswert();
         value += " \"" + einheiten.get(0).getEinheit() + "\"";
         value += mw.getMessfehler() == null ? " 0.0" : " " + mw.getMessfehler();
-        if (mw.getGrenzwertueberschreitung() == null ||
-            !mw.getGrenzwertueberschreitung()) {
+        if (mw.getGrenzwertueberschreitung() == null
+            || !mw.getGrenzwertueberschreitung()
+        ) {
             if (mw.getNwgZuMesswert() != null) {
                 tag += "_NWG";
                 value += " " + mw.getNwgZuMesswert();
             }
-        }
-        else {
+        } else {
             tag += "_NWG_G";
-            value += " " + (mw.getNwgZuMesswert() == null ? "0.0": mw.getNwgZuMesswert());
-            value += " " + (mw.getGrenzwertueberschreitung() == null ? " N" :
-                mw.getGrenzwertueberschreitung() ? " J" : " N");
+            value += " "
+                + (mw.getNwgZuMesswert() == null
+                    ? "0.0" : mw.getNwgZuMesswert());
+            value += " " + (mw.getGrenzwertueberschreitung() == null
+                ? " N" : mw.getGrenzwertueberschreitung() ? " J" : " N");
         }
         return lafLine(tag, value);
     }
@@ -604,12 +675,13 @@ implements Creator
     }
 
     private String toUTCString(Timestamp timestamp) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HHmm");
+        DateTimeFormatter formatter =
+            DateTimeFormatter.ofPattern("yyyyMMdd HHmm");
         return formatter.format(timestamp.toInstant().atZone(ZoneOffset.UTC));
     }
 
-	@Override
-	public void setUserInfo(UserInfo userInfo) {
-		this.userInfo = userInfo;
-	}
+    @Override
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
+    }
 }

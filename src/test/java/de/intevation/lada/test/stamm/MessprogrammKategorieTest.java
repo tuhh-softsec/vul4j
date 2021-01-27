@@ -13,13 +13,16 @@ import java.util.List;
 
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
-import javax.json.JsonValue;
 
 import org.junit.Assert;
 
 import de.intevation.lada.Protocol;
 import de.intevation.lada.test.ServiceTest;
 
+/**
+ * Test messprogramm kategorie entities.
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 public class MessprogrammKategorieTest extends ServiceTest {
     private JsonObject expectedById;
     private JsonObject create;
@@ -43,8 +46,11 @@ public class MessprogrammKategorieTest extends ServiceTest {
         });
 
         // Prepare expected object
-        JsonObject content = readJsonResource("/datasets/dbUnit_messprogrammkategorie.json");
-        JsonObject erzeuger = content.getJsonArray("stamm.messprogramm_kategorie").getJsonObject(0);
+        JsonObject content =
+            readJsonResource("/datasets/dbUnit_messprogrammkategorie.json");
+        JsonObject erzeuger =
+            content.getJsonArray(
+                "stamm.messprogramm_kategorie").getJsonObject(0);
         JsonObjectBuilder builder = convertObject(erzeuger);
         expectedById = builder.build();
         Assert.assertNotNull(expectedById);
@@ -54,11 +60,29 @@ public class MessprogrammKategorieTest extends ServiceTest {
         Assert.assertNotNull(create);
     }
 
+    /**
+     * Execute the tests.
+     */
     public final void execute() {
         getAll("messprogrammkategorie", "rest/messprogrammkategorie");
-        getById("messprogrammkategorie", "rest/messprogrammkategorie/1000", expectedById);
-        update("messprogrammkategorie", "rest/messprogrammkategorie/1000", "bezeichnung", "Testbezeichnung", "geändert");
-        JsonObject created = create("messprogrammkategorie", "rest/messprogrammkategorie", create);
-        delete("messprogrammkategorie", "rest/messprogrammkategorie/" + created.getJsonObject("data").get("id"));
+        getById(
+            "messprogrammkategorie",
+            "rest/messprogrammkategorie/1000",
+            expectedById);
+        update(
+            "messprogrammkategorie",
+            "rest/messprogrammkategorie/1000",
+            "bezeichnung",
+            "Testbezeichnung",
+            "geändert");
+        JsonObject created =
+            create(
+                "messprogrammkategorie",
+                "rest/messprogrammkategorie",
+                create);
+        delete(
+            "messprogrammkategorie",
+            "rest/messprogrammkategorie/"
+                + created.getJsonObject("data").get("id"));
     }
 }

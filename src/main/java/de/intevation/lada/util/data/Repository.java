@@ -24,39 +24,42 @@ import de.intevation.lada.util.rest.Response;
  */
 public interface Repository {
 
-    public Response create(Object object, String dataSource);
+     Response create(Object object, String dataSource);
 
-    public Response update(Object object, String dataSource);
+     Response update(Object object, String dataSource);
 
-    public Response delete(Object object, String dataSource);
+     Response delete(Object object, String dataSource);
 
-    public <T> Response filter(CriteriaQuery<T> filter, String dataSource);
+     <T> Response filter(CriteriaQuery<T> filter, String dataSource);
 
-    public <T> List<T> filterPlain(CriteriaQuery<T> filter, String dataSource);
+     <T> List<T> filterPlain(CriteriaQuery<T> filter, String dataSource);
 
-    public <T> List<T> filterPlain(QueryBuilder<T> query, JsonArray filter, String dataSource);
+     <T> List<T> filterPlain(
+         QueryBuilder<T> query,
+         JsonArray filter,
+         String dataSource);
 
-    public <T> Response filter(
+     <T> Response filter(
         CriteriaQuery<T> filter,
         int size,
         int start,
         String dataSource);
 
-    public <T> List<T> filterPlain(
+    <T> List<T> filterPlain(
         CriteriaQuery<T> filter,
         int size,
         int start,
         String dataSource);
 
-    public <T> Response getAll(Class<T> clazz, String dataSource);
+    <T> Response getAll(Class<T> clazz, String dataSource);
 
-    public <T> List<T> getAllPlain(Class<T> clazz, String dataSource);
+    <T> List<T> getAllPlain(Class<T> clazz, String dataSource);
 
-    public <T> Response getById(Class<T> clazz, Object id, String dataSource);
+    <T> Response getById(Class<T> clazz, Object id, String dataSource);
 
-    public <T> T getByIdPlain(Class<T> clazz, Object id, String dataSource);
+    <T> T getByIdPlain(Class<T> clazz, Object id, String dataSource);
 
-    public Query queryFromString(String sql, String dataSource);
+    Query queryFromString(String sql, String dataSource);
 
-    public EntityManager entityManager(String dataSource);
+    EntityManager entityManager(String dataSource);
 }

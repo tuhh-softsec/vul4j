@@ -57,14 +57,14 @@ public class JsonExportService {
      * The exporter.
      */
     @Inject
-    @ExportConfig(format=ExportFormat.JSON)
+    @ExportConfig(format = ExportFormat.JSON)
     private Exporter exporter;
 
     /**
      * The authorization module.
      */
     @Inject
-    @AuthorizationConfig(type=AuthorizationType.HEADER)
+    @AuthorizationConfig(type = AuthorizationType.HEADER)
     private Authorization authorization;
 
 
@@ -93,7 +93,9 @@ public class JsonExportService {
             Integer probeId = array.getInt(i);
             probeIds.add(probeId);
         }
-        InputStream exported = exporter.export(probeIds, new ArrayList<Integer>(), "utf-8", userInfo);
+        InputStream exported =
+            exporter.exportProben(
+                probeIds, new ArrayList<Integer>(), "utf-8", userInfo);
         if (exported == null) {
             return new Response(false, 600, null).toString();
         }

@@ -71,11 +71,11 @@ public class MessprogrammKategorieService {
      * The data repository granting read access.
      */
     @Inject
-    @RepositoryConfig(type=RepositoryType.RW)
+    @RepositoryConfig(type = RepositoryType.RW)
     private Repository repository;
 
     @Inject
-    @AuthorizationConfig(type=AuthorizationType.HEADER)
+    @AuthorizationConfig(type = AuthorizationType.HEADER)
     private Authorization authorization;
 
     /**
@@ -92,7 +92,8 @@ public class MessprogrammKategorieService {
         @Context HttpServletRequest request,
         @Context UriInfo info
     ) {
-        List<MessprogrammKategorie> kategorie = repository.getAllPlain(MessprogrammKategorie.class, Strings.STAMM);
+        List<MessprogrammKategorie> kategorie =
+            repository.getAllPlain(MessprogrammKategorie.class, Strings.STAMM);
         for (MessprogrammKategorie kat: kategorie) {
             kat.setReadonly(
                 !authorization.isAuthorized(
@@ -161,8 +162,9 @@ public class MessprogrammKategorieService {
 
         List<MessprogrammKategorie> kategorien =
             repository.filterPlain(builder.getQuery(), Strings.STAMM);
-        if (kategorien.isEmpty() ||
-            kategorien.get(0).getId() == kategorie.getId()) {
+        if (kategorien.isEmpty()
+            || kategorien.get(0).getId() == kategorie.getId()
+        ) {
             return repository.create(kategorie, Strings.STAMM);
         }
         return new Response(false, 672, null);
@@ -196,8 +198,8 @@ public class MessprogrammKategorieService {
     ) {
         MessprogrammKategorie kategorie = repository.getByIdPlain(
             MessprogrammKategorie.class, Integer.valueOf(id), Strings.STAMM);
-        if (kategorie == null ||
-            !authorization.isAuthorized(
+        if (kategorie == null
+            || !authorization.isAuthorized(
                 request,
                 kategorie,
                 RequestMethod.DELETE,

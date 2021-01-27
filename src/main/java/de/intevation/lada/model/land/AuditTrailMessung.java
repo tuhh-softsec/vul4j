@@ -1,3 +1,10 @@
+/* Copyright (C) 2017 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.model.land;
 
 import java.io.Serializable;
@@ -19,10 +26,10 @@ import de.intevation.lada.util.data.JsonObjectType;
 
 /**
  * The persistent class for the audit_trail_messung database table.
- * 
+ *
  */
 @Entity
-@Table(name="audit_trail_messung")
+@Table(name = "audit_trail_messung")
 @TypeDefs({ @TypeDef(name = "JsonObject", typeClass = JsonObjectType.class) })
 public class AuditTrailMessung implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -32,24 +39,24 @@ public class AuditTrailMessung implements Serializable {
 
     private String action;
 
-    @Column(name="tstamp")
+    @Column(name = "tstamp")
     private Timestamp tstamp;
 
-    @Column(name="changed_fields")
-    @Type(type="JsonObject")
+    @Column(name = "changed_fields")
+    @Type(type = "JsonObject")
     private JsonNode changedFields;
 
-    @Column(name="messungs_id")
+    @Column(name = "messungs_id")
     private String messungsId;
 
-    @Column(name="object_id")
+    @Column(name = "object_id")
     private Integer objectId;
 
-    @Column(name="row_data")
-    @Type(type="JsonObject")
+    @Column(name = "row_data")
+    @Type(type = "JsonObject")
     private JsonNode rowData;
 
-    @Column(name="table_name")
+    @Column(name = "table_name")
     private String tableName;
 
     public AuditTrailMessung() {

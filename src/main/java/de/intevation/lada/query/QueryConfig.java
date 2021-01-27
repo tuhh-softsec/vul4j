@@ -14,13 +14,14 @@ import java.util.List;
  * Container for SQL query configuration.
  *
  * The server can filter {@link LProbeInfo} objects by configurable SQL queries
- * as described in the project wiki (<link>https://bfs-intern.intevation.de/Server/Suche</link>).
+ * as described in the project wiki
+ * (https://bfs-intern.intevation.de/Server/Suche).
  * This container is used to store the config at runtime.
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-public class QueryConfig
-{
+public class QueryConfig {
+
     private String id;
     private String name;
     private String description;
@@ -29,9 +30,7 @@ public class QueryConfig
     private List<QueryFilter> filters;
     private List<ResultConfig> results;
 
-    public QueryConfig()
-    {
-    }
+    public QueryConfig() { }
 
     /**
      * @return the id

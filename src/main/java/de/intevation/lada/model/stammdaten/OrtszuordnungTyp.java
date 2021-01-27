@@ -8,15 +8,18 @@
 package de.intevation.lada.model.stammdaten;
 
 import java.io.Serializable;
-import javax.persistence.*;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 
 /**
  * The persistent class for the ortszuordnung_typ database table.
- * 
+ *
  */
 @Entity
-@Table(name="ortszuordnung_typ")
+@Table(name = "ortszuordnung_typ")
 public class OrtszuordnungTyp implements Serializable {
     private static final long serialVersionUID = 1L;
 

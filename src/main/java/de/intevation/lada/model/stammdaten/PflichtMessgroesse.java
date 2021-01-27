@@ -1,3 +1,10 @@
+/* Copyright (C) 2015 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.model.stammdaten;
 
 import java.io.Serializable;
@@ -10,26 +17,26 @@ import javax.persistence.Table;
 
 /**
  * The persistent class for the pflicht_messgroesse database table.
- * 
+ *
  */
 @Entity
-@Table(name="pflicht_messgroesse")
+@Table(name = "pflicht_messgroesse")
 public class PflichtMessgroesse implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
     private Integer id;
 
-    @Column(name="messgroesse_id")
+    @Column(name = "messgroesse_id")
     private Integer messgroesseId;
 
-    @Column(name="datenbasis_id")
+    @Column(name = "datenbasis_id")
     private Integer datenbasisId;
 
-    @Column(name="mmt_id")
+    @Column(name = "mmt_id")
     private String messMethodeId;
 
-    @Column(name="umw_id")
+    @Column(name = "umw_id")
     private String umwId;
 
     public PflichtMessgroesse() {

@@ -14,8 +14,7 @@ package de.intevation.lada.query;
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-public class QueryFilter
-{
+public class QueryFilter {
     private String dataIndex;
     private String type;
     private String label;
@@ -30,14 +29,14 @@ public class QueryFilter
     /**
      * Constructor to create a filled filter.
      *
-     * @param dataIndex The dataIndex.
-     * @param type      The filter type.
-     * @param label     The label.
+     * @param di The dataIndex.
+     * @param t  The filter type.
+     * @param l  The label.
      */
-    public QueryFilter(String dataIndex, String type, String label) {
-        this.dataIndex = dataIndex;
-        this.type = type;
-        this.label = label;
+    public QueryFilter(String di, String t, String l) {
+        this.dataIndex = di;
+        this.type = t;
+        this.label = l;
     }
 
     /**

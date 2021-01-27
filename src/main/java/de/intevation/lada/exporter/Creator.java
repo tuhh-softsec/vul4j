@@ -15,9 +15,24 @@ import java.util.List;
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-public interface Creator
-{
-    public void setUserInfo(UserInfo userInfo);
-    public String createProbe(String probeId);
-    public String createMessung(String probeId, List<Integer> messungen);
+public interface Creator {
+    /**
+     * Setter for the current user info.
+     * @param userInfo The current userinfo
+     */
+    void setUserInfo(UserInfo userInfo);
+    /**
+     * Create a string representation of a probe object.
+     * @param probeId the id of the requested probe object.
+     * @return the string representation
+     */
+    String createProbe(String probeId);
+
+    /**
+     * Create a string representation of a messung objects.
+     * @param probeId The id of the probe object.
+     * @param messungen the list of messung ids
+     * @return String representation of the messug objects
+     */
+    String createMessung(String probeId, List<Integer> messungen);
 }

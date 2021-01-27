@@ -1,3 +1,10 @@
+/* Copyright (C) 2016 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.model.stammdaten;
 
 import java.io.Serializable;
@@ -10,11 +17,11 @@ import javax.persistence.Table;
 
 /**
  * The persistent class for the filter_type database table.
- * 
+ *
  */
 @Entity
-@Table(name="filter_type")
-@NamedQuery(name="FilterType.findAll", query="SELECT f FROM FilterType f")
+@Table(name = "filter_type")
+@NamedQuery(name = "FilterType.findAll", query = "SELECT f FROM FilterType f")
 public class FilterType implements Serializable {
     private static final long serialVersionUID = 1L;
 

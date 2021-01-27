@@ -1,9 +1,9 @@
 /* Copyright (C) 2013 by Bundesamt fuer Strahlenschutz
  * Software engineering by Intevation GmbH
  *
- * This file is Free Software under the GNU GPL (v>=3) 
- * and comes with ABSOLUTELY NO WARRANTY! Check out 
- * the documentation coming with IMIS-Labordaten-Application for details. 
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
  */
 package de.intevation.lada.importer;
 
@@ -28,69 +28,135 @@ import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 
+/**
+ * Merges the attributes of objects.
+ */
 public class ObjectMerger {
 
     @Inject
     Logger logger;
 
     @Inject
-    @RepositoryConfig(type=RepositoryType.RW)
+    @RepositoryConfig(type = RepositoryType.RW)
     private Repository repository;
 
+    /**
+     * Merge probe objects.
+     * @param target the resulting probe objects
+     * @param src the source object
+     * @return returns true on success
+     */
     public boolean merge(Probe target, Probe src) {
-        if (src.getBaId() != null) target.setBaId(src.getBaId());
-        if (src.getDatenbasisId() != null) target.setDatenbasisId(src.getDatenbasisId());
-        if (src.getErzeugerId() != null) target.setErzeugerId(src.getErzeugerId());
-        if (src.getHauptprobenNr() != null &&
-            !src.getHauptprobenNr().isEmpty()) {
+        if (src.getBaId() != null) {
+            target.setBaId(src.getBaId());
+        }
+        if (src.getDatenbasisId() != null) {
+            target.setDatenbasisId(src.getDatenbasisId());
+        }
+        if (src.getErzeugerId() != null) {
+            target.setErzeugerId(src.getErzeugerId());
+        }
+        if (src.getHauptprobenNr() != null
+            && !src.getHauptprobenNr().isEmpty()
+        ) {
             target.setHauptprobenNr(src.getHauptprobenNr());
         }
-        if (src.getLaborMstId() != null) target.setLaborMstId(src.getLaborMstId());
-        if (src.getMedia() != null) target.setMedia(src.getMedia());
-        if (src.getMediaDesk() != null) target.setMediaDesk(src.getMediaDesk());
-        if (src.getMittelungsdauer() != null) target.setMittelungsdauer(src.getMittelungsdauer());
-        if (src.getMplId() != null) target.setMplId(src.getMplId());
-        if (src.getProbeentnahmeBeginn() != null) target.setProbeentnahmeBeginn(src.getProbeentnahmeBeginn());
-        if (src.getProbeentnahmeEnde() != null) target.setProbeentnahmeEnde(src.getProbeentnahmeEnde());
-        if (src.getProbenartId() != null) target.setProbenartId(src.getProbenartId());
-        if (src.getProbeNehmerId() != null) target.setProbeNehmerId(src.getProbeNehmerId());
-        if (src.getSolldatumBeginn() != null) target.setSolldatumBeginn(src.getSolldatumBeginn());
-        if (src.getSolldatumEnde() != null) target.setSolldatumEnde(src.getSolldatumEnde());
-        if (src.getUrsprungszeit() != null) target.setUrsprungszeit(src.getUrsprungszeit());
+        if (src.getLaborMstId() != null) {
+            target.setLaborMstId(src.getLaborMstId());
+        }
+        if (src.getMedia() != null) {
+            target.setMedia(src.getMedia());
+        }
+        if (src.getMediaDesk() != null) {
+            target.setMediaDesk(src.getMediaDesk());
+        }
+        if (src.getMittelungsdauer() != null) {
+            target.setMittelungsdauer(src.getMittelungsdauer());
+        }
+        if (src.getMplId() != null) {
+            target.setMplId(src.getMplId());
+        }
+        if (src.getProbeentnahmeBeginn() != null) {
+            target.setProbeentnahmeBeginn(src.getProbeentnahmeBeginn());
+        }
+        if (src.getProbeentnahmeEnde() != null) {
+            target.setProbeentnahmeEnde(src.getProbeentnahmeEnde());
+        }
+        if (src.getProbenartId() != null) {
+            target.setProbenartId(src.getProbenartId());
+        }
+        if (src.getProbeNehmerId() != null) {
+            target.setProbeNehmerId(src.getProbeNehmerId());
+        }
+        if (src.getSolldatumBeginn() != null) {
+            target.setSolldatumBeginn(src.getSolldatumBeginn());
+        }
+        if (src.getSolldatumEnde() != null) {
+            target.setSolldatumEnde(src.getSolldatumEnde());
+        }
+        if (src.getUrsprungszeit() != null) {
+            target.setUrsprungszeit(src.getUrsprungszeit());
+        }
         if (src.getTest() != null) {
-            if (target.getTest() == null) target.setTest(src.getTest());
+            if (target.getTest() == null) {
+                target.setTest(src.getTest());
+            }
         } else {
-            // Set explicit to false, if is null in src to not violate constraints
+            // Set explicit to false, if is null in src to not violate
+            // constraints
             target.setTest(false);
         }
-        if (src.getUmwId() != null) target.setUmwId(src.getUmwId());
+        if (src.getUmwId() != null) {
+            target.setUmwId(src.getUmwId());
+        }
         Response r = repository.update(target, Strings.LAND);
         return r.getSuccess();
     }
 
+    /**
+     * Merge messung objects.
+     * @param target the resulting object
+     * @param src the source object
+     * @return the merger instance
+     */
     public ObjectMerger mergeMessung(Messung target, Messung src) {
-        if (target.getNebenprobenNr() == null ||
-            target.getNebenprobenNr().isEmpty()) {
+        if (target.getNebenprobenNr() == null
+            || target.getNebenprobenNr().isEmpty()
+        ) {
             target.setNebenprobenNr(src.getNebenprobenNr());
         }
         if (src.getFertig() != null) {
             target.setFertig(src.getFertig());
-        } else if (target.getFertig() == null){
+        } else if (target.getFertig() == null) {
             target.setFertig(false);
         }
         if (src.getGeplant() != null) {
-            if (target.getGeplant() == null) target.setGeplant(src.getGeplant());
-	} else if (target.getGeplant() == null){
+            if (target.getGeplant() == null) {
+                target.setGeplant(src.getGeplant());
+            }
+        } else if (target.getGeplant() == null) {
             target.setGeplant(false);
         }
-        if (src.getMessdauer() != null) target.setMessdauer(src.getMessdauer());
-        if (src.getMesszeitpunkt() != null) target.setMesszeitpunkt(src.getMesszeitpunkt());
-        if (src.getMmtId() != null) target.setMmtId(src.getMmtId());
+        if (src.getMessdauer() != null) {
+            target.setMessdauer(src.getMessdauer());
+        }
+        if (src.getMesszeitpunkt() != null) {
+            target.setMesszeitpunkt(src.getMesszeitpunkt());
+        }
+        if (src.getMmtId() != null) {
+            target.setMmtId(src.getMmtId());
+        }
         Response r = repository.update(target, Strings.LAND);
-        target = (Messung)r.getData();
+        target = (Messung) r.getData();
         return this;
     }
 
+    /**
+     * Merge zusatzwerte.
+     * @param target the resulting object
+     * @param zusatzwerte the source object
+     * @return the merge instance
+     */
     public ObjectMerger mergeZusatzwerte(
         Probe target,
         List<ZusatzWert> zusatzwerte
@@ -106,8 +172,7 @@ public class ObjectMerger {
             if (found.isEmpty()) {
                 repository.create(zusatzwerte.get(i), Strings.LAND);
                 continue;
-            }
-            else if (found.size() > 1) {
+            } else if (found.size() > 1) {
                 // something is wrong (probeId and pzsId should be unique).
                 // Continue and skip this zusatzwert.
                 continue;
@@ -126,6 +191,12 @@ public class ObjectMerger {
         return this;
     }
 
+    /**
+     * Merge kommentare.
+     * @param target the resulting object
+     * @param kommentare the source object
+     * @return the merge instance
+     */
     public ObjectMerger mergeKommentare(
         Probe target,
         List<KommentarP> kommentare
@@ -142,9 +213,9 @@ public class ObjectMerger {
             if (found.isEmpty()) {
                 repository.create(kommentare.get(i), Strings.LAND);
                 continue;
-            }
-            else if (found.size() > 1) {
-                // something is wrong (probeId and mstId and datum should be unique).
+            } else if (found.size() > 1) {
+                // something is wrong (probeId and mstId and datum should
+                // be unique).
                 // Continue and skip this kommentar.
                 continue;
             }
@@ -153,6 +224,12 @@ public class ObjectMerger {
         return this;
     }
 
+    /**
+     * Merge messung kommentare.
+     * @param target the resulting object
+     * @param kommentare the source object
+     * @return the merger instance
+     */
     public ObjectMerger mergeMessungKommentare(
         Messung target,
         List<KommentarM> kommentare
@@ -169,9 +246,9 @@ public class ObjectMerger {
             if (found.isEmpty()) {
                 repository.create(kommentare.get(i), Strings.LAND);
                 continue;
-            }
-            else if (found.size() > 1) {
-                // something is wrong (probeId and mstId and datum should be unique).
+            } else if (found.size() > 1) {
+                // something is wrong (probeId and mstId and datum should
+                // be unique).
                 // Continue and skip this zusatzwert.
                 continue;
             }
@@ -180,6 +257,12 @@ public class ObjectMerger {
         return this;
     }
 
+    /**
+     * Merge messwerte.
+     * @param target the resulting object
+     * @param messwerte the source object
+     * @return the merger instance
+     */
     public ObjectMerger mergeMesswerte(
         Messung target,
         List<Messwert> messwerte
@@ -203,9 +286,9 @@ public class ObjectMerger {
             for (int i = 0; i < messwerte.size(); i++) {
                 repository.create(messwerte.get(i), Strings.LAND);
             }
-        } catch (SecurityException |
-            IllegalStateException |
-            PersistenceException e
+        } catch (SecurityException
+            | IllegalStateException
+            | PersistenceException e
         ) {
             // Restore messwerte.
             logger.debug("exception: ", e);
@@ -216,6 +299,12 @@ public class ObjectMerger {
         return this;
     }
 
+    /**
+     * Merge entnahme orte.
+     * @param probeId the probe id
+     * @param ort the ortszuordnung
+     * @return the merger instance
+     */
     public ObjectMerger mergeEntnahmeOrt(
         int probeId,
         Ortszuordnung ort
@@ -236,9 +325,9 @@ public class ObjectMerger {
                 repository.delete(found.get(i), Strings.LAND);
             }
             repository.create(ort, Strings.LAND);
-        } catch (SecurityException |
-            IllegalStateException |
-            PersistenceException e
+        } catch (SecurityException
+            | IllegalStateException
+            | PersistenceException e
         ) {
             // Restore orte.
             logger.debug("exception: ", e);
@@ -249,6 +338,12 @@ public class ObjectMerger {
         return this;
     }
 
+    /**
+     * Merge entnahme orte.
+     * @param probeId the probe id
+     * @param orte the ortszuordnung list
+     * @return the merger instance
+     */
     public ObjectMerger mergeUrsprungsOrte(
         int probeId,
         List<Ortszuordnung> orte

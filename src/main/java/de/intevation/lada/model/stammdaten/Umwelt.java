@@ -1,3 +1,10 @@
+/* Copyright (C) 2015 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.model.stammdaten;
 
 import java.io.Serializable;
@@ -10,10 +17,10 @@ import javax.persistence.Table;
 
 /**
  * The persistent class for the umwelt database table.
- * 
+ *
  */
 @Entity
-@Table(name="umwelt", schema="stamm")
+@Table(name = "umwelt", schema = "stamm")
 public class Umwelt implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -22,13 +29,13 @@ public class Umwelt implements Serializable {
 
     private String beschreibung;
 
-    @Column(name="meh_id")
+    @Column(name = "meh_id")
     private Integer mehId;
 
-    @Column(name="meh_id_2")
+    @Column(name = "meh_id_2")
     private Integer secMehId;
 
-    @Column(name="umwelt_bereich")
+    @Column(name = "umwelt_bereich")
     private String umweltBereich;
 
     public Umwelt() {

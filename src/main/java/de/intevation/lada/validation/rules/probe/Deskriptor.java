@@ -33,12 +33,12 @@ import de.intevation.lada.validation.rules.Rule;
 public class Deskriptor implements Rule {
 
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type = RepositoryType.RO)
     private Repository repository;
 
     @Override
     public Violation execute(Object object) {
-        Probe probe = (Probe)object;
+        Probe probe = (Probe) object;
         if (probe.getMediaDesk() == null) {
             return null;
         }
@@ -48,10 +48,15 @@ public class Deskriptor implements Rule {
             violation.addWarning("mediaDesk", 631);
             return violation;
         }
-        if (mediaDesk.length >=1 && probe.getDatenbasisId()!=null && probe.getDatenbasisId()==4  && (mediaDesk[1].equals("00") || mediaDesk[2].equals("00"))) {
-          Violation violation = new Violation();
-          violation.addWarning("mediaDesk", 637);
-          return violation;
+        if (mediaDesk.length >= 1
+            && probe.getDatenbasisId() != null
+            && probe.getDatenbasisId() == 4
+            && (mediaDesk[1].equals("00")
+            || mediaDesk[2].equals("00"))
+        ) {
+            Violation violation = new Violation();
+            violation.addWarning("mediaDesk", 637);
+            return violation;
         }
 
         boolean zebs = false;
@@ -67,11 +72,9 @@ public class Deskriptor implements Rule {
             }
             if (zebs && i < 5) {
                 parent = hdParent;
-            }
-            else if (!zebs && i < 3) {
+            } else if (!zebs && i < 3) {
                 parent = hdParent;
-            }
-            else {
+            } else {
                 parent = ndParent;
             }
             QueryBuilder<Deskriptoren> builder = new QueryBuilder<Deskriptoren>(
@@ -81,9 +84,10 @@ public class Deskriptor implements Rule {
             }
             builder.and("sn", mediaDesk[i]);
             builder.and("ebene", i - 1);
-            Response response = repository.filter(builder.getQuery(), Strings.STAMM);
+            Response response =
+                repository.filter(builder.getQuery(), Strings.STAMM);
             @SuppressWarnings("unchecked")
-            List<Deskriptoren> data = (List<Deskriptoren>)response.getData();
+            List<Deskriptoren> data = (List<Deskriptoren>) response.getData();
             if (data.isEmpty()) {
                 Violation violation = new Violation();
                 violation.addWarning("mediaDesk", 633);

@@ -32,6 +32,8 @@ import de.intevation.lada.util.rest.Response;
  */
 public class TagUtil {
 
+    private TagUtil() { }
+
     /**
      * Creates an auto generated tag using the current date and a given prefix.
      * Format is: {prefix}_yyyyMMdd_{serialNumber}
@@ -40,7 +42,11 @@ public class TagUtil {
      * @param repository Repository to use
      * @return Response of tag creation
      */
-    public static synchronized Response generateTag(String prefix, String mstId, Repository repository) {
+    public static synchronized Response generateTag(
+        String prefix,
+        String mstId,
+        Repository repository
+    ) {
         //Get current date
         LocalDate date = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
@@ -51,7 +57,8 @@ public class TagUtil {
         CriteriaBuilder builder = stammEm.getCriteriaBuilder();
         CriteriaQuery<Tag> criteriaQuery = builder.createQuery(Tag.class);
         Root<Tag> tagRoot = criteriaQuery.from(Tag.class);
-        Predicate nameFilter = builder.like(tagRoot.get("tag"), prefix + "\\_" + today + "\\_%");
+        Predicate nameFilter =
+            builder.like(tagRoot.get("tag"), prefix + "\\_" + today + "\\_%");
         Order nameOrder = builder.asc(tagRoot.get("tag"));
         criteriaQuery.where(nameFilter);
         criteriaQuery.orderBy(nameOrder);
@@ -63,12 +70,14 @@ public class TagUtil {
             AtomicInteger lastSerNumber = new AtomicInteger(0);
             tags.forEach(item -> {
                 try {
-                    Integer currentserial = Integer.parseInt(item.getTag().split("_")[2]);
+                    Integer currentserial =
+                        Integer.parseInt(item.getTag().split("_")[2]);
                     if (lastSerNumber.get() < currentserial) {
                         lastSerNumber.set(currentserial);
                     }
                 } catch (NumberFormatException nfe) {
-                    //There might be a user generated tag also matching the generated tag pattern: Skip
+                    //There might be a user generated tag also matching
+                    // the generated tag pattern: Skip
                 }
             });
             serNumber = lastSerNumber.get() + 1;
@@ -116,16 +125,20 @@ public class TagUtil {
         CriteriaBuilder probeBuilder = landEm.getCriteriaBuilder();
         CriteriaQuery<Probe> probeQuery = probeBuilder.createQuery(Probe.class);
         Root<Probe> probeRoot = probeQuery.from(Probe.class);
-        Predicate pidFilter = probeBuilder.in(probeRoot.get("id")).value(probeIds);
+        Predicate pidFilter =
+            probeBuilder.in(probeRoot.get("id")).value(probeIds);
         probeQuery.where(pidFilter);
         List<Probe> probes = repository.filterPlain(probeQuery, Strings.LAND);
 
         CriteriaBuilder messungBuilder = landEm.getCriteriaBuilder();
-        CriteriaQuery<Messung> messungQuery = messungBuilder.createQuery(Messung.class);
+        CriteriaQuery<Messung> messungQuery =
+            messungBuilder.createQuery(Messung.class);
         Root<Messung> messungRoot = messungQuery.from(Messung.class);
-        Predicate messungPidFilter = messungBuilder.in(messungRoot.get("probeId")).value(probeIds);
+        Predicate messungPidFilter =
+            messungBuilder.in(messungRoot.get("probeId")).value(probeIds);
         messungQuery.where(messungPidFilter);
-        List<Messung> messungs = repository.filterPlain(messungQuery, Strings.LAND);
+        List<Messung> messungs =
+            repository.filterPlain(messungQuery, Strings.LAND);
 
         //Set tags
         List<TagZuordnung> zuordnungs = new ArrayList<TagZuordnung>();

@@ -9,7 +9,6 @@ package de.intevation.lada.validation.rules.probe;
 
 import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.validation.Violation;
-import de.intevation.lada.validation.annotation.ValidationRule;
 import de.intevation.lada.validation.rules.Rule;
 
 /**
@@ -22,7 +21,7 @@ public class HasTestdatensatz implements Rule {
 
     @Override
     public Violation execute(Object object) {
-        Probe probe = (Probe)object;
+        Probe probe = (Probe) object;
         if (probe.getTest() == null) {
             Violation violation = new Violation();
             violation.addError("test", 631);

@@ -20,8 +20,13 @@ import org.junit.Assert;
 import de.intevation.lada.Protocol;
 import de.intevation.lada.test.ServiceTest;
 
+/**
+ * Test ortzuordnung entities.
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 public class OrtszuordnungTest extends ServiceTest {
 
+    private static final long TS1 = 1450371851654L;
     private JsonObject expectedById;
     private JsonObject create;
 
@@ -44,10 +49,12 @@ public class OrtszuordnungTest extends ServiceTest {
         });
 
         // Prepare expected probe object
-        JsonObject content = readJsonResource("/datasets/dbUnit_ortszuordnung.json");
-        JsonObject messung = content.getJsonArray("land.ortszuordnung").getJsonObject(0);
+        JsonObject content =
+            readJsonResource("/datasets/dbUnit_ortszuordnung.json");
+        JsonObject messung =
+            content.getJsonArray("land.ortszuordnung").getJsonObject(0);
         JsonObjectBuilder builder = convertObject(messung);
-        builder.add("parentModified", 1450371851654L);
+        builder.add("parentModified", TS1);
         builder.add("readonly", JsonValue.FALSE);
         builder.add("owner", JsonValue.TRUE);
         expectedById = builder.build();
@@ -58,11 +65,22 @@ public class OrtszuordnungTest extends ServiceTest {
         Assert.assertNotNull(create);
     }
 
+    /**
+     * Execute the tests.
+     */
     public final void execute() {
         getAll("ortszuordnung", "rest/ortszuordnung");
         getById("ortszuordnung", "rest/ortszuordnung/1000", expectedById);
-        JsonObject created = create("ortszuordnung", "rest/ortszuordnung", create);
-        update("ortszuordnung", "rest/ortszuordnung/1000", "ortszusatztext", "Test", "Test geändert");
-        delete("ortszuordnung", "rest/ortszuordnung/" + created.getJsonObject("data").get("id"));
+        JsonObject created =
+            create("ortszuordnung", "rest/ortszuordnung", create);
+        update(
+            "ortszuordnung",
+            "rest/ortszuordnung/1000",
+            "ortszusatztext",
+            "Test",
+            "Test geändert");
+        delete(
+            "ortszuordnung",
+            "rest/ortszuordnung/" + created.getJsonObject("data").get("id"));
     }
 }

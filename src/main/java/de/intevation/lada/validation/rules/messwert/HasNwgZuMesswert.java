@@ -23,11 +23,9 @@ public class HasNwgZuMesswert implements Rule {
 
     @Override
     public Violation execute(Object object) {
-        Messwert messwert = (Messwert)object;
-        Float unsicherheit = messwert.getMessfehler();
+        Messwert messwert = (Messwert) object;
         String messwertNwg = messwert.getMesswertNwg();
         Double nachweisgrenze = messwert.getNwgZuMesswert();
-        Double wert = messwert.getMesswert();
         Violation violation = new Violation();
         if (messwertNwg != null && nachweisgrenze == null) {
             violation.addError("nwgZuMesswert", 631);

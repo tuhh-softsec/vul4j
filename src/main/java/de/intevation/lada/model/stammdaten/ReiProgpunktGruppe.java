@@ -17,10 +17,10 @@ import javax.persistence.Table;
 
 /**
  * The persistent class for the rei_progpunkt_gruppe database table.
- * 
+ *
  */
 @Entity
-@Table(name="rei_progpunkt_gruppe")
+@Table(name = "rei_progpunkt_gruppe")
 public class ReiProgpunktGruppe implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -29,7 +29,7 @@ public class ReiProgpunktGruppe implements Serializable {
 
     private String beschreibung;
 
-    @Column(name="rei_prog_punkt_gruppe")
+    @Column(name = "rei_prog_punkt_gruppe")
     private String reiProgPunktGruppe;
 
     public ReiProgpunktGruppe() {

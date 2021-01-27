@@ -1,9 +1,9 @@
 /* Copyright (C) 2013 by Bundesamt fuer Strahlenschutz
  * Software engineering by Intevation GmbH
  *
- * This file is Free Software under the GNU GPL (v>=3) 
- * and comes with ABSOLUTELY NO WARRANTY! Check out 
- * the documentation coming with IMIS-Labordaten-Application for details. 
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
  */
 package de.intevation.lada.rest;
 
@@ -82,14 +82,14 @@ public class KommentarPService {
      * The data repository granting read/write access.
      */
     @Inject
-    @RepositoryConfig(type=RepositoryType.RW)
+    @RepositoryConfig(type = RepositoryType.RW)
     private Repository defaultRepo;
 
     /**
      * The authorization module.
      */
     @Inject
-    @AuthorizationConfig(type=AuthorizationType.HEADER)
+    @AuthorizationConfig(type = AuthorizationType.HEADER)
     private Authorization authorization;
 
     /**
@@ -145,7 +145,8 @@ public class KommentarPService {
     ) {
         return authorization.filter(
             request,
-            defaultRepo.getById(KommentarP.class,Integer.valueOf(id), Strings.LAND),
+            defaultRepo.getById(
+                KommentarP.class, Integer.valueOf(id), Strings.LAND),
             KommentarP.class);
     }
 
@@ -253,8 +254,9 @@ public class KommentarPService {
     ) {
         /* Get the object by id*/
         Response kommentar =
-            defaultRepo.getById(KommentarP.class, Integer.valueOf(id), Strings.LAND);
-        KommentarP kommentarObj = (KommentarP)kommentar.getData();
+            defaultRepo.getById(
+                KommentarP.class, Integer.valueOf(id), Strings.LAND);
+        KommentarP kommentarObj = (KommentarP) kommentar.getData();
         if (!authorization.isAuthorized(
                 request,
                 kommentarObj,

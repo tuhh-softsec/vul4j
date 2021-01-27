@@ -15,7 +15,7 @@ import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
 
-@AuthorizationConfig(type=AuthorizationType.NONE)
+@AuthorizationConfig(type = AuthorizationType.NONE)
 public class TestAuthorization implements Authorization {
 
     @Override
@@ -59,17 +59,30 @@ public class TestAuthorization implements Authorization {
     }
 
     @Override
-    public <T> boolean isAuthorizedById(Object source, Object id, RequestMethod method, Class<T> clazz) {
+    public <T> boolean isAuthorizedById(
+        Object source,
+        Object id,
+        RequestMethod method,
+        Class<T> clazz
+    ) {
         return true;
     }
 
     @Override
-    public <T> boolean isAuthorized(UserInfo userInfo, Object data, Class<T> clazz) {
+    public <T> boolean isAuthorized(
+        UserInfo userInfo,
+        Object data,
+        Class<T> clazz
+    ) {
         return true;
     }
 
     @Override
-    public <T> boolean isAuthorizedOnNew(UserInfo userInfo, Object data, Class<T> clazz) {
+    public <T> boolean isAuthorizedOnNew(
+        UserInfo userInfo,
+        Object data,
+        Class<T> clazz
+    ) {
         return true;
     }
 

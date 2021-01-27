@@ -20,8 +20,13 @@ import org.junit.Assert;
 import de.intevation.lada.Protocol;
 import de.intevation.lada.test.ServiceTest;
 
+/**
+ * Test messwert entities.
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 public class MesswertTest extends ServiceTest {
 
+    private static final long TS1 = 1450371851654L;
     private JsonObject expectedById;
     private JsonObject create;
 
@@ -46,9 +51,10 @@ public class MesswertTest extends ServiceTest {
 
         // Prepare expected probe object
         JsonObject content = readJsonResource("/datasets/dbUnit_messwert.json");
-        JsonObject messung = content.getJsonArray("land.messwert").getJsonObject(0);
+        JsonObject messung =
+            content.getJsonArray("land.messwert").getJsonObject(0);
         JsonObjectBuilder builder = convertObject(messung);
-        builder.add("parentModified", 1450371851654L);
+        builder.add("parentModified", TS1);
         builder.add("readonly", JsonValue.FALSE);
         builder.add("owner", JsonValue.TRUE);
         expectedById = builder.build();
@@ -59,11 +65,16 @@ public class MesswertTest extends ServiceTest {
         Assert.assertNotNull(create);
     }
 
+    /**
+     * Execute the tests.
+     */
     public final void execute() {
         getAll("messwert", "rest/messwert?messungsId=1000");
         getById("messwert", "rest/messwert/10000", expectedById);
         JsonObject created = create("messwert", "rest/messwert", create);
         update("messwert", "rest/messwert/10000", "messwertNwg", "<", ">");
-        delete("messwert", "rest/messwert/" + created.getJsonObject("data").get("id"));
+        delete(
+            "messwert",
+            "rest/messwert/" + created.getJsonObject("data").get("id"));
     }
 }

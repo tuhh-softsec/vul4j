@@ -23,16 +23,14 @@ public class HasMessunsicherheit implements Rule {
 
     @Override
     public Violation execute(Object object) {
-        Messwert messwert = (Messwert)object;
+        Messwert messwert = (Messwert) object;
         Float unsicherheit = messwert.getMessfehler();
-        Double nachweisgrenze = messwert.getNwgZuMesswert();
-        Double wert = messwert.getMesswert();
-        if (messwert.getMesswertNwg() == null && ( unsicherheit == null || unsicherheit == 0f)) {
+        if (messwert.getMesswertNwg() == null
+            && (unsicherheit == null || unsicherheit == 0f)) {
             Violation violation = new Violation();
             violation.addWarning("messfehler", 631);
             return violation;
-        }
-        else if (messwert.getMesswertNwg() != null && unsicherheit != null) {
+        } else if (messwert.getMesswertNwg() != null && unsicherheit != null) {
             Violation violation = new Violation();
             violation.addWarning("messfehler", 635);
             return violation;

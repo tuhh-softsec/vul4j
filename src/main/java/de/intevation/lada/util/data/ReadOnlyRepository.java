@@ -28,7 +28,7 @@ import de.intevation.lada.util.rest.Response;
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-@RepositoryConfig(type=RepositoryType.RO)
+@RepositoryConfig(type = RepositoryType.RO)
 @ApplicationScoped
 public class ReadOnlyRepository implements Repository {
 
@@ -79,7 +79,8 @@ public class ReadOnlyRepository implements Repository {
     @Override
     public <T> Response filter(CriteriaQuery<T> filter, String dataSource) {
         List<T> result =
-            transaction.entityManager(dataSource).createQuery(filter).getResultList();
+            transaction.entityManager(dataSource)
+                .createQuery(filter).getResultList();
         return new Response(true, 200, result);
     }
 
@@ -102,7 +103,8 @@ public class ReadOnlyRepository implements Repository {
         String dataSource
     ) {
         List<T> result =
-            transaction.entityManager(dataSource).createQuery(filter).getResultList();
+            transaction.entityManager(dataSource)
+                .createQuery(filter).getResultList();
         if (size > 0 && start > -1) {
             List<T> newList = result.subList(start, size + start);
             return new Response(true, 200, newList, result.size());
@@ -158,11 +160,16 @@ public class ReadOnlyRepository implements Repository {
 
     @Override
     public <T> List<T> filterPlain(CriteriaQuery<T> filter, String dataSource) {
-        return transaction.entityManager(dataSource).createQuery(filter).getResultList();
+        return transaction.entityManager(dataSource)
+            .createQuery(filter).getResultList();
     }
 
     @Override
-    public <T> List<T> filterPlain(QueryBuilder<T> query, JsonArray filter, String dataSource) {
+    public <T> List<T> filterPlain(
+        QueryBuilder<T> query,
+        JsonArray filter,
+        String dataSource
+    ) {
         for (JsonValue object : filter) {
             JsonObject f = (JsonObject) object;
             JsonString operator = f.getJsonString("operator");
@@ -172,20 +179,20 @@ public class ReadOnlyRepository implements Repository {
                 continue;
             }
             if ("like".equals(operator.getString())) {
-                query.andLike(property.getString(), "%"+value.getString()+"%");
-            }
-            else if ("in".equals(operator.getString())) {
-//                query.andIn(property.getString(), value.getString());
+                query.andLike(
+                    property.getString(), "%" + value.getString() + "%");
             }
         }
-        return transaction.entityManager(dataSource).createQuery(query.getQuery()).getResultList();
+        return transaction.entityManager(dataSource)
+            .createQuery(query.getQuery()).getResultList();
     }
 
     @Override
     public <T> List<T> filterPlain(CriteriaQuery<T> filter, int size,
             int start, String dataSource) {
         List<T> result =
-            transaction.entityManager(dataSource).createQuery(filter).getResultList();
+            transaction.entityManager(dataSource)
+                .createQuery(filter).getResultList();
         if (size > 0 && start > -1) {
             return result.subList(start, size + start);
         }
