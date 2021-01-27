@@ -88,7 +88,7 @@ public class OrtFactory {
         if (coords == null) {
             ReportItem err = new ReportItem();
             err.setCode(ERR652);
-            err.setKey("coordinates");
+            err.setKey("kdaId");
             err.setValue(ort.getKdaId()
                 + " " + ort.getKoordXExtern() + " " + ort.getKoordYExtern());
             errors.add(err);
