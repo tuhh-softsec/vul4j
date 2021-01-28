@@ -46,7 +46,6 @@ import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
-import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
@@ -342,9 +341,6 @@ public class ProbeService {
             return new Response(false, 600, null);
         }
 
-        UserInfo userInfo = authorization.getInfo(request);
-        String mstId = userInfo.getMessstellen().get(0);
-
         Map<String, Object> responseData = new HashMap<String, Object>();
         Map<String, Object> probenData = new HashMap<String, Object>();
         List<Integer> generatedProbeIds = new ArrayList<Integer>();
@@ -466,8 +462,13 @@ public class ProbeService {
         responseData.put("proben", probenData);
 
         Tag newTag = null;
-        //Generate Tags
+        // Generate and associate tag
         if (generatedProbeIds.size() > 0) {
+            // Assume the user is associated to at least one Messstelle,
+            // because authorization should ensure this.
+            // TODO: Pick the correct instead of the first Messstelle
+            String mstId = authorization.getInfo(request)
+                .getMessstellen().get(0);
             Response tagCreation =
                 TagUtil.generateTag("PEP", mstId, repository);
             if (tagCreation.getSuccess()) {
