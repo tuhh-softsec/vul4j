@@ -123,13 +123,6 @@ public class QueryService {
             filter = builder.or(
                 filter, mess.get("messStelle").in(userInfo.getMessstellen()));
         }
-        if (userInfo.getLaborMessstellen() != null
-            && !userInfo.getLaborMessstellen().isEmpty()
-        ) {
-            filter = builder.or(
-                filter,
-                mess.get("messStelle").in(userInfo.getLaborMessstellen()));
-        }
         criteriaQuery.where(filter);
 
         List<QueryUser> queries =

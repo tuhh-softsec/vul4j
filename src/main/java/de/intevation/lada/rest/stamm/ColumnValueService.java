@@ -107,13 +107,6 @@ public class ColumnValueService {
                 userFilter,
                 mess.get("messStelle").in(userInfo.getMessstellen()));
         }
-        if (userInfo.getLaborMessstellen() != null
-            && !userInfo.getLaborMessstellen().isEmpty()
-        ) {
-            userFilter = builder.or(
-                userFilter,
-                mess.get("messStelle").in(userInfo.getLaborMessstellen()));
-        }
         filter = builder.and(filter, userFilter);
         criteriaQuery.where(filter).distinct(true);
         List<GridColumnValue> queries =
