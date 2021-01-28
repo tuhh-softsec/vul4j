@@ -461,7 +461,6 @@ public class ProbeService {
         });
         responseData.put("proben", probenData);
 
-        Tag newTag = null;
         // Generate and associate tag
         if (generatedProbeIds.size() > 0) {
             // Assume the user is associated to at least one Messstelle,
@@ -472,11 +471,15 @@ public class ProbeService {
             Response tagCreation =
                 TagUtil.generateTag("PEP", mstId, repository);
             if (tagCreation.getSuccess()) {
-                newTag = (Tag) tagCreation.getData();
+                Tag newTag = (Tag) tagCreation.getData();
                 TagUtil.setTagsByProbeIds(
                     generatedProbeIds, newTag.getId(), repository);
+                responseData.put("tag", newTag.getTag());
+            } else {
+                /* TODO: The whole request should be handled in one
+                 * transaction that should be rolled back at this point. */
+                responseData.put("tag", "XXX Creation of tag failed XXX");
             }
-            responseData.put("tag", newTag.getTag());
         }
         return new Response(true, 200, responseData);
     }
