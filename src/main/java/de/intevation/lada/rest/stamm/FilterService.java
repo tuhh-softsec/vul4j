@@ -25,6 +25,7 @@ import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.rest.Response;
 
 @Path("rest/filter")
@@ -77,7 +78,7 @@ public class FilterService {
             return new Response(true, 200, f);
         }
         */
-        return new Response(true, 200, null);
+        return new Response(true, StatusCodes.OK, null);
     }
 
     @DELETE
@@ -115,6 +116,6 @@ public class FilterService {
         f.setValue(basicValues.get(0).getValue());
         return new Response(true, 200, f);
         */
-        return new Response(true, 200, null);
+        return new Response(true, StatusCodes.OK, null);
     }
 }

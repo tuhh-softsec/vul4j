@@ -38,6 +38,7 @@ import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
@@ -159,7 +160,7 @@ public class OrtszuordnungService {
                     otz.setWarnings(violation.getWarnings());
                 }
             }
-            return new Response(true, 200, ortszuordnungs);
+            return new Response(true, StatusCodes.OK, ortszuordnungs);
         } else {
             return r;
         }
@@ -232,11 +233,12 @@ public class OrtszuordnungService {
                 ort,
                 RequestMethod.POST,
                 Ortszuordnung.class)) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
         Violation violation = validator.validate(ort);
         if (violation.hasErrors()) {
-            Response response = new Response(false, 604, ort);
+            Response response =
+                new Response(false, StatusCodes.ERROR_VALIDATION, ort);
             response.setErrors(violation.getErrors());
             response.setWarnings(violation.getWarnings());
             return response;
@@ -290,14 +292,15 @@ public class OrtszuordnungService {
                 ort,
                 RequestMethod.PUT,
                 Ortszuordnung.class)) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
         if (lock.isLocked(ort)) {
-            return new Response(false, 697, null);
+            return new Response(false, StatusCodes.CHANGED_VALUE, null);
         }
         Violation violation = validator.validate(ort);
         if (violation.hasErrors()) {
-            Response response = new Response(false, 604, ort);
+            Response response =
+                new Response(false, StatusCodes.ERROR_VALIDATION, ort);
             response.setErrors(violation.getErrors());
             response.setWarnings(violation.getWarnings());
             return response;
@@ -346,10 +349,10 @@ public class OrtszuordnungService {
                 ortObj,
                 RequestMethod.PUT,
                 Ortszuordnung.class)) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
         if (lock.isLocked(ortObj)) {
-            return new Response(false, 697, null);
+            return new Response(false, StatusCodes.CHANGED_VALUE, null);
         }
 
         return defaultRepo.delete(ortObj, Strings.LAND);

@@ -27,6 +27,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.KdaUtil;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 
@@ -119,8 +120,8 @@ public class KoordinatenartService {
         KdaUtil transformer = new KdaUtil();
         ObjectNode result = transformer.transform(kdaFrom, kdaTo, x, y);
         if (result == null) {
-            return new Response(false, 652, null);
+            return new Response(false, StatusCodes.GEO_NOT_MATCHING, null);
         }
-        return new Response(true, 200, result.toString());
+        return new Response(true, StatusCodes.OK, result.toString());
     }
 }

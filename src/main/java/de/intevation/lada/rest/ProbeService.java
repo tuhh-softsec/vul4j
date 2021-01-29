@@ -43,9 +43,9 @@ import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
-import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.data.TagUtil;
 import de.intevation.lada.util.rest.RequestMethod;
@@ -194,7 +194,7 @@ public class ProbeService {
             }
             probe.setReadonly(authorization.isReadOnly(probe.getId()));
         }
-        return new Response(true, 200, probes);
+        return new Response(true, StatusCodes.OK, probes);
     }
 
     /**
@@ -277,11 +277,12 @@ public class ProbeService {
                 RequestMethod.POST,
                 Probe.class)
         ) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
         Violation violation = validator.validate(probe);
         if (violation.hasErrors()) {
-            Response response = new Response(false, 604, probe);
+            Response response =
+                new Response(false, StatusCodes.ERROR_VALIDATION, probe);
             response.setErrors(violation.getErrors());
             response.setWarnings(violation.getWarnings());
             response.setNotifications(violation.getNotifications());
@@ -335,7 +336,7 @@ public class ProbeService {
 
         JsonArray ids = object.getJsonArray("ids");
         if (ids == null) {
-            return new Response(false, 600, null);
+            return new Response(false, StatusCodes.NOT_EXISTING, null);
         }
 
         // This is due to the requiremment that the dryrun variable has to be
@@ -348,9 +349,6 @@ public class ProbeService {
             dryrun = false;
         }
 
-        UserInfo userInfo = authorization.getInfo(request);
-        String mstId = userInfo.getMessstellen().get(0);
-
         Map<String, Object> responseData = new HashMap<String, Object>();
         Map<String, Object> probenData = new HashMap<String, Object>();
         List<Integer> generatedProbeIds = new ArrayList<Integer>();
@@ -362,7 +360,7 @@ public class ProbeService {
                 Messprogramm.class, id, Strings.LAND);
             if (messprogramm == null) {
                 data.put("success", false);
-                data.put("message", 600);
+                data.put("message", StatusCodes.NOT_EXISTING);
                 data.put("data", "Invalid mst id");
                 probenData.put("" + id, data);
                 return;
@@ -379,7 +377,7 @@ public class ProbeService {
                     Probe.class)
             ) {
                 data.put("success", false);
-                data.put("message", 699);
+                data.put("message", StatusCodes.NOT_ALLOWED);
                 data.put("data", null);
                 probenData.put(messprogramm.getId().toString(), data);
                 return;
@@ -393,14 +391,14 @@ public class ProbeService {
             } catch (ClassCastException e) {
                 // Catch invalid (i.e. too high) time values
                 data.put("success", false);
-                data.put("message", 612);
+                data.put("message", StatusCodes.VALUE_OUTSIDE_RANGE);
                 data.put("data", null);
                 probenData.put(messprogramm.getId().toString(), data);
                 return;
             }
             if (start > end) {
                 data.put("success", false);
-                data.put("message", 662);
+                data.put("message", StatusCodes.DATE_BEGIN_AFTER_END);
                 data.put("data", null);
                 probenData.put(messprogramm.getId().toString(), data);
                 return;
@@ -418,25 +416,33 @@ public class ProbeService {
             }
             List<Map<String, Object>> returnValue = factory.getProtocol();
             data.put("success", true);
-            data.put("message", 200);
+            data.put("message", StatusCodes.OK);
             data.put("data", returnValue);
             probenData.put(messprogramm.getId().toString(), data);
         });
         responseData.put("proben", probenData);
 
-        Tag newTag = null;
-        //Generate Tags
+        // Generate and associate tag
         if (generatedProbeIds.size() > 0) {
+            // Assume the user is associated to at least one Messstelle,
+            // because authorization should ensure this.
+            // TODO: Pick the correct instead of the first Messstelle
+            String mstId = authorization.getInfo(request)
+                .getMessstellen().get(0);
             Response tagCreation =
                 TagUtil.generateTag("PEP", mstId, repository);
             if (tagCreation.getSuccess()) {
-                newTag = (Tag) tagCreation.getData();
+                Tag newTag = (Tag) tagCreation.getData();
                 TagUtil.setTagsByProbeIds(
                     generatedProbeIds, newTag.getId(), repository);
+                responseData.put("tag", newTag.getTag());
+            } else {
+                /* TODO: The whole request should be handled in one
+                 * transaction that should be rolled back at this point. */
+                responseData.put("tag", "XXX Creation of tag failed XXX");
             }
-            responseData.put("tag", newTag.getTag());
         }
-        return new Response(true, 200, responseData);
+        return new Response(true, StatusCodes.OK, responseData);
     }
 
     /**
@@ -491,10 +497,10 @@ public class ProbeService {
                 RequestMethod.PUT,
                 Probe.class)
         ) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
         if (lock.isLocked(probe)) {
-            return new Response(false, 697, null);
+            return new Response(false, StatusCodes.CHANGED_VALUE, null);
         }
         if (probe.getMediaDesk() == null || probe.getMediaDesk() == "") {
             probe = factory.findMediaDesk(probe);
@@ -504,7 +510,8 @@ public class ProbeService {
         }
         Violation violation = validator.validate(probe);
         if (violation.hasErrors()) {
-            Response response = new Response(false, 604, null);
+            Response response =
+                new Response(false, StatusCodes.ERROR_VALIDATION, null);
             response.setErrors(violation.getErrors());
             response.setWarnings(violation.getWarnings());
             response.setNotifications(violation.getNotifications());
@@ -559,7 +566,7 @@ public class ProbeService {
                 RequestMethod.DELETE,
                 Probe.class)
         ) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
         /* Delete the probe object*/
         try {
@@ -569,7 +576,7 @@ public class ProbeService {
             | EJBTransactionRolledbackException
             | TransactionRequiredException e
         ) {
-            return new Response(false, 600, "");
+            return new Response(false, StatusCodes.NOT_EXISTING, "");
         }
     }
 }

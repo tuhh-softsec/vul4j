@@ -13,6 +13,7 @@ import de.intevation.lada.model.land.Messprogramm;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
 import de.intevation.lada.validation.rules.Rule;
@@ -35,33 +36,33 @@ public class HasAllMandatory implements Rule {
 
         if (messprogramm.getMstId() == null
             || "".equals(messprogramm.getMstId())) {
-            violation.addError("mstlabor", 631);
+            violation.addError("mstlabor", StatusCodes.VALUE_MISSING);
         }
         if (messprogramm.getLaborMstId() == null
             || "".equals(messprogramm.getLaborMstId())) {
-            violation.addError("mstlabor", 631);
+            violation.addError("mstlabor", StatusCodes.VALUE_MISSING);
         }
         if (messprogramm.getDatenbasisId() == null) {
-            violation.addError("datenbasisId", 631);
+            violation.addError("datenbasisId", StatusCodes.VALUE_MISSING);
         }
         if (messprogramm.getProbenartId() == null) {
-            violation.addError("probenartId", 631);
+            violation.addError("probenartId", StatusCodes.VALUE_MISSING);
         }
         if (messprogramm.getProbenintervall() == null
             || "".equals(messprogramm.getProbenintervall())) {
-            violation.addError("probenintervall", 631);
+            violation.addError("probenintervall", StatusCodes.VALUE_MISSING);
         }
         if (messprogramm.getTeilintervallVon() == null) {
-            violation.addError("teilintervallVon", 631);
+            violation.addError("teilintervallVon", StatusCodes.VALUE_MISSING);
         }
         if (messprogramm.getTeilintervallBis() == null) {
-            violation.addError("teilintervallBis", 631);
+            violation.addError("teilintervallBis", StatusCodes.VALUE_MISSING);
         }
         if (messprogramm.getGueltigVon() == null) {
-            violation.addError("gueltigVon", 631);
+            violation.addError("gueltigVon", StatusCodes.VALUE_MISSING);
         }
         if (messprogramm.getGueltigBis() == null) {
-            violation.addError("gueltigBis", 631);
+            violation.addError("gueltigBis", StatusCodes.VALUE_MISSING);
         }
 
         return violation.hasErrors()

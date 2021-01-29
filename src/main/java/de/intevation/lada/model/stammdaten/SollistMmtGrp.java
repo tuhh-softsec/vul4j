@@ -20,7 +20,7 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name="sollist_mmtgrp")
+@Table(name = "sollist_mmtgrp")
 public class SollistMmtGrp implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -29,7 +29,7 @@ public class SollistMmtGrp implements Serializable {
 
     private String beschreibung;
 
-    @Column(name="bezeichnung")
+    @Column(name = "bezeichnung")
     private String bezeichnung;
 
     public SollistMmtGrp() {

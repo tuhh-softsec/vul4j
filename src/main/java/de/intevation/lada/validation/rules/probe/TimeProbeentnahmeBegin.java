@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 import de.intevation.lada.model.land.Probe;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
 import de.intevation.lada.validation.rules.Rule;
@@ -35,12 +36,14 @@ public class TimeProbeentnahmeBegin implements Rule {
         }
         if (begin == null && end != null) {
             Violation violation = new Violation();
-            violation.addWarning("probeentnahmeBeginn", 662);
+            violation.addWarning(
+                "probeentnahmeBeginn", StatusCodes.DATE_BEGIN_AFTER_END);
             return violation;
         }
         if (begin.after(new Date())) {
             Violation violation = new Violation();
-            violation.addWarning("probeentnahmeBeginn", 661);
+            violation.addWarning(
+                "probeentnahmeBeginn", StatusCodes.DATE_IN_FUTURE);
             return violation;
         }
         if (end == null) {
@@ -48,7 +51,8 @@ public class TimeProbeentnahmeBegin implements Rule {
         }
         if (begin.after(end)) {
             Violation violation = new Violation();
-            violation.addWarning("probeentnahmeBeginn", 662);
+            violation.addWarning(
+                "probeentnahmeBeginn", StatusCodes.DATE_BEGIN_AFTER_END);
             return violation;
         }
         return null;

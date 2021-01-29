@@ -28,6 +28,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 
@@ -89,7 +90,10 @@ public class KtaService {
         try {
             id = Integer.valueOf(params.getFirst("ktagruppe"));
         } catch (NumberFormatException e) {
-            return new Response(false, 603, "Not a valid filter id");
+            return new Response(
+                false,
+                StatusCodes.ERROR_DB_CONNECTION,
+                "Not a valid filter id");
         }
         QueryBuilder<KtaGrpZuord> builder =
             new QueryBuilder<KtaGrpZuord>(
@@ -100,7 +104,7 @@ public class KtaService {
         List<KtaGrpZuord> zuord =
             repository.filterPlain(builder.getQuery(), "stamm");
         if (zuord.isEmpty()) {
-            return new Response(true, 200, null);
+            return new Response(true, StatusCodes.OK, null);
         }
         QueryBuilder<Kta> builder1 =
             new QueryBuilder<Kta>(

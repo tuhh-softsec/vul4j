@@ -25,6 +25,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 
@@ -108,8 +109,8 @@ public class PflichtmessgroesseService {
         List<PflichtMessgroesse> result =
             defaultRepo.filterPlain(builder.getQuery(), Strings.STAMM);
         if (!result.isEmpty()) {
-            return new Response(true, 200, result.get(0));
+            return new Response(true, StatusCodes.OK, result.get(0));
         }
-        return new Response(false, 600, null);
+        return new Response(false, StatusCodes.NOT_EXISTING, null);
     }
 }

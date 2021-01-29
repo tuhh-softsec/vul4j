@@ -10,6 +10,7 @@ package de.intevation.lada.validation.rules.probe;
 import java.sql.Timestamp;
 
 import de.intevation.lada.model.land.Probe;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
 import de.intevation.lada.validation.rules.Rule;
@@ -31,7 +32,8 @@ public class CheckUrsprungszeit implements Rule {
         if (uZeit != null && uZeit.after(begin)
         ) {
             Violation violation = new Violation();
-            violation.addWarning("ursprungszeit", 632);
+            violation.addWarning(
+                "ursprungszeit", StatusCodes.VALUE_NOT_MATCHING);
             return violation;
         }
         return null;

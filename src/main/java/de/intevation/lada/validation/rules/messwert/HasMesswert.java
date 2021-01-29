@@ -8,6 +8,7 @@
 package de.intevation.lada.validation.rules.messwert;
 
 import de.intevation.lada.model.land.Messwert;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
 import de.intevation.lada.validation.rules.Rule;
@@ -23,16 +24,15 @@ public class HasMesswert implements Rule {
 
     @Override
     public Violation execute(Object object) {
-        Messwert messwert = (Messwert)object;
+        Messwert messwert = (Messwert) object;
         String messwertNwg = messwert.getMesswertNwg();
         Double wert = messwert.getMesswert();
         Violation violation = new Violation();
         if (messwertNwg == null && wert == null) {
-            violation.addWarning("messwert", 631);
+            violation.addWarning("messwert", StatusCodes.VALUE_MISSING);
             return violation;
-        }
-        else if (messwertNwg != null && wert != null) {
-            violation.addError("messwert", 634);
+        } else if (messwertNwg != null && wert != null) {
+            violation.addError("messwert", StatusCodes.VAL_MEASURE);
             return violation;
         }
         return null;    }

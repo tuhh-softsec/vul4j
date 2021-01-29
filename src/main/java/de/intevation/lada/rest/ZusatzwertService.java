@@ -34,6 +34,7 @@ import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
@@ -194,7 +195,7 @@ public class ZusatzwertService {
                 RequestMethod.POST,
                 ZusatzWert.class)
         ) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
         /* Persist the new object*/
         return authorization.filter(
@@ -241,10 +242,10 @@ public class ZusatzwertService {
                 RequestMethod.PUT,
                 ZusatzWert.class)
         ) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
         if (lock.isLocked(zusatzwert)) {
-            return new Response(false, 697, null);
+            return new Response(false, StatusCodes.CHANGED_VALUE, null);
         }
         Response response = defaultRepo.update(zusatzwert, Strings.LAND);
         if (!response.getSuccess()) {
@@ -287,10 +288,10 @@ public class ZusatzwertService {
                 RequestMethod.DELETE,
                 ZusatzWert.class)
         ) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
         if (lock.isLocked(obj)) {
-            return new Response(false, 697, null);
+            return new Response(false, StatusCodes.CHANGED_VALUE, null);
         }
         /* Delete the object*/
         return defaultRepo.delete(obj, Strings.LAND);

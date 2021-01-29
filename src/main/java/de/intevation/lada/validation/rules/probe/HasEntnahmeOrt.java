@@ -17,6 +17,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 import de.intevation.lada.validation.Violation;
@@ -42,7 +43,7 @@ public class HasEntnahmeOrt implements Rule {
         Integer id = probe.getId();
         if (id == null) {
             Violation violation = new Violation();
-            violation.addWarning("entnahmeOrt", 631);
+            violation.addWarning("entnahmeOrt", StatusCodes.VALUE_MISSING);
             return violation;
         }
         if (probe.getReiProgpunktGrpId() != null
@@ -63,7 +64,7 @@ public class HasEntnahmeOrt implements Rule {
             }
         }
         Violation violation = new Violation();
-        violation.addWarning("entnahmeOrt", 631);
+        violation.addWarning("entnahmeOrt", StatusCodes.VALUE_MISSING);
         return violation;
     }
 

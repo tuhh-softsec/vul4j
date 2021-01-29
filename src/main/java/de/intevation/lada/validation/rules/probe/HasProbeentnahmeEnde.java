@@ -10,6 +10,7 @@ package de.intevation.lada.validation.rules.probe;
 import java.sql.Timestamp;
 
 import de.intevation.lada.model.land.Probe;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
 import de.intevation.lada.validation.rules.Rule;
@@ -39,7 +40,8 @@ public class HasProbeentnahmeEnde implements Rule {
             && (ende == null || ende.before(begin))))
         ) {
             Violation violation = new Violation();
-            violation.addWarning("probeentnahmeEnde", 631);
+            violation.addWarning(
+                "probeentnahmeEnde", StatusCodes.VALUE_MISSING);
             return violation;
         }
         return null;

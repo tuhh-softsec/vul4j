@@ -31,6 +31,7 @@ import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
@@ -169,7 +170,7 @@ public class MessprogrammMmtService {
                 RequestMethod.POST,
                 MessprogrammMmt.class)
         ) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
 
         /* Persist the new messprogrammmmt object*/
@@ -180,7 +181,7 @@ public class MessprogrammMmtService {
                 MessprogrammMmt.class, ret.getId(), Strings.LAND);
         return authorization.filter(
             request,
-            new Response(true, 200, created.getData()),
+            new Response(true, StatusCodes.OK, created.getData()),
             MessprogrammMmt.class);
     }
 
@@ -216,7 +217,7 @@ public class MessprogrammMmtService {
                 RequestMethod.PUT,
                 MessprogrammMmt.class)
         ) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
 
         Response response = defaultRepo.update(messprogrammmmt, Strings.LAND);
@@ -260,7 +261,7 @@ public class MessprogrammMmtService {
                 RequestMethod.DELETE,
                 Messprogramm.class)
         ) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
         /* Delete the messprogrammmmt object*/
         return defaultRepo.delete(messprogrammmmtObj, Strings.LAND);

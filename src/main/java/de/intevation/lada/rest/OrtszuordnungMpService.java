@@ -36,6 +36,7 @@ import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
@@ -150,7 +151,7 @@ public class OrtszuordnungMpService {
                         otz.setWarnings(violation.getWarnings());
                     }
                 }
-                return new Response(true, 200, ortszuordnungs);
+                return new Response(true, StatusCodes.OK, ortszuordnungs);
             } else {
                 return r;
             }
@@ -223,11 +224,12 @@ public class OrtszuordnungMpService {
                 ort,
                 RequestMethod.POST,
                 OrtszuordnungMp.class)) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
         Violation violation = validator.validate(ort);
         if (violation.hasErrors()) {
-            Response response = new Response(false, 604, ort);
+            Response response =
+                new Response(false, StatusCodes.ERROR_VALIDATION, ort);
             response.setErrors(violation.getErrors());
             response.setWarnings(violation.getWarnings());
             return response;
@@ -281,11 +283,12 @@ public class OrtszuordnungMpService {
                 ort,
                 RequestMethod.PUT,
                 OrtszuordnungMp.class)) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
         Violation violation = validator.validate(ort);
         if (violation.hasErrors()) {
-            Response response = new Response(false, 604, ort);
+            Response response =
+                new Response(false, StatusCodes.ERROR_VALIDATION, ort);
             response.setErrors(violation.getErrors());
             response.setWarnings(violation.getWarnings());
             return response;
@@ -334,7 +337,7 @@ public class OrtszuordnungMpService {
                 ortObj,
                 RequestMethod.PUT,
                 OrtszuordnungMp.class)) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
 
         return defaultRepo.delete(ortObj, Strings.LAND);

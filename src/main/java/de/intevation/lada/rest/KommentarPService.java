@@ -33,6 +33,7 @@ import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
@@ -183,7 +184,7 @@ public class KommentarPService {
                 RequestMethod.POST,
                 KommentarP.class)
         ) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
         /* Persist the new object*/
         return authorization.filter(
@@ -227,7 +228,7 @@ public class KommentarPService {
                 KommentarP.class)
         ) {
             logger.debug("User is not authorized!");
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
         return authorization.filter(
             request,
@@ -264,7 +265,7 @@ public class KommentarPService {
                 KommentarP.class)
         ) {
             logger.debug("User is not authorized!");
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
         return defaultRepo.delete(kommentarObj, Strings.LAND);
     }

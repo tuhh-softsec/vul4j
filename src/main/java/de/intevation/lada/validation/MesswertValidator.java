@@ -12,6 +12,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import de.intevation.lada.model.land.Messwert;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.validation.annotation.ValidationConfig;
 import de.intevation.lada.validation.annotation.ValidationRule;
 import de.intevation.lada.validation.rules.Rule;
@@ -36,7 +37,7 @@ public class MesswertValidator implements Validator {
     public Violation validate(Object object) {
         Violation violations = new Violation();
         if (!(object instanceof Messwert)) {
-            violations.addError("messwert", 602);
+            violations.addError("messwert", StatusCodes.NOT_A_PROBE);
             return violations;
         }
         for (Rule rule : rules) {

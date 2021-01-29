@@ -31,6 +31,7 @@ import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 
@@ -96,7 +97,7 @@ public class SqlService {
         if (gridColumnValues == null
             || gridColumnValues.isEmpty()) {
             //TODO Error code if no columns are given
-            return new Response(false, 999, null);
+            return new Response(false, StatusCodes.NOT_EXISTING, null);
         }
         for (GridColumnValue columnValue : gridColumnValues) {
             GridColumn gridColumn = repository.getByIdPlain(
@@ -115,13 +116,13 @@ public class SqlService {
         String sql =
             queryTools.prepareSql(columns.getColumns(), qid);
         if (sql == null) {
-            return new Response(true, 200, null);
+            return new Response(true, StatusCodes.OK, null);
         }
         MultivaluedMap<String, Object> filterValues =
             queryTools.prepareFilters(columns.getColumns(), qid);
 
         String statement = prepareStatement(sql, filterValues);
-        return new Response(true, 200, statement);
+        return new Response(true, StatusCodes.OK, statement);
     }
 
     private String prepareStatement(

@@ -31,7 +31,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
-
 import de.intevation.lada.model.stammdaten.GridColumn;
 import de.intevation.lada.model.stammdaten.GridColumnValue;
 import de.intevation.lada.model.stammdaten.MessStelle;
@@ -43,6 +42,7 @@ import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 
@@ -78,13 +78,19 @@ public class ColumnValueService {
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty() || !params.containsKey("qid")) {
-            return new Response(false, 603, "Not a valid filter id");
+            return new Response(
+                false,
+                StatusCodes.ERROR_DB_CONNECTION,
+                "Not a valid filter id");
         }
         Integer id = null;
         try {
             id = Integer.valueOf(params.getFirst("qid"));
         } catch (NumberFormatException e) {
-            return new Response(false, 603, "Not a valid filter id");
+            return new Response(
+                false,
+                StatusCodes.ERROR_DB_CONNECTION,
+                "Not a valid filter id");
         }
         UserInfo userInfo = authorization.getInfo(request);
         EntityManager em = repository.entityManager(Strings.STAMM);
@@ -107,13 +113,6 @@ public class ColumnValueService {
                 userFilter,
                 mess.get("messStelle").in(userInfo.getMessstellen()));
         }
-        if (userInfo.getLaborMessstellen() != null
-            && !userInfo.getLaborMessstellen().isEmpty()
-        ) {
-            userFilter = builder.or(
-                userFilter,
-                mess.get("messStelle").in(userInfo.getLaborMessstellen()));
-        }
         filter = builder.and(filter, userFilter);
         criteriaQuery.where(filter).distinct(true);
         List<GridColumnValue> queries =
@@ -124,7 +123,7 @@ public class ColumnValueService {
             gcv.setQueryUserId(gcv.getQueryUser().getId());
         }
 
-        return new Response(true, 200, queries);
+        return new Response(true, StatusCodes.OK, queries);
     }
 
     /**
@@ -143,7 +142,7 @@ public class ColumnValueService {
         if (gridColumnValue.getUserId() != null
             && !gridColumnValue.getUserId().equals(userInfo.getUserId())
         ) {
-                return new Response(false, 699, null);
+                return new Response(false, StatusCodes.NOT_ALLOWED, null);
         } else {
             gridColumnValue.setUserId(userInfo.getUserId());
             GridColumn gridColumn = new GridColumn();
@@ -178,7 +177,7 @@ public class ColumnValueService {
         if (gridColumnValue.getUserId() != null
             && !gridColumnValue.getUserId().equals(userInfo.getUserId())
         ) {
-                return new Response(false, 699, null);
+                return new Response(false, StatusCodes.NOT_ALLOWED, null);
         } else {
             gridColumnValue.setUserId(userInfo.getUserId());
 
@@ -218,6 +217,6 @@ public class ColumnValueService {
         if (gridColumnValue.getUserId().equals(userInfo.getUserId())) {
             return repository.delete(gridColumnValue, Strings.STAMM);
         }
-        return new Response(false, 699, null);
+        return new Response(false, StatusCodes.NOT_ALLOWED, null);
     }
 }

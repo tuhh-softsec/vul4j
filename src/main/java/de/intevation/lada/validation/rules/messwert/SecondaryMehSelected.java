@@ -17,6 +17,7 @@ import de.intevation.lada.model.stammdaten.Umwelt;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
@@ -58,7 +59,7 @@ public class SecondaryMehSelected implements Rule {
             }
             //Check if the messwert is the secondary mehId
             if (secMehId != null && secMehId.equals(messwert.getMehId())) {
-                violation.addNotification("mehId", 636);
+                violation.addNotification("mehId", StatusCodes.VAL_SEC_UNIT);
                 return violation;
             }
             /*Check if the messwert is convertable into the secondary unit but
@@ -84,7 +85,8 @@ public class SecondaryMehSelected implements Rule {
                 if (secUmrechnung.getMehVon().getId()
                     .equals(messwert.getMehId())
                 ) {
-                    violation.addNotification("mehId", 636);
+                    violation.addNotification(
+                        "mehId", StatusCodes.VAL_SEC_UNIT);
                 }
             });
         }

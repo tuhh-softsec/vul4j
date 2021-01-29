@@ -17,6 +17,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 import de.intevation.lada.validation.Violation;
@@ -45,7 +46,7 @@ public class Deskriptor implements Rule {
         String[] mediaDesk = probe.getMediaDesk().split(" ");
         if (mediaDesk.length <= 1) {
             Violation violation = new Violation();
-            violation.addWarning("mediaDesk", 631);
+            violation.addWarning("mediaDesk", StatusCodes.VALUE_MISSING);
             return violation;
         }
         if (mediaDesk.length >= 1
@@ -55,7 +56,7 @@ public class Deskriptor implements Rule {
             || mediaDesk[2].equals("00"))
         ) {
             Violation violation = new Violation();
-            violation.addWarning("mediaDesk", 637);
+            violation.addWarning("mediaDesk", StatusCodes.VAL_S1_NOTSET);
             return violation;
         }
 
@@ -90,7 +91,7 @@ public class Deskriptor implements Rule {
             List<Deskriptoren> data = (List<Deskriptoren>) response.getData();
             if (data.isEmpty()) {
                 Violation violation = new Violation();
-                violation.addWarning("mediaDesk", 633);
+                violation.addWarning("mediaDesk", StatusCodes.VAL_DESK);
                 return violation;
             }
             hdParent = data.get(0).getId();

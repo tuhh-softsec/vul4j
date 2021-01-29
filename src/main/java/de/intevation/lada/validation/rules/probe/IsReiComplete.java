@@ -13,6 +13,7 @@ import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
 import de.intevation.lada.validation.rules.Rule;
@@ -41,10 +42,12 @@ public class IsReiComplete implements Rule {
             && probe.getDatenbasisId() != 4
         ) {
             if (probe.getReiProgpunktGrpId() != null) {
-                violation.addError("reiProgpunktGrpId", 632);
+                violation.addError(
+                    "reiProgpunktGrpId", StatusCodes.VALUE_NOT_MATCHING);
             }
             if (probe.getKtaGruppeId() != null) {
-                violation.addError("ktaGruppeId", 632);
+                violation.addError(
+                    "ktaGruppeId", StatusCodes.VALUE_NOT_MATCHING);
             }
             if (violation.hasErrors()) {
                 return violation;
@@ -52,10 +55,12 @@ public class IsReiComplete implements Rule {
             return null;
         }
         if (probe.getReiProgpunktGrpId() == null) {
-            violation.addWarning("reiProgpunktGrpId", 631);
+            violation.addWarning(
+                "reiProgpunktGrpId", StatusCodes.VALUE_MISSING);
         }
         if (probe.getKtaGruppeId() == null) {
-            violation.addWarning("ktaGruppeId", 631);
+            violation.addWarning(
+                "ktaGruppeId", StatusCodes.VALUE_MISSING);
         }
         if (violation.hasWarnings()) {
             return violation;

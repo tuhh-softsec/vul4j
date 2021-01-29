@@ -32,6 +32,7 @@ import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.auth.UserInfo;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.rest.Response;
 
 /**
@@ -97,12 +98,14 @@ public class JsonExportService {
             exporter.exportProben(
                 probeIds, new ArrayList<Integer>(), "utf-8", userInfo);
         if (exported == null) {
-            return new Response(false, 600, null).toString();
+            return new Response(
+                false, StatusCodes.NOT_EXISTING, null).toString();
         }
         try {
             return IOUtils.toString(exported, "utf-8");
         } catch (IOException e) {
-            return new Response(false, 600, null).toString();
+            return new Response(
+                false, StatusCodes.NOT_EXISTING, null).toString();
         }
     }
 }

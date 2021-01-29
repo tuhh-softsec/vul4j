@@ -76,6 +76,7 @@ import de.intevation.lada.util.data.MesswertNormalizer;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 import de.intevation.lada.validation.Validator;
@@ -184,8 +185,10 @@ public class LafObjectMapper {
         if (object.getAttributes().containsKey("MESSSTELLE")) {
             probe.setMstId(object.getAttributes().get("MESSSTELLE"));
         }
-        if (probe.getMstId() == null){
-            currentErrors.add(new ReportItem("MESSSTELLE", "", 673));
+        if (probe.getMstId() == null) {
+            currentErrors.add(
+                new ReportItem(
+                    "MESSSTELLE", "", StatusCodes.IMP_MISSING_VALUE));
             errors.put(object.getIdentifier(),
                 new ArrayList<ReportItem>(currentErrors));
             return;
@@ -196,7 +199,9 @@ public class LafObjectMapper {
                     Strings.STAMM);
             if (mst == null) {
                 currentErrors.add(
-                    new ReportItem("MESSSTELLE", probe.getMstId(), 675));
+                    new ReportItem(
+                        "MESSSTELLE",
+                        probe.getMstId(), StatusCodes.IMP_INVALID_VALUE));
                 errors.put(
                     object.getIdentifier(),
                     new ArrayList<ReportItem>(currentErrors));
@@ -224,7 +229,8 @@ public class LafObjectMapper {
                 currentWarnings.add(
                     new ReportItem(
                         "ZEITBASIS",
-                        object.getAttributes().get("ZEITBASIS"), 675));
+                        object.getAttributes().get(
+                            "ZEITBASIS"), StatusCodes.IMP_INVALID_VALUE));
             } else {
                 currentZeitbasis = zb.get(0).getId();
             }
@@ -239,7 +245,8 @@ public class LafObjectMapper {
                 currentWarnings.add(
                     new ReportItem(
                         "ZEITBASIS_S",
-                        object.getAttributes().get("ZEITBASIS_S"), 675));
+                        object.getAttributes().get(
+                            "ZEITBASIS_S"), StatusCodes.IMP_INVALID_VALUE));
             }
         }
 
@@ -266,7 +273,7 @@ public class LafObjectMapper {
             authorizer.isAuthorized(userInfo, probe, Probe.class);
         if (!isAuthorized) {
             ReportItem err = new ReportItem();
-            err.setCode(699);
+            err.setCode(StatusCodes.NOT_ALLOWED);
             err.setKey(userInfo.getName());
             err.setValue("Messstelle " + probe.getMstId());
             currentWarnings.clear();
@@ -298,13 +305,15 @@ public class LafObjectMapper {
                         newProbe = old;
                         currentNotifications.add(
                             new ReportItem(
-                                "probe", old.getExterneProbeId(), 676));
+                                "probe",
+                                old.getExterneProbeId(),
+                                StatusCodes.IMP_UNCHANGABLE));
                     } else {
                         if (merger.merge(old, probe)) {
                             newProbe = old;
                         } else {
                             ReportItem err = new ReportItem();
-                            err.setCode(605);
+                            err.setCode(StatusCodes.ERROR_MERGING);
                             err.setKey("Database error");
                             err.setValue("");
                             currentErrors.add(err);
@@ -326,7 +335,7 @@ public class LafObjectMapper {
                     }
                 } else {
                 ReportItem err = new ReportItem();
-                    err.setCode(699);
+                    err.setCode(StatusCodes.NOT_ALLOWED);
                     err.setKey(userInfo.getName());
                     err.setValue("Messstelle " + old.getMstId());
                     currentWarnings.clear();
@@ -339,7 +348,7 @@ public class LafObjectMapper {
             } else if (i == Identified.REJECT) {
                 // Probe was found but some data does not match
                 ReportItem err = new ReportItem();
-                err.setCode(671);
+                err.setCode(StatusCodes.IMP_PRESENT);
                 err.setKey("duplicate");
                 err.setValue("");
                 currentErrors.add(err);
@@ -356,9 +365,8 @@ public class LafObjectMapper {
                    new ArrayList<ReportItem>(currentNotifications));
                 }
                 return;
-            }
-            // It is a brand new probe!
-            else if (i == Identified.NEW) {
+            } else if (i == Identified.NEW) {
+                // It is a brand new probe!
                 Violation violation = probeValidator.validate(probe);
                 if (!violation.hasErrors()) {
                     Response created = repository.create(probe, Strings.LAND);
@@ -398,7 +406,7 @@ public class LafObjectMapper {
             }
         } catch (InvalidTargetObjectTypeException e) {
             ReportItem err = new ReportItem();
-            err.setCode(604);
+            err.setCode(StatusCodes.ERROR_VALIDATION);
             err.setKey("not known");
             err.setValue("No valid Probe Object");
             currentErrors.add(err);
@@ -815,7 +823,7 @@ public class LafObjectMapper {
         // Check if the user is authorized to create the object
         if (!authorizer.isAuthorizedOnNew(userInfo, messung, Messung.class)) {
             ReportItem warn = new ReportItem();
-            warn.setCode(699);
+            warn.setCode(StatusCodes.NOT_ALLOWED);
             warn.setKey(userInfo.getName());
             warn.setValue("Messung: " + messung.getNebenprobenNr());
             currentErrors.add(warn);
@@ -834,27 +842,27 @@ public class LafObjectMapper {
                 if (oldMessungIsReadonly) {
                     currentNotifications.add(
                         new ReportItem(
-                            "messung", old.getExterneMessungsId(), 676));
+                            "messung",
+                            old.getExterneMessungsId(),
+                            StatusCodes.IMP_UNCHANGABLE));
                     return;
                 } else {
                     merger.mergeMessung(old, messung);
                     newMessung = old;
                 }
-            }
-            else if (i == Identified.REJECT) {
+            } else if (i == Identified.REJECT) {
                 ReportItem err = new ReportItem();
-                err.setCode(631);
+                err.setCode(StatusCodes.VALUE_MISSING);
                 err.setKey("identification");
                 err.setValue("Messung");
                 currentErrors.add(err);
                 return;
-            }
-            else if (i == Identified.NEW) {
+            } else if (i == Identified.NEW) {
                 // Check if Messung has all fields that have db constraints
                 // (validation rule?)
                 if (messung.getMmtId() == null) {
                     ReportItem err = new ReportItem();
-                    err.setCode(631);
+                    err.setCode(StatusCodes.VALUE_MISSING);
                     err.setKey("not valid (missing Messmethode)");
                     err.setValue("Messung: " + messung.getNebenprobenNr());
                     currentErrors.add(err);
@@ -871,7 +879,7 @@ public class LafObjectMapper {
             }
         } catch (InvalidTargetObjectTypeException e) {
             ReportItem err = new ReportItem();
-            err.setCode(604);
+            err.setCode(StatusCodes.ERROR_VALIDATION);
             err.setKey("not valid");
             err.setValue("Messung: " + messung.getNebenprobenNr());
             currentErrors.add(err);
@@ -907,7 +915,7 @@ public class LafObjectMapper {
                             "MESSGROESSE").toString()
                         : object.getMesswerte().get(i).get(
                             "MESSGROESSE_ID").toString(),
-                            672));
+                            StatusCodes.IMP_DUPLICATE));
                 } else {
                    //temporary messwertobjects
                     messwerte.add(tmp);
@@ -968,7 +976,8 @@ public class LafObjectMapper {
             if (messwViolation.hasErrors()) {
                 messwViolation.getErrors().forEach((k, v) -> {
                     v.forEach((value) -> {
-                        currentErrors.add(new ReportItem("validation ", k, value));
+                        currentErrors.add(
+                            new ReportItem("validation ", k, value));
                     });
                 });
             }
@@ -998,7 +1007,9 @@ public class LafObjectMapper {
         Probe probe
     ) {
         if (attributes.get("TEXT").equals("")) {
-            currentWarnings.add(new ReportItem("PROBENKOMMENTAR", "Text", 631));
+            currentWarnings.add(
+                new ReportItem(
+                    "PROBENKOMMENTAR", "Text", StatusCodes.VALUE_MISSING));
             return null;
         }
         KommentarP kommentar = new KommentarP();
@@ -1025,7 +1036,7 @@ public class LafObjectMapper {
                 new ReportItem(
                     userInfo.getName(),
                     "Kommentar: " + kommentar.getMstId(),
-                    699));
+                    StatusCodes.NOT_ALLOWED));
             return null;
         }
         return kommentar;
@@ -1076,8 +1087,7 @@ public class LafObjectMapper {
                 ProbenZusatz.class);
         if (isId) {
             builder.and("id", attribute);
-        }
-        else {
+        } else {
             builder.and("zusatzwert", attribute);
         }
         List<ProbenZusatz> zusatz =
@@ -1092,7 +1102,7 @@ public class LafObjectMapper {
             currentWarnings.add(new ReportItem(
                 (isId) ? "PROBENZUSATZBESCHREIBUNG" : "PZB_S",
                 attribute,
-                675));
+                StatusCodes.IMP_INVALID_VALUE));
             return null;
         }
         zusatzwert.setPzsId(zusatz.get(0).getId());
@@ -1115,7 +1125,7 @@ public class LafObjectMapper {
                     new ReportItem(
                         "MESSWERT - MESSGROESSE_ID",
                         attributes.get("MESSGROESSE_ID"),
-                        675));
+                        StatusCodes.IMP_INVALID_VALUE));
                 return null;
             }
             messwert.setMessgroesseId(
@@ -1164,7 +1174,8 @@ public class LafObjectMapper {
                 currentWarnings.add(
                     new ReportItem(
                         "MESSWERT - MESSGROESSE",
-                        attributes.get("MESSGROESSE"), 675));
+                        attributes.get("MESSGROESSE"),
+                        StatusCodes.IMP_INVALID_VALUE));
                 return null;
             }
             messwert.setMessgroesseId(groesse.get(0).getId());
@@ -1179,7 +1190,7 @@ public class LafObjectMapper {
                     new ReportItem(
                         "MESSWERT - MESSEINHEIT_ID",
                         attributes.get("MESSEINHEIT_ID"),
-                        675));
+                        StatusCodes.IMP_INVALID_VALUE));
                 return null;
             }
             messwert.setMehId(
@@ -1214,7 +1225,10 @@ public class LafObjectMapper {
                     Strings.STAMM);
             if (einheit == null || einheit.isEmpty()) {
                 currentWarnings.add(
-                    new ReportItem("MESSWERT - MESSEINHEIT", attribute, 675));
+                    new ReportItem(
+                        "MESSWERT - MESSEINHEIT",
+                        attribute,
+                        StatusCodes.IMP_INVALID_VALUE));
                 return null;
             }
             messwert.setMehId(einheit.get(0).getId());
@@ -1272,7 +1286,8 @@ public class LafObjectMapper {
         Probe probe
     ) {
         if (attributes.get("TEXT").equals("")) {
-            currentWarnings.add(new ReportItem("KOMMENTAR", "Text", 631));
+            currentWarnings.add(
+                new ReportItem("KOMMENTAR", "Text", StatusCodes.VALUE_MISSING));
             return null;
         }
         KommentarM kommentar = new KommentarM();
@@ -1299,7 +1314,7 @@ public class LafObjectMapper {
                 new ReportItem(
                     userInfo.getName(),
                     "Messungs Kommentar: " + kommentar.getMstId(),
-                    699));
+                    StatusCodes.NOT_ALLOWED));
             return null;
         }
         return kommentar;
@@ -1326,7 +1341,9 @@ public class LafObjectMapper {
                     return;
                 }
             } else {
-             currentErrors.add(new ReportItem("Statusvergabe", "Status", 631));
+             currentErrors.add(
+                 new ReportItem(
+                     "Statusvergabe", "Status", StatusCodes.VALUE_MISSING));
          return;
             }
         }
@@ -1354,7 +1371,10 @@ public class LafObjectMapper {
             newKombi = kombi.get(0).getId();
         } else {
             currentWarnings.add(
-                new ReportItem("status#" + statusStufe, statusWert, 675));
+                new ReportItem(
+                    "status#" + statusStufe,
+                    statusWert,
+                    StatusCodes.IMP_INVALID_VALUE));
             return false;
         }
         // get current status kombi
@@ -1375,7 +1395,10 @@ public class LafObjectMapper {
             repository.filterPlain(errFilter.getQuery(), Strings.STAMM);
         if (erreichbar.isEmpty()) {
             currentWarnings.add(
-                new ReportItem("status#" + statusStufe, statusWert, 675));
+                new ReportItem(
+                    "status#" + statusStufe,
+                    statusWert,
+                    StatusCodes.IMP_INVALID_VALUE));
             return false;
         }
         //Cleanup Messwerte for Status 7
@@ -1387,20 +1410,22 @@ public class LafObjectMapper {
             @SuppressWarnings("unchecked")
             List<Messwert> messwerte = (List<Messwert>) messwertQry.getData();
             boolean hasValidMesswerte = false;
-            if (!messwerte.isEmpty() && statusWert == 7){
+            if (!messwerte.isEmpty() && statusWert == 7) {
             for (Messwert messwert: messwerte) {
 
                 boolean hasNoMesswert = false;
 
-                if ( messwert.getMesswert() == null
-                     && messwert.getMesswertNwg() == null){
+                if (messwert.getMesswert() == null
+                     && messwert.getMesswertNwg() == null) {
                      hasNoMesswert = true;
                 }
-                if ( !hasNoMesswert
-                ) {
+                if (!hasNoMesswert) {
                     hasValidMesswerte = true;
                     currentWarnings.add(
-                         new ReportItem("status#" + statusStufe, statusWert, 654));
+                         new ReportItem(
+                             "status#" + statusStufe,
+                             statusWert,
+                             StatusCodes.STATUS_RO));
                 }
                 if (hasValidMesswerte) {
                     return false;
@@ -1478,7 +1503,10 @@ public class LafObjectMapper {
             return true;
         } else {
             currentWarnings.add(
-                new ReportItem("status#" + statusStufe, statusWert, 699));
+                new ReportItem(
+                    "status#" + statusStufe,
+                    statusWert,
+                    StatusCodes.NOT_ALLOWED));
             return false;
         }
     }
@@ -1520,54 +1548,53 @@ public class LafObjectMapper {
                 repository.create(ort, "land");
                 probe.setKtaGruppeId(messpunkte.get(0).getKtaGruppeId());
                 repository.update(probe, "land");
-            } else if (uo.get("U_ORTS_ZUSATZCODE").length()==4){
-
-                QueryBuilder<KtaGruppe> builderKta = new QueryBuilder<KtaGruppe>(
-                  repository.entityManager("stamm"),
-                  KtaGruppe.class);
+            } else if (uo.get("U_ORTS_ZUSATZCODE").length() == 4) {
+                QueryBuilder<KtaGruppe> builderKta =
+                    new QueryBuilder<KtaGruppe>(
+                        repository.entityManager("stamm"),
+                        KtaGruppe.class);
                 builderKta.and("ktaGruppe", uo.get("U_ORTS_ZUSATZCODE"));
-                  List<KtaGruppe> KtaGrp = repository.filterPlain(builderKta.getQuery(), "stamm");
-                if (!KtaGrp.isEmpty()){
-                Ort o = null;
-                o = findOrCreateOrt(uort.get(0), "U_", probe);
-                 if (o != null) {
-                  o.setOrtTyp(1);
-                  o.setKtaGruppeId(KtaGrp.get(0).getId());
-                  repository.update(o, "stamm");
+                List<KtaGruppe> ktaGrp =
+                    repository.filterPlain(builderKta.getQuery(), "stamm");
+                if (!ktaGrp.isEmpty()) {
+                    Ort o = null;
+                    o = findOrCreateOrt(uort.get(0), "U_", probe);
+                    if (o != null) {
+                        o.setOrtTyp(1);
+                        o.setKtaGruppeId(ktaGrp.get(0).getId());
+                        repository.update(o, "stamm");
 
-                  Ortszuordnung ort = new Ortszuordnung();
-                  ort.setOrtId(o.getId());
-                  ort.setOrtszuordnungTyp("R");
-                  ort.setProbeId(probe.getId());
+                        Ortszuordnung ort = new Ortszuordnung();
+                        ort.setOrtId(o.getId());
+                        ort.setOrtszuordnungTyp("R");
+                        ort.setProbeId(probe.getId());
 
-                  repository.create(ort, "land");
+                        repository.create(ort, "land");
 
-                  probe.setKtaGruppeId(KtaGrp.get(0).getId());
-                  repository.update(probe, "land");
-                 } else {
-                  ReportItem warn = new ReportItem();
-                  warn.setCode(631);
-                  warn.setKey("Ort");
-                  warn.setValue("Kein Messpunkt angelegt");
-                  currentWarnings.add(warn);
-                 }
+                        probe.setKtaGruppeId(ktaGrp.get(0).getId());
+                        repository.update(probe, "land");
+                    } else {
+                        ReportItem warn = new ReportItem();
+                        warn.setCode(StatusCodes.VALUE_MISSING);
+                        warn.setKey("Ort");
+                        warn.setValue("Kein Messpunkt angelegt");
+                        currentWarnings.add(warn);
+                    }
                 } else {
+                    ReportItem warn = new ReportItem();
+                    warn.setCode(StatusCodes.VALUE_NOT_MATCHING);
+                    warn.setKey("Ort");
+                    warn.setValue(uo.get("U_ORTS_ZUSATZCODE"));
+                    currentWarnings.add(warn);
+                }
+            } else {
                 ReportItem warn = new ReportItem();
-                warn.setCode(632);
+                warn.setCode(StatusCodes.VALUE_NOT_MATCHING);
                 warn.setKey("Ort");
                 warn.setValue(uo.get("U_ORTS_ZUSATZCODE"));
                 currentWarnings.add(warn);
-             }
             }
-            else {
-                ReportItem warn = new ReportItem();
-                warn.setCode(632);
-                warn.setKey("Ort");
-                warn.setValue(uo.get("U_ORTS_ZUSATZCODE"));
-                currentWarnings.add(warn);
-            }
-        }
-        else {
+        } else {
             Ort o = null;
             if (uort.size() > 0) {
                 o = findOrCreateOrt(uort.get(0), "U_", probe);
@@ -1674,7 +1701,8 @@ public class LafObjectMapper {
                     currentWarnings.add(
                         new ReportItem(
                             type + "KOORDINATEN_ART_S",
-                            attributes.get(type + "KOORDINATEN_ART_S"), 675));
+                            attributes.get(type + "KOORDINATEN_ART_S"),
+                            StatusCodes.IMP_INVALID_VALUE));
                     o.setKdaId(null);
                 }
             } else {
@@ -1691,7 +1719,8 @@ public class LafObjectMapper {
                     currentWarnings.add(
                         new ReportItem(
                             type + "KOORDINATEN_ART",
-                            attributes.get(type + "KOORDINATEN_ART"), 675));
+                            attributes.get(type + "KOORDINATEN_ART"),
+                            StatusCodes.IMP_INVALID_VALUE));
                     o.setKdaId(null);
                 } else {
                     o.setKdaId(arten.get(0).getId());
@@ -1716,7 +1745,8 @@ public class LafObjectMapper {
                 currentWarnings.add(
                     new ReportItem(
                         "GEMEINDENAME",
-                        attributes.get(type + "GEMEINDENAME"), 675));
+                        attributes.get(type + "GEMEINDENAME"),
+                        StatusCodes.IMP_INVALID_VALUE));
             } else {
                 o.setGemId(ves.get(0).getId());
             }
@@ -1730,7 +1760,8 @@ public class LafObjectMapper {
             if (v == null) {
                 currentWarnings.add(
                     new ReportItem(
-                        type + "GEMEINDESCHLUESSEL", o.getGemId(), 675));
+                        type + "GEMEINDESCHLUESSEL", o.getGemId(),
+                        StatusCodes.IMP_INVALID_VALUE));
                 o.setGemId(null);
             }
         }
@@ -1764,9 +1795,9 @@ public class LafObjectMapper {
             List<Staat> staat =
                 repository.filterPlain(builderStaat.getQuery(), Strings.STAMM);
             if (staat == null || staat.size() == 0) {
-                currentWarnings.add(new ReportItem(key, hLand, 675));
-            }
-            else if (staat != null && staat.size() > 0) {
+                currentWarnings.add(
+                    new ReportItem(key, hLand, StatusCodes.IMP_INVALID_VALUE));
+            } else if (staat != null && staat.size() > 0) {
                 o.setStaatId(staat.get(0).getId());
             }
         }
@@ -1784,7 +1815,7 @@ public class LafObjectMapper {
                     new ReportItem(
                         type + "ORTS_ZUSATZCODE",
                         attributes.get(type + "ORTS_ZUSATZCODE"),
-                        675));
+                        StatusCodes.IMP_INVALID_VALUE));
             } else {
                 o.setOzId(zusatz.getOzsId());
             }
@@ -1893,14 +1924,18 @@ public class LafObjectMapper {
                 Integer.valueOf(value.toString()),
                 Strings.STAMM);
             if (datenbasis == null) {
-                currentWarnings.add(new ReportItem(key, value.toString(), 675));
+                currentWarnings.add(
+                    new ReportItem(
+                        key, value.toString(), StatusCodes.IMP_INVALID_VALUE));
                 return;
             }
             Integer v = Integer.valueOf(value.toString());
             probe.setDatenbasisId(v);
         } else if ("DATENBASIS_S".equals(key)
             && probe.getDatenbasisId() != null) {
-            currentWarnings.add(new ReportItem(key, value.toString(), 672));
+            currentWarnings.add(
+                new ReportItem(
+                    key, value.toString(), StatusCodes.IMP_DUPLICATE));
         }
 
 
@@ -1936,7 +1971,8 @@ public class LafObjectMapper {
                     builder.getQuery(),
                     Strings.STAMM);
             if (datenbasis == null || datenbasis.isEmpty()) {
-                currentErrors.add(new ReportItem(key, attr, 675));
+                currentErrors.add(
+                    new ReportItem(key, attr, StatusCodes.IMP_INVALID_VALUE));
                 return;
             }
             Integer v = datenbasis.get(0).getId();
@@ -1945,7 +1981,9 @@ public class LafObjectMapper {
             && !value.equals("")
             && probe.getDatenbasisId() != null
         ) {
-            currentWarnings.add(new ReportItem(key, value.toString(), 672));
+            currentWarnings.add(
+                new ReportItem(
+                    key, value.toString(), StatusCodes.IMP_DUPLICATE));
         }
 
         if ("PROBE_ID".equals(key)) {
@@ -1967,7 +2005,9 @@ public class LafObjectMapper {
                 value.toString(),
                 Strings.STAMM);
             if (mst == null) {
-                currentWarnings.add(new ReportItem(key, value.toString(), 675));
+                currentWarnings.add(
+                    new ReportItem(
+                        key, value.toString(), StatusCodes.IMP_INVALID_VALUE));
                 return;
             }
             probe.setLaborMstId(value.toString());
@@ -1987,7 +2027,9 @@ public class LafObjectMapper {
                     builder.getQuery(),
                     Strings.STAMM);
             if (transfer == null || transfer.isEmpty()) {
-                currentWarnings.add(new ReportItem(key, value.toString(), 675));
+                currentWarnings.add(
+                    new ReportItem(
+                        key, value.toString(), StatusCodes.IMP_INVALID_VALUE));
                 return;
             }
             probe.setBaId(transfer.get(0).getBaId());
@@ -1995,7 +2037,7 @@ public class LafObjectMapper {
                 probe.setDatenbasisId(transfer.get(0).getDatenbasisId());
             }
         }
-        if ("MESSPROGRAMM_C".equals(key) && !value.equals("")){
+        if ("MESSPROGRAMM_C".equals(key) && !value.equals("")) {
             QueryBuilder<MessprogrammTransfer> builder =
                 new QueryBuilder<MessprogrammTransfer>(
                     repository.entityManager(Strings.STAMM),
@@ -2006,7 +2048,9 @@ public class LafObjectMapper {
                     builder.getQuery(),
                     Strings.STAMM);
             if (transfer == null || transfer.isEmpty()) {
-                currentWarnings.add(new ReportItem(key, value.toString(), 675));
+                currentWarnings.add(
+                    new ReportItem(
+                        key, value.toString(), StatusCodes.IMP_INVALID_VALUE));
                 return;
             }
             probe.setBaId(transfer.get(0).getBaId());
@@ -2027,7 +2071,9 @@ public class LafObjectMapper {
                             builder.getQuery(),
                             Strings.STAMM);
             if (datensatzErzeuger == null || datensatzErzeuger.isEmpty()) {
-                currentWarnings.add(new ReportItem(key, value.toString(), 675));
+                currentWarnings.add(
+                    new ReportItem(
+                        key, value.toString(), StatusCodes.IMP_INVALID_VALUE));
                 return;
             }
             probe.setErzeugerId(datensatzErzeuger.get(0).getId());
@@ -2045,7 +2091,9 @@ public class LafObjectMapper {
                             builder.getQuery(),
                             Strings.STAMM);
             if (kategorie == null || kategorie.isEmpty()) {
-                currentWarnings.add(new ReportItem(key, value.toString(), 675));
+                currentWarnings.add(
+                    new ReportItem(
+                        key, value.toString(), StatusCodes.IMP_INVALID_VALUE));
                 return;
             }
             probe.setMplId(kategorie.get(0).getId());
@@ -2063,7 +2111,9 @@ public class LafObjectMapper {
                             builder.getQuery(),
                             Strings.STAMM);
             if (prn == null || prn.isEmpty()) {
-                currentWarnings.add(new ReportItem(key, value.toString(), 675));
+                currentWarnings.add(
+                    new ReportItem(
+                        key, value.toString(), StatusCodes.IMP_INVALID_VALUE));
                 return;
             }
             probe.setProbeNehmerId(prn.get(0).getId());
@@ -2094,12 +2144,16 @@ public class LafObjectMapper {
                 value.toString(),
                 Strings.STAMM);
             if (umw == null) {
-                currentWarnings.add(new ReportItem(key, value.toString(), 675));
+                currentWarnings.add(
+                    new ReportItem(
+                        key, value.toString(), StatusCodes.IMP_INVALID_VALUE));
                 return;
             }
             probe.setUmwId(value.toString());
-        } else if ("UMWELTBEREICH_S".equals(key) && probe.getUmwId() != null){
-            currentWarnings.add(new ReportItem(key, value.toString(), 672));
+        } else if ("UMWELTBEREICH_S".equals(key) && probe.getUmwId() != null) {
+            currentWarnings.add(
+                new ReportItem(
+                    key, value.toString(), StatusCodes.IMP_DUPLICATE));
         }
         if ("UMWELTBEREICH_C".equals(key)
             && probe.getUmwId() == null
@@ -2118,13 +2172,16 @@ public class LafObjectMapper {
                     builder.getQuery(),
                     Strings.STAMM);
             if (umwelt == null || umwelt.isEmpty()) {
-                currentWarnings.add(new ReportItem(key, value.toString(), 675));
+                currentWarnings.add(
+                    new ReportItem(
+                        key, value.toString(), StatusCodes.IMP_INVALID_VALUE));
                 return;
             }
             probe.setUmwId(umwelt.get(0).getId());
-        }
-        else if ("UMWELTBEREICH_C".equals(key) && probe.getUmwId() != null){
-            currentWarnings.add(new ReportItem(key, value.toString(), 672));
+        } else if ("UMWELTBEREICH_C".equals(key) && probe.getUmwId() != null) {
+            currentWarnings.add(
+                new ReportItem(
+                    key, value.toString(), StatusCodes.IMP_DUPLICATE));
         }
 
         if ("DESKRIPTOREN".equals(key)) {
@@ -2153,12 +2210,14 @@ public class LafObjectMapper {
             } else if (value.toString().equals("0")) {
                 probe.setTest(false);
             } else if (!value.toString().equals("")) {
-                currentWarnings.add(new ReportItem(key, value.toString(), 675));
+                currentWarnings.add(
+                    new ReportItem(
+                        key, value.toString(), StatusCodes.IMP_INVALID_VALUE));
             }
         }
 
-        if ("REI_PROGRAMMPUNKTGRUPPE".equals(key) && !value.equals("") ||
-            "REI_PROGRAMMPUNKT".equals(key) && !value.equals("")) {
+        if ("REI_PROGRAMMPUNKTGRUPPE".equals(key) && !value.equals("")
+            || "REI_PROGRAMMPUNKT".equals(key) && !value.equals("")) {
             QueryBuilder<ReiProgpunktGruppe> builder =
                 new QueryBuilder<ReiProgpunktGruppe>(
                     repository.entityManager("stamm"),
@@ -2168,9 +2227,10 @@ public class LafObjectMapper {
                 repository.filterPlain(builder.getQuery(), "stamm");
             if (!list.isEmpty()) {
                 probe.setReiProgpunktGrpId(list.get(0).getId());
-            }
-            else {
-                currentWarnings.add(new ReportItem(key, value.toString(), 632));
+            } else {
+                currentWarnings.add(
+                    new ReportItem(
+                        key, value.toString(), StatusCodes.VALUE_NOT_MATCHING));
             }
         }
 
@@ -2207,7 +2267,9 @@ public class LafObjectMapper {
                     builder.getQuery(),
                     Strings.STAMM);
             if (probenart == null || probenart.isEmpty()) {
-                currentWarnings.add(new ReportItem(key, value.toString(), 675));
+                currentWarnings.add(
+                    new ReportItem(
+                        key, value.toString(), StatusCodes.IMP_INVALID_VALUE));
                 return;
             }
             probe.setProbenartId(probenart.get(0).getId());
@@ -2242,7 +2304,9 @@ public class LafObjectMapper {
                 value.toString(),
                 Strings.STAMM);
             if (mmt == null) {
-                currentWarnings.add(new ReportItem(key, value.toString(), 675));
+                currentWarnings.add(
+                    new ReportItem(
+                        key, value.toString(), StatusCodes.IMP_INVALID_VALUE));
             } else {
                 messung.setMmtId(value.toString());
             }
@@ -2258,7 +2322,7 @@ public class LafObjectMapper {
                     Strings.STAMM);
             if (mm == null || mm.isEmpty()) {
                 ReportItem warn = new ReportItem();
-                warn.setCode(673);
+                warn.setCode(StatusCodes.IMP_MISSING_VALUE);
                 warn.setKey("messmethode");
                 warn.setValue(key);
                 currentWarnings.add(warn);
@@ -2271,7 +2335,9 @@ public class LafObjectMapper {
             } else if (value.toString().equals("0")) {
                 messung.setFertig(false);
             } else if (!value.toString().equals("")) {
-                currentWarnings.add(new ReportItem(key, value.toString(), 675));
+                currentWarnings.add(
+                    new ReportItem(
+                        key, value.toString(), StatusCodes.IMP_INVALID_VALUE));
             }
         }
         return messung;

@@ -8,6 +8,7 @@
 package de.intevation.lada.validation.rules.messprogramm;
 
 import de.intevation.lada.model.land.Messprogramm;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
 import de.intevation.lada.validation.rules.Rule;
@@ -32,13 +33,15 @@ public class ValidFromTo implements Rule {
         if (messprogramm.getGueltigVon() != null
             && (messprogramm.getGueltigVon() < DOY_MIN
                 || messprogramm.getGueltigVon() > DOY_MAX)) {
-                violation.addError("gueltigVon", 612);
+                violation.addError(
+                    "gueltigVon", StatusCodes.VALUE_OUTSIDE_RANGE);
             }
 
         if (messprogramm.getGueltigBis() != null
             && (messprogramm.getGueltigBis() < DOY_MIN
                 || messprogramm.getGueltigBis() > DOY_MAX)) {
-                violation.addError("gueltigBis", 612);
+                violation.addError(
+                    "gueltigBis", StatusCodes.VALUE_OUTSIDE_RANGE);
             }
 
         return violation.hasErrors()

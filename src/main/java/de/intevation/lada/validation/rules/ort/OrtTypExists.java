@@ -17,6 +17,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
@@ -48,7 +49,7 @@ public class OrtTypExists implements Rule {
                 builder.getQuery(), Strings.STAMM);
             if (ots == null || ots.isEmpty()) {
                 Violation violation = new Violation();
-                violation.addError("ortTyp", 612);
+                violation.addError("ortTyp", StatusCodes.VALUE_OUTSIDE_RANGE);
                 return violation;
             }
         }

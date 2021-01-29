@@ -29,6 +29,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.rest.Response;
 
 /**
@@ -94,7 +95,10 @@ public class ReiProgpunktGruppeService {
             try {
                 id = Integer.valueOf(params.getFirst("reiprogpunkt"));
             } catch (NumberFormatException e) {
-                return new Response(false, 603, "Not a valid filter id");
+                return new Response(
+                    false,
+                    StatusCodes.ERROR_DB_CONNECTION,
+                    "Not a valid filter id");
             }
             QueryBuilder<ReiProgpunktGrpZuord> builder =
                 new QueryBuilder<ReiProgpunktGrpZuord>(
@@ -105,7 +109,7 @@ public class ReiProgpunktGruppeService {
             List<ReiProgpunktGrpZuord> zuord =
                 repository.filterPlain(builder.getQuery(), "stamm");
             if (zuord.isEmpty()) {
-                return new Response(true, 200, null);
+                return new Response(true, StatusCodes.OK, null);
             }
             QueryBuilder<ReiProgpunktGruppe> builder1 =
                 new QueryBuilder<ReiProgpunktGruppe>(
@@ -128,7 +132,7 @@ public class ReiProgpunktGruppeService {
             List<ReiProgpunktGrpUmwZuord> zuord =
                 repository.filterPlain(builder.getQuery(), "stamm");
             if (zuord.isEmpty()) {
-                return new Response(true, 200, null);
+                return new Response(true, StatusCodes.OK, null);
             }
             QueryBuilder<ReiProgpunktGruppe> builder1 =
                 new QueryBuilder<ReiProgpunktGruppe>(
@@ -143,7 +147,7 @@ public class ReiProgpunktGruppeService {
             list = repository.filterPlain(builder1.getQuery(), "stamm");
         }
 
-        return new Response(true, 200, list);
+        return new Response(true, StatusCodes.OK, list);
     }
 
     /**

@@ -11,6 +11,7 @@ import java.util.Hashtable;
 import java.util.Set;
 
 import de.intevation.lada.model.land.Messprogramm;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
 import de.intevation.lada.validation.rules.Rule;
@@ -57,45 +58,60 @@ public class SubIntervall implements Rule {
             if ("J".equals(probenintervall)) {
                 if (gueltigVon != null && gueltigBis != null) {
                     if (teilVon < gueltigVon || teilVon > gueltigBis) {
-                        violation.addError("teilintervallVon", 612);
+                        violation.addError(
+                            "teilintervallVon",
+                            StatusCodes.VALUE_OUTSIDE_RANGE);
                     }
                     if (teilBis < gueltigVon || teilBis > gueltigBis) {
-                        violation.addError("teilintervallBis", 612);
+                        violation.addError(
+                            "teilintervallBis",
+                            StatusCodes.VALUE_OUTSIDE_RANGE);
                     }
                     if (offset != null
                         && offset > intervallMax.get("J") - 1) {
-                        violation.addError("intervallOffset", 612);
+                        violation.addError(
+                            "intervallOffset", StatusCodes.VALUE_OUTSIDE_RANGE);
                     }
                 }
             } else {
                 // lower limits are independent of intervall type
                 if (teilVon < 1) {
-                    violation.addError("teilintervallVon", 612);
+                    violation.addError(
+                        "teilintervallVon", StatusCodes.VALUE_OUTSIDE_RANGE);
                 }
                 if (teilBis < 1) {
-                    violation.addError("teilintervallBis", 612);
+                    violation.addError(
+                        "teilintervallBis", StatusCodes.VALUE_OUTSIDE_RANGE);
                 }
                 if (offset != null && offset < 0) {
-                    violation.addError("intervallOffset", 612);
+                    violation.addError(
+                        "intervallOffset", StatusCodes.VALUE_OUTSIDE_RANGE);
                 }
 
                 // upper limits depend on (valid) intervall type
                 Set<String> probenintervallSet = intervallMax.keySet();
                 if (!probenintervallSet.contains(probenintervall)) {
-                    violation.addError("probenintervall", 612);
+                    violation.addError(
+                        "probenintervall", StatusCodes.VALUE_OUTSIDE_RANGE);
                 } else {
                     for (String intervallKey : probenintervallSet) {
                         if (intervallKey.equals(probenintervall)) {
                             if (teilVon > intervallMax.get(intervallKey)) {
-                                violation.addError("teilintervallVon", 612);
+                                violation.addError(
+                                    "teilintervallVon",
+                                    StatusCodes.VALUE_OUTSIDE_RANGE);
                             }
                             if (teilBis > intervallMax.get(intervallKey)) {
-                                violation.addError("teilintervallBis", 612);
+                                violation.addError(
+                                    "teilintervallBis",
+                                    StatusCodes.VALUE_OUTSIDE_RANGE);
                             }
                             if (offset != null
                                 && offset
                                 > intervallMax.get(intervallKey) - 1) {
-                                violation.addError("intervallOffset", 612);
+                                violation.addError(
+                                    "intervallOffset",
+                                    StatusCodes.VALUE_OUTSIDE_RANGE);
                             }
                         }
                     }
@@ -104,8 +120,10 @@ public class SubIntervall implements Rule {
 
             // lower limit has to be less than or equal to upper limit
             if (teilVon > teilBis) {
-                violation.addError("teilintervallVon", 662);
-                violation.addError("teilintervallBis", 662);
+                violation.addError(
+                    "teilintervallVon", StatusCodes.DATE_BEGIN_AFTER_END);
+                violation.addError(
+                    "teilintervallBis", StatusCodes.DATE_BEGIN_AFTER_END);
             }
         }
 

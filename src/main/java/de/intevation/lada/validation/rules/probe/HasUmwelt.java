@@ -8,6 +8,7 @@
 package de.intevation.lada.validation.rules.probe;
 
 import de.intevation.lada.model.land.Probe;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
 import de.intevation.lada.validation.rules.Rule;
@@ -28,7 +29,7 @@ public class HasUmwelt implements Rule {
             || probe.getUmwId().equals("")
         ) {
             Violation violation = new Violation();
-            violation.addWarning("umwId", 631);
+            violation.addWarning("umwId", StatusCodes.VALUE_MISSING);
             return violation;
         }
         return null;

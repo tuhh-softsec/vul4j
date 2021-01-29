@@ -44,6 +44,7 @@ import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.data.TagUtil;
 import de.intevation.lada.util.rest.RequestMethod;
@@ -88,7 +89,7 @@ import de.intevation.lada.util.rest.Response;
         ) {
             return new Response(
                 false,
-                603,
+                StatusCodes.ERROR_DB_CONNECTION,
                 "Filtering by both pid and mid not allowed");
         }
 
@@ -96,7 +97,10 @@ import de.intevation.lada.util.rest.Response;
             try {
                 probeId = Integer.valueOf(params.getFirst("pid"));
             } catch (NumberFormatException e) {
-                return new Response(false, 603, "Not a valid probe id");
+                return new Response(
+                    false,
+                    StatusCodes.ERROR_DB_CONNECTION,
+                    "Not a valid probe id");
             }
         }
 
@@ -104,7 +108,10 @@ import de.intevation.lada.util.rest.Response;
             try {
                 messungId = Integer.valueOf(params.getFirst("mid"));
             } catch (NumberFormatException nfe) {
-                return new Response(false, 603, "Not a valid messung id");
+                return new Response(
+                    false,
+                    StatusCodes.ERROR_DB_CONNECTION,
+                    "Not a valid messung id");
             }
         }
 
@@ -136,7 +143,7 @@ import de.intevation.lada.util.rest.Response;
         }
         criteriaQuery.where(filter);
         List<Tag> tags = repository.filterPlain(criteriaQuery, Strings.STAMM);
-        return new Response(true, 200, tags);
+        return new Response(true, StatusCodes.OK, tags);
     }
 
     /**
@@ -169,11 +176,13 @@ import de.intevation.lada.util.rest.Response;
         try {
             mstId = object.getString("mstId");
         } catch (NullPointerException npe) {
-            return new Response(false, 699, "Invalid mstId");
+            return new Response(
+                false, StatusCodes.NOT_ALLOWED, "Invalid mstId");
         }
 
         if (mstId == null || !userInfo.getMessstellen().contains(mstId)) {
-            return new Response(false, 699, "Invalid mstId");
+            return new Response(
+                false, StatusCodes.NOT_ALLOWED, "Invalid mstId");
         }
 
         //Parse probe ids
@@ -183,7 +192,8 @@ import de.intevation.lada.util.rest.Response;
                 probeIds.add(Integer.parseInt(value.toString()));
             });
         } catch (NumberFormatException nfe) {
-            return new Response(false, 699, "Invalid probe id(s)");
+            return new Response(
+                false, StatusCodes.NOT_ALLOWED, "Invalid probe id(s)");
         }
         Response resp =
             TagUtil.generateTag(
@@ -192,7 +202,7 @@ import de.intevation.lada.util.rest.Response;
 
         return new Response(
             true,
-            200,
+            StatusCodes.OK,
             TagUtil.setTagsByProbeIds(
                 probeIds, currentTag.getId(), repository));
     }
@@ -227,11 +237,13 @@ import de.intevation.lada.util.rest.Response;
         try {
             mstId = object.getString("mstId");
         } catch (NullPointerException npe) {
-            return new Response(false, 699, "Invalid mstId");
+            return new Response(
+                false, StatusCodes.NOT_ALLOWED, "Invalid mstId");
         }
 
         if (mstId == null || !userInfo.getMessstellen().contains(mstId)) {
-            return new Response(false, 699, "Invalid mstId");
+            return new Response(
+                false, StatusCodes.NOT_ALLOWED, "Invalid mstId");
         }
 
         //Parse probe ids
@@ -241,7 +253,8 @@ import de.intevation.lada.util.rest.Response;
                 probeIds.add(Integer.parseInt(value.toString()));
             });
         } catch (NumberFormatException nfe) {
-            return new Response(false, 699, "Invalid probe id(s)");
+            return new Response(
+                false, StatusCodes.NOT_ALLOWED, "Invalid probe id(s)");
         }
         Response resp =
             TagUtil.generateTag(
@@ -250,7 +263,7 @@ import de.intevation.lada.util.rest.Response;
 
         return new Response(
             true,
-            200,
+            StatusCodes.OK,
             TagUtil.setTagsByProbeIds(
                 probeIds, currentTag.getId(), repository));
     }
@@ -300,7 +313,8 @@ import de.intevation.lada.util.rest.Response;
             || zuordnung.getProbeId() != null
             && zuordnung.getMessungId() != null
         ) {
-            return new Response(false, 603, "Not a valid tag");
+            return new Response(
+                false, StatusCodes.ERROR_DB_CONNECTION, "Not a valid tag");
         }
 
         UserInfo userInfo = authorization.getInfo(request);
@@ -337,7 +351,7 @@ import de.intevation.lada.util.rest.Response;
             if (zuordnungs.size() > 0) {
                 return new Response(
                     false,
-                    604,
+                    StatusCodes.ERROR_VALIDATION,
                     "Tag is already assigned to probe");
             }
 
@@ -369,12 +383,13 @@ import de.intevation.lada.util.rest.Response;
                 if (!authorized) {
                     return new Response(
                         false,
-                        699,
+                        StatusCodes.NOT_ALLOWED,
                         "Not authorized to set global tag");
                 }
             //Else check if it is the users private tag
             } else if (!userInfo.getMessstellen().contains(mstId)) {
-                return new Response(false, 603, "Invalid mstId");
+                return new Response(
+                    false, StatusCodes.ERROR_DB_CONNECTION, "Invalid mstId");
             }
 
             repository.create(zuordnung, Strings.LAND);
@@ -387,13 +402,19 @@ import de.intevation.lada.util.rest.Response;
             if (mstId == null
                 || !userInfo.getMessstellen().contains(mstId)
             ) {
-                return new Response(false, 603, "Invalid/empty mstId");
+                return new Response(
+                    false,
+                    StatusCodes.ERROR_DB_CONNECTION,
+                    "Invalid/empty mstId");
             }
             if (repository.create(tag, Strings.STAMM).getSuccess()) {
                 return repository.create(zuordnung, Strings.LAND);
             } else {
                 //TODO Proper response code?
-                return new Response(false, 603, "Failed to create Tag");
+                return new Response(
+                    false,
+                    StatusCodes.ERROR_DB_CONNECTION,
+                    "Failed to create Tag");
             }
         }
     }
@@ -413,7 +434,8 @@ import de.intevation.lada.util.rest.Response;
             && tagZuordnung.getMessungId() == null)
             || tagZuordnung.getTagId() == null
         ) {
-            return new Response(false, 699, "Invalid TagZuordnung");
+            return new Response(
+                false, StatusCodes.NOT_ALLOWED, "Invalid TagZuordnung");
         }
         boolean global = false;
         //Check if its a global tag
@@ -444,7 +466,7 @@ import de.intevation.lada.util.rest.Response;
             if (!authorized) {
                 return new Response(
                     false,
-                    699,
+                    StatusCodes.NOT_ALLOWED,
                     "Not authorized to delete global tag");
             } else {
                 global = true;
@@ -487,7 +509,8 @@ import de.intevation.lada.util.rest.Response;
 
         // TODO Error code if no zuordnung is found?
         if (zuordnungs.size() == 0) {
-            return new Response(false, 699, "No valid Tags found");
+            return new Response(
+                false, StatusCodes.NOT_ALLOWED, "No valid Tags found");
         } else {
             return repository.delete(zuordnungs.get(0), Strings.LAND);
         }

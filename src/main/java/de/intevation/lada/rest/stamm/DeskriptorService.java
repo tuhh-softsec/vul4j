@@ -29,6 +29,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 
@@ -119,7 +120,7 @@ public class DeskriptorService {
                 builder.andIn("vorgaenger", parentList);
             }
         } catch (NumberFormatException nfe) {
-            return new Response(false, 612, null);
+            return new Response(false, StatusCodes.VALUE_OUTSIDE_RANGE, null);
         }
         return repository.filter(builder.getQuery(), Strings.STAMM);
     }
