@@ -348,14 +348,14 @@ public class StatusService {
             @SuppressWarnings("unchecked")
             List<Messwert> messwerte = (List<Messwert>) messwertQry.getData();
             boolean hasValidMesswerte = false;
-            if (!messwerte.isEmpty()){
+            if (!messwerte.isEmpty()) {
             for (Messwert messwert: messwerte) {
                 violation = messwertValidator.validate(messwert);
 
                 boolean hasNoMesswert = false;
 
-                if ( messwert.getMesswert() == null
-                     && messwert.getMesswertNwg() == null){
+                if (messwert.getMesswert() == null
+                     && messwert.getMesswertNwg() == null) {
                      hasNoMesswert = true;
                 }
                 if (newStatusWert == 7

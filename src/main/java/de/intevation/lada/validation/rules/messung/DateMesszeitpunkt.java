@@ -36,14 +36,15 @@ import de.intevation.lada.validation.rules.Rule;
 public class DateMesszeitpunkt implements Rule {
 
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type = RepositoryType.RO)
     private Repository repository;
 
     @Override
     public Violation execute(Object object) {
-        Messung messung = (Messung)object;
+        Messung messung = (Messung) object;
         Integer probeId = messung.getProbeId();
-        Response response = repository.getById(Probe.class, probeId, Strings.LAND);
+        Response response =
+            repository.getById(Probe.class, probeId, Strings.LAND);
         Probe probe = (Probe) response.getData();
 
         if (probe == null) {
@@ -67,9 +68,13 @@ public class DateMesszeitpunkt implements Rule {
             return null;
         }
 
-        if ( (probe.getProbeentnahmeBeginn() != null && probe.getProbeentnahmeBeginn().after(messung.getMesszeitpunkt()) ||
-            probe.getProbeentnahmeEnde() != null && probe.getProbeentnahmeEnde().after(messung.getMesszeitpunkt()))
-              && (probe.getProbenartId()!=null && ( probe.getProbenartId() == 3 || probe.getProbenartId() == 9))
+        if ((probe.getProbeentnahmeBeginn() != null
+            && probe.getProbeentnahmeBeginn().after(messung.getMesszeitpunkt())
+            || probe.getProbeentnahmeEnde() != null
+            && probe.getProbeentnahmeEnde().after(messung.getMesszeitpunkt()))
+            && (probe.getProbenartId() != null
+                && (probe.getProbenartId() == 3
+                    || probe.getProbenartId() == 9))
         ) {
             Violation violation = new Violation();
             violation.addWarning(

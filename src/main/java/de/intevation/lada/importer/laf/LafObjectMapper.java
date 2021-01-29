@@ -365,9 +365,8 @@ public class LafObjectMapper {
                    new ArrayList<ReportItem>(currentNotifications));
                 }
                 return;
-            }
-            // It is a brand new probe!
-            else if (i == Identified.NEW) {
+            } else if (i == Identified.NEW) {
+                // It is a brand new probe!
                 Violation violation = probeValidator.validate(probe);
                 if (!violation.hasErrors()) {
                     Response created = repository.create(probe, Strings.LAND);
@@ -851,16 +850,14 @@ public class LafObjectMapper {
                     merger.mergeMessung(old, messung);
                     newMessung = old;
                 }
-            }
-            else if (i == Identified.REJECT) {
+            } else if (i == Identified.REJECT) {
                 ReportItem err = new ReportItem();
                 err.setCode(StatusCodes.VALUE_MISSING);
                 err.setKey("identification");
                 err.setValue("Messung");
                 currentErrors.add(err);
                 return;
-            }
-            else if (i == Identified.NEW) {
+            } else if (i == Identified.NEW) {
                 // Check if Messung has all fields that have db constraints
                 // (validation rule?)
                 if (messung.getMmtId() == null) {
@@ -979,7 +976,8 @@ public class LafObjectMapper {
             if (messwViolation.hasErrors()) {
                 messwViolation.getErrors().forEach((k, v) -> {
                     v.forEach((value) -> {
-                        currentErrors.add(new ReportItem("validation ", k, value));
+                        currentErrors.add(
+                            new ReportItem("validation ", k, value));
                     });
                 });
             }
@@ -1089,8 +1087,7 @@ public class LafObjectMapper {
                 ProbenZusatz.class);
         if (isId) {
             builder.and("id", attribute);
-        }
-        else {
+        } else {
             builder.and("zusatzwert", attribute);
         }
         List<ProbenZusatz> zusatz =
@@ -1413,17 +1410,16 @@ public class LafObjectMapper {
             @SuppressWarnings("unchecked")
             List<Messwert> messwerte = (List<Messwert>) messwertQry.getData();
             boolean hasValidMesswerte = false;
-            if (!messwerte.isEmpty() && statusWert == 7){
+            if (!messwerte.isEmpty() && statusWert == 7) {
             for (Messwert messwert: messwerte) {
 
                 boolean hasNoMesswert = false;
 
-                if ( messwert.getMesswert() == null
-                     && messwert.getMesswertNwg() == null){
+                if (messwert.getMesswert() == null
+                     && messwert.getMesswertNwg() == null) {
                      hasNoMesswert = true;
                 }
-                if ( !hasNoMesswert
-                ) {
+                if (!hasNoMesswert) {
                     hasValidMesswerte = true;
                     currentWarnings.add(
                          new ReportItem(
@@ -1552,11 +1548,11 @@ public class LafObjectMapper {
                 repository.create(ort, "land");
                 probe.setKtaGruppeId(messpunkte.get(0).getKtaGruppeId());
                 repository.update(probe, "land");
-            } else if (uo.get("U_ORTS_ZUSATZCODE").length()==4){
-
-                QueryBuilder<KtaGruppe> builderKta = new QueryBuilder<KtaGruppe>(
-                  repository.entityManager("stamm"),
-                  KtaGruppe.class);
+            } else if (uo.get("U_ORTS_ZUSATZCODE").length() == 4) {
+                QueryBuilder<KtaGruppe> builderKta =
+                    new QueryBuilder<KtaGruppe>(
+                        repository.entityManager("stamm"),
+                        KtaGruppe.class);
                 builderKta.and("ktaGruppe", uo.get("U_ORTS_ZUSATZCODE"));
                 List<KtaGruppe> ktaGrp =
                     repository.filterPlain(builderKta.getQuery(), "stamm");
@@ -1598,8 +1594,7 @@ public class LafObjectMapper {
                 warn.setValue(uo.get("U_ORTS_ZUSATZCODE"));
                 currentWarnings.add(warn);
             }
-        }
-        else {
+        } else {
             Ort o = null;
             if (uort.size() > 0) {
                 o = findOrCreateOrt(uort.get(0), "U_", probe);
@@ -2042,7 +2037,7 @@ public class LafObjectMapper {
                 probe.setDatenbasisId(transfer.get(0).getDatenbasisId());
             }
         }
-        if ("MESSPROGRAMM_C".equals(key) && !value.equals("")){
+        if ("MESSPROGRAMM_C".equals(key) && !value.equals("")) {
             QueryBuilder<MessprogrammTransfer> builder =
                 new QueryBuilder<MessprogrammTransfer>(
                     repository.entityManager(Strings.STAMM),
@@ -2215,12 +2210,14 @@ public class LafObjectMapper {
             } else if (value.toString().equals("0")) {
                 probe.setTest(false);
             } else if (!value.toString().equals("")) {
-                currentWarnings.add(new ReportItem(key, value.toString(), 675));
+                currentWarnings.add(
+                    new ReportItem(
+                        key, value.toString(), StatusCodes.IMP_INVALID_VALUE));
             }
         }
 
-        if ("REI_PROGRAMMPUNKTGRUPPE".equals(key) && !value.equals("") ||
-            "REI_PROGRAMMPUNKT".equals(key) && !value.equals("")) {
+        if ("REI_PROGRAMMPUNKTGRUPPE".equals(key) && !value.equals("")
+            || "REI_PROGRAMMPUNKT".equals(key) && !value.equals("")) {
             QueryBuilder<ReiProgpunktGruppe> builder =
                 new QueryBuilder<ReiProgpunktGruppe>(
                     repository.entityManager("stamm"),

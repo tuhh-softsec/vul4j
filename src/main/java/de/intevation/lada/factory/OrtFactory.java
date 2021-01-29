@@ -288,8 +288,8 @@ public class OrtFactory {
     private String getEpsgForEd50Utm(String x) {
         String epsg = "EPSG:230";
         String part = x.split(",")[0];
-        String zone = part.length() == LEN7 ? ("0" + part.substring(0, 1)) :
-            part.substring(0, 2);
+        String zone = part.length() == LEN7 ? ("0" + part.substring(0, 1))
+            : part.substring(0, 2);
         return epsg + zone;
     }
 

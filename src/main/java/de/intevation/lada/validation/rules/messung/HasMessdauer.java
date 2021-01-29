@@ -33,13 +33,17 @@ public class HasMessdauer implements Rule {
 
     @Override
     public Violation execute(Object object) {
-        Messung messung = (Messung)object;
-        Probe probe = repository.getByIdPlain(Probe.class, messung.getProbeId(), "land");
+        Messung messung = (Messung) object;
+        Probe probe =
+            repository.getByIdPlain(Probe.class, messung.getProbeId(), "land");
 
-        if (messung.getMessdauer() == null ||
-            messung.getMessdauer().equals("")) {
+        if (messung.getMessdauer() == null
+            || messung.getMessdauer().equals("")) {
             //Exception for continous samples or Datenbasis = §161
-            if (probe.getProbenartId()!=null && probe.getProbenartId() == 9 || probe.getDatenbasisId()!=null && probe.getDatenbasisId()==1){
+            if (probe.getProbenartId() != null
+                && probe.getProbenartId() == 9
+                || probe.getDatenbasisId() != null
+                && probe.getDatenbasisId() == 1) {
                 Violation violation = new Violation();
                 violation.addNotification(
                     "messdauer", StatusCodes.VALUE_MISSING);

@@ -241,7 +241,7 @@ public class DeskriptorToUmwelt implements Rule {
                                     || media.get(5).equals(-1)
                                     && data.get(i).getS05() == null
                                 ) {
-                                    matches +=1;
+                                    matches += 1;
                                 } else if (!media.get(5).equals(-1)
                                     && data.get(i).getS05() == null) {
                                     break;

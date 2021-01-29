@@ -5,7 +5,7 @@
  * and comes with ABSOLUTELY NO WARRANTY! Check out
  * the documentation coming with IMIS-Labordaten-Application for details.
  */
-package de.intevation.lada.validation.rules.probe;
+package de.intevation.lada.validation.rules.messung;
 
 import de.intevation.lada.model.land.Messung;
 import de.intevation.lada.util.data.StatusCodes;
@@ -25,7 +25,7 @@ public class HasMessbeginn implements Rule {
     @Override
     public Violation execute(Object object) {
         Messung messung = (Messung) object;
-        if (messung.getMesszeitpunkt() == null ){
+        if (messung.getMesszeitpunkt() == null) {
             Violation violation = new Violation();
             violation.addWarning("messzeitpunkt", StatusCodes.VALUE_MISSING);
             return violation;

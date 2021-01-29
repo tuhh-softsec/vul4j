@@ -68,30 +68,30 @@ public class ProbeFactory {
     private static Hashtable<String, int[]> fieldsTable;
 
     public ProbeFactory() {
-        int[] T  = { Calendar.DAY_OF_YEAR, Calendar.DAY_OF_YEAR, 1 };
-        int[] W  = { Calendar.DAY_OF_YEAR, Calendar.DAY_OF_YEAR,
+        int[] t  = {Calendar.DAY_OF_YEAR, Calendar.DAY_OF_YEAR, 1 };
+        int[] w  = {Calendar.DAY_OF_YEAR, Calendar.DAY_OF_YEAR,
                      N_WEEK_DAYS };
-        int[] W2 = { Calendar.DAY_OF_YEAR, Calendar.DAY_OF_YEAR,
+        int[] w2 = {Calendar.DAY_OF_YEAR, Calendar.DAY_OF_YEAR,
                      N_WEEK_DAYS * 2 };
-        int[] W4 = { Calendar.DAY_OF_YEAR, Calendar.DAY_OF_YEAR,
+        int[] w4 = {Calendar.DAY_OF_YEAR, Calendar.DAY_OF_YEAR,
                      N_WEEK_DAYS * 4 };
 
-        int[] M = { Calendar.MONTH, Calendar.DAY_OF_MONTH, 1 };
-        int[] Q = { Calendar.MONTH, Calendar.DAY_OF_MONTH, 3 };
-        int[] H = { Calendar.MONTH, Calendar.DAY_OF_MONTH, 6 };
+        int[] m = {Calendar.MONTH, Calendar.DAY_OF_MONTH, 1 };
+        int[] q = {Calendar.MONTH, Calendar.DAY_OF_MONTH, 3 };
+        int[] h = {Calendar.MONTH, Calendar.DAY_OF_MONTH, 6 };
 
-        int[] J = { Calendar.YEAR, Calendar.DAY_OF_YEAR, 1 };
+        int[] j = {Calendar.YEAR, Calendar.DAY_OF_YEAR, 1 };
 
         fieldsTable = new Hashtable<String, int[]>();
 
-        fieldsTable.put("T", T);
-        fieldsTable.put("W", W);
-        fieldsTable.put("W2", W2);
-        fieldsTable.put("W4", W4);
-        fieldsTable.put("M", M);
-        fieldsTable.put("Q", Q);
-        fieldsTable.put("H", H);
-        fieldsTable.put("J", J);
+        fieldsTable.put("T", t);
+        fieldsTable.put("W", w);
+        fieldsTable.put("W2", w2);
+        fieldsTable.put("W4", w4);
+        fieldsTable.put("M", m);
+        fieldsTable.put("Q", q);
+        fieldsTable.put("H", h);
+        fieldsTable.put("J", j);
     }
 
     /**
