@@ -366,21 +366,23 @@ public class ProbeService {
                 return;
             }
 
-            // Use a dummy probe with same mstId as the messprogramm to
-            // authorize the user to create probe objects.
-            Probe testProbe = new Probe();
-            testProbe.setMstId(messprogramm.getMstId());
-            if (!authorization.isAuthorized(
-                    request,
-                    testProbe,
-                    RequestMethod.POST,
-                    Probe.class)
-            ) {
-                data.put("success", false);
-                data.put("message", StatusCodes.NOT_ALLOWED);
-                data.put("data", null);
-                probenData.put(messprogramm.getId().toString(), data);
-                return;
+            if (!dryrun) {
+                // Use a dummy probe with same mstId as the messprogramm to
+                // authorize the user to create probe objects.
+                Probe testProbe = new Probe();
+                testProbe.setMstId(messprogramm.getMstId());
+                if (!authorization.isAuthorized(
+                        request,
+                        testProbe,
+                        RequestMethod.POST,
+                        Probe.class)
+                ) {
+                    data.put("success", false);
+                    data.put("message", StatusCodes.NOT_ALLOWED);
+                    data.put("data", null);
+                    probenData.put(messprogramm.getId().toString(), data);
+                    return;
+                }
             }
 
             long start = 0;
@@ -423,7 +425,7 @@ public class ProbeService {
         responseData.put("proben", probenData);
 
         // Generate and associate tag
-        if (generatedProbeIds.size() > 0) {
+        if (!dryrun && generatedProbeIds.size() > 0) {
             // Assume the user is associated to at least one Messstelle,
             // because authorization should ensure this.
             // TODO: Pick the correct instead of the first Messstelle
