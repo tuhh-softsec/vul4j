@@ -20,6 +20,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 import de.intevation.lada.validation.Violation;
@@ -83,7 +84,8 @@ public class MessgroesseToMessmethode implements Rule {
                     messwert.getMessgroesseId(),
                     Strings.STAMM);
                 violation.addError(
-                    "messgroesse#" + mmt + " " + mg.getMessgroesse(), 632);
+                    "messgroesse#" + mmt + " " + mg.getMessgroesse(),
+                    StatusCodes.VALUE_NOT_MATCHING);
             }
         }
         if (violation.hasErrors()) {

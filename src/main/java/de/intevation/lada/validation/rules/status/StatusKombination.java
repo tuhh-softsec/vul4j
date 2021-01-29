@@ -19,6 +19,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
@@ -49,7 +50,7 @@ public class StatusKombination implements Rule {
             repository.filterPlain(kombi.getQuery(), Strings.STAMM);
         if (result.isEmpty()) {
             Violation violation = new Violation();
-            violation.addError("kombi", 632);
+            violation.addError("kombi", StatusCodes.VALUE_NOT_MATCHING);
             return violation;
         }
         return null;

@@ -20,6 +20,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
@@ -59,7 +60,7 @@ public class CoordinatesInVE implements Rule {
                 vg.getQuery(), Strings.STAMM);
             if (vgs == null || vgs.isEmpty()) {
                 Violation violation = new Violation();
-                violation.addWarning("gemId", 650);
+                violation.addWarning("gemId", StatusCodes.GEO_COORD_UNCHECKED);
                 return violation;
             }
 
@@ -87,15 +88,17 @@ public class CoordinatesInVE implements Rule {
                         return null;
                     } else {
                         ort.setUnscharf(false);
-                        violation.addWarning("koordXExtern", 651);
-                        violation.addWarning("koordYExtern", 651);
+                        violation.addWarning(
+                            "koordXExtern", StatusCodes.GEO_POINT_OUTSIDE);
+                        violation.addWarning(
+                            "koordYExtern", StatusCodes.GEO_POINT_OUTSIDE);
                         return violation;
                     }
                 }
            }
 
-           violation.addWarning("koordXExtern", 652);
-           violation.addWarning("koordYExtern", 652);
+           violation.addWarning("koordXExtern", StatusCodes.GEO_NOT_MATCHING);
+           violation.addWarning("koordYExtern", StatusCodes.GEO_NOT_MATCHING);
            return violation;
         }
         return null;

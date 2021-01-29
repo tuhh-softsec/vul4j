@@ -38,6 +38,7 @@ import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
@@ -110,7 +111,7 @@ public class UniversalService {
         if (gridColumnValues == null
             || gridColumnValues.isEmpty()) {
             //TODO Error code if no columns are given
-            return new Response(false, 999, null);
+            return new Response(false, StatusCodes.NOT_EXISTING, null);
         }
         ArrayList<String> hierarchy = new ArrayList<String>();
         hierarchy.add("messungId");
@@ -181,7 +182,7 @@ public class UniversalService {
         List<Map<String, Object>> result =
             queryTools.getResultForQuery(columns.getColumns(), qid);
         if (result == null) {
-            return new Response(true, 200, null);
+            return new Response(true, StatusCodes.OK, null);
         }
         for (Map<String, Object> row: result) {
             Object idToAuthorize = row.get(authorizationColumnIndex);
@@ -243,6 +244,6 @@ public class UniversalService {
             result = result.subList(start, end);
         }
 
-        return new Response(true, 200, result, size);
+        return new Response(true, StatusCodes.OK, result, size);
     }
 }

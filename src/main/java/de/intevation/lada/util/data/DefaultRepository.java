@@ -56,24 +56,24 @@ public class DefaultRepository extends ReadOnlyRepository {
             logger.error("Could not persist " + object.getClass().getName()
                 + ". Reason: " + eee.getClass().getName() + " - "
                 + eee.getMessage());
-            return new Response(false, 601, object);
+            return new Response(false, StatusCodes.PRESENT, object);
         } catch (IllegalArgumentException iae) {
             logger.error("Could not persist " + object.getClass().getName()
                 + ". Reason: " + iae.getClass().getName() + " - "
                 + iae.getMessage());
-            return new Response(false, 602, object);
+            return new Response(false, StatusCodes.NOT_A_PROBE, object);
         } catch (TransactionRequiredException tre) {
             logger.error("Could not persist " + object.getClass().getName()
                 + ". Reason: " + tre.getClass().getName() + " - "
                 + tre.getMessage());
-            return new Response(false, 603, object);
+            return new Response(false, StatusCodes.ERROR_DB_CONNECTION, object);
         } catch (EJBTransactionRolledbackException ete) {
             logger.error("Could not persist " + object.getClass().getName()
                 + ". Reason: " + ete.getClass().getName() + " - "
                 + ete.getMessage());
-            return new Response(false, 604, object);
+            return new Response(false, StatusCodes.ERROR_VALIDATION, object);
         }
-        Response response = new Response(true, 200, object);
+        Response response = new Response(true, StatusCodes.OK, object);
         return response;
     }
 
@@ -87,19 +87,19 @@ public class DefaultRepository extends ReadOnlyRepository {
      */
     @Override
     public Response update(Object object, String dataSource) {
-        Response response = new Response(true, 200, object);
+        Response response = new Response(true, StatusCodes.OK, object);
         try {
             transaction.updateInDatabase(object, dataSource);
         } catch (EntityExistsException eee) {
-            return new Response(false, 601, object);
+            return new Response(false, StatusCodes.PRESENT, object);
         } catch (IllegalArgumentException iae) {
-            return new Response(false, 602, object);
+            return new Response(false, StatusCodes.NOT_A_PROBE, object);
         } catch (TransactionRequiredException tre) {
-            return new Response(false, 603, object);
+            return new Response(false, StatusCodes.ERROR_DB_CONNECTION, object);
         } catch (EJBTransactionRolledbackException ete) {
-            return new Response(false, 604, object);
+            return new Response(false, StatusCodes.ERROR_VALIDATION, object);
         } catch (TransactionException te) {
-            return new Response(false, 604, object);
+            return new Response(false, StatusCodes.ERROR_VALIDATION, object);
         }
         return response;
     }
@@ -114,15 +114,15 @@ public class DefaultRepository extends ReadOnlyRepository {
      */
     @Override
     public Response delete(Object object, String dataSource) {
-        Response response = new Response(true, 200, "");
+        Response response = new Response(true, StatusCodes.OK, "");
         try {
             transaction.removeFromDatabase(object, dataSource);
         } catch (IllegalArgumentException iae) {
-            return new Response(false, 602, object);
+            return new Response(false, StatusCodes.NOT_A_PROBE, object);
         } catch (TransactionRequiredException tre) {
-            return new Response(false, 603, object);
+            return new Response(false, StatusCodes.ERROR_DB_CONNECTION, object);
         } catch (EJBTransactionRolledbackException ete) {
-            return new Response(false, 696, object);
+            return new Response(false, StatusCodes.OP_NOT_POSSIBLE, object);
         }
         return response;
     }
@@ -140,7 +140,7 @@ public class DefaultRepository extends ReadOnlyRepository {
         List<T> result =
             transaction.entityManager(dataSource)
                 .createQuery(filter).getResultList();
-        return new Response(true, 200, result);
+        return new Response(true, StatusCodes.OK, result);
     }
 
 
@@ -166,9 +166,9 @@ public class DefaultRepository extends ReadOnlyRepository {
                 .createQuery(filter).getResultList();
         if (size > 0 && start > -1) {
             List<T> newList = result.subList(start, size + start);
-            return new Response(true, 200, newList, result.size());
+            return new Response(true, StatusCodes.OK, newList, result.size());
         }
-        return new Response(true, 200, result);
+        return new Response(true, StatusCodes.OK, result);
     }
 
     /**
@@ -185,7 +185,7 @@ public class DefaultRepository extends ReadOnlyRepository {
             new QueryBuilder<T>(manager, clazz);
         List<T> result =
             manager.createQuery(builder.getQuery()).getResultList();
-        return new Response(true, 200, result);
+        return new Response(true, StatusCodes.OK, result);
     }
 
     /**
@@ -201,8 +201,8 @@ public class DefaultRepository extends ReadOnlyRepository {
     public <T> Response getById(Class<T> clazz, Object id, String dataSource) {
         T item = transaction.entityManager(dataSource).find(clazz, id);
         if (item == null) {
-            return new Response(false, 600, null);
+            return new Response(false, StatusCodes.NOT_EXISTING, null);
         }
-        return new Response(true, 200, item);
+        return new Response(true, StatusCodes.OK, item);
     }
 }

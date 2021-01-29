@@ -17,15 +17,13 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import de.intevation.lada.importer.ReportItem;
+import de.intevation.lada.util.data.StatusCodes;
 
 /**
  * Listener to process the LAF data items.
  */
 public class LafObjectListener extends LafBaseListener {
 
-    private static final int ERR670 = 670;
-    private static final int WARN632 = 632;
-    private static final int WARN673 = 673;
     LafRawData data;
     LafRawData.Probe currentProbe;
     LafRawData.Messung currentMessung;
@@ -452,7 +450,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             parserWarnings.add(warn);
         }
         String value = ctx.getChild(1).toString();
@@ -464,7 +462,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue(value);
-            warn.setCode(WARN632);
+            warn.setCode(StatusCodes.VALUE_NOT_MATCHING);
             parserWarnings.add(warn);
         }
         hasUebertragungsformat = true;
@@ -483,7 +481,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             List<ReportItem> items = new ArrayList<>();
             items.add(warn);
             parserWarnings.add(warn);
@@ -497,7 +495,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue(value);
-            warn.setCode(WARN632);
+            warn.setCode(StatusCodes.VALUE_NOT_MATCHING);
             parserWarnings.add(warn);
         }
         hasVersion = true;
@@ -516,7 +514,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -527,7 +525,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -549,7 +547,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -559,7 +557,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -578,7 +576,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -588,7 +586,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -606,7 +604,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -616,7 +614,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -636,7 +634,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -646,7 +644,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -666,7 +664,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -676,7 +674,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -696,7 +694,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -706,7 +704,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -724,7 +722,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -734,7 +732,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -752,7 +750,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -762,7 +760,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -780,7 +778,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -790,7 +788,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -808,7 +806,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -818,7 +816,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -839,7 +837,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -849,7 +847,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -857,20 +855,18 @@ public class LafObjectListener extends LafBaseListener {
         String nnr = "";
         if (value.length() <= 9) {
             hnr = value;
-        }
-        else if (value.length() > 9 && value.length() <= 13) {
+        } else if (value.length() > 9 && value.length() <= 13) {
             hnr = value.substring(0, 9);
             nnr = value.substring(9, value.length());
             if (currentMessung == null) {
                 currentMessung = data.new Messung();
             }
             currentMessung.addAttribute("NEBENPROBENNUMMER", nnr);
-        }
-        else {
+        } else {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -890,7 +886,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -900,7 +896,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -920,7 +916,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -930,7 +926,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -956,7 +952,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -966,7 +962,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -990,7 +986,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -1000,7 +996,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1021,7 +1017,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -1031,7 +1027,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1051,7 +1047,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -1061,7 +1057,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1079,7 +1075,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -1089,7 +1085,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1110,7 +1106,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -1120,7 +1116,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1142,7 +1138,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -1152,7 +1148,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1173,7 +1169,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -1186,7 +1182,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(date);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1196,7 +1192,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(time);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1216,7 +1212,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -1229,7 +1225,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(date);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1239,7 +1235,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(time);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1260,7 +1256,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -1273,7 +1269,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(date);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1283,7 +1279,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(time);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1303,7 +1299,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -1316,7 +1312,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(date);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1326,7 +1322,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(time);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1346,7 +1342,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -1359,7 +1355,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(date);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1369,7 +1365,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(time);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1392,7 +1388,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -1402,7 +1398,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1429,7 +1425,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -1439,7 +1435,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1461,7 +1457,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -1471,7 +1467,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1490,7 +1486,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -1500,7 +1496,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1520,7 +1516,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -1530,7 +1526,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1550,7 +1546,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -1563,7 +1559,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(date);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1573,7 +1569,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(time);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1591,7 +1587,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -1601,7 +1597,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1619,7 +1615,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -1629,7 +1625,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1649,7 +1645,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -1659,7 +1655,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1679,7 +1675,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -1689,7 +1685,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1709,7 +1705,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -1719,7 +1715,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1740,7 +1736,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -1750,7 +1746,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1772,7 +1768,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -1782,7 +1778,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1804,7 +1800,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -1814,7 +1810,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1836,7 +1832,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -1846,7 +1842,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1868,7 +1864,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -1878,7 +1874,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1905,7 +1901,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(art);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1915,7 +1911,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(koord1);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1925,7 +1921,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(koord2);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1954,7 +1950,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(art);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1964,7 +1960,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(koord1);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1974,7 +1970,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(koord2);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -1998,7 +1994,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -2008,7 +2004,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2030,7 +2026,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -2040,7 +2036,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2060,7 +2056,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -2070,7 +2066,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2095,7 +2091,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -2105,7 +2101,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2131,7 +2127,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -2141,7 +2137,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2167,7 +2163,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -2177,7 +2173,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2203,7 +2199,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -2213,7 +2209,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2239,7 +2235,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -2249,7 +2245,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2272,7 +2268,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -2282,7 +2278,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2312,7 +2308,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(art);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2322,7 +2318,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(koord1);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2332,7 +2328,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(koord2);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2365,7 +2361,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(art);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2375,7 +2371,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(koord1);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2385,7 +2381,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(koord2);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2410,7 +2406,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -2420,7 +2416,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2442,7 +2438,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -2452,7 +2448,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2472,7 +2468,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -2482,7 +2478,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2502,7 +2498,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -2512,7 +2508,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2532,7 +2528,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -2542,7 +2538,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2562,7 +2558,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -2572,7 +2568,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2592,7 +2588,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -2602,7 +2598,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2624,7 +2620,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -2634,7 +2630,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2659,7 +2655,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(date);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2669,7 +2665,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(time);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2692,7 +2688,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -2702,7 +2698,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2725,7 +2721,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -2735,7 +2731,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2758,7 +2754,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -2768,7 +2764,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2791,7 +2787,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -2801,7 +2797,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2822,7 +2818,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -2832,7 +2828,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2855,7 +2851,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -2865,7 +2861,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2894,7 +2890,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(groesse);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2904,7 +2900,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(wert);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2914,7 +2910,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(einheit);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2926,7 +2922,7 @@ public class LafObjectListener extends LafBaseListener {
                 ReportItem err = new ReportItem();
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(fehler);
-                err.setCode(ERR670);
+                err.setCode(StatusCodes.IMP_PARSER_ERROR);
                 currentErrors.add(err);
                 return;
             }
@@ -2954,7 +2950,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(groesse);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2964,7 +2960,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(wert);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2974,7 +2970,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(einheit);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -2986,7 +2982,7 @@ public class LafObjectListener extends LafBaseListener {
                 ReportItem err = new ReportItem();
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(fehler);
-                err.setCode(ERR670);
+                err.setCode(StatusCodes.IMP_PARSER_ERROR);
                 currentErrors.add(err);
                 return;
             }
@@ -3021,7 +3017,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(groesse);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             currentMessung.setHasErrors(true);
             return;
@@ -3032,7 +3028,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(wert);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             currentMessung.setHasErrors(true);
             return;
@@ -3043,7 +3039,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(einheit);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             currentMessung.setHasErrors(true);
             return;
@@ -3057,7 +3053,7 @@ public class LafObjectListener extends LafBaseListener {
                 ReportItem err = new ReportItem();
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(fehler);
-                err.setCode(ERR670);
+                err.setCode(StatusCodes.IMP_PARSER_ERROR);
                 currentErrors.add(err);
                 currentMessung.setHasErrors(true);
                 return;
@@ -3097,7 +3093,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(groesse);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             currentMessung.setHasErrors(true);
             return;
@@ -3108,7 +3104,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(wert);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             currentMessung.setHasErrors(true);
             return;
@@ -3119,7 +3115,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(einheit);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             currentMessung.setHasErrors(true);
             return;
@@ -3132,7 +3128,7 @@ public class LafObjectListener extends LafBaseListener {
                 ReportItem err = new ReportItem();
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(fehler);
-                err.setCode(ERR670);
+                err.setCode(StatusCodes.IMP_PARSER_ERROR);
                 currentErrors.add(err);
                 currentMessung.setHasErrors(true);
                 return;
@@ -3172,7 +3168,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(groesse);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             currentMessung.setHasErrors(true);
             return;
@@ -3183,7 +3179,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(wert);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             currentMessung.setHasErrors(true);
             return;
@@ -3194,7 +3190,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(einheit);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             currentMessung.setHasErrors(true);
             return;
@@ -3207,7 +3203,7 @@ public class LafObjectListener extends LafBaseListener {
                 ReportItem err = new ReportItem();
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(fehler);
-                err.setCode(ERR670);
+                err.setCode(StatusCodes.IMP_PARSER_ERROR);
                 currentErrors.add(err);
                 currentMessung.setHasErrors(true);
                 return;
@@ -3252,7 +3248,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(groesse);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             currentMessung.setHasErrors(true);
             return;
@@ -3263,7 +3259,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(wert);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             currentMessung.setHasErrors(true);
             return;
@@ -3274,7 +3270,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(einheit);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             currentMessung.setHasErrors(true);
             return;
@@ -3288,7 +3284,7 @@ public class LafObjectListener extends LafBaseListener {
                 ReportItem err = new ReportItem();
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(fehler);
-                err.setCode(ERR670);
+                err.setCode(StatusCodes.IMP_PARSER_ERROR);
                 currentErrors.add(err);
                 currentMessung.setHasErrors(true);
                 return;
@@ -3329,7 +3325,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(groesse);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             currentMessung.setHasErrors(true);
             return;
@@ -3340,7 +3336,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(wert);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             currentMessung.setHasErrors(true);
             return;
@@ -3351,7 +3347,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(einheit);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             currentMessung.setHasErrors(true);
             return;
@@ -3364,7 +3360,7 @@ public class LafObjectListener extends LafBaseListener {
                 ReportItem err = new ReportItem();
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(fehler);
-                err.setCode(ERR670);
+                err.setCode(StatusCodes.IMP_PARSER_ERROR);
                 currentErrors.add(err);
                 currentMessung.setHasErrors(true);
                 return;
@@ -3378,7 +3374,7 @@ public class LafObjectListener extends LafBaseListener {
                 ReportItem err = new ReportItem();
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(nwg);
-                err.setCode(ERR670);
+                err.setCode(StatusCodes.IMP_PARSER_ERROR);
                 currentErrors.add(err);
                 currentMessung.setHasErrors(true);
                 return;
@@ -3418,7 +3414,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(groesse);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -3428,7 +3424,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(wert);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -3438,7 +3434,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(einheit);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -3450,7 +3446,7 @@ public class LafObjectListener extends LafBaseListener {
                 ReportItem err = new ReportItem();
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(fehler);
-                err.setCode(ERR670);
+                err.setCode(StatusCodes.IMP_PARSER_ERROR);
                 currentErrors.add(err);
                 return;
             }
@@ -3463,7 +3459,7 @@ public class LafObjectListener extends LafBaseListener {
                 ReportItem err = new ReportItem();
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(nwg);
-                err.setCode(ERR670);
+                err.setCode(StatusCodes.IMP_PARSER_ERROR);
                 currentErrors.add(err);
                 return;
             }
@@ -3499,7 +3495,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(groesse);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -3509,7 +3505,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(wert);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -3519,7 +3515,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(einheit);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -3531,7 +3527,7 @@ public class LafObjectListener extends LafBaseListener {
                 ReportItem err = new ReportItem();
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(fehler);
-                err.setCode(ERR670);
+                err.setCode(StatusCodes.IMP_PARSER_ERROR);
                 currentErrors.add(err);
                 return;
             }
@@ -3544,7 +3540,7 @@ public class LafObjectListener extends LafBaseListener {
                 ReportItem err = new ReportItem();
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(nwg);
-                err.setCode(ERR670);
+                err.setCode(StatusCodes.IMP_PARSER_ERROR);
                 currentErrors.add(err);
                 return;
             }
@@ -3587,7 +3583,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(groesse);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -3597,7 +3593,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(wert);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -3607,7 +3603,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(einheit);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -3619,7 +3615,7 @@ public class LafObjectListener extends LafBaseListener {
                 ReportItem err = new ReportItem();
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(fehler);
-                err.setCode(ERR670);
+                err.setCode(StatusCodes.IMP_PARSER_ERROR);
                 currentErrors.add(err);
                 return;
             }
@@ -3632,7 +3628,7 @@ public class LafObjectListener extends LafBaseListener {
                 ReportItem err = new ReportItem();
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(nwg);
-                err.setCode(ERR670);
+                err.setCode(StatusCodes.IMP_PARSER_ERROR);
                 currentErrors.add(err);
                 return;
             }
@@ -3645,7 +3641,7 @@ public class LafObjectListener extends LafBaseListener {
                 ReportItem err = new ReportItem();
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(gw);
-                err.setCode(ERR670);
+                err.setCode(StatusCodes.IMP_PARSER_ERROR);
                 currentErrors.add(err);
                 return;
             }
@@ -3678,7 +3674,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(mst);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -3688,7 +3684,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(date);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -3698,7 +3694,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(time);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -3708,7 +3704,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(text);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -3730,7 +3726,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -3740,7 +3736,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(text);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -3771,7 +3767,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(mst);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -3781,7 +3777,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(date);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -3791,7 +3787,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(time);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -3801,7 +3797,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(text);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }
@@ -3825,7 +3821,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem warn = new ReportItem();
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
-            warn.setCode(WARN673);
+            warn.setCode(StatusCodes.IMP_MISSING_VALUE);
             currentWarnings.add(warn);
             return;
         }
@@ -3835,7 +3831,7 @@ public class LafObjectListener extends LafBaseListener {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(text);
-            err.setCode(ERR670);
+            err.setCode(StatusCodes.IMP_PARSER_ERROR);
             currentErrors.add(err);
             return;
         }

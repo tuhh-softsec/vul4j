@@ -17,6 +17,7 @@ import de.intevation.lada.model.land.StatusProtokoll;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
 import de.intevation.lada.validation.rules.Rule;
@@ -50,10 +51,10 @@ public class IsReiComplete implements Rule {
         }
         Violation violation = new Violation();
         if (probe.getReiProgpunktGrpId() == null) {
-            violation.addError("reiProgpunktGrpId", 631);
+            violation.addError("reiProgpunktGrpId", StatusCodes.VALUE_MISSING);
         }
         if (probe.getKtaGruppeId() == null) {
-            violation.addError("ktaGruppeId", 631);
+            violation.addError("ktaGruppeId", StatusCodes.VALUE_MISSING);
         }
         if (violation.hasErrors()) {
             return violation;

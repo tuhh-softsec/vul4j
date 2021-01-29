@@ -31,6 +31,7 @@ import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
@@ -103,7 +104,7 @@ public class DatensatzErzeugerService {
                     RequestMethod.POST,
                     DatensatzErzeuger.class));
         }
-        return new Response(true, 200, erzeuger, erzeuger.size());
+        return new Response(true, StatusCodes.OK, erzeuger, erzeuger.size());
     }
 
     /**
@@ -135,7 +136,7 @@ public class DatensatzErzeugerService {
                 DatensatzErzeuger.class
             )
         );
-        return new Response(true, 200, erzeuger);
+        return new Response(true, StatusCodes.OK, erzeuger);
     }
 
     @POST
@@ -151,7 +152,8 @@ public class DatensatzErzeugerService {
             RequestMethod.POST,
             DatensatzErzeuger.class)
         ) {
-            return new Response(false, 699, datensatzerzeuger);
+            return new Response(
+                false, StatusCodes.NOT_ALLOWED, datensatzerzeuger);
         }
         QueryBuilder<DatensatzErzeuger> builder =
             new QueryBuilder<DatensatzErzeuger>(
@@ -167,7 +169,7 @@ public class DatensatzErzeugerService {
         if (erzeuger.isEmpty()) {
             return repository.create(datensatzerzeuger, Strings.STAMM);
         }
-        return new Response(false, 672, null);
+        return new Response(false, StatusCodes.IMP_DUPLICATE, null);
     }
 
     @PUT
@@ -184,7 +186,8 @@ public class DatensatzErzeugerService {
             RequestMethod.PUT,
             DatensatzErzeuger.class)
         ) {
-            return new Response(false, 699, datensatzerzeuger);
+            return new Response(
+                false, StatusCodes.NOT_ALLOWED, datensatzerzeuger);
         }
         return repository.update(datensatzerzeuger, Strings.STAMM);
     }
@@ -206,7 +209,7 @@ public class DatensatzErzeugerService {
                 DatensatzErzeuger.class
             )
         ) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
         return repository.delete(datensatzerzeuger, Strings.STAMM);
     }

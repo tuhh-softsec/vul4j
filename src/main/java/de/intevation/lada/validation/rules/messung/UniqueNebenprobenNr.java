@@ -16,6 +16,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 import de.intevation.lada.validation.Violation;
@@ -54,7 +55,7 @@ public class UniqueNebenprobenNr implements Rule {
                     return null;
                 }
                 Violation violation = new Violation();
-                violation.addError("nebenprobenNr", 611);
+                violation.addError("nebenprobenNr", StatusCodes.VALUE_AMBIGOUS);
                 return violation;
             }
         }

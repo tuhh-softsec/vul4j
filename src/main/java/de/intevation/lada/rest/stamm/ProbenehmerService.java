@@ -31,6 +31,7 @@ import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
@@ -99,7 +100,7 @@ public class ProbenehmerService {
                     RequestMethod.POST,
                     Probenehmer.class));
         }
-        return new Response(true, 200, nehmer, nehmer.size());
+        return new Response(true, StatusCodes.OK, nehmer, nehmer.size());
     }
 
     /**
@@ -131,7 +132,7 @@ public class ProbenehmerService {
                 Probenehmer.class
             )
         );
-        return new Response(true, 200, p);
+        return new Response(true, StatusCodes.OK, p);
     }
 
     @POST
@@ -147,7 +148,7 @@ public class ProbenehmerService {
             RequestMethod.POST,
             Probenehmer.class)
         ) {
-            return new Response(false, 699, probenehmer);
+            return new Response(false, StatusCodes.NOT_ALLOWED, probenehmer);
         }
         QueryBuilder<Probenehmer> builder =
             new QueryBuilder<Probenehmer>(
@@ -162,7 +163,7 @@ public class ProbenehmerService {
         if (nehmer.isEmpty()) {
             return repository.create(probenehmer, Strings.STAMM);
         }
-        return new Response(false, 672, null);
+        return new Response(false, StatusCodes.IMP_DUPLICATE, null);
     }
 
     @PUT
@@ -179,7 +180,7 @@ public class ProbenehmerService {
             RequestMethod.PUT,
             Probenehmer.class)
         ) {
-            return new Response(false, 699, probenehmer);
+            return new Response(false, StatusCodes.NOT_ALLOWED, probenehmer);
         }
 
         return repository.update(probenehmer, Strings.STAMM);
@@ -202,7 +203,7 @@ public class ProbenehmerService {
                 Probenehmer.class
             )
         ) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
         return repository.delete(probenehmer, Strings.STAMM);
     }

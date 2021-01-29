@@ -19,6 +19,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
@@ -66,7 +67,7 @@ public class StatusFolge implements Rule {
             repository.filterPlain(folgeFilter.getQuery(), Strings.STAMM);
         if (reihenfolge.isEmpty()) {
             Violation violation = new Violation();
-            violation.addError("status", 632);
+            violation.addError("status", StatusCodes.VALUE_NOT_MATCHING);
             return violation;
         }
 

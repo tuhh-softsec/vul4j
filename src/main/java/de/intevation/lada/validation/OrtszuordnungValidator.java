@@ -13,6 +13,7 @@ import javax.inject.Inject;
 
 import de.intevation.lada.model.land.Ortszuordnung;
 import de.intevation.lada.model.land.OrtszuordnungMp;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.validation.annotation.ValidationConfig;
 import de.intevation.lada.validation.annotation.ValidationRule;
 import de.intevation.lada.validation.rules.Rule;
@@ -39,7 +40,7 @@ public class OrtszuordnungValidator implements Validator {
         if (!(object instanceof Ortszuordnung)
             && !(object instanceof OrtszuordnungMp)
         ) {
-            violations.addError("ortszuordnung", 602);
+            violations.addError("ortszuordnung", StatusCodes.NOT_A_PROBE);
             return violations;
         }
         for (Rule rule : rules) {

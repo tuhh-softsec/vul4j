@@ -27,6 +27,7 @@ import de.intevation.lada.model.stammdaten.MessEinheit;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 
@@ -135,7 +136,7 @@ public class MesseinheitService {
                 }
             });
         }
-        return new Response(true, 200, einheits);
+        return new Response(true, StatusCodes.OK, einheits);
     }
 
     /**

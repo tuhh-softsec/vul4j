@@ -8,6 +8,7 @@
 package de.intevation.lada.validation.rules.probe;
 
 import de.intevation.lada.model.land.Messung;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
 import de.intevation.lada.validation.rules.Rule;
@@ -26,7 +27,7 @@ public class HasMessbeginn implements Rule {
         Messung messung = (Messung) object;
         if (messung.getMesszeitpunkt() == null ){
             Violation violation = new Violation();
-            violation.addWarning("messzeitpunkt", 631);
+            violation.addWarning("messzeitpunkt", StatusCodes.VALUE_MISSING);
             return violation;
         }
         return null;

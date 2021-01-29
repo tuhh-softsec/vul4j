@@ -31,6 +31,7 @@ import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
@@ -102,7 +103,7 @@ public class MessprogrammKategorieService {
                     RequestMethod.POST,
                     MessprogrammKategorie.class));
         }
-        return new Response(true, 200, kategorie, kategorie.size());
+        return new Response(true, StatusCodes.OK, kategorie, kategorie.size());
     }
 
     /**
@@ -134,7 +135,7 @@ public class MessprogrammKategorieService {
                 MessprogrammKategorie.class
             )
         );
-        return new Response(true, 200, mpk);
+        return new Response(true, StatusCodes.OK, mpk);
     }
 
     @POST
@@ -150,7 +151,7 @@ public class MessprogrammKategorieService {
             RequestMethod.POST,
             MessprogrammKategorie.class)
         ) {
-            return new Response(false, 699, kategorie);
+            return new Response(false, StatusCodes.NOT_ALLOWED, kategorie);
         }
         QueryBuilder<MessprogrammKategorie> builder =
             new QueryBuilder<MessprogrammKategorie>(
@@ -167,7 +168,7 @@ public class MessprogrammKategorieService {
         ) {
             return repository.create(kategorie, Strings.STAMM);
         }
-        return new Response(false, 672, null);
+        return new Response(false, StatusCodes.IMP_DUPLICATE, null);
     }
 
     @PUT
@@ -184,7 +185,7 @@ public class MessprogrammKategorieService {
             RequestMethod.PUT,
             MessprogrammKategorie.class)
         ) {
-            return new Response(false, 699, kategorie);
+            return new Response(false, StatusCodes.NOT_ALLOWED, kategorie);
         }
         return repository.update(kategorie, Strings.STAMM);
     }
@@ -206,7 +207,7 @@ public class MessprogrammKategorieService {
                 MessprogrammKategorie.class
             )
         ) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
         return repository.delete(kategorie, Strings.STAMM);
     }

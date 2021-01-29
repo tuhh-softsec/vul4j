@@ -36,6 +36,7 @@ import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
@@ -161,7 +162,7 @@ public class MessungService {
                     m.setNotifications(violation.getNotifications());
                 }
             }
-            return new Response(true, 200, messungs);
+            return new Response(true, StatusCodes.OK, messungs);
         } else {
             //Filter by probeId
             String probeId = params.getFirst("probeId");
@@ -209,7 +210,7 @@ public class MessungService {
                         }
                     }
                 }
-                return new Response(true, 200, messungs);
+                return new Response(true, StatusCodes.OK, messungs);
                 //return authorization.filter(
                 //    request, new Response(
                 //        true, 200, messungs), Messung.class);
@@ -295,12 +296,13 @@ public class MessungService {
                 RequestMethod.POST,
                 Messung.class)
         ) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
 
         Violation violation = validator.validate(messung);
         if (violation.hasErrors()) {
-            Response response = new Response(false, 604, messung);
+            Response response =
+                new Response(false, StatusCodes.ERROR_VALIDATION, messung);
             response.setErrors(violation.getErrors());
             response.setWarnings(violation.getWarnings());
             response.setNotifications(violation.getNotifications());
@@ -362,14 +364,15 @@ public class MessungService {
                 RequestMethod.PUT,
                 Messung.class)
         ) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
         if (lock.isLocked(messung)) {
-            return new Response(false, 697, null);
+            return new Response(false, StatusCodes.CHANGED_VALUE, null);
         }
         Violation violation = validator.validate(messung);
         if (violation.hasErrors()) {
-            Response response = new Response(false, 604, messung);
+            Response response =
+                new Response(false, StatusCodes.ERROR_VALIDATION, messung);
             response.setErrors(violation.getErrors());
             response.setWarnings(violation.getWarnings());
             response.setNotifications(violation.getNotifications());
@@ -422,10 +425,10 @@ public class MessungService {
                 RequestMethod.DELETE,
                 Messung.class)
         ) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
         if (lock.isLocked(messung)) {
-            return new Response(false, 697, null);
+            return new Response(false, StatusCodes.CHANGED_VALUE, null);
         }
 
         /* Delete the messung object*/

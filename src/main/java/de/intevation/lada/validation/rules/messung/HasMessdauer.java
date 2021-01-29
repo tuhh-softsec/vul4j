@@ -16,6 +16,7 @@ import de.intevation.lada.validation.annotation.ValidationRule;
 import de.intevation.lada.validation.rules.Rule;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 /**
  * Validation rule for messungen.
@@ -40,12 +41,15 @@ public class HasMessdauer implements Rule {
             //Exception for continous samples or Datenbasis = §161
             if (probe.getProbenartId()!=null && probe.getProbenartId() == 9 || probe.getDatenbasisId()!=null && probe.getDatenbasisId()==1){
                 Violation violation = new Violation();
-                violation.addNotification("messdauer", 631);
+                violation.addNotification(
+                    "messdauer", StatusCodes.VALUE_MISSING);
                 return violation;
 
             } else {
                 Violation violation = new Violation();
-                violation.addWarning("messdauer#"+messung.getNebenprobenNr(), 631);
+                violation.addWarning(
+                    "messdauer#" + messung.getNebenprobenNr(),
+                    StatusCodes.VALUE_MISSING);
                 return violation;
             }
         }

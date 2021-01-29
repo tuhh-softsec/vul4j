@@ -43,6 +43,7 @@ import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
@@ -151,14 +152,14 @@ public class StatusService {
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty() || !params.containsKey("messungsId")) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
         String messungId = params.getFirst("messungsId");
         int id;
         try {
             id = Integer.valueOf(messungId);
         } catch (NumberFormatException nfe) {
-            return new Response(false, 698, null);
+            return new Response(false, StatusCodes.NO_ACCESS, null);
         }
 
         QueryBuilder<StatusProtokoll> builder =
@@ -181,7 +182,7 @@ public class StatusService {
                     s.setNotifications(violation.getNotifications());
                 }
             }
-            return new Response(true, 200, status);
+            return new Response(true, StatusCodes.OK, status);
         } else {
             return r;
         }
@@ -248,30 +249,30 @@ public class StatusService {
         if (status.getMessungsId() == null
             || status.getMstId() == null
         ) {
-            return new Response(false, 631, status);
+            return new Response(false, StatusCodes.VALUE_MISSING, status);
         }
 
         UserInfo userInfo = authorization.getInfo(request);
         Messung messung = defaultRepo.getByIdPlain(
             Messung.class, status.getMessungsId(), Strings.LAND);
         if (lock.isLocked(messung)) {
-            return new Response(false, 697, status);
+            return new Response(false, StatusCodes.CHANGED_VALUE, status);
         }
 
         // Is user authorized to edit status at all?
         Response r = authorization.filter(
             request,
-            new Response(true, 200, messung),
+            new Response(true, StatusCodes.OK, messung),
             Messung.class);
         Messung filteredMessung = (Messung) r.getData();
         if (!filteredMessung.getStatusEdit()) {
-            return new Response(false, 699, status);
+            return new Response(false, StatusCodes.NOT_ALLOWED, status);
         }
 
         if (messung.getStatus() == null) {
             // set the first status as default
             status.setStatusKombi(1);
-            return new Response(false, 696, status);
+            return new Response(false, StatusCodes.OP_NOT_POSSIBLE, status);
         } else {
             StatusProtokoll oldStatus = defaultRepo.getByIdPlain(
                 StatusProtokoll.class, messung.getStatus(), Strings.LAND);
@@ -309,7 +310,7 @@ public class StatusService {
                 }
             } else {
                 // Not allowed.
-                return new Response(false, 699, status);
+                return new Response(false, StatusCodes.NOT_ALLOWED, status);
             }
         }
     }
@@ -362,7 +363,7 @@ public class StatusService {
                 ) {
                     hasValidMesswerte = true;
                     Violation error = new Violation();
-                    error.addError("status", 654);
+                    error.addError("status", StatusCodes.STATUS_RO);
                     violation.addErrors(error.getErrors());
                 }
                 if (violation.hasErrors() || violation.hasWarnings()) {
@@ -375,9 +376,9 @@ public class StatusService {
                     break;
                 }
             }
-            } else if (newStatusWert != 7){
+            } else if (newStatusWert != 7) {
                     Violation error = new Violation();
-                    error.addError("messwert", 631);
+                    error.addError("messwert", StatusCodes.VALUE_MISSING);
                     violation.addErrors(error.getErrors());
                     violationCollection.addErrors(violation.getErrors());
             }
@@ -395,7 +396,8 @@ public class StatusService {
             if (violationCollection.hasErrors()
                 || violationCollection.hasWarnings()
             ) {
-                Response response = new Response(false, 605, status);
+                Response response =
+                    new Response(false, StatusCodes.ERROR_MERGING, status);
                 response.setErrors(violationCollection.getErrors());
                 response.setWarnings(violationCollection.getWarnings());
                 response.setNotifications(
@@ -447,7 +449,7 @@ public class StatusService {
         @PathParam("id") String id,
         StatusProtokoll status
     ) {
-        return new Response(false, 699, status);
+        return new Response(false, StatusCodes.NOT_ALLOWED, status);
     }
 
     /**
@@ -478,10 +480,10 @@ public class StatusService {
                 RequestMethod.DELETE,
                 StatusProtokoll.class)
         ) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
         if (lock.isLocked(obj)) {
-            return new Response(false, 697, null);
+            return new Response(false, StatusCodes.CHANGED_VALUE, null);
         }
         /* Delete the object*/
         return defaultRepo.delete(obj, Strings.LAND);

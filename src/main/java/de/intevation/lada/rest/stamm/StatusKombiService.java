@@ -40,6 +40,7 @@ import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 
@@ -135,7 +136,7 @@ public class StatusKombiService {
         for (JsonNumber id : idList) {
             intList.add(id.intValue());
         }
-        return new Response(true, 200, getReachable(intList, user));
+        return new Response(true, StatusCodes.OK, getReachable(intList, user));
     }
 
     /**

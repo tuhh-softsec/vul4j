@@ -39,6 +39,7 @@ import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
@@ -170,7 +171,7 @@ public class MessprogrammService {
                 mp.setWarnings(violation.getWarnings());
             }
         }
-        return new Response(true, 200, messprogramms, size);
+        return new Response(true, StatusCodes.OK, messprogramms, size);
     }
 
     /**
@@ -253,12 +254,13 @@ public class MessprogrammService {
                 RequestMethod.POST,
                 Messprogramm.class)
         ) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
 
         Violation violation = validator.validate(messprogramm);
         if (violation.hasErrors()) {
-            Response response = new Response(false, 604, messprogramm);
+            Response response = new Response(
+                false, StatusCodes.ERROR_VALIDATION, messprogramm);
             response.setErrors(violation.getErrors());
             response.setWarnings(violation.getWarnings());
             return response;
@@ -276,7 +278,7 @@ public class MessprogrammService {
             repository.getById(Messprogramm.class, ret.getId(), Strings.LAND);
         return authorization.filter(
             request,
-            new Response(true, 200, created.getData()),
+            new Response(true, StatusCodes.OK, created.getData()),
             Messprogramm.class);
     }
 
@@ -327,12 +329,13 @@ public class MessprogrammService {
                 RequestMethod.PUT,
                 Messprogramm.class)
         ) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
 
         Violation violation = validator.validate(messprogramm);
         if (violation.hasErrors()) {
-            Response response = new Response(false, 604, messprogramm);
+            Response response =
+                new Response(false, StatusCodes.ERROR_VALIDATION, messprogramm);
             response.setErrors(violation.getErrors());
             response.setWarnings(violation.getWarnings());
             return response;
@@ -384,20 +387,20 @@ public class MessprogrammService {
         try {
             active = data.getBoolean("aktiv");
         } catch (NullPointerException npe) {
-            return new Response(false, 600, null);
+            return new Response(false, StatusCodes.NOT_EXISTING, null);
         }
 
         List<Integer> idList = new ArrayList<>();
         try {
             JsonArray ids = data.getJsonArray("ids");
             if (ids.size() == 0) {
-                return new Response(false, 600, null);
+                return new Response(false, StatusCodes.NOT_EXISTING, null);
             }
             for (int i = 0; i < ids.size(); i++) {
                 idList.add(ids.getInt(i));
             }
         } catch (NullPointerException npe) {
-            return new Response(false, 600, null);
+            return new Response(false, StatusCodes.NOT_EXISTING, null);
         }
 
         QueryBuilder<Messprogramm> builder = new QueryBuilder<>(
@@ -421,12 +424,12 @@ public class MessprogrammService {
                 int code = Integer.valueOf(r.getMessage()).intValue();
                 mpResult.put("success", code);
             } else {
-                mpResult.put("success", 699);
+                mpResult.put("success", StatusCodes.NOT_ALLOWED);
             }
             result.add(mpResult);
         }
 
-        return new Response(true, 200, result);
+        return new Response(true, StatusCodes.OK, result);
     }
 
     /**
@@ -458,7 +461,7 @@ public class MessprogrammService {
         List<Probe> probes =
             repository.filterPlain(builder.getQuery(), Strings.LAND);
         if (probes.size() > 0) {
-            return new Response(false, 606, null);
+            return new Response(false, StatusCodes.ERROR_DELETE, null);
         }
 
         if (!authorization.isAuthorized(
@@ -467,7 +470,7 @@ public class MessprogrammService {
                 RequestMethod.DELETE,
                 Messprogramm.class)
         ) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
         /* Delete the messprogramm object*/
         Response response = repository.delete(messprogrammObj, Strings.LAND);

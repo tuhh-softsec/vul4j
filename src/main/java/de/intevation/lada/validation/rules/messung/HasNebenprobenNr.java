@@ -8,6 +8,7 @@
 package de.intevation.lada.validation.rules.messung;
 
 import de.intevation.lada.model.land.Messung;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
 import de.intevation.lada.validation.rules.Rule;
@@ -27,7 +28,8 @@ public class HasNebenprobenNr implements Rule {
         if (messung.getNebenprobenNr() == null ||
             messung.getNebenprobenNr().equals("")) {
             Violation violation = new Violation();
-            violation.addNotification("nebenprobenNr", 631);
+            violation.addNotification(
+                "nebenprobenNr", StatusCodes.VALUE_MISSING);
             return violation;
         }
         return null;

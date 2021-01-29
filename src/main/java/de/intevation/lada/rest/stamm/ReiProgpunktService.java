@@ -28,6 +28,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.rest.Response;
 
 /**
@@ -88,7 +89,10 @@ public class ReiProgpunktService {
         try {
             id = Integer.valueOf(params.getFirst("reiprogpunktgruppe"));
         } catch (NumberFormatException e) {
-            return new Response(false, 603, "Not a valid filter id");
+            return new Response(
+                false,
+                StatusCodes.ERROR_DB_CONNECTION,
+                "Not a valid filter id");
         }
         QueryBuilder<ReiProgpunktGrpZuord> builder =
             new QueryBuilder<ReiProgpunktGrpZuord>(
@@ -99,7 +103,7 @@ public class ReiProgpunktService {
         List<ReiProgpunktGrpZuord> zuord =
             repository.filterPlain(builder.getQuery(), "stamm");
         if (zuord.isEmpty()) {
-            return new Response(true, 200, null);
+            return new Response(true, StatusCodes.OK, null);
         }
         QueryBuilder<ReiProgpunkt> builder1 =
             new QueryBuilder<ReiProgpunkt>(

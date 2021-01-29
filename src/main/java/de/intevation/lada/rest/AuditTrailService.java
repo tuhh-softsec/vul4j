@@ -48,6 +48,7 @@ import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 
 /**
@@ -221,7 +222,7 @@ public class AuditTrailService {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode responseNode = mapper.createObjectNode();
         responseNode.put("success", true);
-        responseNode.put("message", 200);
+        responseNode.put("message", StatusCodes.OK);
         ObjectNode auditJson = responseNode.putObject("data");
         ArrayNode entries = auditJson.putArray("audit");
         auditJson.put("id", probe.getId());
@@ -373,7 +374,7 @@ public class AuditTrailService {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode responseNode = mapper.createObjectNode();
         responseNode.put("success", true);
-        responseNode.put("message", 200);
+        responseNode.put("message", StatusCodes.OK);
         ObjectNode auditJson = responseNode.putObject("data");
         ArrayNode entries = auditJson.putArray("audit");
         auditJson.put("id", messung.getId());

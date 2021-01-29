@@ -12,6 +12,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import de.intevation.lada.model.stammdaten.Ort;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.validation.annotation.ValidationConfig;
 import de.intevation.lada.validation.annotation.ValidationRule;
 import de.intevation.lada.validation.rules.Rule;
@@ -36,7 +37,7 @@ public class OrtValidator implements Validator {
     public Violation validate(Object object) {
         Violation violations = new Violation();
         if (!(object instanceof Ort)) {
-            violations.addError("ort", 602);
+            violations.addError("ort", StatusCodes.NOT_A_PROBE);
             return violations;
         }
         for (Rule rule : rules) {

@@ -16,6 +16,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 import de.intevation.lada.validation.Violation;
@@ -59,7 +60,7 @@ public class UniqueHauptprobenNr implements Rule {
                     return null;
                 }
                 Violation violation = new Violation();
-                violation.addError("hauptprobenNr", 611);
+                violation.addError("hauptprobenNr", StatusCodes.VALUE_AMBIGOUS);
                 return violation;
             }
         }

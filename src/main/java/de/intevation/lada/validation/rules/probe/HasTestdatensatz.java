@@ -8,6 +8,7 @@
 package de.intevation.lada.validation.rules.probe;
 
 import de.intevation.lada.model.land.Probe;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.rules.Rule;
 
@@ -24,7 +25,7 @@ public class HasTestdatensatz implements Rule {
         Probe probe = (Probe) object;
         if (probe.getTest() == null) {
             Violation violation = new Violation();
-            violation.addError("test", 631);
+            violation.addError("test", StatusCodes.VALUE_MISSING);
             return violation;
         }
         return null;

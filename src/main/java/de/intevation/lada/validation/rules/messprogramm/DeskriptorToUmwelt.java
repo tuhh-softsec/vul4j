@@ -19,6 +19,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 import de.intevation.lada.validation.Violation;
@@ -86,7 +87,7 @@ public class DeskriptorToUmwelt implements Rule {
             List<Deskriptoren> data = (List<Deskriptoren>) response.getData();
             if (data.isEmpty()) {
                 Violation violation = new Violation();
-                violation.addWarning("mediaDesk", 633);
+                violation.addWarning("mediaDesk", StatusCodes.VAL_DESK);
                 return violation;
             }
             hdParent = data.get(0).getId();
@@ -113,7 +114,8 @@ public class DeskriptorToUmwelt implements Rule {
 
         if (media.size() == 0) {
             Violation violation = new Violation();
-            violation.addWarning("umwId#" + umwId, 632);
+            violation.addWarning(
+                "umwId#" + umwId, StatusCodes.VALUE_NOT_MATCHING);
             return violation;
         }
 
@@ -136,7 +138,8 @@ public class DeskriptorToUmwelt implements Rule {
             (List<DeskriptorUmwelt>) response.getData();
         if (data.isEmpty()) {
             Violation violation = new Violation();
-            violation.addWarning("umwId#" + umwId, 632);
+            violation.addWarning(
+                "umwId#" + umwId, StatusCodes.VALUE_NOT_MATCHING);
             return violation;
         }
 
@@ -145,11 +148,13 @@ public class DeskriptorToUmwelt implements Rule {
             return null;
         } else if (unique && !umwId.equals(data.get(0).getUmwId())) {
             Violation violation = new Violation();
-            violation.addWarning("umwId#" + umwId, 632);
+            violation.addWarning(
+                "umwId#" + umwId, StatusCodes.VALUE_NOT_MATCHING);
             return violation;
         } else {
             Violation violation = new Violation();
-            violation.addWarning("umwId#" + umwId, 632);
+            violation.addWarning(
+                "umwId#" + umwId, StatusCodes.VALUE_NOT_MATCHING);
 
             int found = -1;
             int lastMatch = -12;

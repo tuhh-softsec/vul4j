@@ -62,6 +62,7 @@ import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
@@ -158,7 +159,9 @@ public class OrtService {
             try {
                 id = Integer.valueOf(params.getFirst("ortId"));
             } catch (NumberFormatException e) {
-                return new Response(false, 603, "Not a valid filter id");
+                return new Response(
+                    false,
+                    StatusCodes.ERROR_DB_CONNECTION, "Not a valid filter id");
             }
 
             Ort o = repository.getByIdPlain(Ort.class, id, Strings.STAMM);
@@ -176,7 +179,7 @@ public class OrtService {
                 o.setErrors(violation.getErrors());
                 o.setWarnings(violation.getWarnings());
             }
-            return new Response(true, 200, o);
+            return new Response(true, StatusCodes.OK, o);
         }
 
         List<Ort> orte = new ArrayList<>();
@@ -283,7 +286,7 @@ public class OrtService {
                 o.setWarnings(violation.getWarnings());
             }
         }
-        return new Response(true, 200, orte, size);
+        return new Response(true, StatusCodes.OK, size);
     }
 
     /**
@@ -324,7 +327,7 @@ public class OrtService {
                 Ort.class
             )
         );
-        return new Response(true, 200, ort);
+        return new Response(true, StatusCodes.OK, ort);
     }
 
     /**
@@ -373,9 +376,9 @@ public class OrtService {
                         RequestMethod.PUT,
                         Ort.class));
             }
-            return new Response(true, 200, orte, orte.size());
+            return new Response(true, StatusCodes.OK, orte, orte.size());
         }
-        return new Response(true, 200, null, 0);
+        return new Response(true, StatusCodes.OK, null, 0);
     }
 
     /**
@@ -417,7 +420,7 @@ public class OrtService {
             RequestMethod.POST,
             Ort.class)
         ) {
-            return new Response(false, 699, ort);
+            return new Response(false, StatusCodes.NOT_ALLOWED, ort);
         }
 
         ort = ortFactory.completeOrt(ort);
@@ -426,20 +429,22 @@ public class OrtService {
             for (ReportItem err : ortFactory.getErrors()) {
                 factoryErrs.addError(err.getKey(), err.getCode());
             }
-            Response response = new Response(false, 604, ort);
+            Response response =
+                new Response(false, StatusCodes.ERROR_VALIDATION, ort);
             response.setErrors(factoryErrs.getErrors());
             return response;
         }
 
         Violation violation = validator.validate(ort);
         if (violation.hasErrors()) {
-            Response response = new Response(false, 604, ort);
+            Response response =
+                new Response(false, StatusCodes.ERROR_VALIDATION, ort);
             response.setErrors(violation.getErrors());
             response.setWarnings(violation.getWarnings());
             return response;
         }
 
-        Response response = new Response(true, 201, ort);
+        Response response = new Response(true, StatusCodes.OK, ort);
         if (ort.getId() == null) {
             response = repository.create(ort, Strings.STAMM);
         }
@@ -491,13 +496,13 @@ public class OrtService {
             RequestMethod.PUT,
             Ort.class)
         ) {
-            return new Response(false, 699, ort);
+            return new Response(false, StatusCodes.NOT_ALLOWED, ort);
         }
 
         Ort dbOrt = repository.getByIdPlain(
             Ort.class, ort.getId(), Strings.STAMM);
         if (dbOrt == null) {
-            return new Response(false, 600, ort);
+            return new Response(false, StatusCodes.NOT_EXISTING, ort);
         }
         String dbCoordX = dbOrt.getKoordXExtern();
         String dbCoordY = dbOrt.getKoordYExtern();
@@ -508,12 +513,13 @@ public class OrtService {
             MultivaluedMap<String, Integer> error =
                 new MultivaluedHashMap<String, Integer>();
             if (!dbCoordX.equals(ort.getKoordXExtern())) {
-                error.add("koordXExtern", 653);
+                error.add("koordXExtern", StatusCodes.GEO_UNCHANGEABLE_COORD);
             }
             if (!dbCoordY.equals(ort.getKoordYExtern())) {
-                error.add("koordYExtern", 653);
+                error.add("koordYExtern", StatusCodes.GEO_UNCHANGEABLE_COORD);
             }
-            Response response =  new Response(false, 604, ort);
+            Response response =
+                new Response(false, StatusCodes.ERROR_VALIDATION, ort);
             response.setErrors(error);
             return response;
         }
@@ -524,14 +530,16 @@ public class OrtService {
             for (ReportItem err : ortFactory.getErrors()) {
                 factoryErrs.addError(err.getKey(), err.getCode());
             }
-            Response response = new Response(false, 604, ort);
+            Response response =
+                new Response(false, StatusCodes.ERROR_VALIDATION, ort);
             response.setErrors(factoryErrs.getErrors());
             return response;
         }
 
         Violation violation = validator.validate(ort);
         if (violation.hasErrors()) {
-            Response response = new Response(false, 604, ort);
+            Response response =
+                new Response(false, StatusCodes.ERROR_VALIDATION, ort);
             response.setErrors(violation.getErrors());
             response.setWarnings(violation.getWarnings());
             return response;
@@ -568,7 +576,7 @@ public class OrtService {
         }
         Ort ort = (Ort) response.getData();
         if (getOrtsZuordnungs(ort).size() > 0) {
-            return new Response(false, 606, ort);
+            return new Response(false, StatusCodes.ERROR_DELETE, ort);
         }
         if (!authorization.isAuthorized(
             request,
@@ -576,7 +584,7 @@ public class OrtService {
             RequestMethod.DELETE,
             Ort.class)
         ) {
-            return new Response(false, 699, ort);
+            return new Response(false, StatusCodes.NOT_ALLOWED, ort);
         }
 
         return repository.delete(ort, Strings.STAMM);

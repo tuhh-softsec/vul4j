@@ -17,6 +17,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
@@ -52,7 +53,8 @@ public class HasEntnahmeOrt implements Rule {
                     && !o.getId().equals(ort.getId())
                 ) {
                     Violation violation = new Violation();
-                    violation.addError("ortszuordnungTyp", 611);
+                    violation.addError(
+                        "ortszuordnungTyp", StatusCodes.VALUE_AMBIGOUS);
                     return violation;
                 }
             }
@@ -76,7 +78,8 @@ public class HasEntnahmeOrt implements Rule {
                     && !o.getId().equals(ort.getId())
                 ) {
                     Violation violation = new Violation();
-                    violation.addError("ortszuordnungTyp", 611);
+                    violation.addError(
+                        "ortszuordnungTyp", StatusCodes.VALUE_AMBIGOUS);
                     return violation;
                 }
             }

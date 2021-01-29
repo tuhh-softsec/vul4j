@@ -23,6 +23,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.log4j.Logger;
 
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.rest.Response;
 
 /**
@@ -73,10 +74,10 @@ public class VersionService {
         String version = "unknown";
         try {
             version = ResourceBundle.getBundle("lada").getString("version");
-            return new Response(true, 200, version);
+            return new Response(true, StatusCodes.OK, version);
         } catch (MissingResourceException mre) {
             logger.error(mre);
         }
-        return new Response(false, 200, version);
+        return new Response(false, StatusCodes.OK, version);
     }
 }

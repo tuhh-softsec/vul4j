@@ -21,6 +21,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 import de.intevation.lada.validation.Violation;
@@ -107,8 +108,14 @@ public class HasPflichtmessgroessen implements Rule {
         pflicht.removeAll(tmp);
         if (!pflicht.isEmpty()) {
             for (PflichtMessgroesse p : pflicht) {
-                Messgroesse mg = repository.getByIdPlain(Messgroesse.class, p.getMessgroesseId(), Strings.STAMM);
-                violation.addNotification("messgroesse#" + mg.getMessgroesse(), 638);
+                Messgroesse mg =
+                    repository.getByIdPlain(
+                        Messgroesse.class,
+                        p.getMessgroesseId(),
+                        Strings.STAMM);
+                violation.addNotification(
+                    "messgroesse#" + mg.getMessgroesse(),
+                    StatusCodes.VAL_OBL_MEASURE);
             }
         }
         return violation.hasNotifications() ? violation : null;

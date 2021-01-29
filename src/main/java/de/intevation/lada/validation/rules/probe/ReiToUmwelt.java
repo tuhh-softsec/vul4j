@@ -17,6 +17,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
 import de.intevation.lada.validation.rules.Rule;
@@ -63,7 +64,7 @@ public class ReiToUmwelt implements Rule {
             }
         }
         Violation violation = new Violation();
-        violation.addWarning("umwId", 632);
+        violation.addWarning("umwId", StatusCodes.VALUE_NOT_MATCHING);
         return violation;
     }
 }

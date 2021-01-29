@@ -44,6 +44,7 @@ import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 
@@ -139,7 +140,7 @@ public class QueryService {
                     mstIds.toArray(new String[mstIds.size()]));
             }
         }
-        return new Response(true, 200, queries);
+        return new Response(true, StatusCodes.OK, queries);
     }
 
     /**
@@ -157,7 +158,7 @@ public class QueryService {
         if (query.getUserId() != null
             && !query.getUserId().equals(userInfo.getUserId())
         ) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         } else {
             query.setUserId(userInfo.getUserId());
             for (String m : query.getMessStellesIds()) {
@@ -184,7 +185,7 @@ public class QueryService {
         if (query.getUserId() != null
             && !query.getUserId().equals(userInfo.getUserId())
         ) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
 
         query.setUserId(userInfo.getUserId());
@@ -260,6 +261,6 @@ public class QueryService {
         if (query.getUserId().equals(userInfo.getUserId())) {
             return repository.delete(query, Strings.STAMM);
         }
-        return new Response(false, 699, null);
+        return new Response(false, StatusCodes.NOT_ALLOWED, null);
     }
 }

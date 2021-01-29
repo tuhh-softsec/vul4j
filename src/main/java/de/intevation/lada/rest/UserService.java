@@ -25,6 +25,7 @@ import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.auth.UserInfo;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.rest.Response;
 
 import org.apache.log4j.Logger;
@@ -109,6 +110,6 @@ public class UserService {
             + request.getAttribute("lada.user.roles")
         );
 
-        return new Response(true, 200, response);
+        return new Response(true, StatusCodes.OK, response);
     }
 }

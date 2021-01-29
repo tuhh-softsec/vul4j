@@ -8,6 +8,7 @@
 package de.intevation.lada.validation.rules.probe;
 
 import de.intevation.lada.model.land.Probe;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
 import de.intevation.lada.validation.rules.Rule;
@@ -28,7 +29,8 @@ public class HasHauptprobenNr implements Rule {
             || probe.getHauptprobenNr().equals("")
         ) {
             Violation violation = new Violation();
-            violation.addNotification("hauptprobenNr", 631);
+            violation.addNotification(
+                "hauptprobenNr", StatusCodes.VALUE_MISSING);
             return violation;
         }
         return null;

@@ -18,6 +18,7 @@ import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 import de.intevation.lada.validation.Violation;
@@ -47,7 +48,7 @@ public class DateMesszeitpunkt implements Rule {
 
         if (probe == null) {
             Map<String, Integer> errors = new HashMap<String, Integer>();
-            errors.put("lprobe", 604);
+            errors.put("lprobe", StatusCodes.ERROR_VALIDATION);
             return null;
         }
 
@@ -57,7 +58,7 @@ public class DateMesszeitpunkt implements Rule {
 
         if (messung.getMesszeitpunkt().after(new Date())) {
             Violation violation = new Violation();
-            violation.addWarning("messzeitpunkt", 661);
+            violation.addWarning("messzeitpunkt", StatusCodes.DATE_IN_FUTURE);
             return violation;
         }
 
@@ -73,7 +74,7 @@ public class DateMesszeitpunkt implements Rule {
             Violation violation = new Violation();
             violation.addWarning(
                 "messzeitpunkt#" + messung.getNebenprobenNr(),
-                632);
+                StatusCodes.VALUE_NOT_MATCHING);
             return violation;
         }
         return null;

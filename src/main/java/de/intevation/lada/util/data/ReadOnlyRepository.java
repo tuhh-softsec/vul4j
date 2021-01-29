@@ -81,7 +81,7 @@ public class ReadOnlyRepository implements Repository {
         List<T> result =
             transaction.entityManager(dataSource)
                 .createQuery(filter).getResultList();
-        return new Response(true, 200, result);
+        return new Response(true, StatusCodes.OK, result);
     }
 
 
@@ -107,9 +107,9 @@ public class ReadOnlyRepository implements Repository {
                 .createQuery(filter).getResultList();
         if (size > 0 && start > -1) {
             List<T> newList = result.subList(start, size + start);
-            return new Response(true, 200, newList, result.size());
+            return new Response(true, StatusCodes.OK, newList, result.size());
         }
-        return new Response(true, 200, result);
+        return new Response(true, StatusCodes.OK, result);
     }
 
     /**
@@ -126,7 +126,7 @@ public class ReadOnlyRepository implements Repository {
             new QueryBuilder<T>(manager, clazz);
         List<T> result =
             manager.createQuery(builder.getQuery()).getResultList();
-        return new Response(true, 200, result);
+        return new Response(true, StatusCodes.OK, result);
     }
 
     /**
@@ -142,9 +142,9 @@ public class ReadOnlyRepository implements Repository {
     public <T> Response getById(Class<T> clazz, Object id, String dataSource) {
         T item = transaction.entityManager(dataSource).find(clazz, id);
         if (item == null) {
-            return new Response(false, 600, null);
+            return new Response(false, StatusCodes.NOT_EXISTING, null);
         }
-        return new Response(true, 200, item);
+        return new Response(true, StatusCodes.OK, item);
     }
 
     @Override

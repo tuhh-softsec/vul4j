@@ -32,6 +32,7 @@ import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
@@ -107,14 +108,14 @@ public class KommentarMService {
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty() || !params.containsKey("messungsId")) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
         String messungId = params.getFirst("messungsId");
         int id;
         try {
             id = Integer.valueOf(messungId);
         } catch (NumberFormatException nfe) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
         Messung messung = defaultRepo.getByIdPlain(
             Messung.class,
@@ -123,7 +124,7 @@ public class KommentarMService {
         if (!authorization.isAuthorized(
                 request, messung, RequestMethod.GET, Messung.class)
         ) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
 
         QueryBuilder<KommentarM> builder =
@@ -165,7 +166,7 @@ public class KommentarMService {
         if (!authorization.isAuthorized(
                 request, messung, RequestMethod.GET, Messung.class)
         ) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
 
         return authorization.filter(
@@ -206,7 +207,7 @@ public class KommentarMService {
                 RequestMethod.POST,
                 KommentarM.class)
         ) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
         /* Persist the new object*/
         return authorization.filter(
@@ -249,7 +250,7 @@ public class KommentarMService {
                 RequestMethod.PUT,
                 KommentarM.class)
         ) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
         return authorization.filter(
             request,
@@ -285,7 +286,7 @@ public class KommentarMService {
                 RequestMethod.DELETE,
                 KommentarM.class)
         ) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
         return defaultRepo.delete(kommentarObj, Strings.LAND);
     }

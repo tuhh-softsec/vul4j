@@ -40,6 +40,7 @@ import de.intevation.lada.util.data.MesswertNormalizer;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.StatusCodes;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
@@ -136,14 +137,14 @@ public class MesswertService {
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty() || !params.containsKey("messungsId")) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
         String messungId = params.getFirst("messungsId");
         int id;
         try {
             id = Integer.valueOf(messungId);
         } catch (NumberFormatException nfe) {
-            return new Response(false, 698, null);
+            return new Response(false, StatusCodes.NO_ACCESS, null);
         }
         Messung messung = defaultRepo.getByIdPlain(
             Messung.class,
@@ -155,7 +156,7 @@ public class MesswertService {
                 RequestMethod.GET,
                 Messung.class)
         ) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
         QueryBuilder<Messwert> builder =
             new QueryBuilder<Messwert>(
@@ -178,7 +179,7 @@ public class MesswertService {
                     messwert.setNotifications(violation.getNotifications());
                 }
             }
-            return new Response(true, 200, messwerts);
+            return new Response(true, StatusCodes.OK, messwerts);
         } else {
             return r;
         }
@@ -215,7 +216,7 @@ public class MesswertService {
             RequestMethod.GET,
             Messung.class)
         ) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
         Violation violation = validator.validate(messwert);
         if (violation.hasErrors() || violation.hasWarnings()) {
@@ -269,11 +270,12 @@ public class MesswertService {
                 RequestMethod.POST,
                 Messwert.class)
         ) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
         Violation violation = validator.validate(messwert);
         if (violation.hasErrors()) {
-            Response response = new Response(false, 604, messwert);
+            Response response =
+                new Response(false, StatusCodes.ERROR_VALIDATION, messwert);
             response.setErrors(violation.getErrors());
             response.setWarnings(violation.getWarnings());
             response.setNotifications(violation.getNotifications());
@@ -335,14 +337,15 @@ public class MesswertService {
                 RequestMethod.PUT,
                 Messwert.class)
         ) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
         if (lock.isLocked(messwert)) {
-            return new Response(false, 697, null);
+            return new Response(false, StatusCodes.CHANGED_VALUE, null);
         }
         Violation violation = validator.validate(messwert);
         if (violation.hasErrors()) {
-            Response response = new Response(false, 604, messwert);
+            Response response =
+                new Response(false, StatusCodes.ERROR_VALIDATION, messwert);
             response.setErrors(violation.getErrors());
             response.setWarnings(violation.getWarnings());
             response.setNotifications(violation.getNotifications());
@@ -383,14 +386,14 @@ public class MesswertService {
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty() || !params.containsKey("messungsId")) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
         String messungId = params.getFirst("messungsId");
         int messungIdInt;
         try {
             messungIdInt = Integer.valueOf(messungId);
         } catch (NumberFormatException nfe) {
-            return new Response(false, 698, null);
+            return new Response(false, StatusCodes.NO_ACCESS, null);
         }
         //Load messung, probe and umwelt to get MessEinheit to convert to
         Messung messung = defaultRepo.getByIdPlain(
@@ -403,14 +406,14 @@ public class MesswertService {
             RequestMethod.PUT,
             Messung.class)
         ) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
 
         Probe probe =
             defaultRepo.getByIdPlain(
                 Probe.class, messung.getProbeId(), Strings.LAND);
         if (probe.getUmwId() == null || probe.getUmwId().equals("")) {
-            return new Response(true, 696, null);
+            return new Response(true, StatusCodes.OP_NOT_POSSIBLE, null);
         }
         Umwelt umwelt =
             defaultRepo.getByIdPlain(
@@ -432,14 +435,15 @@ public class MesswertService {
                 RequestMethod.PUT,
                 Messwert.class)
             ) {
-                return new Response(false, 699, null);
+                return new Response(false, StatusCodes.NOT_ALLOWED, null);
             }
             if (lock.isLocked(messwert)) {
-                return new Response(false, 697, null);
+                return new Response(false, StatusCodes.CHANGED_VALUE, null);
             }
             Violation violation = validator.validate(messwert);
             if (violation.hasErrors()) {
-                Response response = new Response(false, 604, messwert);
+                Response response =
+                    new Response(false, StatusCodes.ERROR_VALIDATION, messwert);
                 response.setErrors(violation.getErrors());
                 response.setWarnings(violation.getWarnings());
                 response.setNotifications(violation.getNotifications());
@@ -463,7 +467,7 @@ public class MesswertService {
                     updated,
                     Messwert.class);
         }
-        return new Response(true, 200, messwerte);
+        return new Response(true, StatusCodes.OK, messwerte);
     }
 
     /**
@@ -494,10 +498,10 @@ public class MesswertService {
                 RequestMethod.DELETE,
                 Messwert.class)
         ) {
-            return new Response(false, 699, null);
+            return new Response(false, StatusCodes.NOT_ALLOWED, null);
         }
         if (lock.isLocked(messwert)) {
-            return new Response(false, 697, null);
+            return new Response(false, StatusCodes.NO_ACCESS, null);
         }
         /* Delete the messwert object*/
         return defaultRepo.delete(messwertObj, Strings.LAND);
