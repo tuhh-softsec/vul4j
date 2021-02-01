@@ -204,8 +204,9 @@ public class JsonExporter implements Exporter {
             return null;
         }
 
-        InputStream in = new ByteArrayInputStream(json.getBytes());
+        InputStream in;
         try {
+            in = new ByteArrayInputStream(json.getBytes(encoding));
             in.close();
         } catch (IOException e) {
             logger.debug("Error while closing Stream.", e);
