@@ -90,7 +90,7 @@ public class JsonExporter implements Exporter {
      * @param queryResult Result to export as list of maps. Every list item
      *                    represents a row,
      *                    while every map key represents a column
-     * @param encoding Encoding to use
+     * @param encoding Ignored. Result is always UTF_8.
      * @param options Export options as JSON Object. Options are: <p>
      *        <ul>
      *          <li> id: Name of the id column, mandatory </li>
@@ -191,6 +191,14 @@ public class JsonExporter implements Exporter {
         return arrayBuilder.build();
     }
 
+    /**
+     * Export Probe objects as JSON.
+     * @param proben List of Probe IDs to export.
+     * @param messungen Ignored. All associated Messung objects are exported.
+     * @param encoding Ignored. Result is always UTF_8.
+     * @param userInfo UserInfo
+     * @return Export result as InputStream or null if the export failed
+     */
     @Override
     public InputStream exportProben(
         List<Integer> proben,
@@ -204,9 +212,9 @@ public class JsonExporter implements Exporter {
             return null;
         }
 
-        InputStream in;
+        InputStream in = new ByteArrayInputStream(
+            json.getBytes(StandardCharsets.UTF_8));
         try {
-            in = new ByteArrayInputStream(json.getBytes(encoding));
             in.close();
         } catch (IOException e) {
             logger.debug("Error while closing Stream.", e);
