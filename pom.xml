@@ -501,6 +501,24 @@
         </profile>
     </profiles>
 
+    <reporting>
+        <plugins>
+            <!-- `mvn compile site' can be used to generate a report using
+                 SpotBugs (https://spotbugs.github.io) in
+                 target/site/spotbugs.html -->
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>4.2.0</version>
+                <configuration>
+                    <excludeFilterFile>
+                        spotbugs_excludes.xml
+                    </excludeFilterFile>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+
     <repositories>
         <repository>
             <id>OSGEO Release Repo</id>

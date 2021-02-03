@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+  <Match>
+    <!-- Exclude model classes with trailing underscore
+         generated at compile time -->
+    <Class name="~de\.intevation\.lada\.model\..*_"/>
+  </Match>
+  <!-- Exclude generated code -->
+  <Match>
+    <Class name="~de\.intevation\.lada\.importer\.laf\.LafBaseListener"/>
+  </Match>
+  <Match>
+    <Class name="~de\.intevation\.lada\.importer\.laf\.LafListener"/>
+  </Match>
+  <Match>
+    <Class name="~de\.intevation\.lada\.importer\.laf\.LafParser"/>
+  </Match>
+  <Match>
+    <Class name="~de\.intevation\.lada\.importer\.laf\.LafLexer"/>
+  </Match>
+</FindBugsFilter>
