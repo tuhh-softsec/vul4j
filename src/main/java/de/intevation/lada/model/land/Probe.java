@@ -127,6 +127,10 @@ public class Probe implements Serializable {
 
     @Transient
     @JsonIgnore
+    private boolean found;
+
+    @Transient
+    @JsonIgnore
     private MultivaluedMap<String, Integer> errors;
 
     @Transient
@@ -399,5 +403,13 @@ public class Probe implements Serializable {
     @JsonIgnore
     public void setWarnings(MultivaluedMap<String, Integer> warnings) {
         this.warnings = warnings;
+    }
+
+    public boolean isFound() {
+        return found;
+    }
+
+    public void setFound(boolean found) {
+        this.found = found;
     }
 }

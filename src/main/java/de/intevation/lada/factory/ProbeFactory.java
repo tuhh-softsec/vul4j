@@ -11,8 +11,10 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -28,6 +30,7 @@ import de.intevation.lada.model.land.OrtszuordnungMp;
 import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.model.stammdaten.DeskriptorUmwelt;
 import de.intevation.lada.model.stammdaten.Deskriptoren;
+import de.intevation.lada.model.stammdaten.Ort;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
@@ -302,6 +305,10 @@ public class ProbeFactory {
     @RepositoryConfig(type = RepositoryType.RW)
     private Repository repository;
 
+    private List<Map<String, Object>> protocol;
+
+    private Map<String, Object> currentProtocol;
+
     /**
      * Create a list of probe objects.
      *
@@ -311,7 +318,8 @@ public class ProbeFactory {
      *
      * @return List of probe objects.
      */
-    public List<Probe> create(Messprogramm messprogramm, Long from, Long to) {
+    public List<Probe> create(Messprogramm messprogramm, Long from, Long to, boolean dryrun) {
+        protocol = new ArrayList<>();
         Calendar start = Calendar.getInstance();
         start.setTimeInMillis(from);
 
@@ -369,7 +377,8 @@ public class ProbeFactory {
                 Probe probe = createObjects(
                     messprogramm,
                     sollFrom.getTime(),
-                    sollTo.getTime()
+                    sollTo.getTime(),
+                    dryrun
                 );
                 if (probe != null) {
                     proben.add(probe);
@@ -392,8 +401,10 @@ public class ProbeFactory {
     private Probe createObjects(
         Messprogramm messprogramm,
         Date startDate,
-        Date endDate
+        Date endDate,
+        boolean dryrun
     ) {
+        currentProtocol = new HashMap<>();
         QueryBuilder<Probe> builderProbe =
             new QueryBuilder<Probe>(
                 repository.entityManager(Strings.LAND),
@@ -402,11 +413,40 @@ public class ProbeFactory {
         builderProbe.and("solldatumBeginn", startDate);
         builderProbe.and("solldatumEnde", endDate);
 
+        QueryBuilder<MessprogrammMmt> builder =
+            new QueryBuilder<MessprogrammMmt>(
+                    repository.entityManager(Strings.LAND),
+                    MessprogrammMmt.class);
+        builder.and("messprogrammId", messprogramm.getId());
+        Response response = repository.filter(builder.getQuery(), Strings.LAND);
+        @SuppressWarnings("unchecked")
+        List<MessprogrammMmt> mmts = (List<MessprogrammMmt>)response.getData();
+        List<String> messungProtocol = new ArrayList<>();
         List<Probe> proben =
             repository.filterPlain(builderProbe.getQuery(), Strings.LAND);
 
+        QueryBuilder<OrtszuordnungMp> builderOrt =
+            new QueryBuilder<OrtszuordnungMp>(
+                repository.entityManager(Strings.LAND),
+                OrtszuordnungMp.class);
+        builderOrt.and("messprogrammId", messprogramm.getId());
+        List<OrtszuordnungMp> orte =
+            repository.filterPlain(builderOrt.getQuery(), Strings.LAND);
+
         if (!proben.isEmpty()) {
-            return null;
+            proben.get(0).setFound(true);
+            toProtocol(proben.get(0), dryrun);
+            protocol.add(currentProtocol);
+            for (int i = 0; i < mmts.size(); i++) {
+                MessprogrammMmt mmt = mmts.get(i);
+                messungProtocol.add(mmt.getMmtId());
+            }
+            currentProtocol.put("mmt", messungProtocol);
+            for (OrtszuordnungMp ort : orte) {
+                Ort o = repository.getByIdPlain(Ort.class, ort.getOrtId(), "stamm");
+                currentProtocol.put("gemId", o.getGemId());
+            }
+            return proben.get(0);
         }
         Probe probe = new Probe();
         probe.setBaId(messprogramm.getBaId());
@@ -425,7 +465,9 @@ public class ProbeFactory {
         probe.setMplId(messprogramm.getMplId());
         probe.setReiProgpunktGrpId(messprogramm.getReiProgpunktGrpId());
         probe.setKtaGruppeId(messprogramm.getKtaGruppeId());
-        repository.create(probe, Strings.LAND);
+        probe.setFound(false);
+        createObject(probe, dryrun);
+        toProtocol(probe, dryrun);
 
         if (messprogramm.getProbeKommentar() != null
             && !messprogramm.getProbeKommentar().equals("")
@@ -436,17 +478,9 @@ public class ProbeFactory {
             kommentar.setText(messprogramm.getProbeKommentar());
             kommentar.setMstId(messprogramm.getMstId());
 
-            repository.create(kommentar, Strings.LAND);
+            createObject(kommentar, dryrun);
         }
 
-        QueryBuilder<MessprogrammMmt> builder =
-            new QueryBuilder<MessprogrammMmt>(
-                    repository.entityManager(Strings.LAND),
-                    MessprogrammMmt.class);
-        builder.and("messprogrammId", messprogramm.getId());
-        Response response = repository.filter(builder.getQuery(), Strings.LAND);
-        @SuppressWarnings("unchecked")
-        List<MessprogrammMmt> mmts = (List<MessprogrammMmt>) response.getData();
         for (int i = 0; i < mmts.size(); i++) {
             MessprogrammMmt mmt = mmts.get(i);
             Messung messung = new Messung();
@@ -454,8 +488,8 @@ public class ProbeFactory {
             messung.setGeplant(true);
             messung.setMmtId(mmt.getMmtId());
             messung.setProbeId(probe.getId());
-            repository.create(messung, Strings.LAND);
-
+            createObject(messung, dryrun);
+            messungProtocol.add(mmt.getMmtId());
             for (int mw : mmt.getMessgroessen()) {
                 Messwert wert = new Messwert();
                 wert.setMessgroesseId(mw);
@@ -465,28 +499,50 @@ public class ProbeFactory {
                 } else {
                     wert.setMehId(0);
                 }
-                repository.create(wert, Strings.LAND);
+                createObject(wert, dryrun);
             }
         }
-        QueryBuilder<OrtszuordnungMp> builderOrt =
-            new QueryBuilder<OrtszuordnungMp>(
-                repository.entityManager(Strings.LAND),
-                OrtszuordnungMp.class);
-        builderOrt.and("messprogrammId", messprogramm.getId());
-        List<OrtszuordnungMp> orte =
-            repository.filterPlain(builderOrt.getQuery(), Strings.LAND);
+        currentProtocol.put("mmt", messungProtocol);
         for (OrtszuordnungMp ort : orte) {
             Ortszuordnung ortP = new Ortszuordnung();
             ortP.setOrtszuordnungTyp(ort.getOrtszuordnungTyp());
             ortP.setProbeId(probe.getId());
             ortP.setOrtId(ort.getOrtId());
             ortP.setOrtszusatztext(ort.getOrtszusatztext());
-            repository.create(ortP, Strings.LAND);
+            createObject(ortP, dryrun);
+            Ort o = repository.getByIdPlain(Ort.class, ortP.getOrtId(), "stamm");
+            currentProtocol.put("gemId", o.getGemId());
         }
         // Reolad the probe to have the old id
-        probe = (Probe) repository.getById(
-            Probe.class, probe.getId(), Strings.LAND).getData();
+        if (!dryrun) {
+            probe = (Probe)repository.getById(
+                Probe.class, probe.getId(), Strings.LAND).getData();
+        }
+        protocol.add(currentProtocol);
         return probe;
+    }
+
+    private void toProtocol(Probe probe, boolean dryrun) {
+        currentProtocol.put("id", probe.getId());
+        currentProtocol.put("externeProbeId", probe.getExterneProbeId());
+        currentProtocol.put("mstId", probe.getMstId());
+        currentProtocol.put("datenbasisId", probe.getDatenbasisId());
+        currentProtocol.put("baId", probe.getBaId());
+        currentProtocol.put("probenartId", probe.getProbenartId());
+        currentProtocol.put("solldatumBeginn", probe.getSolldatumBeginn());
+        currentProtocol.put("solldatumEnde", probe.getSolldatumEnde());
+        currentProtocol.put("mprId", probe.getMprId());
+        currentProtocol.put("mediaDesk", probe.getMediaDesk());
+        currentProtocol.put("umwId", probe.getUmwId());
+        currentProtocol.put("probeNehmerId", probe.getProbeNehmerId());
+        currentProtocol.put("found", probe.isFound());
+        currentProtocol.put("dryrun", dryrun);
+    }
+
+    private void createObject(Object item, boolean dryrun) {
+        if (!dryrun) {
+            repository.create(item, Strings.LAND);
+        }
     }
 
     /**
@@ -758,6 +814,14 @@ public class ProbeFactory {
             }
         }
         return true;
+    }
+
+    public List<Map<String, Object>> getProtocol() {
+        return protocol;
+    }
+
+    public void setProtocol(List<Map<String, Object>> protocol) {
+        this.protocol = protocol;
     }
 
 }
