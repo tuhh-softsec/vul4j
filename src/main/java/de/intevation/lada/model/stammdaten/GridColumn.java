@@ -7,7 +7,6 @@
  */
 package de.intevation.lada.model.stammdaten;
 
-import java.util.List;
 import java.io.Serializable;
 
 import javax.persistence.Column;
@@ -16,10 +15,8 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 /**
@@ -51,11 +48,6 @@ public class GridColumn implements Serializable {
 
     @Column(name = "base_query")
     private Integer baseQuery;
-
-    //bi-directional one-to-one association to GridColumnValue
-    @OneToMany(mappedBy = "gridColumn", fetch = FetchType.EAGER)
-    @JsonIgnore
-    private List<GridColumnValue> gridColumnValues;
 
     public GridColumn() {
     }
@@ -115,21 +107,4 @@ public class GridColumn implements Serializable {
     public void setBaseQuery(Integer query) {
         this.baseQuery = query;
     }
-
-    public List<GridColumnValue> getGridColumnValues() {
-        return this.gridColumnValues;
-    }
-
-    /**
-     * Add a grid column value.
-     * @param gridColumnValue the value
-     */
-    public void addGridColumnValue(GridColumnValue gridColumnValue) {
-        this.gridColumnValues.add(gridColumnValue);
-    }
-
-    public void setGridColumnValue(List<GridColumnValue> gCV) {
-        this.gridColumnValues = gCV;
-    }
-
 }
