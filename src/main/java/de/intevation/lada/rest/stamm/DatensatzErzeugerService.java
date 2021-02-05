@@ -97,12 +97,13 @@ public class DatensatzErzeugerService {
             repository.getAllPlain(DatensatzErzeuger.class, Strings.STAMM);
 
         for (DatensatzErzeuger erz : erzeuger) {
-            erz.setReadonly(
-                !authorization.isAuthorized(
-                    request,
-                    erz,
-                    RequestMethod.POST,
-                    DatensatzErzeuger.class));
+            // TODO Do not iterate all the objects if its not necessary
+            erz.setReadonly(true);
+                // !authorization.isAuthorized(
+                //     request,
+                //     erz,
+                //     RequestMethod.POST,
+                //     DatensatzErzeuger.class));
         }
         return new Response(true, StatusCodes.OK, erzeuger, erzeuger.size());
     }

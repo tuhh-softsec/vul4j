@@ -96,12 +96,13 @@ public class MessprogrammKategorieService {
         List<MessprogrammKategorie> kategorie =
             repository.getAllPlain(MessprogrammKategorie.class, Strings.STAMM);
         for (MessprogrammKategorie kat: kategorie) {
-            kat.setReadonly(
-                !authorization.isAuthorized(
-                    request,
-                    kat,
-                    RequestMethod.POST,
-                    MessprogrammKategorie.class));
+            // TODO Do not iterate all the objects if its not necessary
+            kat.setReadonly(true);
+                // !authorization.isAuthorized(
+                //     request,
+                //     kat,
+                //     RequestMethod.POST,
+                //     MessprogrammKategorie.class));
         }
         return new Response(true, StatusCodes.OK, kategorie, kategorie.size());
     }

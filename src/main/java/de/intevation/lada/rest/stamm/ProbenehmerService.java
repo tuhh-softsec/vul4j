@@ -93,12 +93,13 @@ public class ProbenehmerService {
         List<Probenehmer> nehmer =
             repository.getAllPlain(Probenehmer.class, Strings.STAMM);
         for (Probenehmer p : nehmer) {
-            p.setReadonly(
-                !authorization.isAuthorized(
-                    request,
-                    p,
-                    RequestMethod.POST,
-                    Probenehmer.class));
+            // TODO Do not iterate all the objects if its not necessary
+            p.setReadonly(true);
+                // !authorization.isAuthorized(
+                //     request,
+                //     p,
+                //     RequestMethod.POST,
+                //     Probenehmer.class));
         }
         return new Response(true, StatusCodes.OK, nehmer, nehmer.size());
     }
