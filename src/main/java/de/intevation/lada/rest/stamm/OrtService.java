@@ -286,7 +286,7 @@ public class OrtService {
                 o.setWarnings(violation.getWarnings());
             }
         }
-        return new Response(true, StatusCodes.OK, size);
+        return new Response(true, StatusCodes.OK, orte, size);
     }
 
     /**
