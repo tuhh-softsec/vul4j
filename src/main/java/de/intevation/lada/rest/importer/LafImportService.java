@@ -14,6 +14,7 @@ import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.Map;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.json.JsonObject;
+import javax.json.JsonString;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -30,7 +32,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Appender;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.Logger;
@@ -52,6 +53,7 @@ import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.data.TagUtil;
 import de.intevation.lada.util.rest.Response;
+import de.intevation.lada.util.data.StatusCodes;
 
 /**
  * This class produces a RESTful service to interact with probe objects.
@@ -109,7 +111,15 @@ public class LafImportService {
         //Get file content strings from input object
         JsonObject filesObject = jsonInput.getJsonObject("files");
 
-        String encoding = jsonInput.getString("encoding");
+        Charset charset;
+        try {
+            charset = Charset.forName(jsonInput.getString("encoding"));
+        } catch (IllegalArgumentException e) {
+            return new Response(
+                false,
+                StatusCodes.IMP_INVALID_VALUE,
+                "No valid encoding name given");
+        }
 
         //Contains: fileName: fileContent as String
         Map<String, String> files = new HashMap<String, String>();
@@ -124,13 +134,21 @@ public class LafImportService {
             return new Response(false, 699, "Missing header for messtelle.");
         }
 
-        filesObject.forEach((fileName, fileContent) -> {
-            String encodedString = fileContent.toString();
-            byte[] decodedBytes = Base64.decodeBase64(encodedString);
-            String decodedContent =
-                new String(decodedBytes, Charset.forName(encoding));
-            files.put(fileName, decodedContent);
-        });
+        try {
+            filesObject.forEach((fileName, fileContent) -> {
+                    String encodedString = ((JsonString) fileContent)
+                        .getString();
+                    byte[] decodedBytes = Base64.getDecoder().decode(
+                        encodedString);
+                    String decodedContent = new String(decodedBytes, charset);
+                    files.put(fileName, decodedContent);
+                });
+        } catch (IllegalArgumentException iae) {
+            return new Response(
+                false,
+                StatusCodes.IMP_INVALID_VALUE,
+                "File content not in valid Base64 scheme");
+        }
 
         //Import each file
         files.forEach((fileName, content) -> {
