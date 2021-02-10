@@ -230,6 +230,7 @@ Maven Checkstyle plugin. Some design related checks where removed.
     </module>
     <module name="TodoComment">
       <property name="severity" value="warning"/>
+      <property name="format" value="(?i)\b(todo|fix(me)?)\b"/>
     </module>
     <module name="UpperEll">
       <property name="severity" value="warning"/>
