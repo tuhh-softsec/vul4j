@@ -131,7 +131,10 @@ public class LafImportService {
 
         String mstId = request.getHeader("X-LADA-MST");
         if (mstId == null) {
-            return new Response(false, 699, "Missing header for messtelle.");
+            return new Response(
+                false,
+                StatusCodes.NOT_ALLOWED,
+                "Missing header for messtelle.");
         }
 
         try {
@@ -193,7 +196,10 @@ public class LafImportService {
                 TagUtil.generateTag("IMP", mstId, repository);
             if (!tagCreation.getSuccess()) {
                 // TODO Tag creation failed -> import success?
-                return new Response(success, 200, importResponseData);
+                return new Response(
+                    success,
+                    StatusCodes.OK,
+                    importResponseData);
             }
             Tag newTag = (Tag) tagCreation.getData();
             TagUtil.setTagsByProbeIds(
@@ -204,7 +210,7 @@ public class LafImportService {
                 responseData.put("tag", newTag.getTag());
             });
         }
-        return new Response(success, 200, importResponseData);
+        return new Response(success, StatusCodes.OK, importResponseData);
     }
 
     /**
@@ -267,7 +273,7 @@ public class LafImportService {
                 TagUtil.generateTag("IMP", mstId, repository);
             if (!tagCreation.getSuccess()) {
                 // TODO Tag creation failed -> import success?
-                return new Response(true, 200, respData);
+                return new Response(true, StatusCodes.OK, respData);
             }
             Tag newTag = (Tag) tagCreation.getData();
             TagUtil.setTagsByProbeIds(
@@ -276,7 +282,7 @@ public class LafImportService {
             respData.put("tag", newTag.getTag());
         }
 
-        return new Response(true, 200, respData);
+        return new Response(true, StatusCodes.OK, respData);
     }
 
     /**
