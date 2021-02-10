@@ -195,7 +195,9 @@ public class LafImportService {
      * @param input     String containing file content.
      * @param header    The HTTP header containing authorization information.
      * @return Response object.
+     * @deprecated This endpoint will be removed. Use multiUpload() instead.
      */
+    @Deprecated(since = "2021-02-10", forRemoval = true)
     @POST
     @Path("/laf")
     @Produces(MediaType.APPLICATION_JSON)
