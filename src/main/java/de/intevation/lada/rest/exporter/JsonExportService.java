@@ -96,7 +96,10 @@ public class JsonExportService {
         }
         InputStream exported =
             exporter.exportProben(
-                probeIds, new ArrayList<Integer>(), "", userInfo);
+                probeIds,
+                new ArrayList<Integer>(),
+                StandardCharsets.UTF_8,
+                userInfo);
         if (exported == null) {
             return new Response(
                 false, StatusCodes.NOT_EXISTING, null).toString();

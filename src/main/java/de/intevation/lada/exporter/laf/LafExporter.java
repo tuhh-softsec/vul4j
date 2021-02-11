@@ -10,6 +10,7 @@ package de.intevation.lada.exporter.laf;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,7 +61,7 @@ implements Exporter {
     public InputStream exportProben(
         List<Integer> proben,
         List<Integer> messungen,
-        String encoding,
+        Charset encoding,
         UserInfo userInfo
     ) {
         String laf = "";
@@ -77,14 +78,14 @@ implements Exporter {
                 m.getProbeId().toString(), mList);
         }
         laf += "%ENDE%";
-        InputStream in;
+        InputStream in = new ByteArrayInputStream(laf.getBytes(encoding));
         try {
-            in = new ByteArrayInputStream(laf.getBytes(encoding));
             in.close();
             return in;
         } catch (IOException e) {
             String resp = "Error - Problem while creating the response";
-            InputStream is = new ByteArrayInputStream(resp.getBytes());
+            InputStream is = new ByteArrayInputStream(
+                resp.getBytes(encoding));
             return is;
         }
     }

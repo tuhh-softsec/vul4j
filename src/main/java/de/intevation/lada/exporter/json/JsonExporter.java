@@ -10,6 +10,7 @@ package de.intevation.lada.exporter.json;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -203,7 +204,7 @@ public class JsonExporter implements Exporter {
     public InputStream exportProben(
         List<Integer> proben,
         List<Integer> messungen,
-        String encoding,
+        Charset encoding,
         UserInfo userInfo
     ) {
         //Create json.

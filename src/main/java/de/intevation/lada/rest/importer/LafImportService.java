@@ -155,7 +155,7 @@ public class LafImportService {
 
         //Import each file
         files.forEach((fileName, content) -> {
-            logLAFFile(mstId, content);
+            logLAFFile(mstId, content, charset);
             List<ImporterConfig> config = new ArrayList<ImporterConfig>();
             if (!"".equals(mstId)) {
                 QueryBuilder<ImporterConfig> builder =
@@ -240,7 +240,9 @@ public class LafImportService {
          *}
          */
 
-        logLAFFile(mstId, content);
+        logLAFFile(mstId, content,
+            // Validation of encoding name is already done by the framework
+            Charset.forName(request.getCharacterEncoding()));
         List<ImporterConfig> config = new ArrayList<ImporterConfig>();
         if (!"".equals(mstId)) {
             QueryBuilder<ImporterConfig> builder =
@@ -291,7 +293,7 @@ public class LafImportService {
      * @param mstId Id from Header
      * @param content The laf file content
      */
-    private void logLAFFile(String mstId, String content) {
+    private void logLAFFile(String mstId, String content, Charset enc) {
         DateFormat df = new SimpleDateFormat("yyyyMMddHHmmssS");
         Date now = new Date();
         // Create filename for imported laf
@@ -313,7 +315,7 @@ public class LafImportService {
             lafLogger.debug(
                 "Imported file logged to: " + filePath + "/" + fileName);
             try {
-                FileWriter f = new FileWriter(filePath + "/" + fileName);
+                FileWriter f = new FileWriter(filePath + "/" + fileName, enc);
                 f.write(content);
                 f.close();
             } catch (IOException e) {

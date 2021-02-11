@@ -11,6 +11,7 @@ package de.intevation.lada.exporter.laf;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,11 +52,15 @@ public class LafExportJob extends ExportJob {
         logger.debug(String.format("Starting LAF export", jobId));
 
         //Check encoding
+        // TODO: should be done earlier: it's too late to report to the client
+        Charset charset;
         if (!isEncodingValid()) {
             String error = String.format("Invalid encoding: %s", this.encoding);
             fail(error);
             logger.error(error);
             return;
+        } else {
+            charset = Charset.forName(encoding);
         }
 
         //Load records
@@ -108,7 +113,7 @@ public class LafExportJob extends ExportJob {
 
         //Export and write to file
         InputStream exported =
-            exporter.exportProben(pIds, mIds, encoding, userInfo);
+            exporter.exportProben(pIds, mIds, charset, userInfo);
         logger.debug("Finished export to memory, writing to file.");
         try {
             ByteArrayOutputStream result = new ByteArrayOutputStream();
@@ -117,12 +122,11 @@ public class LafExportJob extends ExportJob {
             while ((length = exported.read(buffer)) != -1) {
                 result.write(buffer, 0, length);
             }
-            String resultString = new String(result.toByteArray(), encoding);
+            String resultString = new String(result.toByteArray(), charset);
             if (!writeResultToFile(resultString)) {
                 fail("Error on writing export result.");
                 return;
             }
-
         } catch (IOException ioe) {
             logger.error(String.format(
                 "Error on writing export result. IOException: %s",

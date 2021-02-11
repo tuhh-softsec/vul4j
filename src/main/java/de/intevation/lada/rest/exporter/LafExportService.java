@@ -8,6 +8,9 @@
 package de.intevation.lada.rest.exporter;
 
 import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.IllegalCharsetNameException;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,8 +25,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.Response.Status;
 
 import de.intevation.lada.exporter.ExportConfig;
 import de.intevation.lada.exporter.ExportFormat;
@@ -148,10 +153,19 @@ public class LafExportService {
         if (encoding == null || encoding.equals("")) {
             encoding = "iso-8859-15";
         }
+        Charset charset;
+        try {
+            charset = Charset.forName(encoding);
+        } catch (IllegalCharsetNameException | UnsupportedCharsetException e) {
+            return Response.status(Status.BAD_REQUEST)
+                .entity((Object) "Invalid or unknown encoding requested")
+                .type(MediaType.TEXT_PLAIN)
+                .build();
+        }
 
         UserInfo userInfo = authorization.getInfo(request);
         InputStream exported =
-            exporter.exportProben(pIds, mIds, encoding, userInfo);
+            exporter.exportProben(pIds, mIds, charset, userInfo);
 
         ResponseBuilder response = Response.ok((Object) exported);
         response.header(
