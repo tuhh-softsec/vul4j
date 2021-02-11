@@ -130,7 +130,7 @@ public class LafExportJob extends ExportJob {
         } catch (IOException ioe) {
             logger.error(String.format(
                 "Error on writing export result. IOException: %s",
-                ioe.getStackTrace().toString()));
+                ioe.getMessage()));
             fail("Error on writing export result.");
             return;
         }
