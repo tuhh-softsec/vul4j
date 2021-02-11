@@ -85,8 +85,6 @@ public class ProbeFactory {
 
         int[] j = {Calendar.YEAR, Calendar.DAY_OF_YEAR, 1 };
 
-        fieldsTable = new Hashtable<String, int[]>();
-
         fieldsTable.put("T", t);
         fieldsTable.put("W", w);
         fieldsTable.put("W2", w2);
