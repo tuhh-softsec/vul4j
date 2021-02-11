@@ -189,9 +189,7 @@ Maven Checkstyle plugin. Some design related checks where removed.
 
     <!-- Checks for common coding problems               -->
     <!-- See http://checkstyle.sf.net/config_coding.html -->
-    <!-- <module name="AvoidInlineConditionals">
-      <property name="severity" value="warning"/>
-    </module> -->
+    <module name="PackageDeclaration"/>
     <module name="EmptyStatement">
       <property name="severity" value="warning"/>
     </module>
