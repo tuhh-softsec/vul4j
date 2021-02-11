@@ -149,8 +149,6 @@ public class StatusKombiService {
         List<Integer> messIds,
         UserInfo user
     ) {
-        List<StatusKombi> list = new ArrayList<StatusKombi>();
-
         QueryBuilder<Messung> messungQuery = new QueryBuilder<Messung>(
             repository.entityManager(Strings.LAND),
             Messung.class);
@@ -197,7 +195,6 @@ public class StatusKombiService {
                 kombiFilter.or(tmp);
         }
 
-        list = repository.filterPlain(kombiFilter.getQuery(), Strings.STAMM);
-        return list;
+        return repository.filterPlain(kombiFilter.getQuery(), Strings.STAMM);
     }
 }

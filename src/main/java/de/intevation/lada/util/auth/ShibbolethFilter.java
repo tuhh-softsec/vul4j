@@ -113,11 +113,6 @@ public class ShibbolethFilter implements Filter {
                 return;
         }
 
-        String roleAttribute = "";
-        for (String r : rolesValue) {
-            roleAttribute += r + ",";
-        }
-        roleAttribute = roleAttribute.substring(0, roleAttribute.length() - 2);
         httpRequest.setAttribute("lada.user.roles", rolesValue);
         httpRequest.setAttribute("lada.user.name", user);
 

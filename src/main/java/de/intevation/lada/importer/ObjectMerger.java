@@ -146,8 +146,7 @@ public class ObjectMerger {
         if (src.getMmtId() != null) {
             target.setMmtId(src.getMmtId());
         }
-        Response r = repository.update(target, Strings.LAND);
-        target = (Messung) r.getData();
+        repository.update(target, Strings.LAND);
         return this;
     }
 

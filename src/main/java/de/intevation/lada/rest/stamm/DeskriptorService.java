@@ -7,7 +7,6 @@
  */
 package de.intevation.lada.rest.stamm;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -114,9 +113,8 @@ public class DeskriptorService {
             builder.and("ebene", params.getFirst("layer"));
             if (params.containsKey("parents")) {
                 String parents = params.getFirst("parents");
-                List<String> parentList = new ArrayList<String>();
                 String[] parentArray = parents.split(", ");
-                parentList = Arrays.asList(parentArray);
+                List<String> parentList = Arrays.asList(parentArray);
                 builder.andIn("vorgaenger", parentList);
             }
         } catch (NumberFormatException nfe) {

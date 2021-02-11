@@ -460,7 +460,6 @@ implements Creator {
      */
     @SuppressWarnings("unchecked")
     private String writeMessung(Probe probe, List<Integer> messungen) {
-        List<Messung> mess = new ArrayList<>();
         QueryBuilder<Messung> builder =
             new QueryBuilder<Messung>(
                 repository.entityManager(Strings.LAND),
@@ -471,7 +470,8 @@ implements Creator {
         } else {
             builder.andIn("id", messungen);
         }
-        mess = repository.filterPlain(builder.getQuery(), Strings.LAND);
+        List<Messung> mess = repository.filterPlain(
+            builder.getQuery(), Strings.LAND);
 
         String laf = "";
         for (Messung m : mess) {

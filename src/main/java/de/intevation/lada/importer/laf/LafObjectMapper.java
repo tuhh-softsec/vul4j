@@ -1492,7 +1492,7 @@ public class LafObjectMapper {
             newStatus.setMessungsId(messung.getId());
             newStatus.setMstId(mstId);
             newStatus.setStatusKombi(newKombi);
-            Response r = repository.create(newStatus, Strings.LAND);
+            repository.create(newStatus, Strings.LAND);
             if (newKombi == 0 || newKombi == 9 || newKombi == 13) {
                 messung.setFertig(false);
             } else {

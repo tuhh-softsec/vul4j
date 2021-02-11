@@ -146,8 +146,6 @@ public class StatusWertService {
         List<Integer> messIds,
         UserInfo user
     ) {
-        List<StatusWert> list = new ArrayList<StatusWert>();
-
         QueryBuilder<Messung> messungQuery = new QueryBuilder<Messung>(
             defaultRepo.entityManager(Strings.LAND),
             Messung.class);
@@ -180,7 +178,7 @@ public class StatusWertService {
         for (int i = 0; i < erreichbare.size(); i++) {
             werteFilter.or("id", erreichbare.get(i).getWertId());
         }
-        list = defaultRepo.filterPlain(werteFilter.getQuery(), Strings.STAMM);
-        return list;
+
+        return defaultRepo.filterPlain(werteFilter.getQuery(), Strings.STAMM);
     }
 }
