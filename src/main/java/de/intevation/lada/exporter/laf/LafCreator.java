@@ -252,7 +252,7 @@ implements Creator {
             ? ""
             : lafLine("DESKRIPTOREN",
                 probe.getMediaDesk().replaceAll(" ", "").substring(2), CN);
-        laf += probe.getTest() == Boolean.TRUE
+        laf += probe.getTest()
             ? lafLine("TESTDATEN", "1")
             : lafLine("TESTDATEN", "0");
         if (probe.getErzeugerId() != null) {
