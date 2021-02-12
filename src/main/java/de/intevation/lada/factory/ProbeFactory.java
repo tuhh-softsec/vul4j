@@ -68,7 +68,8 @@ public class ProbeFactory {
     // Day of year representing February 28
     private static final int FEBRUARY_28 = 58;
 
-    private static Hashtable<String, int[]> fieldsTable;
+    private static Hashtable<String, int[]> fieldsTable =
+        new Hashtable<String, int[]>();
 
     public ProbeFactory() {
         int[] t  = {Calendar.DAY_OF_YEAR, Calendar.DAY_OF_YEAR, 1 };
