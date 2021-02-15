@@ -249,9 +249,13 @@ public class LafImportService {
          *}
          */
 
+        String encoding = request.getCharacterEncoding();
+        if (encoding == null) {
+            encoding = "iso-8859-15";
+        }
         logLAFFile(mstId, content,
             // Validation of encoding name is already done by the framework
-            Charset.forName(request.getCharacterEncoding()));
+            Charset.forName(encoding));
         List<ImporterConfig> config = new ArrayList<ImporterConfig>();
         if (!"".equals(mstId)) {
             QueryBuilder<ImporterConfig> builder =
