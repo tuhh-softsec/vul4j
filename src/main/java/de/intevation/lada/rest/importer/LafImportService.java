@@ -10,6 +10,8 @@ package de.intevation.lada.rest.importer;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -24,6 +26,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.json.JsonObject;
 import javax.json.JsonString;
+import javax.json.JsonValue;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -138,19 +141,25 @@ public class LafImportService {
         }
 
         try {
-            filesObject.forEach((fileName, fileContent) -> {
-                    String encodedString = ((JsonString) fileContent)
-                        .getString();
-                    byte[] decodedBytes = Base64.getDecoder().decode(
-                        encodedString);
-                    String decodedContent = new String(decodedBytes, charset);
-                    files.put(fileName, decodedContent);
-                });
+            for (Map.Entry<String, JsonValue> e : filesObject.entrySet()) {
+                String base64String = ((JsonString) e.getValue()).getString();
+                ByteBuffer decodedBytes = ByteBuffer.wrap(
+                    Base64.getDecoder().decode(base64String));
+                String decodedContent = new String(
+                    new StringBuffer(charset.newDecoder()
+                        .decode(decodedBytes)));
+                files.put(e.getKey(), decodedContent);
+            }
         } catch (IllegalArgumentException iae) {
             return new Response(
                 false,
                 StatusCodes.IMP_INVALID_VALUE,
                 "File content not in valid Base64 scheme");
+        } catch (CharacterCodingException cce) {
+            return new Response(
+                false,
+                StatusCodes.IMP_INVALID_VALUE,
+                "File content not in valid " + charset.name());
         }
 
         //Import each file
