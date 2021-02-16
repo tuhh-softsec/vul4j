@@ -134,11 +134,10 @@ public class OrtService {
     private Validator validator;
 
     /**
-     * Get all Ort objects.
+     * Get Ort objects.
      * <p>
-     * The requested objects can be filtered using a URL parameter named
+     * The requested objects can be filtered e.g. using a URL parameter named
      * ortId.
-     * To return all objects, the URL paramter query=all can be used.
      * <p>
      * Example: http://example.com/rest/ort?ortId=[ID]
      *
