@@ -305,10 +305,13 @@ import de.intevation.lada.util.rest.Response;
         @Context HttpServletRequest request,
         TagZuordnung zuordnung
     ) {
+        if (zuordnung == null) {
+            return new Response(
+                false, StatusCodes.ERROR_DB_CONNECTION, "Not a valid tag");
+        }
         Tag tag = zuordnung.getTag();
         Integer tagId = zuordnung.getTagId();
-        if (zuordnung == null
-            || tag != null && tagId != null
+        if (tag != null && tagId != null
             || tag == null && tagId == null
             || zuordnung.getProbeId() != null
             && zuordnung.getMessungId() != null
