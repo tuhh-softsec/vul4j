@@ -482,8 +482,6 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(StatusCodes.IMP_MISSING_VALUE);
-            List<ReportItem> items = new ArrayList<>();
-            items.add(warn);
             parserWarnings.add(warn);
         }
         String value = ctx.getChild(1).toString();

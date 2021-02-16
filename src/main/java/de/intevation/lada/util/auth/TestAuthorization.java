@@ -39,10 +39,6 @@ public class TestAuthorization implements Authorization {
         a3.setLdapGroup("Imis_world");
         a3.setFunktionId(0);
         auth.add(a3);
-        List<String> roles = new ArrayList<String>();
-        roles.add("mst_06010");
-        roles.add("mst_11010");
-        roles.add("ImisWorld");
         info.setAuth(auth);
         return info;
     }
