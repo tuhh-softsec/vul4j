@@ -20,7 +20,6 @@ import de.intevation.lada.model.stammdaten.Auth;
 public class UserInfo {
     private String name;
     private Integer userId;
-    private List<Integer> funktionen;
     private List<Auth> auth;
 
     public class MessLaborId {
@@ -185,17 +184,6 @@ public class UserInfo {
             }
         }
         return ret;
-    }
-
-    /**
-     * @return the funktionen
-     */
-    public List<String> getFunktionenAsString() {
-        List<String> retVal = new ArrayList<String>();
-        for (int i = 0; i < this.funktionen.size(); i++) {
-            retVal.add(this.funktionen.get(i).toString());
-        }
-        return retVal;
     }
 
     public void setAuth(List<Auth> auth) {
