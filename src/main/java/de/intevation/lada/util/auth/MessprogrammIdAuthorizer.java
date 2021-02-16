@@ -106,12 +106,7 @@ public class MessprogrammIdAuthorizer extends BaseAuthorizer {
     ) {
         try {
             Method getMessprogrammId = clazz.getMethod("getMessprogrammId");
-            Integer id = null;
-            if (getMessprogrammId != null) {
-                id = (Integer) getMessprogrammId.invoke(data);
-            } else {
-                return null;
-            }
+            Integer id = (Integer) getMessprogrammId.invoke(data);
             Messprogramm messprogramm = repository.getByIdPlain(
                 Messprogramm.class, id, Strings.LAND);
             String mstId = messprogramm.getMstId();

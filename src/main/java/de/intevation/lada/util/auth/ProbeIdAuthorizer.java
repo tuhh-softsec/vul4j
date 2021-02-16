@@ -91,12 +91,7 @@ public class ProbeIdAuthorizer extends BaseAuthorizer {
     ) {
         try {
             Method getProbeId = clazz.getMethod("getProbeId");
-            Integer id = null;
-            if (getProbeId != null) {
-                id = (Integer) getProbeId.invoke(data);
-            } else {
-                return null;
-            }
+            Integer id = (Integer) getProbeId.invoke(data);
             Probe probe =
                 (Probe) repository.getById(
                     Probe.class, id, Strings.LAND).getData();

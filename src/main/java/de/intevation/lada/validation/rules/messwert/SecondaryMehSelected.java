@@ -58,7 +58,7 @@ public class SecondaryMehSelected implements Rule {
                 return null;
             }
             //Check if the messwert is the secondary mehId
-            if (secMehId != null && secMehId.equals(messwert.getMehId())) {
+            if (secMehId.equals(messwert.getMehId())) {
                 violation.addNotification("mehId", StatusCodes.VAL_SEC_UNIT);
                 return violation;
             }

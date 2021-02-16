@@ -1797,7 +1797,7 @@ public class LafObjectMapper {
             if (staat == null || staat.size() == 0) {
                 currentWarnings.add(
                     new ReportItem(key, hLand, StatusCodes.IMP_INVALID_VALUE));
-            } else if (staat != null && staat.size() > 0) {
+            } else if (staat.size() > 0) {
                 o.setStaatId(staat.get(0).getId());
             }
         }
