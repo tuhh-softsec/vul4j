@@ -165,7 +165,7 @@ public class MessprogrammKategorieService {
         List<MessprogrammKategorie> kategorien =
             repository.filterPlain(builder.getQuery(), Strings.STAMM);
         if (kategorien.isEmpty()
-            || kategorien.get(0).getId() == kategorie.getId()
+            || kategorien.get(0).getId().equals(kategorie.getId())
         ) {
             return repository.create(kategorie, Strings.STAMM);
         }
