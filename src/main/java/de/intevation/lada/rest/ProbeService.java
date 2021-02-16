@@ -504,10 +504,10 @@ public class ProbeService {
         if (lock.isLocked(probe)) {
             return new Response(false, StatusCodes.CHANGED_VALUE, null);
         }
-        if (probe.getMediaDesk() == null || probe.getMediaDesk() == "") {
+        if (probe.getMediaDesk() == null || probe.getMediaDesk().isEmpty()) {
             probe = factory.findMediaDesk(probe);
         }
-        if (probe.getUmwId() == null || probe.getUmwId() == "") {
+        if (probe.getUmwId() == null || probe.getUmwId().isEmpty()) {
             factory.findUmweltId(probe);
         }
         Violation violation = validator.validate(probe);

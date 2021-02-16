@@ -123,7 +123,7 @@ public class ZusatzWert implements Serializable {
     }
 
     public void setKleinerAls(String kleinerAls) {
-        this.kleinerAls = (kleinerAls == "") ? null : kleinerAls;
+        this.kleinerAls = kleinerAls.isEmpty() ? null : kleinerAls;
     }
 
     public Timestamp getTreeModified() {

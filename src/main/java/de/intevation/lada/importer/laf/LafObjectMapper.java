@@ -1252,7 +1252,7 @@ public class LafObjectMapper {
         }
         if (attributes.containsKey("GRENZWERT")) {
             messwert.setGrenzwertueberschreitung(
-                attributes.get("GRENZWERT").toUpperCase() == "J"
+                attributes.get("GRENZWERT").toUpperCase().equals("J")
                     ? true : false);
         }
         doDefaults(messwert);

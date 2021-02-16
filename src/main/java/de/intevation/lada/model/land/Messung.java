@@ -185,7 +185,7 @@ public class Messung implements Serializable {
     }
 
     public void setNebenprobenNr(String nebenprobenNr) {
-        this.nebenprobenNr = (nebenprobenNr == "") ? null : nebenprobenNr;
+        this.nebenprobenNr = nebenprobenNr.isEmpty() ? null : nebenprobenNr;
     }
 
     @JsonIgnore
