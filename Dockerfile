@@ -20,7 +20,7 @@ MAINTAINER raimund.renkert@intevation.de
 #
 RUN apt-get update -y && \
     apt-get install -y --no-install-recommends \
-            curl openjdk-11-jdk libpostgis-java libjts-java \
+            curl openjdk-11-jdk-headless libpostgis-java libjts-java \
             git maven lighttpd
 
 
