@@ -40,11 +40,9 @@ public class ShibbolethFilter implements Filter {
     public void init(FilterConfig filterConfig) throws ServletException {
         /* Read config and initialize configuration variables */
         Properties properties = new Properties();
-        InputStream stream = null;
-        try {
-            stream = getClass().getResourceAsStream(CONFIG_FILE);
+        try (InputStream stream = getClass().getResourceAsStream(
+                CONFIG_FILE)) {
             properties.load(stream);
-            stream.close();
         } catch (java.io.FileNotFoundException e) {
             logger.error("Failed to find config file: " + CONFIG_FILE);
         } catch (java.io.IOException e) {

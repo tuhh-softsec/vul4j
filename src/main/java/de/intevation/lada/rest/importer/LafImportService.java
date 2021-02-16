@@ -327,10 +327,9 @@ public class LafImportService {
             lafLogger.debug("X-LADA-MST: " + mstId);
             lafLogger.debug(
                 "Imported file logged to: " + filePath + "/" + fileName);
-            try {
-                FileWriter f = new FileWriter(filePath + "/" + fileName, enc);
+            try (FileWriter f = new FileWriter(
+                    filePath + "/" + fileName, enc)) {
                 f.write(content);
-                f.close();
             } catch (IOException e) {
                 lafLogger.debug("Could not write import file to " + filePath);
             }
