@@ -31,10 +31,10 @@ public class TimeProbeentnahmeBegin implements Rule {
         Probe probe = (Probe) object;
         Timestamp begin = probe.getProbeentnahmeBeginn();
         Timestamp end = probe.getProbeentnahmeEnde();
-        if (begin == null && end == null) {
-            return null;
-        }
-        if (begin == null && end != null) {
+        if (begin == null) {
+            if (end == null) {
+                return null;
+            }
             Violation violation = new Violation();
             violation.addWarning(
                 "probeentnahmeBeginn", StatusCodes.DATE_BEGIN_AFTER_END);
@@ -46,10 +46,7 @@ public class TimeProbeentnahmeBegin implements Rule {
                 "probeentnahmeBeginn", StatusCodes.DATE_IN_FUTURE);
             return violation;
         }
-        if (end == null) {
-            return null;
-        }
-        if (begin.after(end)) {
+        if (end != null && begin.after(end)) {
             Violation violation = new Violation();
             violation.addWarning(
                 "probeentnahmeBeginn", StatusCodes.DATE_BEGIN_AFTER_END);
