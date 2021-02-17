@@ -7,7 +7,6 @@
  */
 package de.intevation.lada.rest.stamm;
 
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -16,13 +15,8 @@ import java.util.Map;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.json.Json;
 import javax.json.JsonArray;
-import javax.json.JsonException;
 import javax.json.JsonNumber;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.json.JsonString;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -215,44 +209,6 @@ public class OrtService {
             filter =
                 filter == null
                 ? searchFilter : builder.and(filter, searchFilter);
-        }
-        if (params.containsKey("filter")) {
-            String json = params.getFirst("filter");
-            JsonReader jsonReader = Json.createReader(new StringReader(json));
-            try {
-                //Parse json filters
-                JsonArray jsonFilters = jsonReader.readArray();
-                List<Predicate> jsonPredicates = new ArrayList<Predicate>();
-                jsonReader.close();
-                jsonFilters.forEach(jsonFilter -> {
-                    JsonObject filterObj = (JsonObject) jsonFilter;
-                    JsonString operator = filterObj.getJsonString("operator");
-                    JsonString value = filterObj.getJsonString("value");
-                    JsonString property = filterObj.getJsonString("property");
-                    if (property == null || value == null) {
-                        return;
-                    }
-                    if ("like".equals(operator.getString())) {
-                        Predicate f = builder.like(
-                            root.get(
-                                property.getString()),
-                                "%" + value.getString() + "%");
-                        jsonPredicates.add(f);
-                    }
-                });
-                if (jsonPredicates.size() > 0) {
-                    Predicate jsonFilterPredicate =
-                        builder.and((Predicate[]) jsonPredicates.toArray());
-                    filter =
-                        filter == null
-                        ? jsonFilterPredicate
-                        : builder.and(filter, jsonFilterPredicate);
-                }
-            } catch (JsonException
-                | IllegalStateException e
-            ) {
-                logger.warn("Use JSON filter at this place.", e);
-            }
         }
         if (filter != null) {
             query.where(filter);
