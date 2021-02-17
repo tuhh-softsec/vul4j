@@ -37,8 +37,7 @@ public class HasMessdauer implements Rule {
         Probe probe =
             repository.getByIdPlain(Probe.class, messung.getProbeId(), "land");
 
-        if (messung.getMessdauer() == null
-            || messung.getMessdauer().equals("")) {
+        if (messung.getMessdauer() == null) {
             //Exception for continous samples or Datenbasis = §161
             if (probe.getProbenartId() != null
                 && probe.getProbenartId() == 9
