@@ -73,7 +73,8 @@ ADD . /opt/lada_sql/
 WORKDIR /opt/lada_sql/
 
 #
-# Create database
+# Create database with extensive test data and
+# empty database for automated testing
 #
 # Don't mind scary messages like
 # 'FATAL: the database system is starting up'.
@@ -81,6 +82,7 @@ WORKDIR /opt/lada_sql/
 #
 RUN /usr/lib/postgresql/11/bin/pg_ctl start -wo "--config_file=$PGCONF" && \
     /opt/lada_sql/setup-db.sh && \
+    /opt/lada_sql/setup-db.sh -n lada_test && \
     /usr/lib/postgresql/11/bin/pg_ctl stop
 
 #

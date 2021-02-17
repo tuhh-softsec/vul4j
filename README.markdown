@@ -130,9 +130,9 @@ Das Ausführen der Tests erfolgt durch das Kommando
 
  $ mvn -Premote-test clean test
 
-und benötigt eine leere Datenbank, die z.B. mit
+und benötigt eine leere Datenbank mit dem Namen "lada_test", die z.B. mit
 
- $ ./setup-db.sh -cn
+ $ ./db_schema/setup-db.sh -cn lada_test
 
 angelegt werden kann.
 

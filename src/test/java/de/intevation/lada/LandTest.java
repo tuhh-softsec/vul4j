@@ -285,7 +285,7 @@ public class LandTest extends BaseTest {
     @Ignore
     @InSequence(T1)
     @UsingDataSet("datasets/dbUnit_probe.json")
-    @DataSource("java:jboss/lada-land")
+    @DataSource("java:jboss/lada-land-test")
     @Cleanup(phase = TestExecutionPhase.NONE)
     public final void prepareDatabaseProbe() throws Exception {
         Protocol protocol = new Protocol();
@@ -306,7 +306,7 @@ public class LandTest extends BaseTest {
     @Ignore
     @InSequence(T3)
     @UsingDataSet("datasets/dbUnit_pkommentar.json")
-    @DataSource("java:jboss/lada-land")
+    @DataSource("java:jboss/lada-land-test")
     @Cleanup(phase = TestExecutionPhase.NONE)
     public final void prepareDatabaseKommentarP() throws Exception {
         Protocol protocol = new Protocol();
@@ -327,7 +327,7 @@ public class LandTest extends BaseTest {
     @Ignore
     @InSequence(T5)
     @UsingDataSet("datasets/dbUnit_ortszuordnung.json")
-    @DataSource("java:jboss/lada-land")
+    @DataSource("java:jboss/lada-land-test")
     @Cleanup(phase = TestExecutionPhase.NONE)
     public final void prepareDatabaseOrtszuordnung() throws Exception {
         Protocol protocol = new Protocol();
@@ -348,7 +348,7 @@ public class LandTest extends BaseTest {
     @Ignore
     @InSequence(T7)
     @UsingDataSet("datasets/dbUnit_zusatzwert.json")
-    @DataSource("java:jboss/lada-land")
+    @DataSource("java:jboss/lada-land-test")
     @Cleanup(phase = TestExecutionPhase.NONE)
     public final void prepareDatabaseZusatzwert() throws Exception {
         Protocol protocol = new Protocol();
@@ -369,7 +369,7 @@ public class LandTest extends BaseTest {
     @Ignore
     @InSequence(T9)
     @UsingDataSet("datasets/dbUnit_messung.json")
-    @DataSource("java:jboss/lada-land")
+    @DataSource("java:jboss/lada-land-test")
     @Cleanup(phase = TestExecutionPhase.NONE)
     public final void prepareDatabaseMessung() throws Exception {
         Protocol protocol = new Protocol();
@@ -392,7 +392,7 @@ public class LandTest extends BaseTest {
     @Ignore
     @InSequence(T11)
     @UsingDataSet("datasets/dbUnit_mkommentar.json")
-    @DataSource("java:jboss/lada-land")
+    @DataSource("java:jboss/lada-land-test")
     @Cleanup(phase = TestExecutionPhase.NONE)
     public final void prepareDatabaseKommentarM() throws Exception {
         Protocol protocol = new Protocol();
@@ -413,7 +413,7 @@ public class LandTest extends BaseTest {
     @Ignore
     @InSequence(T13)
     @UsingDataSet("datasets/dbUnit_messwert.json")
-    @DataSource("java:jboss/lada-land")
+    @DataSource("java:jboss/lada-land-test")
     @Cleanup(phase = TestExecutionPhase.NONE)
     public final void prepareDatabaseMesswert() throws Exception {
         Protocol protocol = new Protocol();
@@ -434,7 +434,7 @@ public class LandTest extends BaseTest {
     @Ignore
     @InSequence(T17)
     @UsingDataSet("datasets/dbUnit_messprogramm.json")
-    @DataSource("java:jboss/lada-land")
+    @DataSource("java:jboss/lada-land-test")
     @Cleanup(phase = TestExecutionPhase.NONE)
     public final void prepareDatabaseMessprogramm() throws Exception {
         Protocol protocol = new Protocol();
@@ -452,7 +452,7 @@ public class LandTest extends BaseTest {
     // @Test
     // @Ignore
     // @InSequence(19)
-    // @DataSource("java:jboss/lada-land")
+    // @DataSource("java:jboss/lada-land-test")
     // @CleanupUsingScript("datasets/cleanup.sql")
     // public final void cleanUp() {
     //     Protocol protocol = new Protocol();
@@ -469,7 +469,7 @@ public class LandTest extends BaseTest {
     @Test
     @ApplyScriptBefore("datasets/clean_and_seed.sql")
     @UsingDataSet("datasets/dbUnit_pep_gen.json")
-    @DataSource("java:jboss/lada-land")
+    @DataSource("java:jboss/lada-land-test")
     @InSequence(T21)
     @Cleanup(phase = TestExecutionPhase.NONE)
     public final void prepareTestPepGeneration() {
@@ -489,7 +489,7 @@ public class LandTest extends BaseTest {
      * @throws Exception that can occur during the test.
      */
     @Test
-    @DataSource("java:jboss/lada-land")
+    @DataSource("java:jboss/lada-land-test")
     @InSequence(T22)
     @RunAsClient
     public final void testPepGeneration(@ArquillianResource URL baseUrl)

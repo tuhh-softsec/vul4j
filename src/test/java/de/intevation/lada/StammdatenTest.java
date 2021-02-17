@@ -132,7 +132,7 @@ public class StammdatenTest extends BaseTest {
     @InSequence(T1)
     @ApplyScriptBefore("datasets/clean_and_seed.sql")
     @UsingDataSet("datasets/dbUnit_datensatzerzeuger.json")
-    @DataSource("java:jboss/lada-stamm")
+    @DataSource("java:jboss/lada-stamm-test")
     @Cleanup(phase = TestExecutionPhase.NONE)
     public final void prepareDatabaseDatensatzerzeuger() throws Exception {
         Protocol protocol = new Protocol();
@@ -166,7 +166,7 @@ public class StammdatenTest extends BaseTest {
     @Test
     @InSequence(T3)
     @UsingDataSet("datasets/dbUnit_probenehmer.json")
-    @DataSource("java:jboss/lada-stamm")
+    @DataSource("java:jboss/lada-stamm-test")
     @Cleanup(phase = TestExecutionPhase.NONE)
     public final void prepareDatabaseProbenehmer() throws Exception {
         Protocol protocol = new Protocol();
@@ -200,7 +200,7 @@ public class StammdatenTest extends BaseTest {
     @Test
     @InSequence(T5)
     @UsingDataSet("datasets/dbUnit_messprogrammkategorie.json")
-    @DataSource("java:jboss/lada-stamm")
+    @DataSource("java:jboss/lada-stamm-test")
     @Cleanup(phase = TestExecutionPhase.NONE)
     public final void prepareDatabaseMessprogrammKategorie() throws Exception {
         Protocol protocol = new Protocol();
@@ -239,7 +239,7 @@ public class StammdatenTest extends BaseTest {
     @Ignore
     @InSequence(T7)
     @UsingDataSet("datasets/dbUnit_ort.json")
-    @DataSource("java:jboss/lada-stamm")
+    @DataSource("java:jboss/lada-stamm-test")
     @Cleanup(phase = TestExecutionPhase.NONE)
     public final void prepareDatabaseOrt() throws Exception {
         Protocol protocol = new Protocol();
@@ -574,7 +574,7 @@ public class StammdatenTest extends BaseTest {
     @Test
     @InSequence(T35)
     @UsingDataSet("datasets/dbUnit_deskriptor.json")
-    @DataSource("java:jboss/lada-stamm")
+    @DataSource("java:jboss/lada-stamm-test")
     @Cleanup(phase = TestExecutionPhase.NONE)
     public final void prepareDatabaseDeskriptoren() throws Exception {
         Protocol protocol = new Protocol();
@@ -595,7 +595,7 @@ public class StammdatenTest extends BaseTest {
     @Test
     @InSequence(T36)
     @UsingDataSet("datasets/dbUnit_pep_gen.json")
-    @DataSource("java:jboss/lada-land")
+    @DataSource("java:jboss/lada-land-test")
     @RunAsClient
     public final void testDeskriptoren(@ArquillianResource URL baseUrl)
     throws Exception {

@@ -4,7 +4,7 @@
    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
    	<persistence-unit name="land">
    	    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-        <jta-data-source>java:jboss/lada-land</jta-data-source>
+        <jta-data-source>java:jboss/lada-land-test</jta-data-source>
        	<exclude-unlisted-classes>false</exclude-unlisted-classes>
     	<properties>
             <property name="jboss.entity.manager.jndi.name" value="java:app/entitymanager/land"/>
@@ -15,7 +15,7 @@
     </persistence-unit>
     <persistence-unit name="stamm">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-        <jta-data-source>java:jboss/lada-stamm</jta-data-source>
+        <jta-data-source>java:jboss/lada-stamm-test</jta-data-source>
         <properties>
             <property name="jboss.entity.manager.jndi.name" value="java:app/entitymanager/stamm"/>
             <property name="hibernate.show_sql" value="false" />

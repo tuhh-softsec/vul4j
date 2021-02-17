@@ -117,7 +117,7 @@ public class ImporterTest extends BaseTest {
     @ApplyScriptBefore("datasets/clean_and_seed.sql")
     @InSequence(0)
     @UsingDataSet("datasets/dbUnit_probe_import.json")
-    @DataSource("java:jboss/lada-land")
+    @DataSource("java:jboss/lada-land-test")
     @Cleanup(phase = TestExecutionPhase.AFTER,
         strategy = CleanupStrategy.USED_TABLES_ONLY)
     public final void identifyProbeByHPNrMST() throws Exception {
@@ -146,7 +146,7 @@ public class ImporterTest extends BaseTest {
     @ApplyScriptBefore("datasets/clean_and_seed.sql")
     @InSequence(T1)
     @UsingDataSet("datasets/dbUnit_probe_import.json")
-    @DataSource("java:jboss/lada-land")
+    @DataSource("java:jboss/lada-land-test")
     @Cleanup(phase = TestExecutionPhase.AFTER,
         strategy = CleanupStrategy.USED_TABLES_ONLY)
     public final void identifyProbeByHPNrMSTNew() throws Exception {
@@ -176,7 +176,7 @@ public class ImporterTest extends BaseTest {
     @ApplyScriptBefore("datasets/clean_and_seed.sql")
     @InSequence(T2)
     @UsingDataSet("datasets/dbUnit_probe_import.json")
-    @DataSource("java:jboss/lada-land")
+    @DataSource("java:jboss/lada-land-test")
     @Cleanup(phase = TestExecutionPhase.AFTER,
         strategy = CleanupStrategy.USED_TABLES_ONLY)
     public final void identifyProbeByExterneProbeId() throws Exception {
@@ -204,7 +204,7 @@ public class ImporterTest extends BaseTest {
     @ApplyScriptBefore("datasets/clean_and_seed.sql")
     @InSequence(T3)
     @UsingDataSet("datasets/dbUnit_probe_import.json")
-    @DataSource("java:jboss/lada-land")
+    @DataSource("java:jboss/lada-land-test")
     @Cleanup(phase = TestExecutionPhase.AFTER,
         strategy = CleanupStrategy.USED_TABLES_ONLY)
     public final void identifyProbeByExterneProbeIdNew() throws Exception {
@@ -232,7 +232,7 @@ public class ImporterTest extends BaseTest {
     @ApplyScriptBefore("datasets/clean_and_seed.sql")
     @InSequence(T4)
     @UsingDataSet("datasets/dbUnit_probe_import.json")
-    @DataSource("java:jboss/lada-land")
+    @DataSource("java:jboss/lada-land-test")
     @Cleanup(phase = TestExecutionPhase.AFTER,
         strategy = CleanupStrategy.USED_TABLES_ONLY)
     public final void identifyProbeByExterneProbeIdReject() throws Exception {
@@ -262,7 +262,7 @@ public class ImporterTest extends BaseTest {
     @ApplyScriptBefore("datasets/clean_and_seed.sql")
     @InSequence(T5)
     @UsingDataSet("datasets/dbUnit_probe_import.json")
-    @DataSource("java:jboss/lada-land")
+    @DataSource("java:jboss/lada-land-test")
     @Cleanup(phase = TestExecutionPhase.AFTER,
         strategy = CleanupStrategy.USED_TABLES_ONLY)
     public final void identifyProbeByExterneProbeIdUpdate() throws Exception {
@@ -292,7 +292,7 @@ public class ImporterTest extends BaseTest {
     @ApplyScriptBefore("datasets/clean_and_seed.sql")
     @InSequence(T6)
     @UsingDataSet("datasets/dbUnit_messung_import.json")
-    @DataSource("java:jboss/lada-land")
+    @DataSource("java:jboss/lada-land-test")
     @Cleanup(phase = TestExecutionPhase.AFTER,
         strategy = CleanupStrategy.USED_TABLES_ONLY)
     public final void identifyMessungByNpNr() throws Exception {
@@ -321,7 +321,7 @@ public class ImporterTest extends BaseTest {
     @ApplyScriptBefore("datasets/clean_and_seed.sql")
     @InSequence(T7)
     @UsingDataSet("datasets/dbUnit_messung_import.json")
-    @DataSource("java:jboss/lada-land")
+    @DataSource("java:jboss/lada-land-test")
     @Cleanup(phase = TestExecutionPhase.AFTER,
         strategy = CleanupStrategy.USED_TABLES_ONLY)
     public final void identifyMessungByNpNrNew() throws Exception {
@@ -348,7 +348,7 @@ public class ImporterTest extends BaseTest {
     @ApplyScriptBefore("datasets/clean_and_seed.sql")
     @InSequence(T8)
     @UsingDataSet("datasets/dbUnit_messung_import.json")
-    @DataSource("java:jboss/lada-land")
+    @DataSource("java:jboss/lada-land-test")
     @Cleanup(phase = TestExecutionPhase.AFTER,
         strategy = CleanupStrategy.USED_TABLES_ONLY)
     public final void identifyMessungByExterneMessungsId() throws Exception {
@@ -377,7 +377,7 @@ public class ImporterTest extends BaseTest {
     @ApplyScriptBefore("datasets/clean_and_seed.sql")
     @InSequence(T9)
     @UsingDataSet("datasets/dbUnit_messung_import.json")
-    @DataSource("java:jboss/lada-land")
+    @DataSource("java:jboss/lada-land-test")
     @Cleanup(phase = TestExecutionPhase.AFTER,
         strategy = CleanupStrategy.USED_TABLES_ONLY)
     public final void identifyMessungByExterneMessungsIdNew() throws Exception {
@@ -406,7 +406,7 @@ public class ImporterTest extends BaseTest {
     @ApplyScriptBefore("datasets/clean_and_seed.sql")
     @Ignore
     @InSequence(T10)
-    @DataSource("java:jboss/lada-land")
+    @DataSource("java:jboss/lada-land-test")
     @Cleanup(phase = TestExecutionPhase.AFTER,
         strategy = CleanupStrategy.USED_TABLES_ONLY)
     public final void identifyMessungByExterneMessungsIdReject()
@@ -437,7 +437,7 @@ public class ImporterTest extends BaseTest {
     @ApplyScriptBefore("datasets/clean_and_seed.sql")
     @InSequence(T11)
     @UsingDataSet("datasets/dbUnit_messung_import.json")
-    @DataSource("java:jboss/lada-land")
+    @DataSource("java:jboss/lada-land-test")
     @Cleanup(phase = TestExecutionPhase.AFTER,
         strategy = CleanupStrategy.USED_TABLES_ONLY)
     public final void identifyMessungByExterneMessungsIdUpdate()
@@ -470,7 +470,7 @@ public class ImporterTest extends BaseTest {
     @UsingDataSet("datasets/dbUnit_import_merge.json")
     @ShouldMatchDataSet(value = "datasets/dbUnit_import_merge_match.json",
         excludeColumns = {"letzte_aenderung", "tree_modified"})
-    @DataSource("java:jboss/lada-land")
+    @DataSource("java:jboss/lada-land-test")
     @Cleanup(phase = TestExecutionPhase.AFTER,
         strategy = CleanupStrategy.USED_TABLES_ONLY)
     public final void mergeProbe() throws Exception {
@@ -515,7 +515,7 @@ public class ImporterTest extends BaseTest {
     @ShouldMatchDataSet(
         value = "datasets/dbUnit_import_merge_match_messung.json",
         excludeColumns = {"letzte_aenderung", "tree_modified"})
-    @DataSource("java:jboss/lada-land")
+    @DataSource("java:jboss/lada-land-test")
     @Cleanup(phase = TestExecutionPhase.AFTER,
         strategy = CleanupStrategy.USED_TABLES_ONLY)
     public final void mergeMessung() throws Exception {
@@ -553,7 +553,7 @@ public class ImporterTest extends BaseTest {
     @ShouldMatchDataSet(
         value = "datasets/dbUnit_import_merge_match_zusatzwert.json",
         excludeColumns = {"id", "letzte_aenderung", "tree_modified"})
-    @DataSource("java:jboss/lada-land")
+    @DataSource("java:jboss/lada-land-test")
     @Cleanup(phase = TestExecutionPhase.AFTER,
         strategy = CleanupStrategy.USED_TABLES_ONLY)
     public final void mergeZusatzwert() throws Exception {
@@ -604,7 +604,7 @@ public class ImporterTest extends BaseTest {
     @ShouldMatchDataSet(
         value = "datasets/dbUnit_import_merge_match_kommentar.json",
         excludeColumns = {"id"})
-    @DataSource("java:jboss/lada-land")
+    @DataSource("java:jboss/lada-land-test")
     @Cleanup(phase = TestExecutionPhase.AFTER,
         strategy = CleanupStrategy.USED_TABLES_ONLY)
     public final void mergeProbeKommentar() throws Exception {
@@ -648,7 +648,7 @@ public class ImporterTest extends BaseTest {
     @ShouldMatchDataSet(
         value = "datasets/dbUnit_import_merge_match_kommentarm.json",
         excludeColumns = {"id"})
-    @DataSource("java:jboss/lada-land")
+    @DataSource("java:jboss/lada-land-test")
     @Cleanup(phase = TestExecutionPhase.AFTER,
         strategy = CleanupStrategy.USED_TABLES_ONLY)
     public final void mergeMessungKommentar() throws Exception {
@@ -693,7 +693,7 @@ public class ImporterTest extends BaseTest {
     @ShouldMatchDataSet(
         value = "datasets/dbUnit_import_merge_match_messwert.json",
         excludeColumns = {"id"})
-    @DataSource("java:jboss/lada-land")
+    @DataSource("java:jboss/lada-land-test")
     @Cleanup(phase = TestExecutionPhase.AFTER,
         strategy = CleanupStrategy.USED_TABLES_ONLY)
     public final void mergeMesswerte() throws Exception {
