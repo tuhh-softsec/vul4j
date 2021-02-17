@@ -27,8 +27,6 @@ public class DataTransaction {
     @Inject
     protected EntityManagerProducer emp;
 
-    protected String jndiPath;
-
     /**
      * Create object in the database.
      * This operation can not be undone.
