@@ -842,10 +842,11 @@ public class LafObjectMapper {
             currentErrors.add(err);
             return;
         }
-        Messung newMessung = null;
+        Messung newMessung;
         boolean oldMessungIsReadonly = false;
         Messung old = (Messung) messungIdentifier.getExisting();
-        if (ident == Identified.UPDATE) {
+        switch (ident) {
+        case UPDATE:
             oldMessungIsReadonly =
                 authorizer.isMessungReadOnly(old.getId());
             if (oldMessungIsReadonly) {
@@ -859,22 +860,23 @@ public class LafObjectMapper {
                 merger.mergeMessung(old, messung);
                 newMessung = old;
             }
-        } else if (ident == Identified.REJECT) {
+            break;
+        case REJECT:
             ReportItem err = new ReportItem();
             err.setCode(StatusCodes.VALUE_MISSING);
             err.setKey("identification");
             err.setValue("Messung");
             currentErrors.add(err);
             return;
-        } else if (ident == Identified.NEW) {
+        case NEW:
             // Check if Messung has all fields that have db constraints
             // (validation rule?)
             if (messung.getMmtId() == null) {
-                ReportItem err = new ReportItem();
-                err.setCode(StatusCodes.VALUE_MISSING);
-                err.setKey("not valid (missing Messmethode)");
-                err.setValue("Messung: " + messung.getNebenprobenNr());
-                currentErrors.add(err);
+                ReportItem err2 = new ReportItem();
+                err2.setCode(StatusCodes.VALUE_MISSING);
+                err2.setKey("not valid (missing Messmethode)");
+                err2.setValue("Messung: " + messung.getNebenprobenNr());
+                currentErrors.add(err2);
                 return;
             }
 
@@ -885,7 +887,12 @@ public class LafObjectMapper {
                 repository.getById(
                     Messung.class, newMessung.getId(), Strings.LAND);
             newMessung = ((Messung) created.getData());
+            break;
+        default:
+            throw new IllegalArgumentException(
+                "Identified with unexpected enum constant");
         }
+
         List<KommentarM> kommentare = new ArrayList<KommentarM>();
         for (int i = 0; i < object.getKommentare().size(); i++) {
             KommentarM tmp =
