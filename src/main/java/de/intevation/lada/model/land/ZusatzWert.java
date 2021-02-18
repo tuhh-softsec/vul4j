@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,6 +20,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import de.intevation.lada.util.data.EmptyStringConverter;
 
 
 /**
@@ -43,6 +46,7 @@ public class ZusatzWert implements Serializable {
     private Double messwertPzs;
 
     @Column(name = "kleiner_als")
+    @Convert(converter = EmptyStringConverter.class)
     private String kleinerAls;
 
     @Column(name = "probe_id")
@@ -123,7 +127,7 @@ public class ZusatzWert implements Serializable {
     }
 
     public void setKleinerAls(String kleinerAls) {
-        this.kleinerAls = kleinerAls.isEmpty() ? null : kleinerAls;
+        this.kleinerAls = kleinerAls;
     }
 
     public Timestamp getTreeModified() {

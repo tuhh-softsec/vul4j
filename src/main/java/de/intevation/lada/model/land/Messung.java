@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,6 +26,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hibernate.annotations.DynamicInsert;
+
+import de.intevation.lada.util.data.EmptyStringConverter;
 
 
 /**
@@ -62,6 +65,7 @@ public class Messung implements Serializable {
     private String mmtId;
 
     @Column(name = "nebenproben_nr")
+    @Convert(converter = EmptyStringConverter.class)
     private String nebenprobenNr;
 
     @Column(name = "probe_id")
@@ -185,7 +189,7 @@ public class Messung implements Serializable {
     }
 
     public void setNebenprobenNr(String nebenprobenNr) {
-        this.nebenprobenNr = nebenprobenNr.isEmpty() ? null : nebenprobenNr;
+        this.nebenprobenNr = nebenprobenNr;
     }
 
     @JsonIgnore
