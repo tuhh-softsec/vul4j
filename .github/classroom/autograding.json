@@ -1,0 +1,14 @@
+{
+  "tests": [
+    {
+      "name": "Verify",
+      "setup": "",
+      "run": "mvn -B --no-transfer-progress verify",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 10,
+      "points": null
+    }
+  ]
+}

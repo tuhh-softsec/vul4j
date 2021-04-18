@@ -1,0 +1,19 @@
+name: GitHub Classroom Workflow
+
+on:
+  push:
+    tags:
+      - entrega-final
+
+jobs:
+  build:
+    name: Autograding
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '8'
+          java-package: jdk
+          architecture: x64
+      - uses: education/autograding@v1
