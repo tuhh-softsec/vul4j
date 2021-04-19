@@ -50,7 +50,7 @@ enum CategoriaPrenda{
   PARTE-SUPERIOR, CALZADO, PARTE-INFERIOR, ACCESORIO
 }
 
-class generadorDePrendas{
+class GeneradorDePrendas{
   Prenda prenda
   
   
