@@ -1,4 +1,14 @@
-# java-base-project
+# QMP1-Primera-Iteracion
+
+## Diagrama de clases
+
+<p align="center"> 
+<img src="QMP1-Primera-Iteracion.png">
+</p>
+
+
+
+---
 
 # Ejecutar tests
 
