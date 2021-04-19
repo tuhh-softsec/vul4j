@@ -7,6 +7,124 @@
 </p>
 
 
+## Pseudocodigo
+
+~~~
+
+class Atuendo{
+  List<Prenda> prendas
+  
+}
+
+class Prenda{
+  String tipo
+  CategoriaPrenda categoria
+  String materialConstruccion          ⚠️❔
+  int[] colorPrincipal = new int[3];   ⚠️❔
+  int[] colorSecundario = new int[3];
+  
+  
+  setTipo(String tipo){
+    TODO ❕
+  }
+  
+  setCategoria(CategoriaPrenda categoria){
+    TODO ❕
+  }
+  
+  setMaterialConstruccion(String materialConstruccion){
+    TODO ❕
+  }
+  
+  setColorPrincipal(int color1, int color2, int color3){
+    TODO ❕
+  }
+  
+  setColorSecundario(int color1, int color2, int color3){
+    TODO ❕
+  }
+}
+
+
+enum CategoriaPrenda{
+  PARTE-SUPERIOR, CALZADO, PARTE-INFERIOR, ACCESORIO
+}
+
+class builderPrenda{
+  Prenda prenda
+  
+  
+  crearNuevaPrenda(){
+    prenda = new Prenda();
+  }
+  
+  getPrenda(){
+  
+    if(!prenda.tipo || !prenda.materialConstruccion || !prenda.colorPrimario){
+      throw new exception("La prenda generada no es valida. Debe tener tipo de prenda, material de construccion y color primario")
+    }
+    
+    return prenda;
+  }
+  
+  
+  
+  
+  setTipoConCategoria(String tipoPrenda){
+    prenda.setTipo(tipoPrenda)
+    CategoriaPrenda categoria = RepositorioTipoPrendas.instance().buscarCategoria(tipo)
+    
+    prenda.setCategoria(categoria)
+  }
+  
+  setMaterialConstruccion(String materialConstruccion){
+    prenda.setMaterialConstruccion(materialConstruccion)
+  }
+  
+  setColorPrincipal(int color1, int color2, int color3){
+    prenda.setColorPrincipal(color1, color2, color3)
+  }
+  
+  setColorSecundario(int color1, int color2, int color3){
+    prenda.setColorSecundario(color1, color2, color3)
+  }
+  
+
+}
+
+
+class RepositorioTipoPrendas{
+
+  private static final RepositorioTipoPrendas INSTANCE = new RepositorioTipoPrendas();
+  
+  private RepositorioTipoPrendas(){}  //constructor
+  
+  public static RepositorioTipoPrendas instance(){
+    return INSTANCE
+  }
+  
+  List<String> partesSuperiores
+  List<String> partesInferiores
+  List<String> calzados
+  List<String> accesorios
+  
+  
+  buscarCategoria(String tipoPrenda){
+    
+    if(partesSuperiores.contains(tipoPrenda)) return CategoriaPrenda.PARTE-SUPERIOR
+    if(partesInferiores.contains(tipoPrenda)) return CategoriaPrenda.PARTE-INFERIOR
+    if(calzados.contains(tipoPrenda)) return CategoriaPrenda.CALZADO
+    if(accesorios.contains(tipoPrenda)) return CategoriaPrenda.ACCESORIO
+    else{
+    	throw new exception("El tipo de prenda ingresado no es valido")
+    }
+  }
+   
+}
+
+
+~~~
+
 
 ---
 
