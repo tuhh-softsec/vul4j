@@ -8,6 +8,7 @@ public class Prenda {
   private int[] colorPrincipal = new int[3];
   private int[] colorSecundario = new int[3];
 
+  public Prenda(){}
 
   //SETTERS
   public void setTipo(String tipo){

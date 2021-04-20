@@ -14,11 +14,12 @@ public class RepositorioTipoPrendas {
     return INSTANCE;
   }
 
+
+
   private List<String> partesSuperiores;
   private List<String> partesInferiores;
   private List<String> calzados;
   private List<String> accesorios;
-
 
   public CategoriaPrenda buscarCategoria(String tipoPrenda){
 
