@@ -19,7 +19,8 @@
 
 * la clase "RepositorioTipoVentas" es un singleton que usamos para tratar de representar lo que sería una petición a
   una base de datos, aunque no sabemos si sería correcto. La idea es que las listas que están en esta clase se puedan 
-  persistir y actualizar para poder identificar TIPOS de prendas válidos.
+  persistir y actualizar para poder identificar TIPOS de prendas válidos. Que a su vez nos permite identificar a que
+  categoria pertenece una prenda.
 
 
 ## Pseudocodigo
