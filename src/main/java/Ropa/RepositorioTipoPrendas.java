@@ -6,11 +6,17 @@ import java.util.List;
 
 public class RepositorioTipoPrendas {
 
-  private static final RepositorioTipoPrendas INSTANCE = new RepositorioTipoPrendas();
+  private static RepositorioTipoPrendas INSTANCE;
 
-  private RepositorioTipoPrendas(){}  //constructor
+  //CONSTRUCTOR
+  private RepositorioTipoPrendas(){}
 
   public static RepositorioTipoPrendas instance(){
+
+    if(INSTANCE == null){
+      INSTANCE = new RepositorioTipoPrendas();
+    }
+
     return INSTANCE;
   }
 
@@ -31,4 +37,24 @@ public class RepositorioTipoPrendas {
       throw new TipoDePrendaInvalidaException("El TIPO de prenda ingresado no es valido");
     }
   }
+
+
+
+  //SETTERS
+  public void setPartesSuperiores(List<String> partesSuperiores) {
+    this.partesSuperiores = partesSuperiores;
+  }
+
+  public void setPartesInferiores(List<String> partesInferiores) {
+    this.partesInferiores = partesInferiores;
+  }
+
+  public void setCalzados(List<String> calzados) {
+    this.calzados = calzados;
+  }
+
+  public void setAccesorios(List<String> accesorios) {
+    this.accesorios = accesorios;
+  }
+
 }
