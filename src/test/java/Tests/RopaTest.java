@@ -14,18 +14,19 @@ import java.util.List;
 
 public class RopaTest {
 
-  private static RepositorioTipoPrendas repo = RepositorioTipoPrendas.instance();
+  private static final RepositorioTipoPrendas repo = RepositorioTipoPrendas.instance();
 
   public void pedirCategoriaDeGorraAlRepo(){
-    CategoriaPrenda categoriaResultante = repo.buscarCategoria("gorra");
+
+    repo.buscarCategoria("gorra");
   }
 
   @BeforeAll
   public static void llenarRepoConDatos(){
-    List<String> partesSuperiores = new ArrayList<String>();
-    List<String> partesInferiores = new ArrayList<String>();
-    List<String> calzados = new ArrayList<String>();
-    List<String> accesorios = new ArrayList<String>();
+    List<String> partesSuperiores = new ArrayList<>();
+    List<String> partesInferiores = new ArrayList<>();
+    List<String> calzados = new ArrayList<>();
+    List<String> accesorios = new ArrayList<>();
 
     partesSuperiores.add("camisa");
     partesSuperiores.add("remera");
@@ -78,6 +79,13 @@ public class RopaTest {
     GeneradorDePrendas generadorDePrendas = new GeneradorDePrendas();
     Assertions.assertThrows(TipoDePrendaInvalidaException.class, () -> generadorDePrendas.setTipoConCategoria("banana"));
   }// uso lambda porque si no, no me deja. Creo que es porque la funcion tiene un parametro
+
+  @Test
+  public void siPidoCategoriaDespuesDeIngresarTipoDePrendaNoPasaNada(){
+    GeneradorDePrendas generadorDePrendas = new GeneradorDePrendas();
+    generadorDePrendas.setTipoConCategoria("remera");
+    Assertions.assertEquals(CategoriaPrenda.PARTE_SUPERIOR, generadorDePrendas.identificarCategoria());
+  }
 
   @Test
   public void siPidoCategoriaSinIngresarTipoDaFaltaTipoDePrendaException(){

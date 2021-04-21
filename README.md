@@ -13,11 +13,11 @@
   instanciar clases de "Prenda" directamente, se deben instanciar desde el "GeneradorDePrendas"
 
 
-* la clase "GeneradorDePrendas" sirve para configurar las instancias de "Prenda" y dejarlas con un estado aceptable 
+* La clase "GeneradorDePrendas" sirve para configurar las instancias de "Prenda" y dejarlas con un estado aceptable 
   para el sistema. Además esta clase permite evitar tener un constructor de "Prenda" con demasiados atributos.
   
 
-* la clase "RepositorioTipoVentas" es un singleton que usamos para tratar de representar lo que sería una petición a
+* La clase "RepositorioTipoVentas" es un singleton que usamos para tratar de representar lo que sería una petición a
   una base de datos, aunque no sabemos si sería correcto. La idea es que las listas que están en esta clase se puedan 
   persistir y actualizar para poder identificar TIPOS de prendas válidos. Que a su vez nos permite identificar a que
   categoria pertenece una prenda.
