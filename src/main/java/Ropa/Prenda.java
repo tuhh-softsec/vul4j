@@ -52,10 +52,18 @@ public class Prenda {
   }
 
   public int[] getColorPrincipal() {
-    return colorPrincipal;
+    int[] clonColorPrincipal = new int[3];
+    clonColorPrincipal[0] = this.colorPrincipal[0];
+    clonColorPrincipal[1] = this.colorPrincipal[1];
+    clonColorPrincipal[2] = this.colorPrincipal[2];
+    return clonColorPrincipal;
   }
 
   public int[] getColorSecundario() {
-    return colorSecundario;
+    int[] clonColorSecundario = new int[3];
+    clonColorSecundario[0] = this.colorSecundario[0];
+    clonColorSecundario[1] = this.colorSecundario[1];
+    clonColorSecundario[2] = this.colorSecundario[2];
+    return clonColorSecundario;
   }
 }
