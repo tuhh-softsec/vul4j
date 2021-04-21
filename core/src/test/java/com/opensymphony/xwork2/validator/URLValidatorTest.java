@@ -222,7 +222,7 @@ public class URLValidatorTest extends XWorkTestCase {
 		}
 		
 		public String getTestingUrl5() {
-			return "http://yahoo.com/articles?id=123";
+			return "http://yahoo.com/articles?id=123\n";
 		}
 	}
 
