@@ -176,6 +176,17 @@ public class I18nInterceptorTest extends TestCase {
         assertEquals(locale1, locale);
     }
 
+    public void testCVE_2016_2162() throws Exception {
+        params.put(I18nInterceptor.DEFAULT_PARAMETER, "DK"); // local with name "DK" doesn't exist
+        interceptor.intercept(mai);
+
+        assertNull(params.get(I18nInterceptor.DEFAULT_PARAMETER)); // should have been removed
+
+        Locale defaultLocale = Locale.getDefault();
+        assertNotNull(session.get(I18nInterceptor.DEFAULT_SESSION_ATTRIBUTE)); // should be return by the default locale of system
+        assertEquals(defaultLocale, session.get(I18nInterceptor.DEFAULT_SESSION_ATTRIBUTE)); // should create a locale object
+    }
+
     @Override
     protected void setUp() throws Exception {
         interceptor = new I18nInterceptor();
