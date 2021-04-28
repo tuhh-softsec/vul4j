@@ -273,18 +273,18 @@ public class ResourceServlet extends HttpServletBean {
 		if (this.contentType != null) {
 			response.setContentType(this.contentType);
 		}
+
 		String[] resourceUrls = StringUtils.tokenizeToStringArray(resourceUrl, RESOURCE_URL_DELIMITERS);
 		for (String url : resourceUrls) {
-			String path = StringUtils.cleanPath(url);
 			// Check whether URL matches allowed resources
-			if (this.allowedResources != null && !this.pathMatcher.match(this.allowedResources, path)) {
-				throw new ServletException("Resource [" + path +
+			if (this.allowedResources != null && !this.pathMatcher.match(this.allowedResources, url)) {
+				throw new ServletException("Resource [" + url +
 						"] does not match allowed pattern [" + this.allowedResources + "]");
 			}
 			if (logger.isDebugEnabled()) {
-				logger.debug("Including resource [" + path + "]");
+				logger.debug("Including resource [" + url + "]");
 			}
-			RequestDispatcher rd = request.getRequestDispatcher(path);
+			RequestDispatcher rd = request.getRequestDispatcher(url);
 			rd.include(request, response);
 		}
 	}
