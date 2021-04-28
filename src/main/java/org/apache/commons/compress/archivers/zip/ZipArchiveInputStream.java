@@ -525,8 +525,7 @@ public class ZipArchiveInputStream extends ArchiveInputStream implements InputSt
             buf.position(0);
             final int l = in.read(buf.array());
             if (l == -1) {
-                buf.limit(0);
-                throw new IOException("Truncated ZIP file");
+                return -1;
             }
             buf.limit(l);
 
