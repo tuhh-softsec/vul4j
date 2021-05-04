@@ -248,12 +248,11 @@ public class WebUtils {
         if (contextPath == null) {
             contextPath = request.getContextPath();
         }
-        contextPath = normalize(decodeRequestString(request, contextPath));
         if ("/".equals(contextPath)) {
-            // the normalize method will return a "/" and includes on Jetty, will also be a "/".
+            // Invalid case, but happens for includes on Jetty: silently adapt it.
             contextPath = "";
         }
-        return contextPath;
+        return decodeRequestString(request, contextPath);
     }
 
     /**
