@@ -37,7 +37,7 @@ public final class JwtIssuerValidator implements OAuth2TokenValidator<Jwt> {
 					"This iss claim is not equal to the configured issuer",
 					"https://tools.ietf.org/html/rfc6750#section-3.1");
 
-	private final String issuer;
+	private final URL issuer;
 
 	/**
 	 * Constructs a {@link JwtIssuerValidator} using the provided parameters
@@ -48,7 +48,7 @@ public final class JwtIssuerValidator implements OAuth2TokenValidator<Jwt> {
 		Assert.notNull(issuer, "issuer cannot be null");
 
 		try {
-			this.issuer = new URL(issuer).toString();
+			this.issuer = new URL(issuer);
 		} catch (MalformedURLException ex) {
 			throw new IllegalArgumentException(
 					"Invalid Issuer URL " + issuer + " : " + ex.getMessage(),
@@ -63,8 +63,7 @@ public final class JwtIssuerValidator implements OAuth2TokenValidator<Jwt> {
 	public OAuth2TokenValidatorResult validate(Jwt token) {
 		Assert.notNull(token, "token cannot be null");
 
-		String tokenIssuer = token.getClaimAsString(JwtClaimNames.ISS);
-		if (this.issuer.equals(tokenIssuer)) {
+		if (this.issuer.equals(token.getIssuer())) {
 			return OAuth2TokenValidatorResult.success();
 		} else {
 			return OAuth2TokenValidatorResult.failure(INVALID_ISSUER);

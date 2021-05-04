@@ -83,6 +83,24 @@ public class JwtIssuerValidatorTests {
 	}
 
 	@Test
+	public void testCVE_2018_15801() {
+		// both issuer validator and issuer from signed jwt point to 127.0.0.1, the attacker could fake another
+		// hostname to be used as malicious issuer (also point to 127.0.0.1 after signed the token)
+		// this vulnerability happens due to equals() method of URL class actually
+		// compare the behind ip address that the hostname points to
+		JwtIssuerValidator validator = new JwtIssuerValidator("https://127.0.0.1");
+		Jwt jwt = new Jwt(
+				MOCK_TOKEN,
+				MOCK_ISSUED_AT,
+				MOCK_EXPIRES_AT,
+				MOCK_HEADERS,
+				Collections.singletonMap(JwtClaimNames.ISS, "https://localhost"));
+
+		OAuth2TokenValidatorResult result = validator.validate(jwt);
+		assertThat(result.getErrors()).isNotEmpty();
+	}
+
+	@Test
 	public void validateWhenJwtIsNullThenThrowsIllegalArgumentException() {
 		assertThatCode(() -> this.validator.validate(null))
 				.isInstanceOf(IllegalArgumentException.class);
