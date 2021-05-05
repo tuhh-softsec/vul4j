@@ -24,7 +24,6 @@
 package hudson.plugins.ccm.parser;
 
 import hudson.plugins.analysis.core.AbstractAnnotationParser;
-import hudson.plugins.analysis.util.SecureDigester;
 import hudson.plugins.analysis.util.model.FileAnnotation;
 import hudson.plugins.analysis.util.model.Priority;
 
@@ -34,6 +33,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.commons.digester.Digester;
 import org.apache.commons.lang.StringUtils;
 import org.xml.sax.SAXException;
 
@@ -84,7 +84,9 @@ public class CcmParser extends AbstractAnnotationParser {
 	}
 
 	private Ccm parseCCMXmlFile(InputStream ccmXmlFile) throws IOException, SAXException {
-		SecureDigester digester = new SecureDigester(CcmParser.class);
+		Digester digester = new Digester();
+		digester.setValidating(false);
+		digester.setClassLoader(CcmParser.class.getClassLoader());
 
 		String rootXPath = "ccm";
 		digester.addObjectCreate(rootXPath, Ccm.class);
