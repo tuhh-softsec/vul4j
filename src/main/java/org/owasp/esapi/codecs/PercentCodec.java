@@ -89,12 +89,7 @@ public class PercentCodec extends Codec
 
 	/**
 	 * Encode a character for URLs
-	 * @param immune Additional characters not to encode. Note this could
-     *               break URL encoding as referenced in RFC 3986. You should
-     *               especially be wary of including '%' in this list of immune
-     *               characters since it is used as the "escape" character for
-     *               the hex encoding and including it may result in subsequent
-     *               and/or dangerous results when decoding.
+	 * @param immune characters not to encode
 	 * @param c character to encode
 	 * @return the encoded string representing c
 	 */
@@ -104,11 +99,6 @@ public class PercentCodec extends Codec
 		byte[] bytes;
 		StringBuilder sb;
 
-        // check for user specified immune characters
-        if ( immune != null && containsCharacter( c.charValue(), immune ) )
-            return cStr;
-
-        // check for standard characters (e.g., alphanumeric, etc.)
 		if(UNENCODED_SET.contains(c))
 			return cStr;
 
