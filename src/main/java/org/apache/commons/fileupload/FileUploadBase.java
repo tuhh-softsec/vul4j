@@ -991,12 +991,7 @@ public abstract class FileUploadBase {
             }
 
             notifier = new MultipartStream.ProgressNotifier(listener, requestSize);
-            try {
-                multi = new MultipartStream(input, boundary, notifier);
-            } catch (IllegalArgumentException iae) {
-                throw new InvalidContentTypeException(
-                        format("The boundary specified in the %s header is too long", CONTENT_TYPE), iae);
-            }
+            multi = new MultipartStream(input, boundary, notifier);
             multi.setHeaderEncoding(charEncoding);
 
             skipPreamble = true;
@@ -1188,7 +1183,7 @@ public abstract class FileUploadBase {
          * detail message.
          */
         public InvalidContentTypeException() {
-            super();
+            // Nothing to do.
         }
 
         /**
@@ -1201,9 +1196,6 @@ public abstract class FileUploadBase {
             super(message);
         }
 
-        public InvalidContentTypeException(String msg, Throwable cause) {
-            super(msg, cause);
-        }
     }
 
     /**
