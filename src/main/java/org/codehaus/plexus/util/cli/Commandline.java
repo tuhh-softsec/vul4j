@@ -139,8 +139,6 @@ public class Commandline
      * Create a new command line object.
      * Shell is autodetected from operating system
      *
-     * Shell usage is only desirable when generating code for remote execution.
-     *
      * @param toProcess
      */
     public Commandline( String toProcess, Shell shell )
@@ -169,8 +167,6 @@ public class Commandline
     /**
      * Create a new command line object.
      * Shell is autodetected from operating system
-     *
-     * Shell usage is only desirable when generating code for remote execution.
      */
     public Commandline( Shell shell )
     {
@@ -178,7 +174,8 @@ public class Commandline
     }
 
     /**
-     * Create a new command line object, given a command following POSIX sh quoting rules
+     * Create a new command line object.
+     * Shell is autodetected from operating system
      *
      * @param toProcess
      */
@@ -206,6 +203,7 @@ public class Commandline
 
     /**
      * Create a new command line object.
+     * Shell is autodetected from operating system
      */
     public Commandline()
     {
@@ -255,7 +253,7 @@ public class Commandline
         {
             if ( realPos == -1 )
             {
-                realPos = ( getLiteralExecutable() == null ? 0 : 1 );
+                realPos = ( getExecutable() == null ? 0 : 1 );
                 for ( int i = 0; i < position; i++ )
                 {
                     Arg arg = (Arg) arguments.elementAt( i );
@@ -406,21 +404,6 @@ public class Commandline
         this.executable = executable;
     }
 
-    /**
-     * @return Executable to be run, as a literal string (no shell quoting/munging)
-     */
-    public String getLiteralExecutable()
-    {
-        return executable;
-    }
-
-    /**
-     * Return an executable name, quoted for shell use.
-     *
-     * Shell usage is only desirable when generating code for remote execution.
-     *
-     * @return Executable to be run, quoted for shell interpretation
-     */
     public String getExecutable()
     {
         String exec = shell.getExecutable();
@@ -500,7 +483,7 @@ public class Commandline
     public String[] getCommandline()
     {
         final String[] args = getArguments();
-        String executable = getLiteralExecutable();
+        String executable = getExecutable();
 
         if ( executable == null )
         {
@@ -514,8 +497,6 @@ public class Commandline
 
     /**
      * Returns the shell, executable and all defined arguments.
-     *
-     * Shell usage is only desirable when generating code for remote execution.
      */
     public String[] getShellCommandline()
     {
@@ -652,7 +633,7 @@ public class Commandline
         {
             if ( workingDir == null )
             {
-                process = Runtime.getRuntime().exec( getCommandline(), environment, workingDir );
+                process = Runtime.getRuntime().exec( getShellCommandline(), environment );
             }
             else
             {
@@ -667,7 +648,7 @@ public class Commandline
                         + "\" does not specify a directory." );
                 }
 
-                process = Runtime.getRuntime().exec( getCommandline(), environment, workingDir );
+                process = Runtime.getRuntime().exec( getShellCommandline(), environment, workingDir );
             }
         }
         catch ( IOException ex )
@@ -688,7 +669,7 @@ public class Commandline
             shell.setWorkingDirectory( workingDir );
         }
 
-        if ( shell.getOriginalExecutable() == null )
+        if ( shell.getExecutable() == null )
         {
             shell.setExecutable( executable );
         }
@@ -703,8 +684,6 @@ public class Commandline
     /**
      * Allows to set the shell to be used in this command line.
      *
-     * Shell usage is only desirable when generating code for remote execution.
-     *
      * @param shell
      * @since 1.2
      */
@@ -716,7 +695,6 @@ public class Commandline
     /**
      * Get the shell to be used in this command line.
      *
-     * Shell usage is only desirable when generating code for remote execution.
      * @since 1.2
      */
     public Shell getShell()

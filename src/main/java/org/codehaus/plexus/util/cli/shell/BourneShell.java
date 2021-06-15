@@ -17,6 +17,7 @@ package org.codehaus.plexus.util.cli.shell;
  */
 
 import org.codehaus.plexus.util.Os;
+import org.codehaus.plexus.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,18 +29,34 @@ import java.util.List;
 public class BourneShell
     extends Shell
 {
+    private static final char[] BASH_QUOTING_TRIGGER_CHARS = {
+        ' ',
+        '$',
+        ';',
+        '&',
+        '|',
+        '<',
+        '>',
+        '*',
+        '?',
+        '(',
+        ')',
+        '[',
+        ']',
+        '{',
+        '}',
+        '`' };
 
     public BourneShell()
     {
-        this(false);
+        this( false );
     }
 
     public BourneShell( boolean isLoginShell )
     {
-        setUnconditionalQuoting( true );
         setShellCommand( "/bin/sh" );
         setArgumentQuoteDelimiter( '\'' );
-        setExecutableQuoteDelimiter( '\'' );
+        setExecutableQuoteDelimiter( '\"' );
         setSingleQuotedArgumentEscaped( true );
         setSingleQuotedExecutableEscaped( false );
         setQuotedExecutableEnabled( true );
@@ -59,7 +76,7 @@ public class BourneShell
             return super.getExecutable();
         }
 
-        return quoteOneItem( super.getOriginalExecutable(), true );
+        return unifyQuotes( super.getExecutable());
     }
 
     public List<String> getShellArgsList()
@@ -109,41 +126,46 @@ public class BourneShell
         StringBuilder sb = new StringBuilder();
         sb.append( "cd " );
 
-        sb.append( quoteOneItem( dir, false ) );
+        sb.append( unifyQuotes( dir ) );
         sb.append( " && " );
 
         return sb.toString();
+    }
+
+    protected char[] getQuotingTriggerChars()
+    {
+        return BASH_QUOTING_TRIGGER_CHARS;
     }
 
     /**
      * <p>Unify quotes in a path for the Bourne Shell.</p>
      *
      * <pre>
-     * BourneShell.quoteOneItem(null)                       = null
-     * BourneShell.quoteOneItem("")                         = ''
-     * BourneShell.quoteOneItem("/test/quotedpath'abc")     = '/test/quotedpath'"'"'abc'
-     * BourneShell.quoteOneItem("/test/quoted path'abc")    = '/test/quoted pat'"'"'habc'
-     * BourneShell.quoteOneItem("/test/quotedpath\"abc")    = '/test/quotedpath"abc'
-     * BourneShell.quoteOneItem("/test/quoted path\"abc")   = '/test/quoted path"abc'
-     * BourneShell.quoteOneItem("/test/quotedpath\"'abc")   = '/test/quotedpath"'"'"'abc'
-     * BourneShell.quoteOneItem("/test/quoted path\"'abc")  = '/test/quoted path"'"'"'abc'
+     * BourneShell.unifyQuotes(null)                       = null
+     * BourneShell.unifyQuotes("")                         = (empty)
+     * BourneShell.unifyQuotes("/test/quotedpath'abc")     = /test/quotedpath\'abc
+     * BourneShell.unifyQuotes("/test/quoted path'abc")    = "/test/quoted path'abc"
+     * BourneShell.unifyQuotes("/test/quotedpath\"abc")    = "/test/quotedpath\"abc"
+     * BourneShell.unifyQuotes("/test/quoted path\"abc")   = "/test/quoted path\"abc"
+     * BourneShell.unifyQuotes("/test/quotedpath\"'abc")   = "/test/quotedpath\"'abc"
+     * BourneShell.unifyQuotes("/test/quoted path\"'abc")  = "/test/quoted path\"'abc"
      * </pre>
      *
      * @param path not null path.
      * @return the path unified correctly for the Bourne shell.
      */
-    protected String quoteOneItem( String path, boolean isExecutable )
+    protected static String unifyQuotes( String path )
     {
         if ( path == null )
         {
             return null;
         }
 
-        StringBuilder sb = new StringBuilder();
-        sb.append( "'" );
-        sb.append( path.replace( "'", "'\"'\"'" ) );
-        sb.append( "'" );
+        if ( path.indexOf( " " ) == -1 && path.indexOf( "'" ) != -1 && path.indexOf( "\"" ) == -1 )
+        {
+            return StringUtils.escape( path );
+        }
 
-        return sb.toString();
+        return StringUtils.quoteAndEscape( path, '\"', BASH_QUOTING_TRIGGER_CHARS );
     }
 }
