@@ -33,7 +33,6 @@ import org.dom4j.io.SAXReader;
 import org.jenkinsci.plugins.workflow.graph.FlowNode;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
-import org.xml.sax.SAXException;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -163,14 +162,6 @@ public final class SuiteResult implements Serializable {
 
         // parse into DOM
         SAXReader saxReader = new SAXReader();
-        
-        //source: https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Prevention_Cheat_Sheet => SAXReader
-        // setFeatureQuietly(saxReader, "http://apache.org/xml/features/disallow-doctype-decl", true);
-        // setFeatureQuietly(saxReader, "http://xml.org/sax/features/external-parameter-entities", false);
-
-        // only that seems to let the initial feature of testng namespace being loaded locally
-        setFeatureQuietly(saxReader, "http://xml.org/sax/features/external-general-entities", false);
-
         saxReader.setEntityResolver(new XMLEntityResolver());
 
         FileInputStream xmlReportStream = new FileInputStream(xmlReport);
@@ -184,15 +175,6 @@ public final class SuiteResult implements Serializable {
         }
 
         return r;
-    }
-
-    private static void setFeatureQuietly(SAXReader reader, String feature, boolean value) {
-        try {
-            reader.setFeature(feature, value);
-        }
-        catch (SAXException ignored) {
-            // ignore and continue in case the feature cannot be changed
-        }
     }
 
     private static void parseSuite(File xmlReport, boolean keepLongStdio, List<SuiteResult> r, Element root,

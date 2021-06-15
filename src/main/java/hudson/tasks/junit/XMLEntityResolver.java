@@ -67,7 +67,7 @@ public class XMLEntityResolver implements EntityResolver {
             }
         }
         // Default fallback
-        return new InputSource();
+        return null;
     }
 
     private static final Logger LOGGER = Logger.getLogger(XMLEntityResolver.class.getName());
