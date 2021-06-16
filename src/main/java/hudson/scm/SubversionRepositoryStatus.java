@@ -8,6 +8,7 @@ import static javax.servlet.http.HttpServletResponse.SC_OK;
 import hudson.Extension;
 import hudson.ExtensionList;
 import hudson.ExtensionPoint;
+import hudson.model.AbstractModelObject;
 import hudson.model.AbstractProject;
 import hudson.model.Job;
 import hudson.scm.SubversionSCM.ModuleLocation;
@@ -36,7 +37,6 @@ import org.apache.commons.io.IOUtils;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
-import org.kohsuke.stapler.interceptor.RequirePOST;
 import org.tmatesoft.svn.core.SVNCancelException;
 import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.SVNException;
@@ -49,7 +49,7 @@ import org.tmatesoft.svn.core.SVNException;
  * @author Kohsuke Kawaguchi
  * @see SubversionStatus
  */
-public class SubversionRepositoryStatus {
+public class SubversionRepositoryStatus extends AbstractModelObject {
     public final UUID uuid;
 
     public SubversionRepositoryStatus(UUID uuid) {
@@ -60,6 +60,10 @@ public class SubversionRepositoryStatus {
         return uuid.toString();
     }
 
+    public String getSearchUrl() {
+        return uuid.toString();
+    }
+    
     static interface JobProvider {
         @SuppressWarnings("rawtypes")
         List<Job> getAllJobs();
@@ -88,8 +92,9 @@ public class SubversionRepositoryStatus {
      * Because this URL is not guarded, we can't really trust the data that's sent to us. But we intentionally
      * don't protect this URL to simplify <tt>post-commit</tt> script set up.
      */
-    @RequirePOST
     public void doNotifyCommit(StaplerRequest req, StaplerResponse rsp) throws ServletException, IOException {
+        requirePOST();
+
         // compute the affected paths
         Set<String> affectedPath = new HashSet<String>();
         String line;
