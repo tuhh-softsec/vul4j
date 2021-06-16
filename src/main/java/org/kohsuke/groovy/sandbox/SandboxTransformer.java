@@ -137,7 +137,6 @@ public class SandboxTransformer extends CompilationCustomizer {
 
         processConstructors(visitor, classNode);
         for (MethodNode m : classNode.getMethods()) {
-            forbidIfFinalizer(m);
             visitor.visitMethod(m);
         }
         for (Statement s : classNode.getObjectInitializerStatements()) {
@@ -145,26 +144,6 @@ public class SandboxTransformer extends CompilationCustomizer {
         }
         for (FieldNode f : classNode.getFields()) {
             visitor.visitField(f);
-        }
-    }
-
-    /**
-     * {@link Object#finalize} is called by the JVM outside of the sandbox, so overriding it in a
-     * sandboxed script is not allowed.
-     */
-    public void forbidIfFinalizer(MethodNode m) {
-        if (m.getName().equals("finalize") && m.isVoidMethod() && !m.isPrivate() && !m.isStatic()) {
-            boolean safe = false;
-            // There must be at least one parameter without an initial expression for the method to be acceptable.
-            for (Parameter p : m.getParameters()) {
-                if (!p.hasInitialExpression()) {
-                    safe = true;
-                    break;
-                }
-            }
-            if (!safe) {
-                throw new SecurityException("Sandboxed code may not override Object.finalize()");
-            }
         }
     }
 
