@@ -17,7 +17,6 @@ package com.opensymphony.xwork2.interceptor;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
-import com.opensymphony.xwork2.ExcludedPatterns;
 import com.opensymphony.xwork2.ValidationAware;
 import com.opensymphony.xwork2.XWorkConstants;
 import com.opensymphony.xwork2.conversion.impl.InstantiatingNullHandler;
@@ -150,19 +149,15 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
     private int paramNameMaxLength = PARAM_NAME_MAX_LENGTH;
 
     protected boolean ordered = false;
-    protected Set<Pattern> excludeParams;
+    protected Set<Pattern> excludeParams = Collections.emptySet();
     protected Set<Pattern> acceptParams = Collections.emptySet();
 
     private boolean devMode = false;
 
     // Allowed names of parameters
-    private Pattern acceptedPattern = Pattern.compile(ACCEPTED_PARAM_NAMES, Pattern.CASE_INSENSITIVE);
+    private Pattern acceptedPattern = Pattern.compile(ACCEPTED_PARAM_NAMES);
 
     private ValueStackFactory valueStackFactory;
-
-    public ParametersInterceptor() {
-        initializeHardCodedExcludePatterns();
-    }
 
     @Inject
     public void setValueStackFactory(ValueStackFactory valueStackFactory) {
@@ -174,16 +169,16 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
         devMode = "true".equals(mode);
     }
 
-	/**
-	 * Sets a comma-delimited list of regular expressions to match
-	 * parameters that are allowed in the parameter map (aka whitelist).
-	 * <p/>
-	 * Don't change the default unless you know what you are doing in terms
-	 * of security implications.
-	 *
-	 * @param commaDelim A comma-delimited list of regular expressions
-	 */
-	public void setAcceptParamNames(String commaDelim) {
+    /**
+     * Sets a comma-delimited list of regular expressions to match
+     * parameters that are allowed in the parameter map (aka whitelist).
+     * <p/>
+     * Don't change the default unless you know what you are doing in terms
+     * of security implications.
+     *
+     * @param commaDelim A comma-delimited list of regular expressions
+     */
+    public void setAcceptParamNames(String commaDelim) {
         Collection<String> acceptPatterns = ArrayUtils.asCollection(commaDelim);
         if (acceptPatterns != null) {
             acceptParams = new HashSet<Pattern>();
@@ -218,7 +213,7 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
     static final Comparator<String> rbCollator = new Comparator<String>() {
         public int compare(String s1, String s2) {
             int l1 = countOGNLCharacters(s1),
-                l2 = countOGNLCharacters(s2);
+                    l2 = countOGNLCharacters(s2);
             return l1 < l2 ? -1 : (l2 < l1 ? 1 : s1.compareTo(s2));
         }
 
@@ -421,13 +416,13 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
         return accepted;
     }
 
-	protected boolean isWithinLengthLimit( String name ) {
+    protected boolean isWithinLengthLimit( String name ) {
         boolean matchLength = name.length() <= paramNameMaxLength;
         if (!matchLength) {
             notifyDeveloper("Parameter [#0] is too long, allowed length is [#1]", name, String.valueOf(paramNameMaxLength));
         }
         return matchLength;
-	}
+    }
 
     protected boolean isAccepted(String paramName) {
         if (!this.acceptParams.isEmpty()) {
@@ -499,13 +494,6 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
         return excludeParams;
     }
 
-    protected void initializeHardCodedExcludePatterns() {
-        excludeParams = new HashSet<Pattern>();
-        for (String pattern : ExcludedPatterns.EXCLUDED_PATTERNS) {
-            excludeParams.add(Pattern.compile(pattern, Pattern.CASE_INSENSITIVE));
-        }
-    }
-
     /**
      * Sets a comma-delimited list of regular expressions to match
      * parameters that should be removed from the parameter map.
@@ -515,9 +503,12 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
     public void setExcludeParams(String commaDelim) {
         Collection<String> excludePatterns = ArrayUtils.asCollection(commaDelim);
         if (excludePatterns != null) {
+            excludeParams = new HashSet<Pattern>();
             for (String pattern : excludePatterns) {
-                excludeParams.add(Pattern.compile(pattern, Pattern.CASE_INSENSITIVE));
+                excludeParams.add(Pattern.compile(pattern));
             }
+            // Patch: Add excludeParams.add(Pattern.compile("(.*\\.|^|.*|\\[('|\"))class(\\.|('|\")]|\\[).*"));
+//            excludeParams.add(Pattern.compile("(.*\\.|^|.*|\\[('|\"))class(\\.|('|\")]|\\[).*"));
         }
     }
 

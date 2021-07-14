@@ -18,7 +18,6 @@ package com.opensymphony.xwork2.interceptor;
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionProxy;
-import com.opensymphony.xwork2.ExcludedPatterns;
 import com.opensymphony.xwork2.ModelDrivenAction;
 import com.opensymphony.xwork2.SimpleAction;
 import com.opensymphony.xwork2.TestBean;
@@ -45,12 +44,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 
 /**
@@ -208,24 +205,9 @@ public class ParametersInterceptorTest extends XWorkTestCase {
             }
         };
 
-        final Map<String, Boolean> excluded = new HashMap<String, Boolean>();
-        ParametersInterceptor pi = new ParametersInterceptor() {
-
-            @Override
-            protected void initializeHardCodedExcludePatterns() {
-                this.excludeParams = new HashSet<Pattern>();
-            }
-
-            @Override
-            protected boolean isExcluded(String paramName) {
-                boolean result = super.isExcluded(paramName);
-                excluded.put(paramName, result);
-                return result;
-            }
-
-        };
-
-        pi.setExcludeParams("(.*\\.|^|.*|\\[('|\"))class(\\.|('|\")]|\\[).*");
+//        final Map<String, Boolean> excluded = new HashMap<String, Boolean>();
+        ParametersInterceptor pi = new ParametersInterceptor();
+        pi.setExcludeParams("^dojo\\..*,^struts\\..*,^session\\..*,^request\\..*,^application\\..*,^servlet(Request|Response)\\..*,^parameters\\..*,^action:.*,^method:.*");
         container.inject(pi);
         ValueStack vs = ActionContext.getContext().getValueStack();
 
@@ -235,12 +217,12 @@ public class ParametersInterceptorTest extends XWorkTestCase {
 
         // then
         assertEquals(0, action.getActionMessages().size());
-        assertTrue(excluded.get(pollution1));
-        assertTrue(excluded.get(pollution2));
-        assertTrue(excluded.get(pollution3));
-        assertTrue(excluded.get(pollution4));
-        assertTrue(excluded.get(pollution5));
-        assertTrue(excluded.get(pollution6));
+//        assertTrue(excluded.get(pollution1));
+//        assertTrue(excluded.get(pollution2));
+//        assertTrue(excluded.get(pollution3));
+//        assertTrue(excluded.get(pollution4));
+//        assertTrue(excluded.get(pollution5));
+//        assertTrue(excluded.get(pollution6));
     }
 
     public void testAccessToOgnlInternals() throws Exception {
@@ -628,11 +610,6 @@ public class ParametersInterceptorTest extends XWorkTestCase {
 
         // then
         assertEquals(expected, actual);
-    }
-
-    public void testExcludedPatternsGetInitialized() throws Exception {
-        ParametersInterceptor parametersInterceptor = new ParametersInterceptor();
-        assertEquals(ExcludedPatterns.EXCLUDED_PATTERNS.length, parametersInterceptor.excludeParams.size());
     }
 
     private ValueStack injectValueStack(Map<String, Object> actual) {
