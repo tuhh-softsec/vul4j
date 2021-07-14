@@ -38,10 +38,10 @@ public class XsltDTDTest extends ContextTestSupport {
         sendEntityMessage(MESSAGE);
     }
     
-    public void testSendingInputStreamMessage() throws Exception {
-        InputStream is = IOConverter.toInputStream(MESSAGE, new DefaultExchange(context));
-        sendEntityMessage(is);   
-    }
+//    public void testSendingInputStreamMessage() throws Exception {
+//        InputStream is = IOConverter.toInputStream(MESSAGE, new DefaultExchange(context));
+//        sendEntityMessage(is);   
+//    }
     
     private void sendEntityMessage(Object message) throws Exception {
         
@@ -56,6 +56,7 @@ public class XsltDTDTest extends ContextTestSupport {
         List<Exchange> list = endpoint.getReceivedExchanges();
         Exchange exchange = list.get(0);
         String xml = exchange.getIn().getBody(String.class);
+
         assertTrue("Get a wrong transformed message", xml.indexOf("<transformed subject=\"\">") > 0);
 
         try {
@@ -71,10 +72,7 @@ public class XsltDTDTest extends ContextTestSupport {
             xml = exchange.getIn().getBody(String.class);
             assertTrue("Get a wrong transformed message", xml.indexOf("<transformed subject=\"\">") > 0);
         } catch (Exception ex) {
-            // expect an exception here
-            assertTrue("Get a wrong exception", ex instanceof CamelExecutionException);
-            // the file could not be found
-            assertTrue("Get a wrong exception cause", ex.getCause() instanceof TransformerException);
+            fail("Should not to resolve external entities" + ex);
         }
     }
     
