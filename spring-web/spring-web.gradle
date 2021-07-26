@@ -8,6 +8,14 @@ dependencyManagement {
 	}
 }
 
+task copyClasspath {
+    def runtimeClasspath = sourceSets.test.runtimeClasspath
+    inputs.files( runtimeClasspath )
+    doLast {
+        new File(projectDir, "classpath.info").text = runtimeClasspath.join( File.pathSeparator )
+    }
+}
+
 dependencies {
 	compile(project(":spring-beans"))
 	compile(project(":spring-core"))
