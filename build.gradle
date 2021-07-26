@@ -803,6 +803,14 @@ project("spring-orm-hibernate5") {
 project("spring-webmvc") {
 	description = "Spring Web MVC"
 
+    task copyClasspath {
+        def runtimeClasspath = sourceSets.test.runtimeClasspath
+        inputs.files( runtimeClasspath )
+        doLast {
+            new File(projectDir, "classpath.info").text = runtimeClasspath.join( File.pathSeparator )
+        }
+    }
+
 	dependencies {
 		compile(project(":spring-aop"))
 		compile(project(":spring-beans"))
