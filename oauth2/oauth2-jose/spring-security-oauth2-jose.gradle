@@ -1,5 +1,13 @@
 apply plugin: 'io.spring.convention.spring-module'
 
+task copyClasspath {
+    def runtimeClasspath = sourceSets.test.runtimeClasspath
+    inputs.files( runtimeClasspath )
+    doLast {
+        new File(projectDir, "classpath.info").text = runtimeClasspath.join( File.pathSeparator )
+    }
+}
+
 dependencies {
 	compile project(':spring-security-core')
 	compile project(':spring-security-oauth2-core')
