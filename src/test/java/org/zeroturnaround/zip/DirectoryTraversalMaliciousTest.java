@@ -16,6 +16,7 @@ package org.zeroturnaround.zip;
  *    limitations under the License.
  */
 import java.io.File;
+import java.nio.file.Files;
 
 import junit.framework.TestCase;
 
@@ -34,8 +35,8 @@ public class DirectoryTraversalMaliciousTest extends TestCase {
   private static final File badFileBackslashes = new File("src/test/resources/zip-malicious-traversal-backslashes.zip");
 
   public void testUnpackDoesntLeaveTarget() throws Exception {
-    File file = File.createTempFile("temp", null);
-    File tmpDir = file.getParentFile();
+    //File file = File.createTempFile("temp", null);
+    File tmpDir = Files.createTempDirectory("temp").toFile(); 
 
     try {
       ZipUtil.unpack(badFile, tmpDir);
@@ -47,8 +48,8 @@ public class DirectoryTraversalMaliciousTest extends TestCase {
   }
 
   public void testUnwrapDoesntLeaveTarget() throws Exception {
-    File file = File.createTempFile("temp", null);
-    File tmpDir = file.getParentFile();
+    //File file = File.createTempFile("temp", null);
+    File tmpDir = Files.createTempDirectory("temp").toFile(); 
 
     try {
       ZipUtil.iterate(badFileBackslashes, new ZipUtil.BackslashUnpacker(tmpDir));
