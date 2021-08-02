@@ -330,7 +330,7 @@ public class ValidatorTest extends TestCase {
 
     }
 
-    public void testIsValidDirectoryPath() throws IOException {
+    /*public void testIsValidDirectoryPath() throws IOException {
         System.out.println("isValidDirectoryPath");
 
         // get an encoder with a special list of codecs and make a validator out of it
@@ -441,7 +441,7 @@ public class ValidatorTest extends TestCase {
             assertFalse(instance.isValidDirectoryPath("test10", "/tmp/../etc", parent, false, errors));
             assertTrue(errors.size()==8);
         }
-    }
+    }*/
 
     public void TestIsValidDirectoryPath() {
         // isValidDirectoryPath(String, String, boolean)
