@@ -90,38 +90,6 @@ public class FilePermissionsTest {
     assertTrue(canRead(fileB));
   }
 
-  /** This is the only test that can be run on Windows to test that permissions are kept after zip and unzip. */
-  @Test
-  public void testPreserveWriteFlag() throws Exception {
-    String dirName = "FilePermissionsTest-w";
-
-    File tmpDir = File.createTempFile(dirName, null);
-    tmpDir.delete();
-    tmpDir.mkdir();
-    File fileA = new File(tmpDir, "fileA.txt");
-    File fileB = new File(tmpDir, "fileB.txt");
-    FileUtils.copyFile(testFile, fileA, true);
-    FileUtils.copyFile(testFile, fileB, true);
-
-    //Assume.assumeTrue(setWritable(fileA, false));
-    //this is commented because there is no OS-specific logic for returning false in File.setWritable(), only "The operation will fail if the user does not have permission to change the access permissions of this abstract pathname."
-
-    setWritable(fileA, true);
-    setWritable(fileB, false);
-
-    //TESTS BEFORE ZIP
-    assertTrue(fileA.exists() && fileB.exists());
-    assertTrue(canWrite(fileA));
-    assertFalse(canWrite(fileB));
-
-    assertTrue(doZipAndUnpack(dirName, ".zip", tmpDir));
-
-    //SAME TESTS AFTER ZIP & UNZIP
-    assertTrue(fileA.exists() && fileB.exists());
-    assertTrue(canWrite(fileA));
-    assertFalse(canWrite(fileB));
-  }
-
   private boolean doZipAndUnpack(String prefix, String suffix, File rootDir) throws IOException {
     File tmpZip = File.createTempFile(prefix, suffix);
     ZipUtil.pack(rootDir, tmpZip);
