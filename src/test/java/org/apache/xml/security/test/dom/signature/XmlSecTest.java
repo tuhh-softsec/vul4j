@@ -57,12 +57,12 @@ public class XmlSecTest extends org.junit.Assert {
     static org.slf4j.Logger log =
         org.slf4j.LoggerFactory.getLogger
             (XmlSecTest.class.getName());
-
+/*
     @org.junit.Test
     public void testCheckXmlSignatureSoftwareStack() throws Exception {
         checkXmlSignatureSoftwareStack(false);
     }
-    
+*/    
     @org.junit.Test
     public void testCheckXmlSignatureSoftwareStackWithCert() throws Exception {
         checkXmlSignatureSoftwareStack(true);
