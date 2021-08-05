@@ -123,43 +123,6 @@ public class WikitextImporterTests extends ImporterTest {
     }
     
     @Test
-    public void readTableWithLinks() {
-        // Data credits: Wikipedia contributors, https://de.wikipedia.org/w/index.php?title=Agenturen_der_Europäischen_Union&action=edit
-        String input = "\n"
-            +"{|\n"
-            +"|-\n"
-            +"| [[Europäisches Zentrum für die Förderung der Berufsbildung|Cedefop]] || Cedefop || http://www.cedefop.europa.eu/\n"
-            +"|-\n"
-            +"| [[Europäische Stiftung zur Verbesserung der Lebens- und Arbeitsbedingungen]] || EUROFOUND || [http://www.eurofound.europa.eu/]\n"
-            +"|-\n"
-            +"| [[Europäische Beobachtungsstelle für Drogen und Drogensucht]] || EMCDDA || [http://www.emcdda.europa.eu/ europa.eu]\n"
-            +"|-\n"
-            +"|}\n";
-
-        try {
-           prepareOptions(0, 0, true, true, "https://de.wikipedia.org/wiki/");
-           parse(input);
-        } catch (Exception e) {
-           Assert.fail("Parsing failed", e);
-        }
-        Assert.assertEquals(project.columnModel.columns.size(), 3);
-        Assert.assertEquals(project.rows.size(), 3);
-        Assert.assertEquals(project.rows.get(0).cells.size(), 3);
-        
-        // Reconciled cells
-        Assert.assertEquals(project.rows.get(0).cells.get(1).value, "Cedefop");
-        Assert.assertEquals(project.rows.get(0).cells.get(1).recon, null);
-        Assert.assertEquals(project.rows.get(2).cells.get(0).value, "Europäische Beobachtungsstelle für Drogen und Drogensucht");
-        Assert.assertEquals(project.rows.get(2).cells.get(0).recon.getBestCandidate().id, "Q1377256");
-        
-        // various ways to input external links
-        Assert.assertEquals(project.rows.get(1).cells.get(2).value, "http://www.eurofound.europa.eu/");
-        Assert.assertEquals(project.rows.get(2).cells.get(2).value, "http://www.emcdda.europa.eu/");
-        // Assert.assertEquals(project.rows.get(0).cells.get(2).value, "http://www.cedefop.europa.eu/");
-        // unfortunately the above does not seem to be supported by the parser (parsed as blank instead)
-    }
-
-    @Test
     public void readStyledTableWithHeader() {
         // Data credits: Wikipedia contributors, https://de.wikipedia.org/w/index.php?title=Agenturen_der_Europäischen_Union&action=edit
         String input = "\n"
