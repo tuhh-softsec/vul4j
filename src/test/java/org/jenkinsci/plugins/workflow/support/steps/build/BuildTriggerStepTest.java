@@ -380,17 +380,6 @@ public class BuildTriggerStepTest {
         j.assertLogContains("first - p2", ds.getLastBuild());
     }
 
-    @LocalData
-    @Test public void storedForm() throws Exception {
-        WorkflowJob us = j.jenkins.getItemByFullName("us", WorkflowJob.class);
-        WorkflowRun us1 = us.getBuildByNumber(1);
-        WorkflowJob ds = j.jenkins.getItemByFullName("ds", WorkflowJob.class);
-        WorkflowRun ds1 = ds.getBuildByNumber(1);
-        ds1.setDescription("something");
-        j.assertBuildStatusSuccess(j.waitForCompletion(ds1));
-        j.assertBuildStatusSuccess(j.waitForCompletion(us1));
-    }
-
     @SuppressWarnings("deprecation")
     @Test
     @Issue("JENKINS-38887")
