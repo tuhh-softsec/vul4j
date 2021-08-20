@@ -15,6 +15,11 @@
  */
 package org.springframework.data.rest.webmvc.json.patch;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
+import org.springframework.data.mapping.PropertyPath;
+
 /**
  * Operation to add a new value to the given "path". Will throw a {@link PatchException} if the path is invalid or if
  * the given value is not assignable to the given path.
@@ -54,6 +59,15 @@ class AddOperation extends PatchOperation {
 			return super.evaluateValueFromTarget(targetObject, entityType);
 		}
 
-		return evaluate(verifyPath(entityType).<Class<?>> map(it -> it.getType()).orElse(entityType));
+		String pathSource = Arrays.stream(path.split("/"))//
+				.filter(it -> !it.matches("\\d")) // no digits
+				.filter(it -> !it.equals("-")) // no "last element"s
+				.filter(it -> !it.isEmpty()) //
+				.collect(Collectors.joining("."));
+
+		PropertyPath propertyPath = PropertyPath.from(pathSource, entityType);
+
+		return value instanceof LateObjectEvaluator ? ((LateObjectEvaluator) value).evaluate(propertyPath.getType())
+				: value;
 	}
 }
