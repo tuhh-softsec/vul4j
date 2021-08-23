@@ -16,6 +16,7 @@ import com.google.refine.importing.ImportingUtilities;
 import com.google.refine.tests.importers.ImporterTest;
 import com.google.refine.util.JSONUtilities;
 import com.google.refine.util.ParsingUtilities;
+import com.google.refine.tests.util.TestUtils;
 
 public class ImportingUtilitiesTests extends ImporterTest {
 
@@ -23,6 +24,8 @@ public class ImportingUtilitiesTests extends ImporterTest {
     @BeforeMethod
     public void setUp(){
         super.setUp();
+	try { workspaceDir = TestUtils.createTempDirectory("openrefine-test-workspace-dir"); }
+        catch (Exception e) {e.printStackTrace();}
     }
     
     @Test
