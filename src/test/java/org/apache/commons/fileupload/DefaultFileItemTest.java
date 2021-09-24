@@ -138,20 +138,6 @@ public class DefaultFileItemTest {
     }
 
     /**
-     * Test creation of a field for which the amount of data falls above the
-     * configured threshold, where a specific repository is configured.
-     */
-    @Test
-    public void testAboveThresholdSpecifiedRepository() {
-        String tempPath = System.getProperty("java.io.tmpdir");
-        String tempDirName = "testAboveThresholdSpecifiedRepository";
-        File tempDir = new File(tempPath, tempDirName);
-        tempDir.mkdir();
-        doTestAboveThreshold(tempDir);
-        assertTrue(tempDir.delete());
-    }
-
-    /**
      * Common code for cases where the amount of data is above the configured
      * threshold, but the ultimate destination of the data has not yet been
      * determined.
