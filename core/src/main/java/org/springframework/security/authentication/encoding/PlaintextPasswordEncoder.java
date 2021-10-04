@@ -51,9 +51,6 @@ public class PlaintextPasswordEncoder extends BasePasswordEncoder {
 	}
 
 	public boolean isPasswordValid(String encPass, String rawPass, Object salt) {
-		if (encPass == null) {
-			return false;
-		}
 		String pass1 = encPass + "";
 
 		// Strict delimiters is false because pass2 never persisted anywhere
