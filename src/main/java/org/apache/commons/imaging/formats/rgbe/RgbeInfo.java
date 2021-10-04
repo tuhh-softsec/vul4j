@@ -169,16 +169,12 @@ class RgbeInfo implements Closeable {
     }
 
     private static void decompress(final InputStream in, final byte[] out)
-            throws IOException,ImageReadException {
+            throws IOException {
         int position = 0;
         final int total = out.length;
 
         while (position < total) {
             final int n = in.read();
-
-            if (n < 0) {
-                throw new ImageReadException("Error decompressing RGBE file");
-            }
 
             if (n > 128) {
                 final int value = in.read();
