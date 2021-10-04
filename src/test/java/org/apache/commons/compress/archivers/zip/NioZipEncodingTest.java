@@ -86,7 +86,7 @@ public class NioZipEncodingTest {
         Assert.assertArrayEquals(RAINBOW_EMOJI.getBytes(StandardCharsets.UTF_16BE), result);
     }
 
-    @Test
+    @Test(timeout=2000)
     public void partialSurrogatePair() {
         NioZipEncoding e = new NioZipEncoding(StandardCharsets.US_ASCII, false);
         ByteBuffer bb = e.encode("\ud83c");

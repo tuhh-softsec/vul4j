@@ -112,9 +112,6 @@ class NioZipEncoding implements ZipEncoding, CharsetAccessor {
             } else if (res.isOverflow()) {
                 int increment = estimateIncrementalEncodingSize(enc, cb.remaining());
                 out = ZipEncodingHelper.growBufferBy(out, increment);
-
-            } else if (res.isUnderflow() || res.isError()) {
-                break;
             }
         }
         // tell the encoder we are done
