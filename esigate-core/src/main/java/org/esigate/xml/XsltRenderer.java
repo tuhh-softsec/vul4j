@@ -28,7 +28,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.XMLConstants;
 
 import nu.validator.htmlparser.common.DoctypeExpectation;
 import nu.validator.htmlparser.dom.Dom2Sax;
@@ -44,7 +43,6 @@ import org.esigate.impl.DriverRequest;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
 
 /**
  * Applies an XSLT transformation to the retrieved data.
@@ -90,8 +88,6 @@ public class XsltRenderer implements Renderer {
 
     private static Transformer createTransformer(InputStream templateStream) throws IOException {
         try {
-            // Ensure XSLT cannot use advanced extensions during processing.
-            TRANSFORMER_FACTORY.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
             return TRANSFORMER_FACTORY.newTransformer(new StreamSource(templateStream));
         } catch (TransformerConfigurationException e) {
             throw new ProcessingFailedException("Failed to create XSLT template", e);
