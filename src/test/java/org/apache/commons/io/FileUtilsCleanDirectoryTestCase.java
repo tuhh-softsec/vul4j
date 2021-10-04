@@ -83,43 +83,6 @@ public class FileUtilsCleanDirectoryTestCase {
         assertEquals(0, top.list().length);
     }
 
-    @Test
-    public void testThrowsOnNullList() throws Exception {
-        if (System.getProperty("os.name").startsWith("Win")  ||  !chmod(top, 0, false)) {
-            // test wont work if we can't restrict permissions on the
-            // directory, so skip it.
-            return;
-        }
-
-        try {
-            FileUtils.cleanDirectory(top);
-            fail("expected IOException");
-        } catch (final IOException e) {
-            assertEquals("Failed to list contents of " +
-                    top.getAbsolutePath(), e.getMessage());
-        }
-    }
-
-    @Test
-    public void testThrowsOnCannotDeleteFile() throws Exception {
-        final File file = new File(top, "restricted");
-        FileUtils.touch(file);
-
-        if (System.getProperty("os.name").startsWith("Win")  ||  !chmod(top, 500, false)) {
-            // test wont work if we can't restrict permissions on the
-            // directory, so skip it.
-            return;
-        }
-
-        try {
-            FileUtils.cleanDirectory(top);
-            fail("expected IOException");
-        } catch (final IOException e) {
-            assertEquals("Unable to delete file: " +
-                    file.getAbsolutePath(), e.getMessage());
-        }
-    }
-
     private boolean chmod(final File file, final int mode, final boolean recurse)
             throws InterruptedException {
         // TODO: Refactor this to FileSystemUtils

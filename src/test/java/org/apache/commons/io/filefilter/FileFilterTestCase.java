@@ -940,43 +940,6 @@ public class FileFilterTestCase {
     }
 
     @Test
-    public void testCanRead() throws Exception {
-        final File readOnlyFile = new File(getTestDirectory(), "read-only-file1.txt");
-        if (!readOnlyFile.getParentFile().exists()) {
-            throw new IOException("Cannot create file " + readOnlyFile
-                    + " as the parent directory does not exist");
-        }
-        try (final BufferedOutputStream output =
-                new BufferedOutputStream(new FileOutputStream(readOnlyFile))){
-            TestUtils.generateTestData(output, 32);
-        }
-        readOnlyFile.setReadOnly();
-        assertFiltering(CanReadFileFilter.CAN_READ,  readOnlyFile, true);
-        assertFiltering(CanReadFileFilter.CANNOT_READ,  readOnlyFile, false);
-        assertFiltering(CanReadFileFilter.READ_ONLY, readOnlyFile, true);
-        readOnlyFile.delete();
-    }
-
-    @Test
-    public void testCanWrite() throws Exception {
-        final File readOnlyFile = new File(getTestDirectory(), "read-only-file2.txt");
-        if (!readOnlyFile.getParentFile().exists()) {
-            throw new IOException("Cannot create file " + readOnlyFile
-                    + " as the parent directory does not exist");
-        }
-        try (final BufferedOutputStream output =
-                new BufferedOutputStream(new FileOutputStream(readOnlyFile))){
-            TestUtils.generateTestData(output, 32);
-        }
-        readOnlyFile.setReadOnly();
-        assertFiltering(CanWriteFileFilter.CAN_WRITE,    getTestDirectory(), true);
-        assertFiltering(CanWriteFileFilter.CANNOT_WRITE, getTestDirectory(), false);
-        assertFiltering(CanWriteFileFilter.CAN_WRITE,    readOnlyFile, false);
-        assertFiltering(CanWriteFileFilter.CANNOT_WRITE, readOnlyFile, true);
-        readOnlyFile.delete();
-    }
-
-    @Test
     public void testEmpty() throws Exception {
 
         // Empty Dir
