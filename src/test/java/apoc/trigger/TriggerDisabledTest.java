@@ -46,37 +46,6 @@ public class TriggerDisabledTest
     }
 
     @Test
-    public void testTriggerDisabledList() throws Exception
-    {
-        try
-        {
-            db.execute( "CALL apoc.trigger.list() YIELD name RETURN name" ).close();
-            // If no error is thrown, then the test fails.
-            assertTrue( false );
-        }
-        // Catches NullPointerExceptions since they are a subclass of a RuntimeException
-        //  and they were the original error thrown (see #845). We do not expected one, so
-        //  it causes test failure.
-        catch ( NullPointerException e )
-        {
-            assertTrue( false );
-        }
-        // We expect a RuntimeException to be thrown.
-        catch ( RuntimeException e )
-        {
-            // Give the user a specific message that hints at what setting they need to change to fix
-            // this problem.
-            String msg = e.getMessage();
-            assertTrue(msg.indexOf("apoc.trigger.enabled") >= 0);
-        }
-        // Any other exception causes the test to fail.
-        catch ( Exception e )
-        {
-            assertTrue( false );
-        }
-    }
-
-    @Test
     public void testTriggerDisabledAdd() throws Exception
     {
         try

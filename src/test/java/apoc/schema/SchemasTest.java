@@ -250,31 +250,6 @@ public class SchemasTest {
     }
 
     @Test
-    public void testIndexes() {
-        db.execute("CREATE INDEX ON :Foo(bar)").close();
-        try (Transaction tx = db.beginTx()) {
-            db.schema().awaitIndexesOnline(5, TimeUnit.SECONDS);
-            tx.success();
-        }
-        testResult(db, "CALL apoc.schema.nodes()", (result) -> {
-            // Get the index info
-            Map<String, Object> r = result.next();
-
-            assertEquals(":Foo(bar)", r.get("name"));
-            assertEquals("ONLINE", r.get("status"));
-            assertEquals("Foo", r.get("label"));
-            assertEquals("INDEX", r.get("type"));
-            assertEquals("bar", ((List<String>) r.get("properties")).get(0));
-            assertEquals("NO FAILURE", r.get("failure"));
-            assertEquals(new Double(100), r.get("populationProgress"));
-            assertEquals(new Double(1), r.get("valuesSelectivity"));
-            assertEquals("Index( GENERAL, bar )", r.get("userDescription"));
-
-            assertTrue(!result.hasNext());
-        });
-    }
-
-    @Test
     public void testIndexExists() {
         db.execute("CREATE INDEX ON :Foo(bar)").close();
         testResult(db, "RETURN apoc.schema.node.indexExists('Foo', ['bar'])", (result) -> {

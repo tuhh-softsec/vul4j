@@ -174,14 +174,6 @@ System.out.println("call list" + db.execute(callList).resultAsString());
     }
 
     @Test
-    public void testTerminateIterate() throws Exception {
-        testTerminatePeriodicQuery("CALL apoc.periodic.iterate('UNWIND range(0,1000) as id RETURN id', 'WITH $id as id CREATE (:Foo {id: $id})', {batchSize:1,parallel:true})");
-        testTerminatePeriodicQuery("CALL apoc.periodic.iterate('UNWIND range(0,1000) as id RETURN id', 'WITH $id as id CREATE (:Foo {id: $id})', {batchSize:10,iterateList:true})");
-        testTerminatePeriodicQuery("CALL apoc.periodic.iterate('UNWIND range(0,1000) as id RETURN id', 'WITH $id as id CREATE (:Foo {id: $id})', {batchSize:10,iterateList:false})");
-    }
-
-
-    @Test
     public void testIteratePrefixGiven() throws Exception {
         db.execute("UNWIND range(1,100) AS x CREATE (:Person{name:'Person_'+x})").close();
 

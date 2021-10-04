@@ -50,11 +50,6 @@ public class GeocodeTest {
     }
 
     @Test
-    public void testGeocodeGoogle() throws Exception {
-        testGeocodeWithThrottling("google", false);
-    }
-
-    @Test
     public void testReverseGeocodeGoogle() throws Exception {
         testGeocodeWithThrottling("google", true);
     }
