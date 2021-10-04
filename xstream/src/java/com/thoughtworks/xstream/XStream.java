@@ -338,8 +338,7 @@ public class XStream {
     private SecurityMapper securityMapper;
     private AnnotationConfiguration annotationConfiguration;
 
-    private transient boolean securityInitialized;
-    private transient boolean securityWarningGiven;
+    private transient boolean insecureWarning;
 
     public static final int NO_REFERENCES = 1001;
     public static final int ID_REFERENCES = 1002;
@@ -697,7 +696,7 @@ public class XStream {
         }
         
         addPermission(AnyTypePermission.ANY);
-        securityInitialized = false;
+        insecureWarning = true;
     }
 
     /**
@@ -712,7 +711,7 @@ public class XStream {
      * @since 1.4.10
      */
     public static void setupDefaultSecurity(final XStream xstream) {
-        if (!xstream.securityInitialized) {
+        if (xstream.insecureWarning) {
             xstream.addPermission(NoTypePermission.NONE);
             xstream.addPermission(NullPermission.NULL);
             xstream.addPermission(PrimitiveTypePermission.PRIMITIVES);
@@ -1480,8 +1479,8 @@ public class XStream {
      */
     public Object unmarshal(HierarchicalStreamReader reader, Object root, DataHolder dataHolder) {
         try {
-            if (!securityInitialized && !securityWarningGiven) {
-                securityWarningGiven = true;
+            if (insecureWarning) {
+                insecureWarning = false;
                 System.err.println("Security framework of XStream not initialized, XStream is probably vulnerable.");
             }
             return marshallingStrategy.unmarshal(
@@ -2360,12 +2359,7 @@ public class XStream {
      */
     public void addPermission(TypePermission permission) {
         if (securityMapper != null) {
-            if (permission == AnyTypePermission.ANY)
-                securityInitialized = false;
-            else if (permission == NoTypePermission.NONE) {
-                securityInitialized = true;
-            }
-            securityInitialized = true;
+            insecureWarning &= permission != NoTypePermission.NONE;
             securityMapper.addPermission(permission);
         }
     }
@@ -2516,11 +2510,6 @@ public class XStream {
         denyPermission(new WildcardTypePermission(patterns));
     }
 
-    private Object readResolve() {
-        securityWarningGiven = true;
-        return this;
-    }
-
     /**
      * @deprecated As of 1.3, use {@link com.thoughtworks.xstream.InitializationException}
      *             instead
@@ -2549,7 +2538,7 @@ public class XStream {
 
         public boolean canConvert(final Class type) {
             return (type == void.class || type == Void.class)
-                || (!securityInitialized
+                || (insecureWarning
                     && type != null
                     && (type.getName().equals("java.beans.EventHandler")
                         || type.getName().endsWith("$LazyIterator")
