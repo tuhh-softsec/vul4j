@@ -4,6 +4,7 @@ buildscript {
 		classpath "org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion"
 	}
 	repositories {
+		gradlePluginPortal()
 		maven { url 'https://repo.spring.io/plugins-snapshot' }
 	}
 }
@@ -19,6 +20,12 @@ ext.milestoneBuild = !(snapshotBuild || releaseBuild)
 dependencyManagementExport.projects = subprojects.findAll { !it.name.contains('-boot') }
 
 subprojects {
+
+repositories {
+        maven { url 'https://repo.maven.apache.org/maven2' }
+        maven { url 'https://plugins.gradle.org/m2/' }
+}
+
 	plugins.withType(JavaPlugin) {
 		project.sourceCompatibility='1.8'
 	}
