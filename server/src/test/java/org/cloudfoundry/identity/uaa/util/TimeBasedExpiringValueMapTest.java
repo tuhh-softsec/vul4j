@@ -92,34 +92,4 @@ public class TimeBasedExpiringValueMapTest {
         assertNull(map.remove("does-not-exist"));
     }
 
-    @Test
-    public void concurrency_test() throws Exception {
-        map = new TimeBasedExpiringValueMap<>(new TimeServiceImpl(), TIMEOUT);
-        RandomValueStringGenerator randomValueStringGenerator = new RandomValueStringGenerator(1);
-        int count = 10, loops = 1000000;
-
-        Thread[] threads = new Thread[count];
-        for (int i=0; i<threads.length; i++) {
-            threads[i] = new Thread(() -> {
-                for (int j=0; j<loops; j++) {
-                    String key = randomValueStringGenerator.generate().toLowerCase();
-                    Object value = new Object();
-                    map.put(key, value);
-                    assertNotNull(map.get(key));
-                }
-            });
-        }
-        for (int i=0; i<threads.length; i++) {
-            threads[i].start();
-        }
-        for (int i=0; i<threads.length; i++) {
-            threads[i].join();
-        }
-        assertThat(map.size(), greaterThan(0));
-        Thread.sleep(TIMEOUT*2);
-        assertThat(map.size(), greaterThan(0));
-        map.get("random-key");
-        assertEquals(0, map.size());
-    }
-
 }
