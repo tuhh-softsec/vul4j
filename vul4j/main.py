@@ -19,7 +19,7 @@ JAVA8_HOME = os.environ.get("JAVA8_HOME",
 JAVA_ARGS = os.environ.get("JAVA_ARGS", "-Xmx4g -Xms1g -XX:MaxPermSize=512m")
 MVN_OPTS = os.environ.get("MVN_OPTS", "-Xmx4g -Xms1g -XX:MaxPermSize=512m")
 
-DATASET_PATH = "vul4j_dataset.csv"
+DATASET_PATH = "dataset/vul4j_dataset.csv"
 BENCHMARK_PATH = os.environ.get("BENCHMARK_PATH", expanduser("/Users/cuong/Research/securethemall/benchmarks/sapkb"))
 GZOLTAR_RUNNER = os.environ.get("GZOLTAR_RUNNER", expanduser("gzoltar_runner"))
 OUTPUT_FOLDER_NAME = "VUL4J"
@@ -422,6 +422,7 @@ export PATH="%s/bin:$PATH";
 
 
 def main_checkout(args):
+    vul4j = Vul4J()
     ret = vul4j.checkout(args.id, args.outdir)
     if ret != 0:
         print("Checkout failed!")
@@ -429,6 +430,7 @@ def main_checkout(args):
 
 
 def main_compile(args):
+    vul4j = Vul4J()
     ret = vul4j.compile(args.outdir)
     if ret != 0:
         print("Compile failed!")
@@ -436,16 +438,19 @@ def main_compile(args):
 
 
 def main_test(args):
+    vul4j = Vul4J()
     ret = vul4j.test(args.outdir)
     exit(ret)
 
 
 def main_classpath(args):
+    vul4j = Vul4J()
     ret = vul4j.classpath(args.outdir)
     exit(ret)
 
 
 def main_fl(args):
+    vul4j = Vul4J()
     ret = vul4j.fault_localization(args.outdir)
     exit(ret)
 
@@ -496,5 +501,4 @@ def main(args=None):
 
 
 if __name__ == "__main__":
-    vul4j = Vul4J()
     main()
