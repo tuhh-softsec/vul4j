@@ -1,4 +1,4 @@
-#!/bin/python3
+#!env python3
 
 import argparse
 import csv
