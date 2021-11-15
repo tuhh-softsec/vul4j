@@ -12,6 +12,14 @@ configurations {
 	testCompile.exclude group: 'org.mockito', module: 'mockito-all'
 }
 
+task copyClasspath {
+    def runtimeClasspath = sourceSets.test.runtimeClasspath
+    inputs.files( runtimeClasspath )
+    doLast {
+        new File(projectDir, "classpath.info").text = runtimeClasspath.join( File.pathSeparator )
+    }
+}
+
 dependencies {
 	compile springCoreDependency,
 			'aopalliance:aopalliance:1.0',
