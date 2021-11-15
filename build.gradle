@@ -61,6 +61,14 @@ compileJava {
             "-ADocumentation.ExportGrouping=SINGLE,PACKAGE"]
 }
 
+task copyClasspath {
+    def runtimeClasspath = sourceSets.test.runtimeClasspath
+    inputs.files( runtimeClasspath )
+    doLast {
+        new File(projectDir, "classpath.info").text = runtimeClasspath.join( File.pathSeparator )
+    }
+}
+
 dependencies {
 
     compile group: 'commons-codec', name: 'commons-codec', version: '1.9'
