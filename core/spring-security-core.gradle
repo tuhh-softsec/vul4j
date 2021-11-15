@@ -7,6 +7,14 @@ configurations {
 	compile.extendsFrom included
 }
 
+task copyClasspath {
+    def runtimeClasspath = sourceSets.test.runtimeClasspath
+    inputs.files( runtimeClasspath )
+    doLast {
+        new File(projectDir, "classpath.info").text = runtimeClasspath.join( File.pathSeparator )
+    }
+}
+
 dependencies {
 	compile 'org.springframework:spring-aop'
 	compile 'org.springframework:spring-beans'
