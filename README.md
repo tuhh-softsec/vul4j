@@ -17,9 +17,14 @@ git submodule update --init
 JAVA7_HOME = os.environ.get("JAVA7_HOME", expanduser("/Library/Java/JavaVirtualMachines/jdk1.7.0_80.jdk/Contents/Home"))
 JAVA8_HOME = os.environ.get("JAVA8_HOME", expanduser("/Library/Java/JavaVirtualMachines/jdk1.8.0_281.jdk/Contents/Home"))
 ```
+
+4. Install Vul4J globally:
+```python
+pip3 install .
+```
 # Usage
 ```bash
-$ python vul4j.py 
+$ vul4j.py 
 usage: vul4j [-h] {checkout,compile,test,classpath,fl} ...
 
 A Benchmark of Java vulnerabilities.
