@@ -12,7 +12,7 @@ from xml.etree.ElementTree import parse
 from unidiff import PatchSet
 
 from vul4j.config import JAVA7_HOME, MVN_OPTS, JAVA8_HOME, OUTPUT_FOLDER_NAME, ENABLE_EXECUTING_LOGS, DATASET_PATH, \
-    BENCHMARK_PATH, GZOLTAR_RUNNER_PATH
+    BENCHMARK_PATH, GZOLTAR_RUNNER_PATH, PROJECT_REPOS_ROOT_PATH
 
 FNULL = open(os.devnull, 'w')
 root = logging.getLogger()
@@ -80,7 +80,8 @@ class Vul4J:
 
     @staticmethod
     def get_patch(vul):
-        cmd = "cd " + BENCHMARK_PATH + "; git diff %s %s~1" % (vul['fixing_commit_hash'], vul['fixing_commit_hash'])
+        cmd = "cd " + vul['project_repo_folder'] + "; git diff %s %s~1" % (
+            vul['fixing_commit_hash'], vul['fixing_commit_hash'])
         diff = subprocess.check_output(cmd, shell=True)
         patch = PatchSet(diff.decode('utf-8'))
 
@@ -96,11 +97,16 @@ class Vul4J:
                 changed_java_source_files.append(file_path)
 
         patch_data = []
+        revert_patch_data = []
         for file in changed_java_source_files:
-            cmd = "cd " + BENCHMARK_PATH + "; git show %s:%s" % (vul['fixing_commit_hash'], file)
+            cmd = "cd " + vul['project_repo_folder'] + "; git show %s:%s" % (vul['fixing_commit_hash'], file)
             content = subprocess.check_output(cmd, shell=True).decode('utf-8')
             patch_data.append({'file_path': file, 'content': content})
-        return patch_data
+
+            cmd = "cd " + vul['project_repo_folder'] + "; git show %s~1:%s" % (vul['fixing_commit_hash'], file)
+            content = subprocess.check_output(cmd, shell=True).decode('utf-8')
+            revert_patch_data.append({'file_path': file, 'content': content})
+        return patch_data, revert_patch_data
 
     def checkout(self, vul_id, output_dir):
         vul = self.get_vulnerability(vul_id)
@@ -114,11 +120,6 @@ class Vul4J:
         if ret != 0:
             exit(1)
 
-        # extract the original patch
-        # some vulns with customized-patch will fail here
-        patch_data = self.get_patch(vul)
-        vul['human_patch'] = patch_data
-
         # copy to working directory
         copytree(BENCHMARK_PATH, output_dir, ignore=ignore_patterns('.git'))
         os.makedirs(os.path.join(output_dir, OUTPUT_FOLDER_NAME))
@@ -127,6 +128,46 @@ class Vul4J:
 
         print("Id: %s" % 123)
         print("Working directory: %s" % output_dir)
+        return 0
+
+    '''
+    This checkout() function is used for the reproduction of new vulnerabilities 
+    '''
+    def checkout_reproduce(self, vul_id, output_dir):
+        vul = self.get_vulnerability(vul_id)
+        if os.path.exists(output_dir):
+            logging.error("Directory '%s' has already existed!" % output_dir)
+            exit(1)
+
+        if not os.path.exists(PROJECT_REPOS_ROOT_PATH):
+            os.makedirs(PROJECT_REPOS_ROOT_PATH)
+
+        project_repo = os.path.join(PROJECT_REPOS_ROOT_PATH, vul['project'])
+        if not os.path.exists(project_repo):
+            logging.debug("Cloning new project... " + vul['project'])
+            subprocess.call("git clone %s %s" % (vul['project_url'], os.path.abspath(project_repo)), shell=True,
+                            stdout=FNULL, stderr=subprocess.STDOUT)
+            logging.debug("Done Cloning!")
+
+        cmd = "cd %s; git reset .; git checkout -- .; git clean -x -d --force; git checkout -f %s" % (
+            project_repo, vul["fixing_commit_hash"])
+        ret = subprocess.call(cmd, shell=True, stdout=FNULL, stderr=subprocess.STDOUT)
+        if ret != 0:
+            exit(1)
+
+        # extract the original patch
+        # some vulns with customized-patch will fail here
+        vul['project_repo_folder'] = os.path.abspath(project_repo)
+        patch_data, revert_patch_data = self.get_patch(vul)
+        vul['human_patch'] = patch_data
+        vul['revert_human_patch'] = revert_patch_data
+
+        # copy to working directory
+        copytree(project_repo, output_dir, ignore=ignore_patterns('.git'))
+        os.makedirs(os.path.join(output_dir, OUTPUT_FOLDER_NAME))
+        with open(os.path.join(output_dir, OUTPUT_FOLDER_NAME, "vulnerability_info.json"), "w", encoding='utf-8') as f:
+            f.write(json.dumps(vul, indent=2))
+
         return 0
 
     @staticmethod

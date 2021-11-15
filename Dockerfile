@@ -30,6 +30,7 @@ ENV JAVA8_HOME /usr/lib/jvm/java-8-openjdk-amd64
 ENV BENCHMARK_PATH /vul4j/benchmark_repo
 ENV DATASET_PATH /vul4j/dataset/vul4j_dataset.csv
 ENV GZOLTAR_RUNNER_PATH /vul4j/gzoltar_runner
+ENV REPRODUCTION_DIR /vul4j/reproduction
 
 RUN vul4j
 

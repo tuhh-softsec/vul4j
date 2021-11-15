@@ -5,6 +5,7 @@ import os
 import subprocess
 
 from main import Vul4J
+from vul4j.config import REPRODUCTION_DIR
 
 FNULL = open(os.devnull, 'w')
 
@@ -23,7 +24,7 @@ def extract_failed_tests_from_test_results(test_results):
 
 
 def write_test_results_to_file(vul, test_results, revision):
-    test_output_file = os.path.join('validation_results',
+    test_output_file = os.path.join(REPRODUCTION_DIR,
                                     '%s_%s_tests_%s.json' % (
                                         vul['project'].replace('-', '_'), vul['vul_id'].replace('-', '_'), revision))
     with (open(test_output_file, 'w', encoding='utf-8')) as f:
@@ -40,7 +41,7 @@ if __name__ == "__main__":
         for vul_id in args.id:
             vulnerabilities.append(vul4j.get_vulnerability(vul_id))
 
-    success_vulnerabilities = open(os.path.join('validation_results', 'success_vulnerabilities.txt'), 'a+')
+    success_vulnerabilities = open(os.path.join(REPRODUCTION_DIR, 'successful_vulns.txt'), 'a+')
     for vul in vulnerabilities:
         try:
             if os.path.exists(WORK_DIR):
@@ -50,7 +51,7 @@ if __name__ == "__main__":
             logging.info("Reproducing vulnerability: %s..." % vul['vul_id'])
 
             logging.debug("--> Checking out the vulnerable revision...")
-            ret = vul4j.checkout(vul['vul_id'], WORK_DIR)
+            ret = vul4j.checkout_reproduce(vul['vul_id'], WORK_DIR)
             if ret != 0:
                 logging.error("Checkout failed!")
                 continue

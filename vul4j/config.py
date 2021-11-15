@@ -7,6 +7,10 @@ BENCHMARK_PATH = os.environ.get("BENCHMARK_PATH",
                                 expanduser("/Users/cuong/Research/securethemall/benchmarks/sapkb"))
 GZOLTAR_RUNNER_PATH = os.environ.get("GZOLTAR_RUNNER_PATH",
                                      expanduser("/Users/cuong/PycharmProjects/vul4j/gzoltar_runner"))
+PROJECT_REPOS_ROOT_PATH = os.environ.get("PROJECT_REPOS_ROOT_PATH",
+                                         expanduser("/Users/cuong/PycharmProjects/vul4j/project_repos"))
+REPRODUCTION_DIR = os.environ.get("REPRODUCTION_DIR",
+                                  expanduser("/Users/cuong/PycharmProjects/vul4j/reproduction"))
 
 JAVA7_HOME = os.environ.get("JAVA7_HOME",
                             expanduser("/Library/Java/JavaVirtualMachines/jdk1.7.0_80.jdk/Contents/Home"))
