@@ -1,5 +1,13 @@
 description = 'CloudFoundry Identity Server JAR'
 
+task copyClasspath {
+    def runtimeClasspath = sourceSets.test.runtimeClasspath
+    inputs.files( runtimeClasspath )
+    doLast {
+        new File(projectDir, "classpath.info").text = runtimeClasspath.join( File.pathSeparator )
+    }
+}
+
 dependencies {
 
   compile project(':cloudfoundry-identity-model')
