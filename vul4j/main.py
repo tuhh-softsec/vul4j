@@ -1,30 +1,18 @@
-#!env python3
-
 import argparse
 import csv
 import json
 import logging
 import os
+import re
 import subprocess
 import sys
-from os.path import expanduser
 from shutil import copytree, ignore_patterns
 from xml.etree.ElementTree import parse
 
 from unidiff import PatchSet
 
-JAVA7_HOME = os.environ.get("JAVA7_HOME", expanduser("/Library/Java/JavaVirtualMachines/jdk1.7.0_80.jdk/Contents/Home"))
-JAVA8_HOME = os.environ.get("JAVA8_HOME",
-                            expanduser("/Library/Java/JavaVirtualMachines/jdk1.8.0_281.jdk/Contents/Home"))
-JAVA_ARGS = os.environ.get("JAVA_ARGS", "-Xmx4g -Xms1g -XX:MaxPermSize=512m")
-MVN_OPTS = os.environ.get("MVN_OPTS", "-Xmx4g -Xms1g -XX:MaxPermSize=512m")
-
-DATASET_PATH = "/Users/cuong/PycharmProjects/vul4j/dataset/vul4j_dataset.csv"
-BENCHMARK_PATH = os.environ.get("BENCHMARK_PATH", expanduser("/Users/cuong/Research/securethemall/benchmarks/sapkb"))
-GZOLTAR_RUNNER = os.environ.get("GZOLTAR_RUNNER", expanduser("/Users/cuong/PycharmProjects/vul4j/gzoltar_runner"))
-OUTPUT_FOLDER_NAME = "VUL4J"
-
-ENABLE_EXECUTING_LOGS = os.environ.get("ENABLE_EXECUTING_LOGS", "1")
+from vul4j.config import JAVA7_HOME, MVN_OPTS, JAVA8_HOME, OUTPUT_FOLDER_NAME, ENABLE_EXECUTING_LOGS, DATASET_PATH, \
+    BENCHMARK_PATH, GZOLTAR_RUNNER_PATH
 
 FNULL = open(os.devnull, 'w')
 root = logging.getLogger()
@@ -128,8 +116,8 @@ class Vul4J:
 
         # extract the original patch
         # some vulns with customized-patch will fail here
-        # patch_data = self.get_patch(vul)
-        # vul['human_patch'] = patch_data
+        patch_data = self.get_patch(vul)
+        vul['human_patch'] = patch_data
 
         # copy to working directory
         copytree(BENCHMARK_PATH, output_dir, ignore=ignore_patterns('.git'))
@@ -211,17 +199,33 @@ export MAVEN_OPTS="%s";
     def get_classpath(self, output_dir):
         vul = self.read_vulnerability_from_output_dir(output_dir)
 
-        hardcode_classpath_cmds = {
-            # 'KB-654': 'pwd',
-            'KB-654': './gradlew :spring-webmvc:copyClasspath;cat spring-webmvc/classpath.info',
-            'KB-258': './gradlew :spring-web:copyClasspath;cat spring-web/classpath.info',
-            'KB-189': './gradlew :spring-security-oauth2-jose:copyClasspath;cat oauth2/oauth2-jose/classpath.info',
-            'KB-578': './gradlew :cloudfoundry-identity-server:copyClasspath;cat server/classpath.info',
+        '''
+        ----------------------------------------
+        ONLY for Gradle projects, make sure to put this task into the build.gradle of failing module
+        ----------------------------------------
+        task copyClasspath {
+            def runtimeClasspath = sourceSets.test.runtimeClasspath
+            inputs.files( runtimeClasspath )
+            doLast {
+                new File(projectDir, "classpath.info").text = runtimeClasspath.join( File.pathSeparator )
+            }
         }
-
+        ----------------------------------------
+        '''
         cp_cmd = ""
-        if vul['vul_id'] in hardcode_classpath_cmds.keys():
-            cp_cmd = hardcode_classpath_cmds[vul['vul_id']]
+        if vul['build_system'] == "Gradle":
+            test_all_cmd = vul['test_all_cmd']
+
+            matched = re.search("(./gradlew :.*:)test$", test_all_cmd)
+            if matched is None:
+                print("The test all command should follow the regex \"(./gradlew :.*:)test$\"!"
+                      " It is now %s." % test_all_cmd)
+                exit(1)
+
+            gradle_classpath_cmd = matched.group(1) + "copyClasspath"
+            classpath_info_file = os.path.join(vul['failing_module'], 'classpath.info')
+            cat_classpath_info_cmd = "cat " + classpath_info_file
+            cp_cmd = "%s;%s" % (gradle_classpath_cmd, cat_classpath_info_cmd)
 
         elif vul['build_system'] == "Maven":
             failing_module = vul['failing_module']
@@ -253,7 +257,7 @@ export MAVEN_OPTS="%s";
         vul = self.read_vulnerability_from_output_dir(output_dir)
         java_home = JAVA7_HOME if vul['compliance_level'] <= 7 else JAVA8_HOME
 
-        subprocess.call("cp -r %s/* %s" % (GZOLTAR_RUNNER, output_dir),
+        subprocess.call("cp -r %s/* %s" % (GZOLTAR_RUNNER_PATH, output_dir),
                         shell=True, stdout=FNULL, stderr=subprocess.STDOUT)
 
         src_classes_dir = vul['src_classes_dir']

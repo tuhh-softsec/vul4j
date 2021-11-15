@@ -2,6 +2,12 @@
 Vul4J: A benchmark of Java vulnerabilities to enable controlled research studies for testing and debugging.
 
 # Setup
+## Requirements
+* Java 8
+* Java 7
+* Maven 3
+
+## Setup steps
 1. Clone Vul4J:
 ```shell
 git clone https://github.com/bqcuong/vul4j

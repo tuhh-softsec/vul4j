@@ -17,6 +17,7 @@ COPY ./ /vul4j/
 WORKDIR /vul4j
 
 RUN pip3 install -r requirements.txt
+RUN pip3 install .
 
 # jdk7 downloaded from https://www.oracle.com/java/technologies/javase/javase7-archive-downloads.html
 COPY jdk-7u80-linux-x64.tar.gz /tmp/jdk-7u80-linux-x64.tar.gz
@@ -27,4 +28,8 @@ RUN mv /tmp/jdk1.7.0_80 /usr/lib/jvm/jdk1.7.0_80/
 ENV JAVA7_HOME /usr/lib/jvm/jdk1.7.0_80
 ENV JAVA8_HOME /usr/lib/jvm/java-8-openjdk-amd64
 ENV BENCHMARK_PATH /vul4j/benchmark_repo
+ENV DATASET_PATH /vul4j/dataset/vul4j_dataset.csv
+ENV GZOLTAR_RUNNER_PATH /vul4j/gzoltar_runner
+
+RUN vul4j
 
