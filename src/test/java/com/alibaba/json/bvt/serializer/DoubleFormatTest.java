@@ -2,7 +2,6 @@ package com.alibaba.json.bvt.serializer;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.annotation.JSONField;
-import com.sun.javafx.sg.prism.NGShape;
 import junit.framework.TestCase;
 
 import java.text.DecimalFormat;
