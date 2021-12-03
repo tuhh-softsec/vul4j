@@ -5,7 +5,7 @@ import os
 import subprocess
 
 from main import Vul4J
-from vul4j.config import REPRODUCTION_DIR
+from config import REPRODUCTION_DIR
 
 FNULL = open(os.devnull, 'w')
 
