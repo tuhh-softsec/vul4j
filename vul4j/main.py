@@ -78,6 +78,15 @@ class Vul4J:
                 return vul
         return None
 
+    def get_info(self, vul_id):
+        vul = self.get_vulnerability(vul_id)
+        if vul is None:
+            print("Vulnerability not found!")
+            exit(1)
+
+        print(json.dumps(vul, indent=4))
+        exit(0)
+
     @staticmethod
     def get_patch(vul):
         cmd = "cd " + vul['project_repo_folder'] + "; git diff %s %s~1" % (
@@ -126,13 +135,12 @@ class Vul4J:
         with open(os.path.join(output_dir, OUTPUT_FOLDER_NAME, "vulnerability_info.json"), "w", encoding='utf-8') as f:
             f.write(json.dumps(vul, indent=2))
 
-        print("Id: %s" % 123)
-        print("Working directory: %s" % output_dir)
         return 0
 
     '''
     This checkout() function is used for the reproduction of new vulnerabilities 
     '''
+
     def checkout_reproduce(self, vul_id, output_dir):
         vul = self.get_vulnerability(vul_id)
         if os.path.exists(output_dir):
@@ -502,6 +510,11 @@ def main_fl(args):
     exit(ret)
 
 
+def main_info(args):
+    vul4j = Vul4J()
+    vul4j.get_info(args.id)
+
+
 def main(args=None):
     if args is None:
         args = sys.argv[1:]
@@ -538,6 +551,10 @@ def main(args=None):
     fl_parser.add_argument("-i", "--id", help="Vulnerability Id.", required=False)
     fl_parser.add_argument("-d", "--outdir", help="The directory to which the vulnerability was checked out.",
                            required=True)
+
+    info_parser = sub_parsers.add_parser('info')
+    info_parser.set_defaults(func=main_info)
+    info_parser.add_argument("-i", "--id", help="Vulnerability Id.", required=True)
 
     options = parser.parse_args(args)
     if not hasattr(options, 'func'):
