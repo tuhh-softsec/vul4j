@@ -270,16 +270,16 @@ public class LosslessFactoryTest extends TestCase
      *
      * @throws java.io.IOException
      */
-    public void testCreateLosslessFromGovdocs032163() throws IOException
-    {
-        PDDocument document = new PDDocument();
-        BufferedImage image = ImageIO.read(new File("target/imgs", "PDFBOX-4184-032163.jpg"));
-        PDImageXObject ximage = LosslessFactory.createFromImage(document, image);
-        validate(ximage, 8, image.getWidth(), image.getHeight(), "png", PDDeviceRGB.INSTANCE.getName());
-        checkIdent(image, ximage.getImage());
-
-        doWritePDF(document, ximage, testResultsDir, "PDFBOX-4184-032163.pdf");
-    }
+//    public void testCreateLosslessFromGovdocs032163() throws IOException
+//    {
+//        PDDocument document = new PDDocument();
+//        BufferedImage image = ImageIO.read(new File("target/imgs", "PDFBOX-4184-032163.jpg"));
+//        PDImageXObject ximage = LosslessFactory.createFromImage(document, image);
+//        validate(ximage, 8, image.getWidth(), image.getHeight(), "png", PDDeviceRGB.INSTANCE.getName());
+//        checkIdent(image, ximage.getImage());
+//
+//        doWritePDF(document, ximage, testResultsDir, "PDFBOX-4184-032163.pdf");
+//    }
 
     /**
      * Check whether the RGB part of images are identical.

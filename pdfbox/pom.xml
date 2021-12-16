@@ -350,34 +350,34 @@
                             <sha512>6ed5287342ec8a5459a86462d80917bb625d5973df96fdebd5e3c8bc2e9093e6c389f5c8151eb17472a24e1349386a3e7c1a0021e9a967761a554ac1ade557eb</sha512>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>PDFBOX-4106</id>
-                        <phase>generate-test-resources</phase>
-                        <goals>
-                            <goal>wget</goal>
-                        </goals>
-                        <configuration>
-                            <url>https://ipafont.ipa.go.jp/old/ipafont/ipag00303.php</url>
-                            <outputDirectory>${project.build.directory}/fonts</outputDirectory>
-                            <outputFileName>ipag00303.zip</outputFileName>
-                            <unpack>true</unpack>
-                            <sha512>59535137c649a2f8bdbb463cd716426811a6003a65883ca6e45bb0af1d526b3889af0fba3a353e90bc8d373cd32b90a27ff9ff6916ecbccb42e922c09e9b046a</sha512>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>PDFBOX-4106b</id>
-                        <phase>generate-test-resources</phase>
-                        <goals>
-                            <goal>wget</goal>
-                        </goals>
-                        <configuration>
-                            <url>https://ipafont.ipa.go.jp/old/ipafont/ipagp00303.php</url>
-                            <outputDirectory>${project.build.directory}/fonts</outputDirectory>
-                            <outputFileName>ipagp00303.zip</outputFileName>
-                            <unpack>true</unpack>
-                            <sha512>26d0a9bfba7f5457a98b0bf45a4a6b081bca4140047a0886625691231459f8c81a6cdbe523e9abcbd45fd7caed21d78f1baf3a2cf9167320f6b79be3d697cb5b</sha512>
-                        </configuration>
-                    </execution>
+<!--                    <execution>-->
+<!--                        <id>PDFBOX-4106</id>-->
+<!--                        <phase>generate-test-resources</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>wget</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <url>https://ipafont.ipa.go.jp/old/ipafont/ipag00303.php</url>-->
+<!--                            <outputDirectory>${project.build.directory}/fonts</outputDirectory>-->
+<!--                            <outputFileName>ipag00303.zip</outputFileName>-->
+<!--                            <unpack>true</unpack>-->
+<!--                            <sha512>59535137c649a2f8bdbb463cd716426811a6003a65883ca6e45bb0af1d526b3889af0fba3a353e90bc8d373cd32b90a27ff9ff6916ecbccb42e922c09e9b046a</sha512>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                    <execution>-->
+<!--                        <id>PDFBOX-4106b</id>-->
+<!--                        <phase>generate-test-resources</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>wget</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <url>https://ipafont.ipa.go.jp/old/ipafont/ipagp00303.php</url>-->
+<!--                            <outputDirectory>${project.build.directory}/fonts</outputDirectory>-->
+<!--                            <outputFileName>ipagp00303.zip</outputFileName>-->
+<!--                            <unpack>true</unpack>-->
+<!--                            <sha512>26d0a9bfba7f5457a98b0bf45a4a6b081bca4140047a0886625691231459f8c81a6cdbe523e9abcbd45fd7caed21d78f1baf3a2cf9167320f6b79be3d697cb5b</sha512>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
                     <execution>
                         <id>PDFBOX-4115</id>
                         <phase>generate-test-resources</phase>
@@ -404,21 +404,21 @@
                             <sha512>6fefc869dff9db8cd539db177d35beeacc62304173245742eaee8882dab330860a31cbbd4c4ec6cc724603cc453afc07ec61361fbc1e80a47f44b04ccfbaf40d</sha512>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>PDFBOX-4184</id>
-                        <phase>generate-test-resources</phase>
-                        <goals>
-                            <goal>wget</goal>
-                        </goals>
-                        <configuration>
-                            <url>http://www.crh.noaa.gov/Image/gjt/images/ImageGallery/Uncompahgre_small.jpg</url>
-                            <!-- file is also 032163.jpg
-                            from http://downloads.digitalcorpora.org/corpora/files/govdocs1/zipfiles/032.zip -->
-                            <outputDirectory>${project.build.directory}/imgs</outputDirectory>
-                            <outputFileName>PDFBOX-4184-032163.jpg</outputFileName>
-                            <sha512>35241c979d3808ca9d2641b5ec5e40637132b313f75070faca8b8f6d00ddce394070414236db3993f1092fe3bc16995750d528b6d803a7851423c14c308ccdde</sha512>
-                        </configuration>
-                    </execution>
+<!--                    <execution>-->
+<!--                        <id>PDFBOX-4184</id>-->
+<!--                        <phase>generate-test-resources</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>wget</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <url>http://www.crh.noaa.gov/Image/gjt/images/ImageGallery/Uncompahgre_small.jpg</url>-->
+<!--                            &lt;!&ndash; file is also 032163.jpg-->
+<!--                            from http://downloads.digitalcorpora.org/corpora/files/govdocs1/zipfiles/032.zip &ndash;&gt;-->
+<!--                            <outputDirectory>${project.build.directory}/imgs</outputDirectory>-->
+<!--                            <outputFileName>PDFBOX-4184-032163.jpg</outputFileName>-->
+<!--                            <sha512>35241c979d3808ca9d2641b5ec5e40637132b313f75070faca8b8f6d00ddce394070414236db3993f1092fe3bc16995750d528b6d803a7851423c14c308ccdde</sha512>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
                     <execution>
                         <id>PDFBOX-4184-2</id>
                         <phase>generate-test-resources</phase>
