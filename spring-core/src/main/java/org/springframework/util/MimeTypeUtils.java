@@ -18,7 +18,6 @@ package org.springframework.util;
 
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -47,7 +46,7 @@ public abstract class MimeTypeUtils {
 					'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',
 					'V', 'W', 'X', 'Y', 'Z'};
 
-	private static final Random RND = new SecureRandom();
+	private static final Random RND = new Random();
 
 	private static Charset US_ASCII = Charset.forName("US-ASCII");
 
@@ -393,5 +392,7 @@ public abstract class MimeTypeUtils {
 	public static String generateMultipartBoundaryString() {
 		return new String(generateMultipartBoundary(), US_ASCII);
 	}
+
+	public static Random getRND() { return RND; }
 
 }

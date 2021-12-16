@@ -39,6 +39,20 @@ import static org.junit.Assert.*;
  */
 public class MimeTypeTests {
 
+	@Test
+	public void testCVE_2018_1272() {
+	    long seed = 1111;
+	    Random originalRND = MimeTypeUtils.getRND();
+	    //Random originalRND = new java.security.SecureRandom();
+	    Random replicatedRND = new Random();
+	    originalRND.setSeed(1111);
+	    replicatedRND.setSeed(1111);
+
+	    assertFalse(originalRND.nextInt() == replicatedRND.nextInt());
+	    assertFalse(originalRND.nextInt() == replicatedRND.nextInt());
+	    assertFalse(originalRND.nextInt() == replicatedRND.nextInt());
+	}
+
 	@Test(expected = IllegalArgumentException.class)
 	public void slashInSubtype() {
 		new MimeType("text", "/");
