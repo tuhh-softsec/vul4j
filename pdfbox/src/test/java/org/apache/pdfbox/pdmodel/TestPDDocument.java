@@ -31,6 +31,8 @@ import java.util.Locale;
 import org.apache.pdfbox.io.IOUtils;
 
 import junit.framework.TestCase;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 
 /**
  * Testcase introduced with PDFBOX-1581.
@@ -45,6 +47,17 @@ public class TestPDDocument extends TestCase
     {
         super.setUp();
         testResultsDir.mkdirs();
+    }
+
+    public void testCVE_2018_11797() {
+        try {
+            PDDocument loadDoc = PDDocument.load(new File("src/test/resources/input/weird-rectangle.pdf"));
+            loadDoc.getPage(0).getMediaBox();
+            loadDoc.close();
+        }
+        catch (ClassCastException e) {
+            fail();
+        } catch (IOException ignored) {}
     }
 
     /**

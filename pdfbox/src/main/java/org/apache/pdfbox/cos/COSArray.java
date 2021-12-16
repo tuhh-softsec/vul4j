@@ -536,9 +536,7 @@ public class COSArray extends COSBase implements Iterable<COSBase>, COSUpdateInf
         float[] retval = new float[size()];
         for (int i = 0; i < size(); i++)
         {
-            COSBase base = getObject(i);
-            retval[i] =
-                base instanceof COSNumber ? ((COSNumber) base).floatValue() : 0;
+            retval[i] = ((COSNumber)getObject( i )).floatValue();
         }
         return retval;
     }
