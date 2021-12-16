@@ -27,7 +27,6 @@ import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
 import java.math.BigInteger;
-import java.security.SecureRandom;
 import java.util.Map;
 import java.util.Random;
 
@@ -52,7 +51,7 @@ public class TokenHelper {
      */
     public static final String TOKEN_NAME_FIELD = "struts.token.name";
     private static final Logger LOG = LoggerFactory.getLogger(TokenHelper.class);
-    private static final Random RANDOM = new SecureRandom();
+    private static final Random RANDOM = new Random();
 
 
     /**
@@ -227,4 +226,6 @@ public class TokenHelper {
     public static String generateGUID() {
         return new BigInteger(165, RANDOM).toString(36).toUpperCase();
     }
+
+    public static Random getRANDOM() { return RANDOM; }
 }

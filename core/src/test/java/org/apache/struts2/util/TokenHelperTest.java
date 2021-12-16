@@ -28,7 +28,7 @@ import java.util.TreeMap;
 import junit.framework.TestCase;
 
 import com.opensymphony.xwork2.ActionContext;
-
+import java.util.Random;
 
 /**
  * TokenHelperTest
@@ -37,6 +37,19 @@ import com.opensymphony.xwork2.ActionContext;
 public class TokenHelperTest extends TestCase {
 
     private Map session;
+
+    public void testCVE_2014_7809() {
+        long seed = 1111;
+        Random originalRND = TokenHelper.getRANDOM();
+        //Random originalRND = new java.security.SecureRandom();
+        Random replicatedRND = new Random();
+        originalRND.setSeed(1111);
+        replicatedRND.setSeed(1111);
+
+        assertFalse(originalRND.nextInt() == replicatedRND.nextInt());
+        assertFalse(originalRND.nextInt() == replicatedRND.nextInt());
+        assertFalse(originalRND.nextInt() == replicatedRND.nextInt());
+    }
 
 	public void testTokenSessionNameBuilding() throws Exception {
 		String name = "foo";
