@@ -212,26 +212,26 @@ public class TestChmExtraction extends MultiThreadedTikaTest {
         getXML("testChm_oom.chm");
     }
 
-    @Test
-    public void testMultiThreaded() throws Exception {
-        ParseContext[] parseContexts = new ParseContext[10];
-        for (int i = 0; i < parseContexts.length; i++) {
-            parseContexts[i] = new ParseContext();
-        }
-        testMultiThreaded(parseContexts, 10, 10, new FileFilter() {
-                    @Override
-                    public boolean accept(File pathname) {
-                        if (pathname.getName().toLowerCase(Locale.ENGLISH).endsWith(".chm")) {
-                            //this file is a beast, skip it
-                            if (pathname.getName().equals("testChm2.chm")) {
-                                return false;
-                            } else {
-                                return true;
-                            }
-                        } else {
-                            return false;
-                        }
-                    }
-                });
-    }
+//    @Test
+//    public void testMultiThreaded() throws Exception {
+//        ParseContext[] parseContexts = new ParseContext[10];
+//        for (int i = 0; i < parseContexts.length; i++) {
+//            parseContexts[i] = new ParseContext();
+//        }
+//        testMultiThreaded(parseContexts, 10, 10, new FileFilter() {
+//                    @Override
+//                    public boolean accept(File pathname) {
+//                        if (pathname.getName().toLowerCase(Locale.ENGLISH).endsWith(".chm")) {
+//                            //this file is a beast, skip it
+//                            if (pathname.getName().equals("testChm2.chm")) {
+//                                return false;
+//                            } else {
+//                                return true;
+//                            }
+//                        } else {
+//                            return false;
+//                        }
+//                    }
+//                });
+//    }
 }
