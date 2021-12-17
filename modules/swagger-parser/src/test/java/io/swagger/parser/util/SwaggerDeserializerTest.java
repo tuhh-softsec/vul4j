@@ -15,7 +15,10 @@ import io.swagger.util.Json;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +27,17 @@ import java.util.Set;
 import static org.junit.Assert.*;
 
 public class SwaggerDeserializerTest {
+
+    @Test
+    public void testCVE_2017_1000207() throws IOException {
+        File createdFile = new File(Files.createTempDirectory("swagger-parser").toAbsolutePath() + File.separator + "data.txt");
+        String maliciousYaml = "!!java.io.FileOutputStream [" + createdFile.getAbsolutePath() + "]";
+
+        SwaggerParser parser = new SwaggerParser();
+        parser.readWithInfo(maliciousYaml);
+        assertFalse("The file should not be created", createdFile.exists());
+    }
+
     @Test
     public void testSecurityDeserialization() throws Exception {
         String json = "{\n" +
