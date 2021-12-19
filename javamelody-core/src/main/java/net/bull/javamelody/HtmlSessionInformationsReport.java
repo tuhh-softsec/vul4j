@@ -159,7 +159,7 @@ class HtmlSessionInformationsReport extends HtmlAbstractReport {
 		if (remoteAddr == null) {
 			write("&nbsp;");
 		} else {
-			write(htmlEncodeButNotSpace(remoteAddr));
+			write(remoteAddr);
 		}
 		write(nextColumnAlignCenter);
 		writeCountry(session);

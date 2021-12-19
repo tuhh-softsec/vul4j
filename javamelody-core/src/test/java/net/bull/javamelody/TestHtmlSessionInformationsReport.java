@@ -18,9 +18,6 @@
  */
 package net.bull.javamelody;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -29,6 +26,10 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import javax.servlet.http.HttpSession;
+
+import static org.junit.Assert.*;
 
 /**
  * Test unitaire de la classe HtmlSessionInformationsReport.
@@ -39,6 +40,24 @@ public class TestHtmlSessionInformationsReport {
 	@Before
 	public void setUp() {
 		Utils.initialize();
+	}
+
+	@Test
+	public void testCVE_2013_4378() throws IOException {
+		SessionTestImpl session = new SessionTestImpl(true);
+
+		// here we inject the XSS vulnerability to the remote address of the session object
+		String maliciousScript = "<script>alert(document.cookie)</script>";
+		session.setAttribute(SessionInformations.SESSION_REMOTE_ADDR, maliciousScript);
+
+		SessionInformations sessionInformations = new SessionInformations(session, false);
+		List<SessionInformations> sessions = new ArrayList<SessionInformations>();
+		sessions.add(sessionInformations);
+		StringWriter writer = new StringWriter();
+		new HtmlSessionInformationsReport(sessions, writer)
+			.toHtml();
+
+		assertFalse("The output html should not contain the malicious script", writer.toString().contains(maliciousScript));
 	}
 
 	private static void assertNotEmptyAndClear(StringWriter writer) {

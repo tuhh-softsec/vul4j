@@ -186,97 +186,97 @@
 			</plugin>
 
 			<!-- Site -->
-			<plugin>
-				<artifactId>maven-site-plugin</artifactId>
-				<version>3.3</version>
-				<configuration>
-					<reportPlugins>
-						<!-- Javadoc -->
-						<plugin>
-							<artifactId>maven-javadoc-plugin</artifactId>
-							<version>2.9.1</version>
-							<configuration>
-								<links>
-									<link>http://java.sun.com/javase/6/docs/api/</link>
-									<link>http://java.sun.com/javaee/5/docs/api/</link>
-								</links>
-							</configuration>
-						</plugin>
-						<!-- Références croisées -->
-						<plugin>
-							<artifactId>maven-jxr-plugin</artifactId>
-							<version>2.3</version>
-							<configuration>
-								<linkJavadoc>false</linkJavadoc>
-							</configuration>
-						</plugin>
-						<!-- Vérification des règles de codage -->
-						<plugin>
-							<artifactId>maven-checkstyle-plugin</artifactId>
-							<version>2.10</version>
-							<configuration>
-								<enableRSS>false</enableRSS>
-								<configLocation>${basedir}/.checkstyle.xml</configLocation>
-								<linkXRef>true</linkXRef>
-							</configuration>
-						</plugin>
-						<plugin>
-							<groupId>org.codehaus.mojo</groupId>
-							<artifactId>findbugs-maven-plugin</artifactId>
-							<version>2.5.2</version>
-							<configuration>
-								<xmlOutput>true</xmlOutput>
-							</configuration>
-						</plugin>
-						<plugin>
-							<artifactId>maven-pmd-plugin</artifactId>
-							<version>2.7.1</version>
-							<configuration>
-								<enableRulesSummary>false</enableRulesSummary>
-								<source>1.7</source>
-								<targetJdk>1.7</targetJdk>
-								<linkXref>true</linkXref>
-								<minimumPriority>4</minimumPriority>
-								<minimumTokens>100</minimumTokens>
-								<rulesets>
-									<ruleset>${basedir}/.pmd</ruleset>
-								</rulesets>
-							</configuration>
-						</plugin>
-						<!-- Métriques -->
-						<!-- error with diamond op
-						<plugin>
-							<groupId>org.codehaus.mojo</groupId>
-							<artifactId>javancss-maven-plugin</artifactId>
-							<version>2.0</version>
-						</plugin> -->
-						<plugin>
-							<groupId>org.codehaus.mojo</groupId>
-							<artifactId>jdepend-maven-plugin</artifactId>
-							<version>2.0-beta-2</version>
-						</plugin>
-						<!-- Information sur le projet -->
-						<plugin>
-							<artifactId>maven-project-info-reports-plugin</artifactId>
-							<version>2.6</version>
-							<reportSets>
-								<reportSet>
-									<reports>
-										<report>summary</report>
-										<report>license</report>
-										<report>mailing-list</report>
-										<report>issue-tracking</report>
-										<report>scm</report>
-										<report>cim</report>
-										<report>plugin-management</report>
-										<report>plugins</report>
-									</reports>
-								</reportSet>
-							</reportSets>
-						</plugin>
-					</reportPlugins>
-				</configuration>
-			</plugin>
+<!--			<plugin>-->
+<!--				<artifactId>maven-site-plugin</artifactId>-->
+<!--				<version>3.3</version>-->
+<!--				<configuration>-->
+<!--					<reportPlugins>-->
+<!--						&lt;!&ndash; Javadoc &ndash;&gt;-->
+<!--						<plugin>-->
+<!--							<artifactId>maven-javadoc-plugin</artifactId>-->
+<!--							<version>2.9.1</version>-->
+<!--							<configuration>-->
+<!--								<links>-->
+<!--									<link>http://java.sun.com/javase/6/docs/api/</link>-->
+<!--									<link>http://java.sun.com/javaee/5/docs/api/</link>-->
+<!--								</links>-->
+<!--							</configuration>-->
+<!--						</plugin>-->
+<!--						&lt;!&ndash; Références croisées &ndash;&gt;-->
+<!--						<plugin>-->
+<!--							<artifactId>maven-jxr-plugin</artifactId>-->
+<!--							<version>2.3</version>-->
+<!--							<configuration>-->
+<!--								<linkJavadoc>false</linkJavadoc>-->
+<!--							</configuration>-->
+<!--						</plugin>-->
+<!--						&lt;!&ndash; Vérification des règles de codage &ndash;&gt;-->
+<!--						<plugin>-->
+<!--							<artifactId>maven-checkstyle-plugin</artifactId>-->
+<!--							<version>2.10</version>-->
+<!--							<configuration>-->
+<!--								<enableRSS>false</enableRSS>-->
+<!--								<configLocation>${basedir}/.checkstyle.xml</configLocation>-->
+<!--								<linkXRef>true</linkXRef>-->
+<!--							</configuration>-->
+<!--						</plugin>-->
+<!--						<plugin>-->
+<!--							<groupId>org.codehaus.mojo</groupId>-->
+<!--							<artifactId>findbugs-maven-plugin</artifactId>-->
+<!--							<version>2.5.2</version>-->
+<!--							<configuration>-->
+<!--								<xmlOutput>true</xmlOutput>-->
+<!--							</configuration>-->
+<!--						</plugin>-->
+<!--						<plugin>-->
+<!--							<artifactId>maven-pmd-plugin</artifactId>-->
+<!--							<version>2.7.1</version>-->
+<!--							<configuration>-->
+<!--								<enableRulesSummary>false</enableRulesSummary>-->
+<!--								<source>1.7</source>-->
+<!--								<targetJdk>1.7</targetJdk>-->
+<!--								<linkXref>true</linkXref>-->
+<!--								<minimumPriority>4</minimumPriority>-->
+<!--								<minimumTokens>100</minimumTokens>-->
+<!--								<rulesets>-->
+<!--									<ruleset>${basedir}/.pmd</ruleset>-->
+<!--								</rulesets>-->
+<!--							</configuration>-->
+<!--						</plugin>-->
+<!--						&lt;!&ndash; Métriques &ndash;&gt;-->
+<!--						&lt;!&ndash; error with diamond op-->
+<!--						<plugin>-->
+<!--							<groupId>org.codehaus.mojo</groupId>-->
+<!--							<artifactId>javancss-maven-plugin</artifactId>-->
+<!--							<version>2.0</version>-->
+<!--						</plugin> &ndash;&gt;-->
+<!--						<plugin>-->
+<!--							<groupId>org.codehaus.mojo</groupId>-->
+<!--							<artifactId>jdepend-maven-plugin</artifactId>-->
+<!--							<version>2.0-beta-2</version>-->
+<!--						</plugin>-->
+<!--						&lt;!&ndash; Information sur le projet &ndash;&gt;-->
+<!--						<plugin>-->
+<!--							<artifactId>maven-project-info-reports-plugin</artifactId>-->
+<!--							<version>2.6</version>-->
+<!--							<reportSets>-->
+<!--								<reportSet>-->
+<!--									<reports>-->
+<!--										<report>summary</report>-->
+<!--										<report>license</report>-->
+<!--										<report>mailing-list</report>-->
+<!--										<report>issue-tracking</report>-->
+<!--										<report>scm</report>-->
+<!--										<report>cim</report>-->
+<!--										<report>plugin-management</report>-->
+<!--										<report>plugins</report>-->
+<!--									</reports>-->
+<!--								</reportSet>-->
+<!--							</reportSets>-->
+<!--						</plugin>-->
+<!--					</reportPlugins>-->
+<!--				</configuration>-->
+<!--			</plugin>-->
 		</plugins>
 	</build>
 	<reporting>
