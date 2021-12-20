@@ -562,6 +562,7 @@ public class TestTextStripper extends TestCase
      *
      * @throws Exception when there is an exception
      */
+    /*
     public void testExtract() throws Exception
     {
         String filename = System.getProperty("org.apache.pdfbox.util.TextStripper.file");
@@ -591,7 +592,7 @@ public class TestTextStripper extends TestCase
                 fail("One or more failures, see test log for details");
             }
     }
-
+    */
     /**
      * Set the tests in the suite for this test class.
      *
