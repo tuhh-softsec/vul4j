@@ -23,6 +23,7 @@ RUN pip3 install .
 COPY jdk-7u80-linux-x64.tar.gz /tmp/jdk-7u80-linux-x64.tar.gz
 RUN tar xvzf /tmp/jdk-7u80-linux-x64.tar.gz -C /tmp/
 RUN mv /tmp/jdk1.7.0_80 /usr/lib/jvm/jdk1.7.0_80/
+RUN rm jdk-7u80-linux-x64.tar.gz
 
 # set env
 ENV JAVA7_HOME /usr/lib/jvm/jdk1.7.0_80
