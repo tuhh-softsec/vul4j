@@ -140,6 +140,10 @@ class Vul4J:
         with open(os.path.join(output_dir, OUTPUT_FOLDER_NAME, "vulnerability_info.json"), "w", encoding='utf-8') as f:
             f.write(json.dumps(vul, indent=2))
 
+        # revert to main branch
+        cmd = "cd %s; git reset .; git checkout -- .; git clean -x -d --force; git checkout -f main" % BENCHMARK_PATH
+        subprocess.call(cmd, shell=True, stdout=FNULL, stderr=subprocess.STDOUT)
+
         return 0
 
     '''
@@ -180,6 +184,10 @@ class Vul4J:
         os.makedirs(os.path.join(output_dir, OUTPUT_FOLDER_NAME))
         with open(os.path.join(output_dir, OUTPUT_FOLDER_NAME, "vulnerability_info.json"), "w", encoding='utf-8') as f:
             f.write(json.dumps(vul, indent=2))
+
+        # revert to main branch
+        cmd = "cd %s; git reset .; git checkout -- .; git clean -x -d --force; git checkout -f main" % BENCHMARK_PATH
+        subprocess.call(cmd, shell=True, stdout=FNULL, stderr=subprocess.STDOUT)
 
         return 0
 
