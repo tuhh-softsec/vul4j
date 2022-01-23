@@ -119,8 +119,13 @@ class Vul4J:
 
     def checkout(self, vul_id, output_dir):
         vul = self.get_vulnerability(vul_id)
+
+        if vul is None:
+            print("No vulnerability found in the dataset with id %s!" % vul_id)
+            exit(1)
+
         if os.path.exists(output_dir):
-            logging.error("Directory '%s' has already existed!" % output_dir)
+            print("Directory '%s' has already existed!" % output_dir)
             exit(1)
 
         cmd = "cd %s; git reset .; git checkout -- .; git clean -x -d --force; git checkout -f %s" % (
