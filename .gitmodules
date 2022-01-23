@@ -1,3 +1,0 @@
-[submodule "benchmark_repo"]
-	path = benchmark_repo
-	url = git@github.com:bqcuong/sapkb.git

@@ -1,9 +1,9 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 setup(
     name='vul4j',
     version=1.0,
-    description='A benchmark of Java vulnerabilities to enable controlled research studies for testing and debugging.',
+    description='Vul4J: A Dataset of Reproducible Java Vulnerabilities.',
     author='Quang-Cuong Bui',
     author_email='cuong.bui@tuhh.de',
     url='https://github.com/bqcuong/vul4j',

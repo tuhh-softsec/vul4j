@@ -12,7 +12,7 @@ from xml.etree.ElementTree import parse
 from unidiff import PatchSet
 
 from vul4j.config import JAVA7_HOME, MVN_OPTS, JAVA8_HOME, OUTPUT_FOLDER_NAME, ENABLE_EXECUTING_LOGS, DATASET_PATH, \
-    BENCHMARK_PATH, GZOLTAR_RUNNER_PATH, PROJECT_REPOS_ROOT_PATH
+    BENCHMARK_PATH, PROJECT_REPOS_ROOT_PATH
 
 FNULL = open(os.devnull, 'w')
 root = logging.getLogger()
@@ -302,39 +302,6 @@ export MAVEN_OPTS="%s";
             "cd %s;%s;" % (output_dir, cp_cmd.split(';')[1]), shell=True)
         return classpath
 
-    def fault_localization(self, output_dir):
-        vul = self.read_vulnerability_from_output_dir(output_dir)
-        java_home = JAVA7_HOME if vul['compliance_level'] <= 7 else JAVA8_HOME
-
-        subprocess.call("cp -r %s/* %s" % (GZOLTAR_RUNNER_PATH, output_dir),
-                        shell=True, stdout=FNULL, stderr=subprocess.STDOUT)
-
-        src_classes_dir = vul['src_classes_dir']
-        test_classes_dir = vul['test_classes_dir']
-        classpath = self.get_classpath(output_dir).decode('utf-8')
-
-        result_dir = os.path.abspath(os.path.join("fl", vul['vul_id']))
-
-        fl_cmd = 'bash run_fl.sh -o="%s" -s="%s" -t="%s" -c="%s"' \
-                 % (result_dir, src_classes_dir, test_classes_dir, classpath)
-
-        cmd = """cd %s;
-export JAVA_HOME="%s"
-export PATH="%s/bin:$PATH";
-%s;""" % (os.path.abspath(output_dir), java_home, java_home, fl_cmd)
-
-        log_path = os.path.join("logs", "fl", vul['vul_id'] + '.log')
-        os.makedirs(os.path.dirname(log_path), exist_ok=True)
-        stdout = open(log_path, "w", encoding="utf-8") if ENABLE_EXECUTING_LOGS == "1" else FNULL
-        stdout.write(cmd + "\n")
-        stdout.flush()
-        subprocess.call(cmd, shell=True, stdout=stdout, stderr=subprocess.STDOUT)
-
-        # classpath = subprocess.check_output(
-        #     "cd %s;%s;" % (output_dir, cp_cmd.split(';')[1]), shell=True)
-        # print(classpath)
-        return 0
-
     '''
     modify from https://github.com/program-repair/RepairThemAll/blob/master/script/info_json_file.py
     '''
@@ -504,12 +471,6 @@ def main_classpath(args):
     exit(ret)
 
 
-def main_fl(args):
-    vul4j = Vul4J()
-    ret = vul4j.fault_localization(args.outdir)
-    exit(ret)
-
-
 def main_info(args):
     vul4j = Vul4J()
     vul4j.get_info(args.id)
@@ -544,12 +505,6 @@ def main(args=None):
     cp_parser.set_defaults(func=main_classpath)
     cp_parser.add_argument("-i", "--id", help="Vulnerability Id.", required=False)
     cp_parser.add_argument("-d", "--outdir", help="The directory to which the vulnerability was checked out.",
-                           required=True)
-
-    fl_parser = sub_parsers.add_parser('fl')
-    fl_parser.set_defaults(func=main_fl)
-    fl_parser.add_argument("-i", "--id", help="Vulnerability Id.", required=False)
-    fl_parser.add_argument("-d", "--outdir", help="The directory to which the vulnerability was checked out.",
                            required=True)
 
     info_parser = sub_parsers.add_parser('info')
