@@ -40,7 +40,7 @@ def write_test_results_to_file(vul, test_results, revision):
                                     '%s_%s_tests_%s.json' % (
                                         vul['project'].replace('-', '_'), vul['vul_id'].replace('-', '_'), revision))
     with (open(test_output_file, 'w', encoding='utf-8')) as f:
-        f.write(test_results.decode('utf-8'))
+        f.write(test_results)
 
 
 class Vul4J:
@@ -242,7 +242,7 @@ export MAVEN_OPTS="%s";
             f.write("1" if ret == 0 else "0")
         return ret
 
-    def test(self, output_dir):
+    def test(self, output_dir, print_out=True):
         vul = self.read_vulnerability_from_output_dir(output_dir)
 
         java_home = JAVA7_HOME if vul['compliance_level'] <= 7 else JAVA8_HOME
@@ -267,13 +267,17 @@ export MAVEN_OPTS="%s";
             else self.read_test_results_gradle(vul, output_dir)
 
         json_str = json.dumps(test_results, indent=2)
-        print(json_str)
         with (open(os.path.join(output_dir, OUTPUT_FOLDER_NAME, "testing_results.json"), "w")) as f:
             f.write(json_str)
+
+        if print_out:
+            print(json_str)
         return json_str
 
-    def classpath(self, output_dir):
+    def classpath(self, output_dir, print_out=True):
         cp = self.get_classpath(output_dir)
+        if print_out:
+            print(cp)
         return cp
 
     def get_classpath(self, output_dir):
@@ -505,7 +509,7 @@ def main_reproduce(args):
                 continue
 
             logging.debug("Running tests...")
-            test_results_str = vul4j.test(WORK_DIR)
+            test_results_str = vul4j.test(WORK_DIR, print_out=False)
             write_test_results_to_file(vul, test_results_str, 'vulnerable')
             test_results = json.loads(test_results_str)
 
@@ -532,7 +536,7 @@ def main_reproduce(args):
                 continue
 
             logging.debug("Running tests...")
-            test_results_str = vul4j.test(WORK_DIR)
+            test_results_str = vul4j.test(WORK_DIR, print_out=False)
             write_test_results_to_file(vul, test_results_str, 'patched')
             test_results = json.loads(test_results_str)
 
