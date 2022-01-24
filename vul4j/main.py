@@ -270,11 +270,11 @@ export MAVEN_OPTS="%s";
         print(json_str)
         with (open(os.path.join(output_dir, OUTPUT_FOLDER_NAME, "testing_results.json"), "w")) as f:
             f.write(json_str)
-        return 0
+        return json_str
 
     def classpath(self, output_dir):
-        print(self.get_classpath(output_dir))
-        return 0
+        cp = self.get_classpath(output_dir)
+        return cp
 
     def get_classpath(self, output_dir):
         vul = self.read_vulnerability_from_output_dir(output_dir)
@@ -505,7 +505,7 @@ def main_reproduce(args):
                 continue
 
             logging.debug("Running tests...")
-            test_results_str = subprocess.check_output("python3 vul4j/main.py test -d %s" % WORK_DIR, shell=True)
+            test_results_str = vul4j.test(WORK_DIR)
             write_test_results_to_file(vul, test_results_str, 'vulnerable')
             test_results = json.loads(test_results_str)
 
@@ -532,7 +532,7 @@ def main_reproduce(args):
                 continue
 
             logging.debug("Running tests...")
-            test_results_str = subprocess.check_output("python3 vul4j/main.py test -d %s" % WORK_DIR, shell=True)
+            test_results_str = vul4j.test(WORK_DIR)
             write_test_results_to_file(vul, test_results_str, 'patched')
             test_results = json.loads(test_results_str)
 
@@ -568,14 +568,12 @@ def main_compile(args):
 
 def main_test(args):
     vul4j = Vul4J()
-    ret = vul4j.test(args.outdir)
-    exit(ret)
+    vul4j.test(args.outdir)
 
 
 def main_classpath(args):
     vul4j = Vul4J()
-    ret = vul4j.classpath(args.outdir)
-    exit(ret)
+    vul4j.classpath(args.outdir)
 
 
 def main_info(args):
