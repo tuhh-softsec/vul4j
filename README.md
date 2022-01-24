@@ -4,7 +4,7 @@ Each vulnerability in the [dataset](dataset/vul4j_dataset.csv) is provided along
 
 ## Quick Install
 ### Requirements
-* Linux/MacOS Machine
+* Linux/macOS Machine
 * Java 8
 * Java 7
 * Maven 3
@@ -16,7 +16,7 @@ Each vulnerability in the [dataset](dataset/vul4j_dataset.csv) is provided along
 git clone https://github.com/bqcuong/vul4j
 ```
 
-3. Put your configuration information in the file `[vul4j/config.py](vul4j/config.py)`:
+3. Put your configuration information in the file [`vul4j/config.py`](vul4j/config.py):
 ```python
 VUL4J_ROOT = "<absolute-path-to-vul4j-directory>"
 JAVA7_HOME = os.environ.get("JAVA7_HOME", expanduser("<path-to-java-7-home-directory>"))
@@ -56,7 +56,6 @@ In the case, you use the pre-built Docker images, use the following command to s
 ```shell
 $ docker run -it \
     --name vul4j \
-    -v /root/.m2/repository:/root/.m2/repository \
     bqcuongas/vul4j
 ```
 
