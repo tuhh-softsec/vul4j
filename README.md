@@ -1,8 +1,10 @@
 ## Intro
-**Vul4J** is a dataset of real-world Java vulnerabilities. Each vulnerability in the dataset is provided along with a human patch and Proof-of-Vulnerability (PoV) test cases and other information for the reproduction. 
+**Vul4J** is a dataset of real-world Java vulnerabilities. 
+Each vulnerability in the [dataset](dataset/vul4j_dataset.csv) is provided along with a human patch, Proof-of-Vulnerability (PoV) test case(s), and other information for the reproduction of the vulnerability. 
 
 ## Quick Install
 ### Requirements
+* Linux/MacOS Machine
 * Java 8
 * Java 7
 * Maven 3
@@ -18,7 +20,7 @@ git clone https://github.com/bqcuong/vul4j
 ```python
 VUL4J_ROOT = "<absolute-path-to-vul4j-directory>"
 JAVA7_HOME = os.environ.get("JAVA7_HOME", expanduser("<path-to-java-7-home-directory>"))
-JAVA8_HOME = os.environ.get("JAVA8_HOME", expanduser("path-to-java-8-home-directory"))
+JAVA8_HOME = os.environ.get("JAVA8_HOME", expanduser("<path-to-java-8-home-directory>"))
 ```
 
 4. Install Vul4J:
@@ -28,13 +30,18 @@ python setup.py install
 ## Usage
 ```bash
 $ vul4j --help
-usage: vul4j [-h] {checkout,compile,test,classpath,info} ...
+usage: vul4j [-h] {checkout,compile,test,classpath,info,reproduce} ...
 
 A Dataset of Java vulnerabilities.
 
 positional arguments:
-  {checkout,compile,test,classpath,info}
-                        Checkout a vulnerability in the dataset.
+  {checkout,compile,test,classpath,info,reproduce}
+    checkout            Checkout a vulnerability.
+    compile             Compile the checked out vulnerability.
+    test                Run testsuite for the checked out vulnerability.
+    classpath           Print the classpath of the checked out vulnerability.
+    info                Print information about a vulnerability.
+    reproduce           Reproduce of newly added vulnerabilities.
 
 optional arguments:
   -h, --help            show this help message and exit

@@ -13,6 +13,7 @@ from unidiff import PatchSet
 
 from vul4j.config import JAVA7_HOME, MVN_OPTS, JAVA8_HOME, OUTPUT_FOLDER_NAME, ENABLE_EXECUTING_LOGS, DATASET_PATH, \
     BENCHMARK_PATH, PROJECT_REPOS_ROOT_PATH
+from vul4j.reproduce import reproduce
 
 FNULL = open(os.devnull, 'w')
 root = logging.getLogger()
@@ -489,40 +490,48 @@ def main_info(args):
     vul4j.get_info(args.id)
 
 
+def main_reproduce(args):
+    reproduce(args)
+
+
 def main(args=None):
     if args is None:
         args = sys.argv[1:]
 
-    parser = argparse.ArgumentParser(prog="vul4j", description="A Benchmark of Java vulnerabilities.")
+    parser = argparse.ArgumentParser(prog="vul4j", description="A Dataset of Java vulnerabilities.")
 
-    sub_parsers = parser.add_subparsers(help="Checkout a vulnerability in the benchmark.")
+    sub_parsers = parser.add_subparsers()
 
-    checkout_parser = sub_parsers.add_parser('checkout')
+    checkout_parser = sub_parsers.add_parser('checkout', help="Checkout a vulnerability.")
     checkout_parser.set_defaults(func=main_checkout)
     checkout_parser.add_argument("-i", "--id", help="Vulnerability Id.", required=True)
     checkout_parser.add_argument("-d", "--outdir", help="The destination directory.", required=True)
 
-    compile_parser = sub_parsers.add_parser('compile')
+    compile_parser = sub_parsers.add_parser('compile', help="Compile the checked out vulnerability.")
     compile_parser.set_defaults(func=main_compile)
     compile_parser.add_argument("-i", "--id", help="Vulnerability Id.", required=False)
     compile_parser.add_argument("-d", "--outdir", help="The directory to which the vulnerability was checked out.",
                                 required=True)
 
-    test_parser = sub_parsers.add_parser('test')
+    test_parser = sub_parsers.add_parser('test', help="Run testsuite for the checked out vulnerability.")
     test_parser.set_defaults(func=main_test)
     test_parser.add_argument("-i", "--id", help="Vulnerability Id.", required=False)
     test_parser.add_argument("-d", "--outdir", help="The directory to which the vulnerability was checked out.",
                              required=True)
 
-    cp_parser = sub_parsers.add_parser('classpath')
+    cp_parser = sub_parsers.add_parser('classpath', help="Print the classpath of the checked out vulnerability.")
     cp_parser.set_defaults(func=main_classpath)
     cp_parser.add_argument("-i", "--id", help="Vulnerability Id.", required=False)
     cp_parser.add_argument("-d", "--outdir", help="The directory to which the vulnerability was checked out.",
                            required=True)
 
-    info_parser = sub_parsers.add_parser('info')
+    info_parser = sub_parsers.add_parser('info', help="Print information about a vulnerability.")
     info_parser.set_defaults(func=main_info)
     info_parser.add_argument("-i", "--id", help="Vulnerability Id.", required=True)
+
+    reproduce_parser = sub_parsers.add_parser('reproduce', help="Reproduce of newly added vulnerabilities.")
+    reproduce_parser.set_defaults(func=main_reproduce)
+    reproduce_parser.add_argument("-i", "--id", nargs='+', help="Vulnerability Id.", required=True)
 
     options = parser.parse_args(args)
     if not hasattr(options, 'func'):

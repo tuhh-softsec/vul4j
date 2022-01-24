@@ -9,10 +9,7 @@ from config import REPRODUCTION_DIR
 
 FNULL = open(os.devnull, 'w')
 
-WORK_DIR = "eval"
-
-parser = argparse.ArgumentParser(prog="validate", description='Validate the Vulnerability.')
-parser.add_argument("-i", "--id", nargs='+', help="The vulnerability id", required=True)
+WORK_DIR = "/tmp/vul4j/reproduction"
 
 
 def extract_failed_tests_from_test_results(test_results):
@@ -31,8 +28,7 @@ def write_test_results_to_file(vul, test_results, revision):
         f.write(test_results.decode('utf-8'))
 
 
-if __name__ == "__main__":
-    args = parser.parse_args()
+def reproduce(args):
 
     vul4j = Vul4J()
 
