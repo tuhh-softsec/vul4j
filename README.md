@@ -16,7 +16,7 @@ Each vulnerability in the [dataset](dataset/vul4j_dataset.csv) is provided along
 git clone https://github.com/bqcuong/vul4j
 ```
 
-3. Put your configuration information in the file `vul4j/config.py`:
+3. Put your configuration information in the file `[vul4j/config.py](vul4j/config.py)`:
 ```python
 VUL4J_ROOT = "<absolute-path-to-vul4j-directory>"
 JAVA7_HOME = os.environ.get("JAVA7_HOME", expanduser("<path-to-java-7-home-directory>"))
