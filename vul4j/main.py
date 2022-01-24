@@ -203,10 +203,6 @@ class Vul4J:
         with open(os.path.join(output_dir, OUTPUT_FOLDER_NAME, "vulnerability_info.json"), "w", encoding='utf-8') as f:
             f.write(json.dumps(vul, indent=2))
 
-        # revert to main branch
-        cmd = "cd %s; git reset .; git checkout -- .; git clean -x -d --force; git checkout -f main" % BENCHMARK_PATH
-        subprocess.call(cmd, shell=True, stdout=FNULL, stderr=subprocess.STDOUT)
-
         return 0
 
     @staticmethod
@@ -502,6 +498,14 @@ def main_reproduce(args):
                 logging.error("Checkout failed!")
                 continue
 
+            if len(vul['revert_human_patch']) == 0:
+                logging.error("No patch changes were found!")
+                exit(1)
+
+            for change in vul['revert_human_patch']:
+                with open(os.path.join(WORK_DIR, change['file_path']), 'w', encoding='utf-8') as f:
+                    f.write(change['content'])
+
             logging.debug("Compiling...")
             ret = vul4j.compile(WORK_DIR)
             if ret != 0:
@@ -547,7 +551,8 @@ def main_reproduce(args):
                 continue
             else:
                 logging.debug("No failing tests found!")
-                logging.info("--> The vulnerability %s has been reproduced successfully ^O^!" % vul['vul_id'])
+                logging.info("--> The vulnerability %s has been reproduced successfully with PoV(s): %s!"
+                             % (vul['vul_id'], failing_tests_of_vulnerable_revision))
                 success_vulnerabilities.write(vul['vul_id'] + '\n')
                 success_vulnerabilities.flush()
         except Exception as e:
