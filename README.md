@@ -52,8 +52,8 @@ optional arguments:
 In this section, we demonstrate how to use the execution framework to check out a vulnerability, then compile and run the test suite of the vulnerability.
 We also demonstrate how to use our framework to validation the reproduction of new vulnerabilities.
 
-0. **Preparation:** You need to install our execution framework first. You could install Vul4J on your machine by following the *Quick Install* section or use our pre-built Docker images at [here](https://hub.docker.com/r/bqcuongas/vul4j).
-In the case, you use the pre-built Docker images, use the following command to start the Docker container:
+0. **Preparation:** You need to install our execution framework first. You could install Vul4J on your machine by following the *Quick Install* section or use our [pre-built Docker image](https://hub.docker.com/r/bqcuongas/vul4j).
+In the case, you want to use the pre-built Docker images, use the following command to start the Docker container:
 ```shell
 $ docker run -it --name vul4j bqcuongas/vul4j
 ```
