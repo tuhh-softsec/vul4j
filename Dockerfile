@@ -16,8 +16,7 @@ COPY ./ /vul4j/
 
 WORKDIR /vul4j
 
-RUN pip3 install -r requirements.txt
-RUN pip3 install .
+RUN python3 setup.py install
 
 # jdk7 downloaded from https://www.oracle.com/java/technologies/javase/javase7-archive-downloads.html
 COPY jdk-7u80-linux-x64.tar.gz /tmp/jdk-7u80-linux-x64.tar.gz
