@@ -55,9 +55,7 @@ We also demonstrate how to use our framework to validation the reproduction of n
 0. **Preparation:** You need to install our execution framework first. You could install Vul4J on your machine by following the *Quick Install* section or use our pre-built Docker images at [here](https://hub.docker.com/r/bqcuongas/vul4j).
 In the case, you use the pre-built Docker images, use the following command to start the Docker container:
 ```shell
-$ docker run -it \
-    --name vul4j \
-    bqcuongas/vul4j
+$ docker run -it --name vul4j bqcuongas/vul4j
 ```
 
 1. **Checkout a vulnerability:** We will check out the vulnerability with ID *VUL4J-10*, 
