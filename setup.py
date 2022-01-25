@@ -9,6 +9,7 @@ setup(
     url='https://github.com/bqcuong/vul4j',
     license='MIT',
     packages=['vul4j'],
+    install_requires=['unidiff']
     entry_points="""
             [console_scripts]
             vul4j = vul4j.main:main
