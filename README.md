@@ -2,6 +2,8 @@
 **Vul4J** is a dataset of real-world Java vulnerabilities. 
 Each vulnerability in the [dataset](dataset/vul4j_dataset.csv) is provided along with a human patch, Proof-of-Vulnerability (PoV) test case(s), and other information for the reproduction of the vulnerability. 
 
+In this repository, we host the Vul4J dataset, the support framework that allows performing several common tasks required by APR tools on the dataset, and the scripts for Patch Filtering.
+
 ## Quick Install
 ### Requirements
 * Linux/macOS Machine
