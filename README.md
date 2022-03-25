@@ -4,6 +4,8 @@ Each vulnerability in the [dataset](dataset/vul4j_dataset.csv) is provided along
 
 In this repository, we host the Vul4J dataset, the support framework that allows performing several common tasks required by APR tools on the dataset, and the scripts for Patch Filtering.
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6383527.svg)](https://doi.org/10.5281/zenodo.6383527)
+
 ## Quick Install
 ### Requirements
 * Linux/macOS Machine
