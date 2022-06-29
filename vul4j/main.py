@@ -60,6 +60,7 @@ class Vul4J:
                 compliance_level = int(row['compliance_level'].strip())
                 compile_cmd = row['compile_cmd'].strip()
                 test_all_cmd = row['test_all_cmd'].strip()
+                test_cmd = row['test_cmd'].strip()
                 cmd_options = row['cmd_options'].strip()
                 failing_module = row['failing_module'].strip()
                 src_classes_dir = row['src_classes'].strip()
@@ -80,6 +81,7 @@ class Vul4J:
                     "compliance_level": compliance_level,
                     "compile_cmd": compile_cmd,
                     "test_all_cmd": test_all_cmd,
+                    "test_cmd": test_cmd,
                     "cmd_options": cmd_options,
                     "failing_module": failing_module,
                     "src_classes_dir": src_classes_dir,
@@ -154,6 +156,7 @@ class Vul4J:
 
         # copy to working directory
         copytree(BENCHMARK_PATH, output_dir, ignore=ignore_patterns('.git'))
+
         os.makedirs(os.path.join(output_dir, OUTPUT_FOLDER_NAME))
         with open(os.path.join(output_dir, OUTPUT_FOLDER_NAME, "vulnerability_info.json"), "w", encoding='utf-8') as f:
             f.write(json.dumps(vul, indent=2))
@@ -238,16 +241,21 @@ export MAVEN_OPTS="%s";
             f.write("1" if ret == 0 else "0")
         return ret
 
-    def test(self, output_dir, print_out=True):
+    def test(self, output_dir, batch_type, print_out=True):
         vul = self.read_vulnerability_from_output_dir(output_dir)
+        self._remove_test_results(output_dir)
 
         java_home = JAVA7_HOME if vul['compliance_level'] <= 7 else JAVA8_HOME
+        if batch_type == "all":
+            cmd_type = 'test_all_cmd'
+        else:
+            cmd_type = 'test_cmd'
 
         cmd = """cd %s;
 export JAVA_HOME="%s";
 export _JAVA_OPTIONS=-Djdk.net.URLClassPath.disableClassPathURLCheck=true;
 export MAVEN_OPTS="%s";
-%s;""" % (output_dir, java_home, MVN_OPTS, vul['test_all_cmd'])
+%s;""" % (output_dir, java_home, MVN_OPTS, vul[cmd_type])
 
         cmd_options = vul['cmd_options']
         if cmd_options:
@@ -274,7 +282,7 @@ export MAVEN_OPTS="%s";
         cp = self.get_classpath(output_dir)
         if print_out:
             print(cp)
-        return cp
+        exit(0)
 
     def get_classpath(self, output_dir):
         vul = self.read_vulnerability_from_output_dir(output_dir)
@@ -308,12 +316,14 @@ export MAVEN_OPTS="%s";
             cp_cmd = "%s;%s" % (gradle_classpath_cmd, cat_classpath_info_cmd)
 
         elif vul['build_system'] == "Maven":
+            cmd_options = vul['cmd_options']
             failing_module = vul['failing_module']
             if failing_module != "root" and failing_module != "":
-                cp_cmd = "mvn dependency:build-classpath -Dmdep.outputFile='classpath.info' -pl %s; cat %s/classpath.info" \
-                         % (failing_module, failing_module)
+                cp_cmd = "mvn dependency:build-classpath -Dmdep.outputFile='classpath.info' -pl %s %s; cat %s/classpath.info" \
+                         % (failing_module, cmd_options, failing_module)
             else:
-                cp_cmd = "mvn dependency:build-classpath -Dmdep.outputFile='classpath.info'; cat classpath.info"
+                cp_cmd = "mvn dependency:build-classpath -Dmdep.outputFile='classpath.info' %s; cat classpath.info" \
+                         % (cmd_options)
 
         else:
             print("Not support for %s" % vul['vul_id'])
@@ -336,6 +346,15 @@ export MAVEN_OPTS="%s";
     '''
     modify from https://github.com/program-repair/RepairThemAll/blob/master/script/info_json_file.py
     '''
+
+    @staticmethod
+    def _remove_test_results(project_dir):
+        for r, dirs, files in os.walk(project_dir):
+            for file in files:
+                filePath = os.path.join(r, file)
+                if ("target/surefire-reports" in filePath or "target/failsafe-reports" in filePath
+                    or "build/test-results" in filePath) and file.endswith('.xml') and file.startswith('TEST-'):
+                    os.remove(filePath)
 
     @staticmethod
     def read_test_results_maven(vul, project_dir):
@@ -513,7 +532,7 @@ def main_reproduce(args):
                 continue
 
             logging.debug("Running tests...")
-            test_results_str = vul4j.test(WORK_DIR, print_out=False)
+            test_results_str = vul4j.test(WORK_DIR, "all", print_out=False)
             write_test_results_to_file(vul, test_results_str, 'vulnerable')
             test_results = json.loads(test_results_str)
 
@@ -540,7 +559,7 @@ def main_reproduce(args):
                 continue
 
             logging.debug("Running tests...")
-            test_results_str = vul4j.test(WORK_DIR, print_out=False)
+            test_results_str = vul4j.test(WORK_DIR, "all", print_out=False)
             write_test_results_to_file(vul, test_results_str, 'patched')
             test_results = json.loads(test_results_str)
 
@@ -577,7 +596,8 @@ def main_compile(args):
 
 def main_test(args):
     vul4j = Vul4J()
-    vul4j.test(args.outdir)
+    vul4j.test(args.outdir, args.batchtype)
+    exit(0)
 
 
 def main_classpath(args):
@@ -614,6 +634,8 @@ def main(args=None):
     test_parser.add_argument("-i", "--id", help="Vulnerability Id.", required=False)
     test_parser.add_argument("-d", "--outdir", help="The directory to which the vulnerability was checked out.",
                              required=True)
+    test_parser.add_argument("-b", "--batchtype", help="Two modes: all tests (all) by default, and only povs (povs).",
+                             default="all", required=False)
 
     cp_parser = sub_parsers.add_parser('classpath', help="Print the classpath of the checked out vulnerability.")
     cp_parser.set_defaults(func=main_classpath)
