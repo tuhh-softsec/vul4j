@@ -2,7 +2,7 @@ import os
 from os.path import expanduser
 
 # Configure the absolute path to directory of vul4j on your local machine
-VUL4J_ROOT = "/Users/cuong/PycharmProjects/vul4j"
+VUL4J_ROOT = "/Users/cuong/Research/Vul4J/vul4j"
 
 # Configure the paths to Java homes for your local machine
 JAVA7_HOME = os.environ.get("JAVA7_HOME",
