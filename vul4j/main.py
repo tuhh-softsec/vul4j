@@ -304,16 +304,19 @@ export MAVEN_OPTS="%s";
         if vul['build_system'] == "Gradle":
             test_all_cmd = vul['test_all_cmd']
 
-            matched = re.search("(./gradlew :.*:)test$", test_all_cmd)
-            if matched is None:
-                print("The test all command should follow the regex \"(./gradlew :.*:)test$\"!"
-                      " It is now %s." % test_all_cmd)
-                exit(1)
+            if vul['failing_module'] is None or vul['failing_module'] == 'root':
+                cp_cmd = './gradlew copyClasspath; cat classpath.info'
+            else:
+                matched = re.search("(./gradlew :.*:)test$", test_all_cmd)
+                if matched is None:
+                    print("The test all command should follow the regex \"(./gradlew :.*:)test$\"!"
+                          " It is now %s." % test_all_cmd)
+                    exit(1)
 
-            gradle_classpath_cmd = matched.group(1) + "copyClasspath"
-            classpath_info_file = os.path.join(vul['failing_module'], 'classpath.info')
-            cat_classpath_info_cmd = "cat " + classpath_info_file
-            cp_cmd = "%s;%s" % (gradle_classpath_cmd, cat_classpath_info_cmd)
+                gradle_classpath_cmd = matched.group(1) + "copyClasspath"
+                classpath_info_file = os.path.join(vul['failing_module'], 'classpath.info')
+                cat_classpath_info_cmd = "cat " + classpath_info_file
+                cp_cmd = "%s;%s" % (gradle_classpath_cmd, cat_classpath_info_cmd)
 
         elif vul['build_system'] == "Maven":
             cmd_options = vul['cmd_options']
