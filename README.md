@@ -6,6 +6,18 @@ In this repository, we host the Vul4J dataset, the support framework that allows
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6383527.svg)](https://doi.org/10.5281/zenodo.6383527)
 
+If you use Vul4J in academic context, please cite:
+```bibtex
+@inproceedings{vul4j2022,
+  title={Vul4J: A Dataset of Reproducible Java Vulnerabilities Geared Towards the Study of Program Repair Techniques},  
+  author={Bui, Quang-Cuong and Scandariato, Riccardo and Ferreyra, Nicol{\'a}s E. D{\'\i}az},  
+  booktitle={2022 IEEE/ACM 19th International Conference on Mining Software Repositories (MSR)},   
+  year={2022},
+  pages={464-468},
+  doi={10.1145/3524842.3528482}
+}
+```
+
 ## Quick Install
 ### Requirements
 * Linux/macOS Machine
