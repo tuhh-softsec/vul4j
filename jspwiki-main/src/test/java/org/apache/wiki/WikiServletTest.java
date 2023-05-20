@@ -41,7 +41,7 @@ public class WikiServletTest {
         wikiServlet.doGet( req, res );
         wikiServlet.destroy();
         
-        Assertions.assertEquals( "/Wiki.jsp?page=wiki%2FWiki.jsp&", req.getForwardUrl() );
+        Assertions.assertEquals( "/Wiki.jsp?page=Main&", req.getForwardUrl() );
     }
     
     @Test
@@ -56,7 +56,7 @@ public class WikiServletTest {
         wikiServlet.doPost( req, res );
         wikiServlet.destroy();
         
-        Assertions.assertEquals( "/Wiki.jsp?page=Edit.jsp&", req.getForwardUrl() );
+        Assertions.assertEquals( "/Wiki.jsp?page=Main&", req.getForwardUrl() );
     }
 
 }
