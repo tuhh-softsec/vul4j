@@ -178,7 +178,7 @@ class Vul4J:
         if ret != 0:
             exit(1)
 
-        vul['project_repo_folder'] = os.path.abspath(project_repo)
+        vul['project_repo_folder'] = os.path.abspath(BENCHMARK_PATH)
         vul['human_patch'] = self.get_patch2(vul)
 
         # copy to working directory
