@@ -108,6 +108,30 @@ class Vul4J:
         exit(0)
 
     @staticmethod
+    def get_patch2(vul):
+        cmd = "cd " + vul['project_repo_folder'] + "; git diff %s HEAD" % (vul['fixing_commit_hash'])
+        diff = subprocess.check_output(cmd, shell=True)
+        patch = PatchSet(diff.decode('utf-8'))
+
+        changed_java_source_files = []
+        for a_file in patch.added_files:
+            file_path = a_file.path
+            if file_path.endswith('.java') and ('test/' not in file_path and 'tests/' not in file_path):
+                changed_java_source_files.append(file_path)
+
+        for m_file in patch.modified_files:
+            file_path = m_file.path
+            if file_path.endswith('.java') and ('test/' not in file_path and 'tests/' not in file_path):
+                changed_java_source_files.append(file_path)
+
+        patch_data = []
+        for file in changed_java_source_files:
+            cmd = "cd " + vul['project_repo_folder'] + "; git show %s:%s" % (vul['fixing_commit_hash'], file)
+            content = subprocess.check_output(cmd, shell=True).decode('utf-8')
+            patch_data.append({'file_path': file, 'content': content})
+        return patch_data
+
+    @staticmethod
     def get_patch(vul):
         cmd = "cd " + vul['project_repo_folder'] + "; git diff %s %s~1" % (
             vul['fixing_commit_hash'], vul['fixing_commit_hash'])
@@ -153,6 +177,9 @@ class Vul4J:
         ret = subprocess.call(cmd, shell=True, stdout=FNULL, stderr=subprocess.STDOUT)
         if ret != 0:
             exit(1)
+
+        vul['project_repo_folder'] = os.path.abspath(project_repo)
+        vul['human_patch'] = self.get_patch2(vul)
 
         # copy to working directory
         copytree(BENCHMARK_PATH, output_dir, ignore=ignore_patterns('.git'))
@@ -496,6 +523,83 @@ export MAVEN_OPTS="%s";
         return json_data
 
 
+def main_verify(args):
+
+    vul4j = Vul4J()
+
+    vulnerabilities = []
+    if args.id is not None:
+        for vul_id in args.id:
+            vulnerabilities.append(vul4j.get_vulnerability(vul_id))
+
+    success_vulnerabilities = open(os.path.join(REPRODUCTION_DIR, 'successful_vulns.txt'), 'a+')
+    for vul in vulnerabilities:
+        try:
+            if os.path.exists(WORK_DIR):
+                subprocess.call("rm -rf " + WORK_DIR, shell=True, stdout=FNULL, stderr=subprocess.STDOUT)
+
+            logging.info("---------------------------------------------------------")
+            logging.info("Verifying vulnerability: %s..." % vul['vul_id'])
+
+            logging.debug("--> Checking out the vulnerable revision...")
+            ret = vul4j.checkout(vul['vul_id'], WORK_DIR)
+            if ret != 0:
+                logging.error("Checkout failed!")
+                continue
+
+            logging.debug("Compiling...")
+            ret = vul4j.compile(WORK_DIR)
+            if ret != 0:
+                logging.error("Compile failed! Keep going...")
+                #continue
+
+            logging.debug("Running PoV tests...")
+            test_results_str = vul4j.test(WORK_DIR, "povs", print_out=False)
+            write_test_results_to_file(vul, test_results_str, 'vulnerable')
+            test_results = json.loads(test_results_str)
+
+            failing_tests_of_vulnerable_revision = extract_failed_tests_from_test_results(test_results)
+            logging.debug("Failing tests: %s" % failing_tests_of_vulnerable_revision)
+            if len(failing_tests_of_vulnerable_revision) == 0:
+                logging.error("Vulnerable revision must contain at least 1 failing test!!!")
+                continue
+
+            logging.debug("--> Applying human patch to the source code...")
+            if len(vul['human_patch']) == 0:
+                logging.error("No patch changes were found!")
+                exit(1)
+
+            for change in vul['human_patch']:
+                logging.debug("Applied " + change['file_path'])
+                with open(os.path.join(WORK_DIR, change['file_path']), 'w', encoding='utf-8') as f:
+                    f.write(change['content'])
+
+            logging.debug("Compiling...")
+            ret = vul4j.compile(WORK_DIR)
+            if ret != 0:
+                logging.error("Compile failed! Keep going...")
+                #continue
+
+            logging.debug("Running PoV tests...")
+            test_results_str = vul4j.test(WORK_DIR, "povs", print_out=False)
+            write_test_results_to_file(vul, test_results_str, 'patched')
+            test_results = json.loads(test_results_str)
+
+            failing_tests_of_patched_revision = extract_failed_tests_from_test_results(test_results)
+            if len(failing_tests_of_patched_revision) != 0:
+                logging.debug("Failing tests: %s" % failing_tests_of_patched_revision)
+                logging.error("Patched version must contain no failing test!!!")
+                continue
+            else:
+                logging.debug("No failing tests found!")
+                logging.info("--> The vulnerability %s has been verified successfully with PoV(s): %s!"
+                             % (vul['vul_id'], failing_tests_of_vulnerable_revision))
+                success_vulnerabilities.write(vul['vul_id'] + '\n')
+                success_vulnerabilities.flush()
+        except Exception as e:
+            logging.error("Error encountered: ", exc_info=e)
+
+
 def main_reproduce(args):
 
     vul4j = Vul4J()
@@ -653,6 +757,10 @@ def main(args=None):
     reproduce_parser = sub_parsers.add_parser('reproduce', help="Reproduce of newly added vulnerabilities.")
     reproduce_parser.set_defaults(func=main_reproduce)
     reproduce_parser.add_argument("-i", "--id", nargs='+', help="Vulnerability Id.", required=True)
+
+    verify_parser = sub_parsers.add_parser('verify', help="Verify the reproducibility of existing vulnerabilities.")
+    verify_parser.set_defaults(func=main_verify)
+    verify_parser.add_argument("-i", "--id", nargs='+', help="Vulnerability Id.", required=True)
 
     options = parser.parse_args(args)
     if not hasattr(options, 'func'):
