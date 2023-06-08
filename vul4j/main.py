@@ -185,7 +185,7 @@ class Vul4J:
         copytree(BENCHMARK_PATH, output_dir, ignore=ignore_patterns('.git'))
 
         cmd = "cd %s; git init; git add .; git commit -m \"init\"" % (
-            BENCHMARK_PATH)
+            output_dir)
         subprocess.call(cmd, shell=True, stdout=FNULL, stderr=subprocess.STDOUT)
 
         os.makedirs(os.path.join(output_dir, OUTPUT_FOLDER_NAME))
