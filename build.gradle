@@ -10,7 +10,7 @@ buildscript {
     mavenCentral()
     jcenter()
     maven {
-      url 'https://repo.spring.io/plugins-release'
+      url 'https://repo.spring.io/plugins-snapshot'
     }
     maven {
       url 'https://plugins.gradle.org/m2/'
@@ -25,7 +25,7 @@ buildscript {
     classpath group: 'postgresql', name: 'postgresql', version:'9.1-901.jdbc3'
     classpath group: 'com.microsoft.sqlserver', name: 'mssql-jdbc', version: '6.1.0.jre8'
     classpath group: 'org.flywaydb', name: 'flyway-gradle-plugin', version: flywayVersion
-    classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
+    classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7-20140609.172222-26'
     classpath "gradle.plugin.com.dorongold.plugins:task-tree:1.2.2"
     classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3'
   }
