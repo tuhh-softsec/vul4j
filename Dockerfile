@@ -29,6 +29,6 @@ ENV JAVA7_HOME /usr/lib/jvm/jdk1.7.0_80
 ENV JAVA8_HOME /usr/lib/jvm/java-8-openjdk-amd64
 ENV BENCHMARK_PATH /vul4j
 ENV DATASET_PATH /vul4j/dataset/vul4j_dataset.csv
-ENV REPRODUCTION_DIR /vul4j/reproduction
+ENV REPRODUCTION_DIR /reproduction
 ENV PROJECT_REPOS_ROOT_PATH /vul4j/project_repos
 
