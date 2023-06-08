@@ -184,6 +184,10 @@ class Vul4J:
         # copy to working directory
         copytree(BENCHMARK_PATH, output_dir, ignore=ignore_patterns('.git'))
 
+        cmd = "cd %s; git init; git add .; git commit -m \"init\"" % (
+            BENCHMARK_PATH)
+        subprocess.call(cmd, shell=True, stdout=FNULL, stderr=subprocess.STDOUT)
+
         os.makedirs(os.path.join(output_dir, OUTPUT_FOLDER_NAME))
         with open(os.path.join(output_dir, OUTPUT_FOLDER_NAME, "vulnerability_info.json"), "w", encoding='utf-8') as f:
             f.write(json.dumps(vul, indent=2))
