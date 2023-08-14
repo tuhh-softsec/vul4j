@@ -6,6 +6,9 @@ In this repository, we host the Vul4J dataset, the support framework that allows
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6383527.svg)](https://doi.org/10.5281/zenodo.6383527)
 
+- License for the dataset: CC-BY-4.0
+- License for code: GPL-3.0
+
 If you use Vul4J in academic context, please cite:
 ```bibtex
 @inproceedings{vul4j2022,
