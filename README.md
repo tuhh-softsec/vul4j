@@ -1,4 +1,4 @@
-## Intro
+## Introduction
 **Vul4J** is a dataset of real-world Java vulnerabilities. 
 Each vulnerability in the [dataset](dataset/vul4j_dataset.csv) is provided along with a human patch, Proof-of-Vulnerability (PoV) test case(s), and other information for the reproduction of the vulnerability. 
 
@@ -20,6 +20,8 @@ If you use Vul4J in academic context, please cite:
   doi={10.1145/3524842.3528482}
 }
 ```
+
+* **Reproduction status**: Due to the deprecated library dependencies, a number of vulnerabilities in Vul4J are no longer reproducible, especially [those belonging to Spring projects](https://spring.io/blog/2022/12/14/notice-of-permissions-changes-to-repo-spring-io-january-2023#upcoming-changes). Please see the detailed information in [STATUS.md](STATUS.md). A temporary workaround was implemented to address this issue. For the remaining vulnerabilities, all their dependencies are being collected and packed into this [pre-built Docker image](https://hub.docker.com/r/bqcuongas/vul4j), so that they are reproducible.
 
 ## Quick Install
 ### Requirements
