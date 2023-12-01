@@ -7,7 +7,7 @@ vul4j verify --id VUL4J-1 VUL4J-2 VUL4J-3 VUL4J-4 VUL4J-5 VUL4J-6 VUL4J-7 VUL4J-
 ```
 
 ### Reproduction results
-* Reproduction logs by 28.11.2023: [reproduction.log](reproduction/reproduction.log), reproducible vulnerabilities: [successful_vulns.txt](reproduction/successful_vulns.txt).
+* Reproduction logs by 28.11.2023: [reproduction.txt](reproduction/reproduction.txt), reproducible vulnerabilities: [successful_vulns.txt](reproduction/successful_vulns.txt).
 
 * (\*) Some project versions are not *fully compilable*, however, the modules that contain the target vulnerabilities and their PoVs are compilable. Therefore, the vulnerabilities are *reproducible*. These cases are indicated with a yellow circle (🟡).
 
