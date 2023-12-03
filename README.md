@@ -21,7 +21,7 @@ If you use Vul4J in academic context, please cite:
 }
 ```
 
-* **Reproduction status**: Due to the deprecated library dependencies, a number of vulnerabilities in Vul4J are no longer reproducible, especially [those belonging to Spring projects](https://spring.io/blog/2022/12/14/notice-of-permissions-changes-to-repo-spring-io-january-2023#upcoming-changes). Please see the detailed information in [STATUS.md](STATUS.md). A temporary workaround was implemented to address this issue. For the remaining vulnerabilities, all their dependencies are being collected and packed into this [pre-built Docker image](https://hub.docker.com/r/bqcuongas/vul4j), so that they are reproducible.
+* **Reproduction status**: Due to the deprecated library dependencies, a number of vulnerabilities in Vul4J are no longer reproducible, especially [those belonging to Spring projects](https://spring.io/blog/2022/12/14/notice-of-permissions-changes-to-repo-spring-io-january-2023#upcoming-changes). Please see the detailed information in [STATUS.md](STATUS.md). A temporary workaround was implemented to address this issue. For the remaining vulnerabilities, all their dependencies are being collected and packed into this [pre-built Docker image (`alldeps`)](https://hub.docker.com/layers/bqcuongas/vul4j/alldeps/images/sha256-04ad7977adb1031ef3841537f82860f2f05c611bc2faf63d6c2fc7cb53a01423), so that they are reproducible.
 
 ## Quick Install
 ### Requirements
