@@ -104,6 +104,14 @@
         <enabled>false</enabled>
       </releases>
     </repository>
+    <repository>
+      <id>maven-central</id>
+      <url>https://repo1.maven.org/maven2/</url>
+    </repository>
+      <repository>
+      <id>maven-redhat</id>
+      <url>https://maven.repository.redhat.com/ga/</url>
+    </repository>
   </repositories>
 
   <pluginRepositories>
