@@ -6,13 +6,14 @@ import os
 import re
 import subprocess
 import sys
+import shutil
 from shutil import copytree, ignore_patterns
 from xml.etree.ElementTree import parse
 
 from unidiff import PatchSet
 
 from vul4j.config import JAVA7_HOME, MVN_OPTS, JAVA8_HOME, OUTPUT_FOLDER_NAME, ENABLE_EXECUTING_LOGS, DATASET_PATH, \
-    BENCHMARK_PATH, PROJECT_REPOS_ROOT_PATH, REPRODUCTION_DIR
+    BENCHMARK_PATH, PROJECT_REPOS_ROOT_PATH, REPRODUCTION_DIR, VUL4J_COMMITS_URL
 
 FNULL = open(os.devnull, 'w')
 root = logging.getLogger()
@@ -191,6 +192,22 @@ class Vul4J:
         os.makedirs(os.path.join(output_dir, OUTPUT_FOLDER_NAME))
         with open(os.path.join(output_dir, OUTPUT_FOLDER_NAME, "vulnerability_info.json"), "w", encoding='utf-8') as f:
             f.write(json.dumps(vul, indent=2))
+        
+        # Extract vulnerable and patched code into separate folders
+        os.makedirs(os.path.join(output_dir, OUTPUT_FOLDER_NAME, "vulnerable"))
+        os.makedirs(os.path.join(output_dir, OUTPUT_FOLDER_NAME, "human_patch"))
+        for file in vul['human_patch']:
+            filename = file['file_path'].split("/")[-1]
+            shutil.copy(file['file_path'], os.path.join(output_dir, OUTPUT_FOLDER_NAME, "vulnerable", filename))
+            with open(os.path.join(output_dir, OUTPUT_FOLDER_NAME, "human_patch", filename), "w",
+                      encoding='utf-8') as f:
+                f.write(file['content'])
+
+        with open(os.path.join(output_dir, OUTPUT_FOLDER_NAME, "vulnerable", "paths.json"), "w", encoding='utf-8') as f:
+            f.write(json.dumps({entry['file_path'].split("/")[-1]: entry['file_path'] for entry in vul['human_patch']}, indent=2))
+
+        with open(os.path.join(output_dir, OUTPUT_FOLDER_NAME, "human_patch", "paths.json"), "w", encoding='utf-8') as f:
+            f.write(json.dumps({entry['file_path'].split("/")[-1]: entry['file_path'] for entry in vul['human_patch']}, indent=2))
 
         # revert to main branch
         cmd = "cd %s; git reset .; git checkout -- .; git clean -x -d --force; git checkout -f main" % BENCHMARK_PATH
@@ -248,6 +265,30 @@ class Vul4J:
         except IOError:
             logging.error("Not found the info file of vulnerability: '%s'" % info_file)
             exit(1)
+            
+    def apply(self, output_dir, version):
+        vul = self.read_vulnerability_from_output_dir(output_dir)
+        
+        if version == "human_patch":
+            print("---------------------------------------------------------")
+            print("You are applying the official patch to the project. These files might not contain some additional fixes.")
+            print("If the build or the tests fail, please check the latest commits to get the missing code.")
+            print(VUL4J_COMMITS_URL + vul["vul_id"])
+            print("---------------------------------------------------------")
+        
+        try:
+            with open(os.path.join(output_dir, OUTPUT_FOLDER_NAME, version, "paths.json"), "r") as file:
+                paths = json.load(file)
+        except FileNotFoundError:
+            print("No such version: %s" % version)
+            exit(1)
+
+        for file, path in paths.items():
+            shutil.copy(str(os.path.join(output_dir, OUTPUT_FOLDER_NAME, version, file)),
+                        str(os.path.join(output_dir, "/".join(path.split("/")[:-1]))))
+            
+        return 0
+
 
     def compile(self, output_dir):
         vul = self.read_vulnerability_from_output_dir(output_dir)
@@ -696,6 +737,14 @@ def main_checkout(args):
         print("Checkout failed!")
     exit(ret)
 
+def main_apply(args):
+    vul4j = Vul4J()
+    ret = vul4j.apply(args.outdir, args.version)
+    if ret == 0:
+        print("Verison applied: %s" % args.version)
+    else:
+        print("Something went wrong when applying version: %s" % args.version)
+    exit(0)
 
 def main_compile(args):
     vul4j = Vul4J()
@@ -738,6 +787,13 @@ def main(args=None):
     compile_parser.set_defaults(func=main_compile)
     compile_parser.add_argument("-i", "--id", help="Vulnerability Id.", required=False)
     compile_parser.add_argument("-d", "--outdir", help="The directory to which the vulnerability was checked out.",
+                                required=True)
+    
+    compile_parser = sub_parsers.add_parser('apply', help="Apply the file versions.")
+    compile_parser.set_defaults(func=main_apply)
+    compile_parser.add_argument("-d", "--outdir", help="The directory to which the vulnerability was checked out.",
+                                required=True)
+    compile_parser.add_argument("-v", "--version", help="Version to apply",
                                 required=True)
 
     test_parser = sub_parsers.add_parser('test', help="Run testsuite for the checked out vulnerability.")

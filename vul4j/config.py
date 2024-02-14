@@ -20,3 +20,5 @@ MVN_OPTS = os.environ.get("MVN_OPTS", "-Xmx4g -Xms1g -XX:MaxPermSize=512m")
 
 OUTPUT_FOLDER_NAME = "VUL4J"
 ENABLE_EXECUTING_LOGS = os.environ.get("ENABLE_EXECUTING_LOGS", "1")
+
+VUL4J_COMMITS_URL = "https://github.com/tuhh-softsec/vul4j/commits/"
