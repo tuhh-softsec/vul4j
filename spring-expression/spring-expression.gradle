@@ -2,4 +2,6 @@ description = "Spring Expression Language (SpEL)"
 
 dependencies {
 	compile(project(":spring-core"))
+	compile('io.projectreactor:reactor-core:3.1.0.RELEASE')
+	compile('io.netty:netty-buffer:4.1.0.Final')
 }
