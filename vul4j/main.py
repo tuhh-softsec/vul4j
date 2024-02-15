@@ -31,6 +31,10 @@ WORK_DIR = "/tmp/vul4j/reproduction"
 def extract_failed_tests_from_test_results(test_results):
     failing_tests = set()
     failures = test_results['tests']['failures']
+    passing_tests = test_results['tests']['passing_tests']
+    skipping_tests = test_results['tests']['skipping_tests']
+    if len(failures) == len(passing_tests) == len(skipping_tests) == 0:
+        return None # if all metrics are 0, then the build failed and no tests were run
     for failure in failures:
         failing_tests.add(failure['test_class'] + '#' + failure['test_method'])
     return failing_tests
@@ -612,7 +616,9 @@ def main_verify(args):
 
             failing_tests_of_vulnerable_revision = extract_failed_tests_from_test_results(test_results)
             logging.debug("Failing tests: %s" % failing_tests_of_vulnerable_revision)
-            if len(failing_tests_of_vulnerable_revision) == 0:
+            if failing_tests_of_vulnerable_revision is None:
+                logging.error("Build failed, no tests were run! This is acceptable here.")
+            elif len(failing_tests_of_vulnerable_revision) == 0:
                 logging.error("Vulnerable revision must contain at least 1 failing test!!!")
                 continue
 
@@ -638,7 +644,9 @@ def main_verify(args):
             test_results = json.loads(test_results_str)
 
             failing_tests_of_patched_revision = extract_failed_tests_from_test_results(test_results)
-            if len(failing_tests_of_patched_revision) != 0:
+            if failing_tests_of_patched_revision is None:
+                logging.error("Build failed, no tests were run! Human patch must compile and pass the tests!")
+            elif len(failing_tests_of_patched_revision) != 0:
                 logging.debug("Failing tests: %s" % failing_tests_of_patched_revision)
                 logging.error("Patched version must contain no failing test!!!")
                 continue
@@ -697,7 +705,9 @@ def main_reproduce(args):
 
             failing_tests_of_vulnerable_revision = extract_failed_tests_from_test_results(test_results)
             logging.debug("Failing tests: %s" % failing_tests_of_vulnerable_revision)
-            if len(failing_tests_of_vulnerable_revision) == 0:
+            if failing_tests_of_vulnerable_revision is None:
+                logging.error("Build failed, no tests were run! This is acceptable here.")
+            elif len(failing_tests_of_vulnerable_revision) == 0:
                 logging.error("Vulnerable revision must contain at least 1 failing test!!!")
                 continue
 
@@ -723,7 +733,9 @@ def main_reproduce(args):
             test_results = json.loads(test_results_str)
 
             failing_tests_of_patched_revision = extract_failed_tests_from_test_results(test_results)
-            if len(failing_tests_of_patched_revision) != 0:
+            if failing_tests_of_patched_revision is None:
+                logging.error("Build failed, no tests were run! Human patch must compile and pass the tests!")
+            elif len(failing_tests_of_patched_revision) != 0:
                 logging.debug("Failing tests: %s" % failing_tests_of_patched_revision)
                 logging.error("Patched version must contain no failing test!!!")
                 continue
