@@ -42,6 +42,13 @@ def write_test_results_to_file(vul, test_results, revision):
                                         vul['project'].replace('-', '_'), vul['vul_id'].replace('-', '_'), revision))
     with (open(test_output_file, 'w', encoding='utf-8')) as f:
         f.write(test_results)
+        
+def get_commit_hash(commit_url: str):
+    commit_hash = commit_url.split("/")[-1]
+    if ".." in commit_hash:
+        return commit_hash.split("..")[-1].strip()
+    else:
+        return commit_hash.strip()
 
 
 class Vul4J:
@@ -67,7 +74,7 @@ class Vul4J:
                 src_classes_dir = row['src_classes'].strip()
                 test_classes_dir = row['test_classes'].strip()
                 human_patch_url = row['human_patch'].strip()
-                fixing_commit = human_patch_url[human_patch_url.rfind('/') + 1:]
+                fixing_commit = get_commit_hash(human_patch_url)
 
                 if failing_module != "root" and failing_module != "":
                     src_classes_dir = failing_module + '/' + src_classes_dir
