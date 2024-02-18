@@ -196,7 +196,7 @@ class Vul4J:
         # copy to working directory
         copytree(BENCHMARK_PATH, output_dir, ignore=ignore_patterns('.git'))
 
-        cmd = "cd %s; git init; git add .; git commit -m \"init\"" % (
+        cmd = "cd %s; git init; git config user.name \"vul4j\"; git config user.email \"vul4j@vul4j.org\"; git add .; git commit -m \"init\"" % (
             output_dir)
         subprocess.call(cmd, shell=True, stdout=FNULL, stderr=subprocess.STDOUT)
 
@@ -209,7 +209,7 @@ class Vul4J:
         os.makedirs(os.path.join(output_dir, OUTPUT_FOLDER_NAME, "human_patch"))
         for file in vul['human_patch']:
             filename = file['file_path'].split("/")[-1]
-            shutil.copy(file['file_path'], os.path.join(output_dir, OUTPUT_FOLDER_NAME, "vulnerable", filename))
+            shutil.copy(os.path.join(output_dir, file['file_path']), os.path.join(output_dir, OUTPUT_FOLDER_NAME, "vulnerable", filename))
             with open(os.path.join(output_dir, OUTPUT_FOLDER_NAME, "human_patch", filename), "w",
                       encoding='utf-8') as f:
                 f.write(file['content'])
