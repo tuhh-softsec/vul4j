@@ -15,7 +15,7 @@
  */
 package org.springframework.data.repository.support;
 
-import static org.mockito.Matchers.*;
+
 import static org.mockito.Mockito.*;
 
 import java.io.Serializable;
