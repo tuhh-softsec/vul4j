@@ -116,6 +116,18 @@
 			<id>spring-libs-snapshot</id>
 			<url>https://repo.spring.io/libs-snapshot</url>
 		</repository>
+		<repository>
+			<id>central</id>
+			<url>https://repo1.maven.org/maven2/</url>
+		</repository>
+		<repository>
+			<id>spring-plugins-release</id>
+			<url>https://repo.spring.io/plugins-release</url>
+		</repository>
+		<repository>
+			<id>spring-plugins-snapshot</id>
+			<url>https://repo.spring.io/plugins-snapshot</url>
+		</repository>
 	</repositories>
 
 	<pluginRepositories>
