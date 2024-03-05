@@ -580,33 +580,33 @@ public class MockServletContext implements ServletContext {
 		return this.sessionCookieConfig;
 	}
 
-	@Override  // on Servlet 4.0
+	// @Override  // on Servlet 4.0
 	public void setSessionTimeout(int sessionTimeout) {
 		this.sessionTimeout = sessionTimeout;
 	}
 
-	@Override  // on Servlet 4.0
+	// @Override  // on Servlet 4.0
 	public int getSessionTimeout() {
 		return this.sessionTimeout;
 	}
 
-	@Override  // on Servlet 4.0
+	// @Override  // on Servlet 4.0
 	public void setRequestCharacterEncoding(@Nullable String requestCharacterEncoding) {
 		this.requestCharacterEncoding = requestCharacterEncoding;
 	}
 
-	@Override  // on Servlet 4.0
+	// @Override  // on Servlet 4.0
 	@Nullable
 	public String getRequestCharacterEncoding() {
 		return this.requestCharacterEncoding;
 	}
 
-	@Override  // on Servlet 4.0
+	// @Override  // on Servlet 4.0
 	public void setResponseCharacterEncoding(@Nullable String responseCharacterEncoding) {
 		this.responseCharacterEncoding = responseCharacterEncoding;
 	}
 
-	@Override  // on Servlet 4.0
+	// @Override  // on Servlet 4.0
 	@Nullable
 	public String getResponseCharacterEncoding() {
 		return this.responseCharacterEncoding;
@@ -622,7 +622,7 @@ public class MockServletContext implements ServletContext {
 		throw new UnsupportedOperationException();
 	}
 
-	@Override  // on Servlet 4.0
+	// @Override  // on Servlet 4.0
 	public ServletRegistration.Dynamic addJspFile(String servletName, String jspFile) {
 		throw new UnsupportedOperationException();
 	}
