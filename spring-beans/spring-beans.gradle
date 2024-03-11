@@ -4,6 +4,8 @@ apply plugin: "groovy"
 
 dependencies {
 	compile(project(":spring-core"))
+	compile('io.projectreactor:reactor-core:3.1.0.RELEASE')
+	compile('io.netty:netty-buffer:4.1.0.Final')
 	optional("javax.inject:javax.inject:1")
 	optional("org.yaml:snakeyaml:1.23")
 	optional("org.codehaus.groovy:groovy-xml:${groovyVersion}")
