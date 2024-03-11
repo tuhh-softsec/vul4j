@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 the original author or authors.
+ * Copyright 2015-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,14 @@
  */
 package org.springframework.data.web.config;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.hamcrest.Matcher;
+import org.assertj.core.api.Condition;
 import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -52,9 +51,10 @@ public class SpringDataWebConfigurationIntegrationTests {
 
 		List<HttpMessageConverter<?>> converters = new ArrayList<HttpMessageConverter<?>>();
 
-		createConfigWithClassLoader(HidingClassLoader.hide(ObjectMapper.class), triggerExtendConverters(converters));
+		createConfigWithClassLoader(HidingClassLoader.hide(ObjectMapper.class),
+				it -> it.extendMessageConverters(converters));
 
-		assertThat(converters, not(hasItem(instanceWithClassName(ProjectingJackson2HttpMessageConverter.class))));
+		assertThat(converters).areNot(instanceWithClassName(ProjectingJackson2HttpMessageConverter.class));
 	}
 
 	@Test // DATACMNS-987
@@ -62,9 +62,10 @@ public class SpringDataWebConfigurationIntegrationTests {
 
 		List<HttpMessageConverter<?>> converters = new ArrayList<HttpMessageConverter<?>>();
 
-		createConfigWithClassLoader(HidingClassLoader.hide(DocumentContext.class), triggerExtendConverters(converters));
+		createConfigWithClassLoader(HidingClassLoader.hide(DocumentContext.class),
+				it -> it.extendMessageConverters(converters));
 
-		assertThat(converters, not(hasItem(instanceWithClassName(ProjectingJackson2HttpMessageConverter.class))));
+		assertThat(converters).areNot(instanceWithClassName(ProjectingJackson2HttpMessageConverter.class));
 	}
 
 	@Test // DATACMNS-987
@@ -72,9 +73,10 @@ public class SpringDataWebConfigurationIntegrationTests {
 
 		List<HttpMessageConverter<?>> converters = new ArrayList<HttpMessageConverter<?>>();
 
-		createConfigWithClassLoader(HidingClassLoader.hide(XBProjector.class), triggerExtendConverters(converters));
+		ClassLoader classLoader = HidingClassLoader.hide(XBProjector.class);
+		createConfigWithClassLoader(classLoader, it -> it.extendMessageConverters(converters));
 
-		assertThat(converters, not(hasItem(instanceWithClassName(XmlBeamHttpMessageConverter.class))));
+		assertThat(converters).areNot(instanceWithClassName(XmlBeamHttpMessageConverter.class));
 	}
 
 	@Test // DATACMNS-987
@@ -82,75 +84,56 @@ public class SpringDataWebConfigurationIntegrationTests {
 
 		List<HttpMessageConverter<?>> converters = new ArrayList<HttpMessageConverter<?>>();
 
-		createConfigWithClassLoader(getClass().getClassLoader(), triggerExtendConverters(converters));
+		createConfigWithClassLoader(getClass().getClassLoader(), it -> it.extendMessageConverters(converters));
 
-		assertThat(converters, hasItem(instanceWithClassName(XmlBeamHttpMessageConverter.class)));
-		assertThat(converters, hasItem(instanceWithClassName(ProjectingJackson2HttpMessageConverter.class)));
+		assertThat(converters).haveAtLeastOne(instanceWithClassName(XmlBeamHttpMessageConverter.class));
+		assertThat(converters).haveAtLeastOne(instanceWithClassName(ProjectingJackson2HttpMessageConverter.class));
 	}
 
 	@Test // DATACMNS-1152
 	public void usesCustomObjectMapper() {
 
-		List<HttpMessageConverter<?>> converters = new ArrayList<HttpMessageConverter<?>>();
+		createConfigWithClassLoader(getClass().getClassLoader(), it -> {
 
-		createConfigWithClassLoader(getClass().getClassLoader(), triggerExtendConverters(converters),
-				SomeConfiguration.class);
+			List<HttpMessageConverter<?>> converters = new ArrayList<>();
+			it.extendMessageConverters(converters);
 
-		boolean found = false;
+			// Converters contains ProjectingJackson2HttpMessageConverter with custom ObjectMapper
+			assertThat(converters).anySatisfy(converter -> {
+				assertThat(converter).isInstanceOfSatisfying(ProjectingJackson2HttpMessageConverter.class, __ -> {
+					assertThat(ReflectionTestUtils.getField(converter, "objectMapper")).isSameAs(SomeConfiguration.MAPPER);
+				});
+			});
 
-		for (HttpMessageConverter<?> converter : converters) {
-
-			if (converter instanceof ProjectingJackson2HttpMessageConverter) {
-
-				found = true;
-
-				assertThat(ReflectionTestUtils.getField(converter, "objectMapper"),
-						is(sameInstance((Object) SomeConfiguration.MAPPER)));
-			}
-		}
-
-		assertThat(found, is(true));
+		}, SomeConfiguration.class);
 	}
 
 	private void createConfigWithClassLoader(ClassLoader classLoader, Consumer<SpringDataWebConfiguration> callback,
 			Class<?>... additionalConfigurationClasses) {
 
-		List<Class<?>> configClasses = new ArrayList<Class<?>>(Arrays.asList(additionalConfigurationClasses));
+		List<Class<?>> configClasses = new ArrayList<>(Arrays.asList(additionalConfigurationClasses));
 		configClasses.add(SpringDataWebConfiguration.class);
 
-		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(
-				configClasses.toArray(new Class<?>[configClasses.size()]));
+		try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(
+				configClasses.toArray(new Class<?>[configClasses.size()]))) {
 
-		context.setClassLoader(classLoader);
-
-		try {
+			context.setClassLoader(classLoader);
 			callback.accept(context.getBean(SpringDataWebConfiguration.class));
-		} finally {
-			context.close();
 		}
 	}
 
 	/**
-	 * creates a Matcher that check if an object is an instance of a class with the same name as the provided class. This
-	 * is necessary since we are dealing with multiple classloaders which would make a simple instanceof fail all the time
+	 * Creates a {@link Condition} that checks if an object is an instance of a class with the same name as the provided
+	 * class. This is necessary since we are dealing with multiple classloaders which would make a simple instanceof fail
+	 * all the time
 	 *
 	 * @param expectedClass the class that is expected (possibly loaded by a different classloader).
-	 * @return a Matcher
+	 * @return a {@link Condition}
 	 */
-	private static <T> Matcher<? super T> instanceWithClassName(Class<T> expectedClass) {
-		return hasProperty("class", hasProperty("name", equalTo(expectedClass.getName())));
-	}
+	private static Condition<Object> instanceWithClassName(Class<?> expectedClass) {
 
-	private static Consumer<SpringDataWebConfiguration> triggerExtendConverters(
-			final List<HttpMessageConverter<?>> converters) {
-
-		return new Consumer<SpringDataWebConfiguration>() {
-
-			@Override
-			public void accept(SpringDataWebConfiguration t) {
-				t.extendMessageConverters(converters);
-			}
-		};
+		return new Condition<>(it -> it.getClass().getName().equals(expectedClass.getName()), //
+				"with class name %s!", expectedClass.getName());
 	}
 
 	@Configuration

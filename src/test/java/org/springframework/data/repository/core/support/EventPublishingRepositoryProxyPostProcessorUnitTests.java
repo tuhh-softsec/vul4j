@@ -17,7 +17,7 @@ package org.springframework.data.repository.core.support;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
+
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 

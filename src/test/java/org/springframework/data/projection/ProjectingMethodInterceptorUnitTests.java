@@ -17,7 +17,7 @@ package org.springframework.data.projection;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
+
 import static org.mockito.Mockito.*;
 
 import java.util.Collection;
