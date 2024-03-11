@@ -11,12 +11,14 @@ vul4j verify --id VUL4J-1 VUL4J-2 VUL4J-3 VUL4J-4 VUL4J-5 VUL4J-6 VUL4J-7 VUL4J-
 
 * (\*) Some project versions are not *fully compilable*, however, the modules that contain the target vulnerabilities and their PoVs are compilable. Therefore, the vulnerabilities are *reproducible*. These cases are indicated with a yellow circle (🟡).
 
+* Some projects needed manual modifications in order to be reproducible (dependency changes, other fixes from later commits). The vul4j script cannot automatically replace or change all of these files, so manual intervention is needed. These cases are indicated with a hand (🖐).
+
 | Vuln ID   | Compilable | PoV(s) | Reproducible |
 |-----------|:------:|:------:|:-------:|
 | VUL4J-1	|	✅	|	✅	| 	✅	|
 | VUL4J-2	|	✅	|	✅	| 	✅	|
-| VUL4J-3	|	❌	|	✅	| 	🟡	|
-| VUL4J-4	|	❌	|	✅	| 	🟡	|
+| VUL4J-3	|	✅	|	✅	| 	✅	|
+| VUL4J-4	|	✅	|	✅	| 	✅	|
 | VUL4J-5	|	✅	|	✅	| 	✅	|
 | VUL4J-6	|	✅	|	✅	| 	✅	|
 | VUL4J-7	|	✅	|	✅	| 	✅	|
@@ -27,27 +29,27 @@ vul4j verify --id VUL4J-1 VUL4J-2 VUL4J-3 VUL4J-4 VUL4J-5 VUL4J-6 VUL4J-7 VUL4J-
 | VUL4J-12	|	✅	|	✅	| 	✅	|
 | VUL4J-13	|	✅	|	✅	| 	✅	|
 | VUL4J-14	|	✅	|	✅	| 	✅	|
-| VUL4J-15	|	❌	|	✅	| 	🟡	|
+| VUL4J-15	|	❌	|	✅	| 	🟡	 |
 | VUL4J-16	|	✅	|	✅	| 	✅	|
 | VUL4J-17	|	✅	|	✅	| 	✅	|
 | VUL4J-18	|	✅	|	✅	| 	✅	|
 | VUL4J-19	|	✅	|	✅	| 	✅	|
 | VUL4J-20	|	✅	|	✅	| 	✅	|
-| VUL4J-21	|	✅	|	❌	| 	❌	|
+| VUL4J-21	|	✅	|	✅	| 	✅	|
 | VUL4J-22	|	✅	|	✅	| 	✅	|
-| VUL4J-23	|	❌	|	✅	| 	🟡	|
+| VUL4J-23	|	🖐 	 |	 ✅	 | 	 🖐	  |
 | VUL4J-24	|	✅	|	✅	| 	✅	|
 | VUL4J-25	|	✅	|	✅	| 	✅	|
 | VUL4J-26	|	✅	|	✅	| 	✅	|
-| VUL4J-27	|	❌	|	✅	| 	🟡	|
-| VUL4J-28	|	❌	|	❌	| 	❌	|
+| VUL4J-27	|	✅	|	✅	| 	✅	|
+| VUL4J-28	|	✅	|	✅	| 	✅	|
 | VUL4J-29	|	✅	|	✅	| 	✅	|
 | VUL4J-30	|	✅	|	✅	| 	✅	|
-| VUL4J-31	|	❌	|	❌	| 	❌	|
+| VUL4J-31	|	✅	|	✅	| 	✅	|
 | VUL4J-32	|	✅	|	✅	| 	✅	|
 | VUL4J-33	|	✅	|	✅	| 	✅	|
 | VUL4J-34	|	✅	|	✅	| 	✅	|
-| VUL4J-35	|	❌	|	✅	| 	🟡	|
+| VUL4J-35	|	🖐   |	 ✅	 | 	 🖐	  |
 | VUL4J-36	|	✅	|	✅	| 	✅	|
 | VUL4J-37	|	✅	|	✅	| 	✅	|
 | VUL4J-38	|	✅	|	✅	| 	✅	|
@@ -66,7 +68,7 @@ vul4j verify --id VUL4J-1 VUL4J-2 VUL4J-3 VUL4J-4 VUL4J-5 VUL4J-6 VUL4J-7 VUL4J-
 | VUL4J-51	|	❌	|	❌	| 	❌	|
 | VUL4J-52	|	✅	|	✅	| 	✅	|
 | VUL4J-53	|	✅	|	✅	| 	✅	|
-| VUL4J-54	|	✅	|	❌	| 	❌	|
+| VUL4J-54	|	✅	|	✅	| 	✅	|
 | VUL4J-55	|	✅	|	✅	| 	✅	|
 | VUL4J-56	|	✅	|	✅	| 	✅	|
 | VUL4J-57	|	✅	|	✅	| 	✅	|
@@ -76,17 +78,17 @@ vul4j verify --id VUL4J-1 VUL4J-2 VUL4J-3 VUL4J-4 VUL4J-5 VUL4J-6 VUL4J-7 VUL4J-
 | VUL4J-61	|	✅	|	✅	| 	✅	|
 | VUL4J-62	|	✅	|	✅	| 	✅	|
 | VUL4J-63	|	✅	|	✅	| 	✅	|
-| VUL4J-64	|	❌	|	❌	| 	❌	|
-| VUL4J-65	|	❌	|	❌	| 	❌	|
+| VUL4J-64	|	✅	|	✅	| 	✅	|
+| VUL4J-65	|	✅	|	✅	| 	✅	|
 | VUL4J-66	|	✅	|	✅	| 	✅	|
-| VUL4J-67	|	❌	|	❌	| 	❌	|
-| VUL4J-68	|	❌	|	❌	| 	❌	|
-| VUL4J-69	|	❌	|	❌	| 	❌	|
-| VUL4J-70	|	❌	|	❌	| 	❌	|
-| VUL4J-71	|	❌	|	❌	| 	❌	|
-| VUL4J-72	|	❌	|	❌	| 	❌	|
-| VUL4J-73	|	❌	|	❌	| 	❌	|
-| VUL4J-74	|	❌	|	❌	| 	❌	|
+| VUL4J-67	|	🖐	 |	 🖐	  |   🖐   |
+| VUL4J-68	|	✅	|	✅	| 	✅	|
+| VUL4J-69	|	✅	|	✅	| 	✅	|
+| VUL4J-70	|	✅	|	✅	| 	✅	|
+| VUL4J-71	|	🖐	 |	 🖐	  |   🖐   |
+| VUL4J-72	|	✅	|	✅	| 	✅	|
+| VUL4J-73	|	✅	|	✅	| 	✅	|
+| VUL4J-74	|	✅	|	✅	| 	✅	|
 | VUL4J-75	|	✅	|	✅	| 	✅	|
 | VUL4J-76	|	✅	|	✅	| 	✅	|
 | VUL4J-77	|	✅	|	✅	| 	✅	|
