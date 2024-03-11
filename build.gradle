@@ -1,12 +1,22 @@
 buildscript {
 	dependencies {
-		classpath 'io.spring.gradle:spring-build-conventions:0.0.22.RELEASE'
-		classpath "org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion"
+		classpath('io.spring.gradle:spring-build-conventions:0.0.24.BUILD-SNAPSHOT') {
+			exclude group: 'io.spring.gradle', module: 'docbook-reference-plugin'
+			exclude group: 'io.spring.gradle', module: 'propdeps-plugin'
+			exclude group: 'io.spring.gradle', module: 'spring-io-plugin'
+		}
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion")
+		classpath('io.spring.gradle:docbook-reference-plugin:0.3.1-SNAPSHOT')
+		classpath('io.spring.gradle:propdeps-plugin:0.0.9.BUILD-SNAPSHOT')
+		classpath('io.spring.gradle:spring-io-plugin:0.0.9.BUILD-SNAPSHOT')
 	}
 	repositories {
 		maven { url 'https://repo.maven.apache.org/maven2' }
 		maven { url 'https://repo.spring.io/plugins-snapshot' }
 		maven { url 'https://plugins.gradle.org/m2/' }
+		maven { url 'https://repo.spring.io/plugins-release' }
+		maven { url "https://dist.wso2.org/maven2" }
+		mavenLocal()
 	}
 }
 apply plugin: 'io.spring.convention.root'
