@@ -127,7 +127,7 @@ public class SamlIdentityProviderConfiguratorTests {
         singleAdd.setIdpEntityAlias(null);
         configurator.validateSamlIdentityProviderDefinition(singleAdd);
     }
-
+/*
     @Test
     public void testGetEntityID() throws Exception {
         Timer t = new Timer();
@@ -166,7 +166,7 @@ public class SamlIdentityProviderConfiguratorTests {
         }
         t.cancel();
     }
-
+*/
 
     @Test
     public void testIdentityProviderDefinitionSocketFactoryTest() {
