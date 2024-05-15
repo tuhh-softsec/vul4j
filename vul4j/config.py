@@ -1,26 +1,32 @@
+import configparser
 import os
-from os.path import expanduser
 
-# Configure the absolute path to directory of vul4j on your local machine
-VUL4J_ROOT = "/Users/cuong/Research/Vul4J/vul4j"
+config = configparser.ConfigParser()
+config.read(os.environ.get("VUL4J_CONFIG", os.path.expanduser("~/vul4j.ini")))
 
-# Configure the paths to Java homes for your local machine
-JAVA7_HOME = os.environ.get("JAVA7_HOME",
-                            expanduser("/Library/Java/JavaVirtualMachines/jdk1.7.0_80.jdk/Contents/Home"))
-JAVA8_HOME = os.environ.get("JAVA8_HOME",
-                            expanduser("/Library/Java/JavaVirtualMachines/jdk1.8.0_281.jdk/Contents/Home"))
 
-SPOTBUGS_PATH = os.environ.get("SPOTBUGS_PATH", "/spotbugs/spotbugs-4.8.4/lib/spotbugs.jar")
-METHOD_GETTER_PATH = os.environ.get("METHOD_GETTER_PATH", "/spotbugs/method-getter/method-getter.jar")
-DATASET_PATH = os.environ.get("DATASET_PATH", expanduser(VUL4J_ROOT + "/dataset/vul4j_dataset.csv"))
-BENCHMARK_PATH = os.environ.get("BENCHMARK_PATH", expanduser(VUL4J_ROOT))
-PROJECT_REPOS_ROOT_PATH = os.environ.get("PROJECT_REPOS_ROOT_PATH", expanduser(VUL4J_ROOT + "/project_repos"))
-REPRODUCTION_DIR = os.environ.get("REPRODUCTION_DIR", expanduser(VUL4J_ROOT + "/reproduction"))
+def get_config(section: str, config_name: str):
+    value = config.get(section, config_name)
+    return value if (value is not None and value != "") else os.environ.get(config_name)
 
-JAVA_ARGS = os.environ.get("JAVA_ARGS", "-Xmx4g -Xms1g -XX:MaxPermSize=512m")
-MVN_OPTS = os.environ.get("MVN_OPTS", "-Xmx4g -Xms1g -XX:MaxPermSize=512m")
 
-OUTPUT_FOLDER_NAME = "VUL4J"
-ENABLE_EXECUTING_LOGS = os.environ.get("ENABLE_EXECUTING_LOGS", "1")
+# VUl4J
+VUL4J_ROOT = get_config("VUL4J", "VUL4J_ROOT")
+VUL4J_COMMITS_URL = get_config("VUL4J", "VUL4J_COMMITS_URL")
+DATASET_PATH = get_config("VUL4J", "CUSTOM_DATASET_PATH")
+LOG_TO_FILE = get_config("VUL4J", "LOG_TO_FILE") == "1"
 
-VUL4J_COMMITS_URL = "https://github.com/tuhh-softsec/vul4j/commits/"
+# DIRS
+OUTPUT_DIR = get_config("DIRS", "OUTPUT_DIR")
+REPRODUCTION_DIR = get_config("DIRS", "REPRODUCTION_DIR")
+TEMP_CLONE_DIR = get_config("DIRS", "TEMP_CLONE_DIR")
+
+# JAVA
+JAVA_ARGS = get_config("JAVA", "JAVA_ARGS")
+MVN_ARGS = get_config("JAVA", "MVN_ARGS")
+JAVA7_HOME = get_config("JAVA", "JAVA7_HOME")
+JAVA8_HOME = get_config("JAVA", "JAVA8_HOME")
+
+# SPOTBUGS
+SPOTBUGS_PATH = get_config("SPOTBUGS", "SPOTBUGS_PATH")
+METHOD_GETTER_PATH = get_config("SPOTBUGS", "METHOD_GETTER_PATH")

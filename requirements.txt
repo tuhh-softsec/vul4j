@@ -1,1 +1,3 @@
 unidiff==0.7.0
+loguru
+command-builder

@@ -2,17 +2,26 @@ import os
 import sys
 import glob
 import json
+from loguru import logger
 import subprocess
 import xml.etree.ElementTree as ET
-from vul4j.config import OUTPUT_FOLDER_NAME, SPOTBUGS_PATH, METHOD_GETTER_PATH, ENABLE_EXECUTING_LOGS
+from config import OUTPUT_DIR, SPOTBUGS_PATH, METHOD_GETTER_PATH, LOG_TO_FILE
 
 FNULL = open(os.devnull, 'w')
 original_stdout = sys.stdout
 
 
 def run_spotbugs(output_dir: str, artifacts: dict, vul: dict, version=None):
+    """
+
+    :param output_dir:
+    :param artifacts:
+    :param vul:
+    :param version:
+    """
+
     # create spotbugs directory
-    reports_dir = os.path.join(os.path.join(output_dir, OUTPUT_FOLDER_NAME, "spotbugs"))
+    reports_dir = os.path.join(os.path.join(output_dir, OUTPUT_DIR, "spotbugs"))
     if not os.path.exists(reports_dir):
         os.mkdir(reports_dir)
 
@@ -29,12 +38,18 @@ def run_spotbugs(output_dir: str, artifacts: dict, vul: dict, version=None):
     method_getter_output = os.path.join(reports_dir, 'modifications.json')
     method_getter_command = f"java -jar {METHOD_GETTER_PATH} {output_dir} {method_getter_output}"
     method_getter_log_path = os.path.join(reports_dir, "modifications.log")
-    log_to_file = open(method_getter_log_path, "w", encoding="utf-8") if ENABLE_EXECUTING_LOGS == "1" else FNULL
-    res = subprocess.call(method_getter_command, shell=True, stdout=FNULL, stderr=log_to_file)
+    log_to_file = open(method_getter_log_path, "w", encoding="utf-8") if LOG_TO_FILE else FNULL
 
-    if res != 0 or not os.path.exists(method_getter_output):
-        print("Method getter failed!")
-        return res
+    try:
+        # TODO proper log to file
+        subprocess.run(method_getter_command,
+                       shell=True,
+                       stdout=FNULL,
+                       stderr=log_to_file,
+                       check=True)
+        assert os.path.exists(method_getter_output)
+    except (subprocess.CalledProcessError, AssertionError):
+        logger.error("Method getter failed!")
 
     # get actual compiled jar path
     jar_path = os.path.join(module_path, 'target',
@@ -44,14 +59,20 @@ def run_spotbugs(output_dir: str, artifacts: dict, vul: dict, version=None):
     spotbugs_output = os.path.join(reports_dir, "spotbugs_report.xml")
     spotbugs_command = f"java -jar {SPOTBUGS_PATH} -textui -low -xml={spotbugs_output} {jar_path}"
     spotbugs_log_path = os.path.join(reports_dir, "spotbugs.log")
-    log_to_file = open(spotbugs_log_path, "w", encoding="utf-8") if ENABLE_EXECUTING_LOGS == "1" else FNULL
-    res = subprocess.call(spotbugs_command, shell=True, stdout=FNULL, stderr=log_to_file)
+    log_to_file = open(spotbugs_log_path, "w", encoding="utf-8") if LOG_TO_FILE else FNULL
 
-    if res != 0 or not os.path.exists(spotbugs_output):
-        print("Spotbugs failed!")
-        return res
+    # TODO proper log to file
+    try:
+        subprocess.run(spotbugs_command,
+                       shell=True,
+                       stdout=FNULL,
+                       stderr=log_to_file,
+                       check=True)
+        assert os.path.exists(spotbugs_output)
+    except (subprocess.CalledProcessError, AssertionError):
+        logger.error("Spotbugs failed!")
 
-        # find warnings in modified methods
+    # find warnings in modified methods
     warnings = {}
 
     with open(method_getter_output, 'r') as file:
@@ -72,8 +93,6 @@ def run_spotbugs(output_dir: str, artifacts: dict, vul: dict, version=None):
     with open(warnings_output, 'w') as file:
         json.dump({key: list(value) for key, value in warnings.items()}, file, indent=2)
 
-    return res
-
 
 def restore_pom(output_dir: str):
     restore_pom_command = f"cd {output_dir}; git checkout -- pom.xml"
@@ -93,8 +112,8 @@ def get_generated_files(module_path, file_name):
     targetDirs = []
     jar_war_ear_zips_in_all_target = []
     for root, dirs, files in os.walk(module_path):
-        for dir in dirs:
-            if dir.split("/")[-1] == "target":
+        for directory in dirs:
+            if directory.split("/")[-1] == "target":
                 jar_war_ear_zips = (
                         glob.glob(root + "/target/*.jar")
                         + glob.glob(root + "/target/*.war")
