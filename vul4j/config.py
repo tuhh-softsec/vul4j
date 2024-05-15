@@ -10,6 +10,8 @@ JAVA7_HOME = os.environ.get("JAVA7_HOME",
 JAVA8_HOME = os.environ.get("JAVA8_HOME",
                             expanduser("/Library/Java/JavaVirtualMachines/jdk1.8.0_281.jdk/Contents/Home"))
 
+SPOTBUGS_PATH = os.environ.get("SPOTBUGS_PATH", "/spotbugs/spotbugs-4.8.4/lib/spotbugs.jar")
+METHOD_GETTER_PATH = os.environ.get("METHOD_GETTER_PATH", "/spotbugs/method-getter/method-getter.jar")
 DATASET_PATH = os.environ.get("DATASET_PATH", expanduser(VUL4J_ROOT + "/dataset/vul4j_dataset.csv"))
 BENCHMARK_PATH = os.environ.get("BENCHMARK_PATH", expanduser(VUL4J_ROOT))
 PROJECT_REPOS_ROOT_PATH = os.environ.get("PROJECT_REPOS_ROOT_PATH", expanduser(VUL4J_ROOT + "/project_repos"))

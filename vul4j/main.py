@@ -9,6 +9,7 @@ import sys
 import shutil
 from shutil import copytree, ignore_patterns
 from xml.etree.ElementTree import parse
+from vul4j.spotbugs import run_spotbugs, edit_pom, restore_pom
 
 from unidiff import PatchSet
 
@@ -46,7 +47,8 @@ def write_test_results_to_file(vul, test_results, revision):
                                         vul['project'].replace('-', '_'), vul['vul_id'].replace('-', '_'), revision))
     with (open(test_output_file, 'w', encoding='utf-8')) as f:
         f.write(test_results)
-        
+
+
 def get_commit_hash(commit_url: str):
     commit_hash = commit_url.split("/")[-1]
     if ".." in commit_hash:
@@ -78,6 +80,7 @@ class Vul4J:
                 src_classes_dir = row['src_classes'].strip()
                 test_classes_dir = row['test_classes'].strip()
                 human_patch_url = row['human_patch'].strip()
+                failing_tests = row['failing_tests'].strip()
                 fixing_commit = get_commit_hash(human_patch_url)
 
                 if failing_module != "root" and failing_module != "":
@@ -99,6 +102,7 @@ class Vul4J:
                     "src_classes_dir": src_classes_dir,
                     "test_classes_dir": test_classes_dir,
                     "human_patch_url": human_patch_url,
+                    "failing_tests": failing_tests,
                     "human_patch": [],
                     "fixing_commit_hash": fixing_commit,
                 }]
@@ -196,29 +200,46 @@ class Vul4J:
         # copy to working directory
         copytree(BENCHMARK_PATH, output_dir, ignore=ignore_patterns('.git'))
 
-        cmd = "cd %s; git init; git config user.name \"vul4j\"; git config user.email \"vul4j@vul4j.org\"; git add .; git commit -m \"init\"" % (
-            output_dir)
-        subprocess.call(cmd, shell=True, stdout=FNULL, stderr=subprocess.STDOUT)
-
         os.makedirs(os.path.join(output_dir, OUTPUT_FOLDER_NAME))
         with open(os.path.join(output_dir, OUTPUT_FOLDER_NAME, "vulnerability_info.json"), "w", encoding='utf-8') as f:
             f.write(json.dumps(vul, indent=2))
-        
+
         # Extract vulnerable and patched code into separate folders
         os.makedirs(os.path.join(output_dir, OUTPUT_FOLDER_NAME, "vulnerable"))
         os.makedirs(os.path.join(output_dir, OUTPUT_FOLDER_NAME, "human_patch"))
         for file in vul['human_patch']:
             filename = file['file_path'].split("/")[-1]
-            shutil.copy(os.path.join(output_dir, file['file_path']), os.path.join(output_dir, OUTPUT_FOLDER_NAME, "vulnerable", filename))
+            shutil.copy(os.path.join(output_dir, file['file_path']),
+                        os.path.join(output_dir, OUTPUT_FOLDER_NAME, "vulnerable", filename))
             with open(os.path.join(output_dir, OUTPUT_FOLDER_NAME, "human_patch", filename), "w",
                       encoding='utf-8') as f:
                 f.write(file['content'])
 
         with open(os.path.join(output_dir, OUTPUT_FOLDER_NAME, "vulnerable", "paths.json"), "w", encoding='utf-8') as f:
-            f.write(json.dumps({entry['file_path'].split("/")[-1]: entry['file_path'] for entry in vul['human_patch']}, indent=2))
+            f.write(json.dumps({entry['file_path'].split("/")[-1]: entry['file_path'] for entry in vul['human_patch']},
+                               indent=2))
 
-        with open(os.path.join(output_dir, OUTPUT_FOLDER_NAME, "human_patch", "paths.json"), "w", encoding='utf-8') as f:
-            f.write(json.dumps({entry['file_path'].split("/")[-1]: entry['file_path'] for entry in vul['human_patch']}, indent=2))
+        with open(os.path.join(output_dir, OUTPUT_FOLDER_NAME, "human_patch", "paths.json"), "w",
+                  encoding='utf-8') as f:
+            f.write(json.dumps({entry['file_path'].split("/")[-1]: entry['file_path'] for entry in vul['human_patch']},
+                               indent=2))
+
+        cmd = "cd %s; git init; git config user.name \"vul4j\"; git config user.email \"vul4j@vul4j.org\"; git add .; git commit -m \"vulnerable\"" % (
+            output_dir)
+        subprocess.call(cmd, shell=True, stdout=FNULL, stderr=subprocess.STDOUT)
+
+        original_stdout = sys.stdout
+        sys.stdout = FNULL
+        self.apply(output_dir, 'human_patch')
+        sys.stdout = original_stdout
+
+        cmd = "cd %s; git add .; git commit -m \"human_patch\"" % (
+            output_dir)
+        subprocess.call(cmd, shell=True, stdout=FNULL, stderr=subprocess.STDOUT)
+
+        cmd = "cd %s; git checkout HEAD~1" % (
+            output_dir)
+        subprocess.call(cmd, shell=True, stdout=FNULL, stderr=subprocess.STDOUT)
 
         # revert to main branch
         cmd = "cd %s; git reset .; git checkout -- .; git clean -x -d --force; git checkout -f main" % BENCHMARK_PATH
@@ -276,17 +297,18 @@ class Vul4J:
         except IOError:
             logging.error("Not found the info file of vulnerability: '%s'" % info_file)
             exit(1)
-            
-    def apply(self, output_dir, version):
+
+    def apply(self, output_dir, version, quiet=False):
         vul = self.read_vulnerability_from_output_dir(output_dir)
-        
-        if version == "human_patch":
+
+        if version == "human_patch" and not quiet:
             print("---------------------------------------------------------")
-            print("You are applying the official patch to the project. These files might not contain some additional fixes.")
+            print(
+                "You are applying the official patch to the project. These files might not contain some additional fixes.")
             print("If the build or the tests fail, please check the latest commits to get the missing code.")
             print(VUL4J_COMMITS_URL + vul["vul_id"])
             print("---------------------------------------------------------")
-        
+
         try:
             with open(os.path.join(output_dir, OUTPUT_FOLDER_NAME, version, "paths.json"), "r") as file:
                 paths = json.load(file)
@@ -297,9 +319,8 @@ class Vul4J:
         for file, path in paths.items():
             shutil.copy(str(os.path.join(output_dir, OUTPUT_FOLDER_NAME, version, file)),
                         str(os.path.join(output_dir, "/".join(path.split("/")[:-1]))))
-            
-        return 0
 
+        return 0
 
     def compile(self, output_dir):
         vul = self.read_vulnerability_from_output_dir(output_dir)
@@ -580,7 +601,6 @@ export MAVEN_OPTS="%s";
 
 
 def main_verify(args):
-
     vul4j = Vul4J()
 
     vulnerabilities = []
@@ -607,7 +627,7 @@ def main_verify(args):
             ret = vul4j.compile(WORK_DIR)
             if ret != 0:
                 logging.error("Compile failed! Keep going...")
-                #continue
+                # continue
 
             logging.debug("Running PoV tests...")
             test_results_str = vul4j.test(WORK_DIR, "povs", print_out=False)
@@ -636,7 +656,7 @@ def main_verify(args):
             ret = vul4j.compile(WORK_DIR)
             if ret != 0:
                 logging.error("Compile failed! Keep going...")
-                #continue
+                # continue
 
             logging.debug("Running PoV tests...")
             test_results_str = vul4j.test(WORK_DIR, "povs", print_out=False)
@@ -661,7 +681,6 @@ def main_verify(args):
 
 
 def main_reproduce(args):
-
     vul4j = Vul4J()
 
     vulnerabilities = []
@@ -756,6 +775,7 @@ def main_checkout(args):
         print("Checkout failed!")
     exit(ret)
 
+
 def main_apply(args):
     vul4j = Vul4J()
     ret = vul4j.apply(args.outdir, args.version)
@@ -764,6 +784,49 @@ def main_apply(args):
     else:
         print("Something went wrong when applying version: %s" % args.version)
     exit(0)
+
+
+def main_sast(args):
+    vul4j = Vul4J()
+
+    versions = args.versions
+    output_dir = args.outdir
+
+    vul = vul4j.read_vulnerability_from_output_dir(output_dir)
+    artifacts = edit_pom(os.path.join(output_dir, "pom.xml"), vul["compliance_level"])
+
+    if (versions):
+        for version in versions:
+            logging.info("---------------------------------------------------------")
+            logging.info(f"Checking version: {version}...")
+            vul4j.apply(output_dir, version, True)
+
+            logging.debug("Compiling...")
+            compile = vul4j.compile(output_dir)
+            if compile != 0:
+                logging.error("Compile failed! Keep going...")
+                continue
+
+            logging.debug("Running SpotBugs...")
+            sb = run_spotbugs(output_dir, artifacts, vul, version)
+            if sb != 0:
+                logging.error("SpotBugs failed! Keep going...")
+    else:
+        logging.info("---------------------------------------------------------")
+        logging.debug("Compiling...")
+        compile = vul4j.compile(output_dir)
+        if compile != 0:
+            logging.error("Compile failed!")
+            exit(compile)
+
+        logging.debug("Running SpotBugs...")
+        sb = run_spotbugs(output_dir, artifacts, vul)
+        if sb != 0:
+            logging.error("SpotBugs failed!")
+
+    restore_pom(output_dir)
+    exit(sb)
+
 
 def main_compile(args):
     vul4j = Vul4J()
@@ -807,13 +870,20 @@ def main(args=None):
     compile_parser.add_argument("-i", "--id", help="Vulnerability Id.", required=False)
     compile_parser.add_argument("-d", "--outdir", help="The directory to which the vulnerability was checked out.",
                                 required=True)
-    
-    compile_parser = sub_parsers.add_parser('apply', help="Apply the file versions.")
-    compile_parser.set_defaults(func=main_apply)
-    compile_parser.add_argument("-d", "--outdir", help="The directory to which the vulnerability was checked out.",
-                                required=True)
-    compile_parser.add_argument("-v", "--version", help="Version to apply",
-                                required=True)
+
+    apply_parser = sub_parsers.add_parser('apply', help="Apply the file versions.")
+    apply_parser.set_defaults(func=main_apply)
+    apply_parser.add_argument("-d", "--outdir", help="The directory to which the vulnerability was checked out.",
+                              required=True)
+    apply_parser.add_argument("-v", "--version", help="Version to apply",
+                              required=True)
+
+    sast_parser = sub_parsers.add_parser('sast', help="Run spotbugs analysis.")
+    sast_parser.set_defaults(func=main_sast)
+    sast_parser.add_argument("-i", "--id", help="Vulnerability Id.", required=False)
+    sast_parser.add_argument("-d", "--outdir", help="The directory to which the vulnerability was checked out.",
+                             required=True)
+    sast_parser.add_argument("-v", "--versions", nargs='+', help="Versions to run spotbugs on.", required=False)
 
     test_parser = sub_parsers.add_parser('test', help="Run testsuite for the checked out vulnerability.")
     test_parser.set_defaults(func=main_test)
