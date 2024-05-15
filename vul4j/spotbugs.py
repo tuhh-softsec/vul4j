@@ -1,11 +1,14 @@
-import os
-import sys
 import glob
 import json
-from loguru import logger
+import os
 import subprocess
+import sys
+import git
 import xml.etree.ElementTree as ET
-from config import OUTPUT_DIR, SPOTBUGS_PATH, METHOD_GETTER_PATH, LOG_TO_FILE
+
+from loguru import logger
+
+from vul4j.config import OUTPUT_DIR, SPOTBUGS_PATH, METHOD_GETTER_PATH, LOG_TO_FILE
 
 FNULL = open(os.devnull, 'w')
 original_stdout = sys.stdout
@@ -23,7 +26,7 @@ def run_spotbugs(output_dir: str, artifacts: dict, vul: dict, version=None):
     # create spotbugs directory
     reports_dir = os.path.join(os.path.join(output_dir, OUTPUT_DIR, "spotbugs"))
     if not os.path.exists(reports_dir):
-        os.mkdir(reports_dir)
+        os.makedirs(reports_dir)
 
     # get module path where compiled jars are located
     failing_module = vul["failing_module"]
@@ -95,12 +98,8 @@ def run_spotbugs(output_dir: str, artifacts: dict, vul: dict, version=None):
 
 
 def restore_pom(output_dir: str):
-    restore_pom_command = f"cd {output_dir}; git checkout -- pom.xml"
-    res = subprocess.call(restore_pom_command, shell=True, stdout=FNULL, stderr=subprocess.STDOUT)
-
-    if res != 0:
-        print("Failed to revert pom.xml changes")
-        return res
+    repo = git.Repo(output_dir)
+    repo.git.checkout("--", "pom.xml")
 
 
 def get_generated_files(module_path, file_name):
@@ -135,7 +134,6 @@ def get_generated_files(module_path, file_name):
                 + glob.glob(module_path + "/target/*.ear")
                 + glob.glob(module_path + "/target/*.zip")
         )
-        print(f"Generated files in {module_path}: \n{jar_war_ear_zips}", "")
 
         artifact_id = file_name["artifactId"]
         version = file_name["version"]
@@ -160,7 +158,7 @@ def get_generated_files(module_path, file_name):
         return {"default_build_file_path": "", "module_build_file_list": fileList}
 
 
-def edit_pom(pom_path, java_version):
+def edit_pom(pom_path):
     """
     Editing pom if it is necessary
     :param pom_path: The path where pom.xml file is

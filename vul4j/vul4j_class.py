@@ -10,9 +10,9 @@ from shutil import copytree, ignore_patterns
 import git
 from loguru import logger
 
-import utils
-from config import JAVA7_HOME, MVN_ARGS, JAVA8_HOME, OUTPUT_DIR, LOG_TO_FILE, DATASET_PATH, VUL4J_COMMITS_URL, \
-    TEMP_CLONE_DIR, VUL4J_ROOT
+import vul4j.utils as utils
+from vul4j.config import JAVA7_HOME, MVN_ARGS, JAVA8_HOME, OUTPUT_DIR, LOG_TO_FILE, DATASET_PATH, VUL4J_COMMITS_URL, \
+    TEMP_CLONE_DIR, VUL4J_GIT
 
 VOID = open(os.devnull, 'w')
 
@@ -108,14 +108,14 @@ class Vul4J:
             logger.info("Done cloning!")
             repo.git.checkout(vul['fixing_commit_hash'])
         else:
-            repo = git.Repo(VUL4J_ROOT)
+            repo = git.Repo(VUL4J_GIT)
             repo.git.reset("--hard")
             repo.git.checkout("--")
             repo.git.clean("-fdx")
             repo.git.checkout("-f", vul_id.upper())
 
         # copy to working directory
-        copytree(TEMP_CLONE_DIR if clone else VUL4J_ROOT, output_dir, ignore=ignore_patterns('.git'))
+        copytree(TEMP_CLONE_DIR if clone else VUL4J_GIT, output_dir, ignore=ignore_patterns('.git'))
 
         # extract patched and vulnerable files
         # TODO does not work for non-vul4j projects, compare with parent
@@ -150,6 +150,8 @@ class Vul4J:
         else:
             # TODO remove cloned project
             pass
+
+        logger.info("----- Checkout complete! -----")
 
     @staticmethod
     def compile(output_dir) -> None:
@@ -204,13 +206,7 @@ class Vul4J:
 
         if version == "human_patch" and not quiet:
             logger.warning(
-                f"""
-            ---------------------------------------------------------
-            You are applying the official patch to the project.
-            These files might not contain some additional fixes.
-            If the build or the tests fail, please check the latest commits to get the missing code.
-            {VUL4J_COMMITS_URL + vul["vul_id"]}
-            ---------------------------------------------------------""")
+                f"Please check {VUL4J_COMMITS_URL + vul['vul_id']} if build fails.")
 
         with open(os.path.join(output_dir, OUTPUT_DIR, version, "paths.json"), "r") as file:
             paths = json.load(file)
@@ -258,7 +254,7 @@ class Vul4J:
                        cwd=output_dir,
                        env=env)
 
-        test_results = utils.read_test_results_maven(vul, output_dir)
+        test_results = utils.read_test_results(vul, output_dir)
 
         with (open(os.path.join(output_dir, OUTPUT_DIR, "testing_results.json"), "w")) as f:
             json.dump(test_results, f, indent=2)

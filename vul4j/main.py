@@ -6,13 +6,13 @@ import sys
 
 from loguru import logger
 
-import spotbugs
-import utils
-from config import REPRODUCTION_DIR
-from vul4j_class import Vul4J
+import vul4j.spotbugs as spotbugs
+import vul4j.utils as utils
+from vul4j.config import REPRODUCTION_DIR
+from vul4j.vul4j_class import Vul4J
 
-VOID = open(os.devnull, 'w')
 VUL_ID = "VUL4J"
+COMMAND = "VUL4J"
 
 # logger
 logger.remove()
@@ -45,7 +45,7 @@ def run_all(vul_ids, reproduce: bool = False):
             VUL_ID = vul["vul_id"]
             try:
                 if os.path.exists(WORK_DIR):
-                    subprocess.call("rm -rf " + WORK_DIR, shell=True, stdout=VOID, stderr=subprocess.STDOUT)
+                    subprocess.call("rm -rf " + WORK_DIR, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
                 logger.info("---------------------------------------------------------")
                 logger.info(f"{'Reproducing' if reproduce else 'Verifying'} vulnerability: {vul['vul_id']}...")
@@ -115,6 +115,10 @@ def run_all(vul_ids, reproduce: bool = False):
                 logger.critical("Error encountered: ", exc_info=e)
 
 
+def vul4j_status(args):
+    utils.check_status()
+
+
 def vul4j_checkout(args):
     vul4j = Vul4J()
     vul4j.checkout(args.id, args.outdir)
@@ -158,7 +162,7 @@ def vul4j_sast(args):
         logger.error("No vulnerability found in the directory!")
         return
 
-    artifacts = spotbugs.edit_pom(os.path.join(output_dir, "pom.xml"), vul["compliance_level"])
+    artifacts = spotbugs.edit_pom(os.path.join(output_dir, "pom.xml"))
 
     if versions:
         for version in versions:
@@ -209,6 +213,9 @@ def vul4j_info(args):
     vul4j = Vul4J()
     vul4j.get_info(args.id)
 
+def get_spotbugs(args):
+    utils.get_spotbugs()
+
 
 def main(args=None):
     if args is None:
@@ -217,6 +224,11 @@ def main(args=None):
     parser = argparse.ArgumentParser(prog="vul4j", description="A Dataset of Java vulnerabilities.")
 
     sub_parsers = parser.add_subparsers()
+
+    # STATUS
+    status_parser = sub_parsers.add_parser("status",
+                                           help="Lists vul4j requirements and availability.")
+    status_parser.set_defaults(func=vul4j_status)
 
     # CHECKOUT TODO url parameter
     checkout_parser = sub_parsers.add_parser('checkout',
@@ -288,6 +300,11 @@ def main(args=None):
     verify_parser.set_defaults(func=vul4j_reproduce, reproduce=False)
     verify_parser.add_argument("-i", "--id", nargs='+', type=str,
                                help="Vulnerability Id.", required=True)
+
+    # GET SPOTBUGS
+    spotbugs_parser = sub_parsers.add_parser("get-spotbugs",
+                                             help="Downloads Spotbugs into the user directory.")
+    spotbugs_parser.set_defaults(func=get_spotbugs)
 
     options = parser.parse_args(args)
     if not hasattr(options, 'func'):
