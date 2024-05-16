@@ -1,14 +1,16 @@
 package org.ovirt.engine.core.bll;
 
+import java.util.Date;
+
 public class QueryData {
-    public QueryData(String query, long date, String domain) {
+    public QueryData(String query, Date date, String domain) {
         this.query = query;
         this.date = date;
         this.domain = domain;
     }
 
     private final String query;
-    private final long date;
+    private final Date date;
     private final String domain;
 
     public String getDomain() {
@@ -23,7 +25,7 @@ public class QueryData {
         return query;
     }
 
-    public long getDate() {
+    public Date getDate() {
         return date;
     }
 }
