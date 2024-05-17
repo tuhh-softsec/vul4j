@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,9 +24,9 @@ public class FileUtil {
 
     private static final Logger log = LoggerFactory.getLogger(FileUtil.class);
 
-    public static final Set<PosixFilePermission> POSIX_SECURED_PERMISSIONS = Collections
-            .unmodifiableSet(new HashSet<>(Arrays.asList(OWNER_READ, OWNER_WRITE)));
-
+    public static final Set<PosixFilePermission> POSIX_SECURED_PERMISSIONS = new HashSet<>(Arrays.asList(
+            OWNER_READ,
+            OWNER_WRITE));
     /**
      * Delete a file or directory recursively.
      * 
