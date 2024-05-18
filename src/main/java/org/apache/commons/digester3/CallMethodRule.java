@@ -435,7 +435,6 @@ public class CallMethodRule
             // means that we truly are calling a method with no parameters.
             // Nothing special needs to be done here.
             parameters = new Object[0];
-            paramTypes = new Class<?>[0];
         }
 
         // Construct the parameter values array we will need
