@@ -1,6 +1,4 @@
 import argparse
-import json
-import os
 import subprocess
 import sys
 
@@ -8,210 +6,123 @@ from loguru import logger
 
 import vul4j.spotbugs as spotbugs
 import vul4j.utils as utils
-from vul4j.config import REPRODUCTION_DIR
-from vul4j.vul4j_class import Vul4J
+import vul4j.vul4j_class as vul4j
 
-VUL_ID = "VUL4J"
-COMMAND = "VUL4J"
 
 # logger
 logger.remove()
 logger.add(lambda msg: print(msg, end=""),
            colorize=True,
            format="<cyan>{time:YYYY-MM-DD HH:mm:ss}</cyan> | " +
-                  f"<yellow>{VUL_ID}</yellow>" +
-                  " | <level>{level}</level> | <level>{message}</level>",
+                  "<level>{level}</level> | <level>{message}</level>",
            level="INFO")
 
 WORK_DIR = "/vul4j/vul4j-testing/reproduce"
 
 
-def set_logger_id(vul_id: str):
-    global VUL_ID
-    VUL_ID = vul_id
-
-
-def run_all(vul_ids, reproduce: bool = False):
-    global VUL_ID
-    vul4j = Vul4J()
-
-    vulnerabilities = [vul4j.get_vulnerability(vul_id) for vul_id in vul_ids if vul_id is not None]
-
-    if not os.path.exists(REPRODUCTION_DIR):
-        os.makedirs(REPRODUCTION_DIR)
-
-    with open(os.path.join(REPRODUCTION_DIR, 'successful_vulnerabilities.txt'), 'a+') as success_vulnerabilities:
-        for vul in vulnerabilities:
-            VUL_ID = vul["vul_id"]
-            try:
-                if os.path.exists(WORK_DIR):
-                    subprocess.call("rm -rf " + WORK_DIR, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
-
-                logger.info("---------------------------------------------------------")
-                logger.info(f"{'Reproducing' if reproduce else 'Verifying'} vulnerability: {vul['vul_id']}...")
-
-                logger.info("--> Checking out the vulnerable revision...")
-                # TODO TRY EXCEPT
-                vul4j.checkout(vul['vul_id'], WORK_DIR, clone=reproduce)
-
-                # if len(vul['revert_human_patch']) == 0:
-                #     logger.error("No patch changes were found!")
-                #     exit(1)
-
-                vul4j.apply(WORK_DIR, "vulnerable")
-
-                logger.info("Compiling...")
-                try:
-                    vul4j.compile(WORK_DIR)
-                except subprocess.CalledProcessError:
-                    logger.error("Compile failed! Keep going...")
-                    # continue
-
-                logger.info(f"Running{' PoV' if not reproduce else ''} tests...")
-                test_results_str = vul4j.test(WORK_DIR, "all" if reproduce else "povs")  # TODO printout?
-                utils.write_test_results_to_file(vul, test_results_str, 'vulnerable')
-                test_results = json.loads(test_results_str)
-
-                failing_tests_of_vulnerable_revision = utils.extract_failed_tests_from_test_results(test_results)
-                logger.success(f"Failing tests: {failing_tests_of_vulnerable_revision}")
-                if failing_tests_of_vulnerable_revision is None:
-                    logger.error("Build failed, no tests were run! This is acceptable here.")
-                elif len(failing_tests_of_vulnerable_revision) == 0:
-                    logger.error("Vulnerable revision must contain at least 1 failing test!!!")
-                    continue
-
-                logger.info("--> Applying human patch to the source code...")
-                vul4j.apply(WORK_DIR, "human_patch")
-                # TODO error handling
-
-                logger.info("Compiling...")
-                try:
-                    vul4j.compile(WORK_DIR)
-                except subprocess.CalledProcessError:
-                    logger.error("Compile failed! Keep going...")
-                    # continue
-
-                logger.info(f"Running{' PoV' if not reproduce else ''} tests...")
-                test_results_str = vul4j.test(WORK_DIR, "all" if reproduce else "povs")
-                utils.write_test_results_to_file(vul, test_results_str, 'patched')
-                test_results = json.loads(test_results_str)
-
-                failing_tests_of_patched_revision = utils.extract_failed_tests_from_test_results(test_results)
-                if failing_tests_of_patched_revision is None:
-                    logger.error("Build failed, no tests were run! Human patch must compile and pass the tests!")
-                elif len(failing_tests_of_patched_revision) != 0:
-                    logger.warning("Failing tests: %s" % failing_tests_of_patched_revision)
-                    logger.error("Patched version must contain no failing test!!!")
-                    continue
-                else:
-                    logger.debug("No failing tests found!")
-                    # todo different message for reproduce
-                    logger.success(
-                        f"--> The vulnerability {vul['vul_id']} has been verified successfully with PoV(s): "
-                        f"{failing_tests_of_vulnerable_revision}!")
-                    success_vulnerabilities.write(vul['vul_id'] + '\n')
-                    success_vulnerabilities.flush()
-            except Exception as e:
-                logger.critical("Error encountered: ", exc_info=e)
-
-
+@utils.log_frame("STATUS")
 def vul4j_status(args):
     utils.check_status()
 
 
+@utils.log_frame("CHECKOUT")
 def vul4j_checkout(args):
-    vul4j = Vul4J()
-    vul4j.checkout(args.id, args.outdir)
-    # TODO error, clone
+    vul_id = args.id
+    output_dir = args.outdir
 
-
-def vul4j_compile(args):
-    vul4j = Vul4J()
     try:
-        vul4j.compile(args.outdir)
+        vul4j.checkout(vul_id, output_dir)
+    except (vul4j.VulnerabilityNotFoundError, AssertionError) as err:
+        logger.error(err)
+
+
+@utils.log_frame("COMPILE")
+def vul4j_compile(args):
+    output_dir = args.outdir
+
+    try:
+        vul4j.build(output_dir)
     except subprocess.CalledProcessError:
         logger.error("Compile failed!")
-    except FileNotFoundError:
-        logger.error("No vulnerability found in the directory!")
+    except (vul4j.VulnerabilityNotFoundError, AssertionError) as err:
+        logger.error(err)
 
 
+@utils.log_frame("APPLY")
 def vul4j_apply(args):
-    vul4j = Vul4J()
+    output_dir = args.outdir
+    version = args.version
+
     try:
-        vul4j.apply(args.outdir, args.version)
-        logger.success(f"Version applied: {args.version}")
+        vul4j.apply(output_dir, version)
     except FileNotFoundError:
-        logger.error(f"No such version: {args.version}")
-    except FileExistsError:
-        logger.error("No vulnerability found in the directory!")
-    except Exception:
-        logger.error(f"Something went wrong when applying version: {args.version}")
-    # TODO better error handling
+        logger.error(f"No such version: {version}")
+    except vul4j.VulnerabilityNotFoundError as err:
+        logger.error(err)
 
 
+@utils.log_frame("SAST")
 def vul4j_sast(args):
-    vul4j = Vul4J()
-
     versions = args.versions
     output_dir = args.outdir
 
-    # TODO unify vul getting (now some in the method, some here...)
-    vul = utils.read_vulnerability_from_output_dir(output_dir)
+    versions = versions if versions else [None]
 
-    if vul is None:
-        logger.error("No vulnerability found in the directory!")
-        return
-
-    artifacts = spotbugs.edit_pom(os.path.join(output_dir, "pom.xml"))
-
-    if versions:
-        for version in versions:
-            logger.info("---------------------------------------------------------")
+    for version in versions:
+        if version:
+            if version != versions[0]:
+                logger.info(utils.SEPARATOR)
             logger.info(f"Checking version: {version}...")
             vul4j.apply(output_dir, version, True)
 
-            logger.info("Compiling...")
-            try:
-                vul4j.compile(output_dir)
-            except subprocess.CalledProcessError:
-                logger.error("Compile failed! Keep going...")
-                continue
-
-            logger.info("Running SpotBugs...")
-            spotbugs.run_spotbugs(output_dir, artifacts, vul, version)
-    else:
-        logger.info("---------------------------------------------------------")
-        logger.info("Compiling...")
         try:
-            vul4j.compile(output_dir)
+            spotbugs.run_spotbugs(output_dir, version, bool(version))
         except subprocess.CalledProcessError:
-            logger.error("Compile failed!")
-            exit(1)
+            # compile, method getter or spotbugs fails
+            logger.error("Task failed!")
+            continue
+        except StopIteration:
+            # the correct jar was not found
+            logger.error("No runnable artifact found")
+            continue
+        except (vul4j.VulnerabilityNotFoundError, AssertionError) as err:
+            # any file fails to be created
+            logger.error(err)
+            continue
 
-        logger.info("Running SpotBugs...")
-        spotbugs.run_spotbugs(output_dir, artifacts, vul)
 
-    spotbugs.restore_pom(output_dir)
-
-
+@utils.log_frame("REPRODUCE")
 def vul4j_reproduce(args):
-    run_all(args.id, args.reproduce)
+    vul4j.reproduce(args.id, args.reproduce)
 
 
+@utils.log_frame("TEST")
 def vul4j_test(args):
-    vul4j = Vul4J()
-    vul4j.test(args.outdir, args.batchtype)
-    exit(0)
+    output_dir = args.outdir
+    batch_type = args.batchtype
+
+    try:
+        vul4j.test(output_dir, batch_type)
+    except subprocess.CalledProcessError:
+        logger.error("Testing failed!")
+    except (vul4j.VulnerabilityNotFoundError, AssertionError) as err:
+        logger.error(err)
 
 
+@utils.log_frame("CLASSPATH")
 def vul4j_classpath(args):
-    vul4j = Vul4J()
     vul4j.classpath(args.outdir)
 
 
+@utils.log_frame("INFO")
 def vul4j_info(args):
-    vul4j = Vul4J()
-    vul4j.get_info(args.id)
+    vul_id = args.id
+
+    try:
+        vul4j.get_info(vul_id)
+    except vul4j.VulnerabilityNotFoundError as err:
+        logger.error(err)
+
 
 def get_spotbugs(args):
     utils.get_spotbugs()
@@ -243,7 +154,7 @@ def main(args=None):
     compile_parser = sub_parsers.add_parser('compile', help="Compile the checked out vulnerability.")
     compile_parser.set_defaults(func=vul4j_compile)
     compile_parser.add_argument("-i", "--id", type=str,
-                                help="Vulnerability Id.")
+                                help="Vulnerability ID.")
     compile_parser.add_argument("-d", "--outdir", type=str,
                                 help="The directory to which the vulnerability was checked out.", required=True)
 
@@ -259,7 +170,7 @@ def main(args=None):
     sast_parser = sub_parsers.add_parser('sast', help="Run spotbugs analysis.")
     sast_parser.set_defaults(func=vul4j_sast)
     sast_parser.add_argument("-i", "--id", type=str,
-                             help="Vulnerability Id.")
+                             help="Vulnerability ID.")
     sast_parser.add_argument("-d", "--outdir", type=str,
                              help="The directory to which the vulnerability was checked out.", required=True)
     sast_parser.add_argument("-v", "--versions", nargs='+',
@@ -269,7 +180,7 @@ def main(args=None):
     test_parser = sub_parsers.add_parser('test', help="Run testsuite for the checked out vulnerability.")
     test_parser.set_defaults(func=vul4j_test)
     test_parser.add_argument("-i", "--id", type=str,
-                             help="Vulnerability Id.")
+                             help="Vulnerability ID.")
     test_parser.add_argument("-d", "--outdir", type=str,
                              help="The directory to which the vulnerability was checked out.", required=True)
     test_parser.add_argument("-b", "--batchtype", choices=["povs", "all"], default="all", type=str,
@@ -279,7 +190,7 @@ def main(args=None):
     cp_parser = sub_parsers.add_parser('classpath', help="Print the classpath of the checked out vulnerability.")
     cp_parser.set_defaults(func=vul4j_classpath)
     cp_parser.add_argument("-i", "--id", type=str,
-                           help="Vulnerability Id.")
+                           help="Vulnerability ID.")
     cp_parser.add_argument("-d", "--outdir", type=str,
                            help="The directory to which the vulnerability was checked out.", required=True)
 
@@ -287,19 +198,19 @@ def main(args=None):
     info_parser = sub_parsers.add_parser('info', help="Print information about a vulnerability.")
     info_parser.set_defaults(func=vul4j_info)
     info_parser.add_argument("-i", "--id", type=str,
-                             help="Vulnerability Id.", required=True)
+                             help="Vulnerability ID.", required=True)
 
     # REPRODUCE
     reproduce_parser = sub_parsers.add_parser('reproduce', help="Reproduce of newly added vulnerabilities.")
     reproduce_parser.set_defaults(func=vul4j_reproduce, reproduce=True)
     reproduce_parser.add_argument("-i", "--id", nargs='+', type=str,
-                                  help="Vulnerability Id.", required=True)
+                                  help="Vulnerability ID.", required=True)
 
     # VERIFY
     verify_parser = sub_parsers.add_parser('verify', help="Verify the reproducibility of existing vulnerabilities.")
     verify_parser.set_defaults(func=vul4j_reproduce, reproduce=False)
     verify_parser.add_argument("-i", "--id", nargs='+', type=str,
-                               help="Vulnerability Id.", required=True)
+                               help="Vulnerability ID.", required=True)
 
     # GET SPOTBUGS
     spotbugs_parser = sub_parsers.add_parser("get-spotbugs",

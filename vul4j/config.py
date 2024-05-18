@@ -1,5 +1,6 @@
 import configparser
 import os
+from os.path import normpath
 
 config = configparser.ConfigParser()
 config.read(os.environ.get("VUL4J_CONFIG", os.path.expanduser("~/vul4j.ini")))
@@ -27,27 +28,28 @@ def config_check():
 
 
 # VUl4J
-VUL4J_GIT = get_config("VUL4J", "VUL4J_GIT")
+VUL4J_GIT = normpath(get_config("VUL4J", "VUL4J_GIT"))
 VUL4J_COMMITS_URL = get_config("VUL4J", "VUL4J_COMMITS_URL")
-DATASET_PATH = get_config("VUL4J", "DATASET_PATH",
-                          os.path.join(VUL4J_GIT, "dataset", "vul4j_dataset.csv"))
+DATASET_PATH = normpath(get_config("VUL4J", "DATASET_PATH",
+                                   os.path.join(VUL4J_GIT, "dataset", "vul4j_dataset.csv")))
 LOG_TO_FILE = get_config("VUL4J", "LOG_TO_FILE") == "1"
 
 # DIRS
-OUTPUT_DIR = get_config("DIRS", "OUTPUT_DIR")
-REPRODUCTION_DIR = get_config("DIRS", "REPRODUCTION_DIR",
-                              os.path.expanduser("~/vul4j_reproduction"))
-TEMP_CLONE_DIR = get_config("DIRS", "TEMP_CLONE_DIR",
-                            os.path.expanduser("~/vul4j_temp_clone_dir"))
+VUL4J_WORKDIR = normpath(get_config("DIRS", "VUL4J_WORKDIR"))
+REPRODUCTION_DIR = normpath(get_config("DIRS", "REPRODUCTION_DIR",
+                                       os.path.expanduser("~/vul4j_reproduction")))
+TEMP_CLONE_DIR = normpath(get_config("DIRS", "TEMP_CLONE_DIR",
+                                     os.path.expanduser("~/vul4j_temp_clone_dir")))
 
 # JAVA
 JAVA_ARGS = get_config("JAVA", "JAVA_ARGS")
 MVN_ARGS = get_config("JAVA", "MVN_ARGS")
-JAVA7_HOME = get_config("JAVA", "JAVA7_HOME")
-JAVA8_HOME = get_config("JAVA", "JAVA8_HOME")
+JAVA7_HOME = normpath(get_config("JAVA", "JAVA7_HOME", ""))
+JAVA8_HOME = normpath(get_config("JAVA", "JAVA8_HOME", ""))
 
 # SPOTBUGS
-SPOTBUGS_PATH = get_config("SPOTBUGS", "SPOTBUGS_PATH",
-                           os.path.expanduser("~/spotbugs/spotbugs-4.8.5/lib/spotbugs.jar"))
-METHOD_GETTER_PATH = get_config("SPOTBUGS", "METHOD_GETTER_PATH",
-                                os.path.join(VUL4J_GIT, "method_getter", "method-getter.jar"))
+SPOTBUGS_VERSION = get_config("SPOTBUGS", "SPOTBUGS_VERSION", "4.8.5")
+SPOTBUGS_PATH = normpath(get_config("SPOTBUGS", "SPOTBUGS_PATH",
+                                    os.path.expanduser(f"~/spotbugs-{SPOTBUGS_VERSION}/lib/spotbugs.jar")))
+METHOD_GETTER_PATH = normpath(get_config("SPOTBUGS", "METHOD_GETTER_PATH",
+                                         os.path.join(VUL4J_GIT, "method_getter", "method-getter.jar")))

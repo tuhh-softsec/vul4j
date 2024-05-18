@@ -3,30 +3,48 @@ import json
 import os
 import subprocess
 import sys
-import git
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as ElementTree
 
 from loguru import logger
 
-from vul4j.config import OUTPUT_DIR, SPOTBUGS_PATH, METHOD_GETTER_PATH, LOG_TO_FILE
+import vul4j.utils as utils
+from vul4j.config import VUL4J_WORKDIR, SPOTBUGS_PATH, METHOD_GETTER_PATH, LOG_TO_FILE
+import vul4j.vul4j_class as vul4j
 
-FNULL = open(os.devnull, 'w')
 original_stdout = sys.stdout
 
 
-def run_spotbugs(output_dir: str, artifacts: dict, vul: dict, version=None):
+def run_spotbugs(output_dir: str, version=None, force_compile=False) -> None:
+    """
+    Runs Spotbugs check on the project found in the provided directory.
+    The project must contain a 'vulnerability_info.json' file.
+    Creates a separate spotbugs directory in the project's vul4j work directory.
+
+    If a version is provided (and is not None) the project will be compiled.
+    One can manually force recompilation by setting force_compile to True.
+
+    The project's target folder is searched for artifacts.
+    The jar that ends in 'SNAPSHOT.jar' will be used for the Spotbugs analysis.
+
+    The method getter extracts the modified method names and their classes into the modifications.json file.
+    Then Spotbugs analysis is run.
+
+    The spotbugs_report.xml file is checked for warnings in the methods extracted by the method getter.
+    The results are saved in the warnings.json file or warnings_version.json if a version was provided.
+
+    :param output_dir:  path to the projects directory
+    :param version: version name, used for naming output files
+    :param force_compile:   recompile project
     """
 
-    :param output_dir:
-    :param artifacts:
-    :param vul:
-    :param version:
-    """
+    vul = vul4j.read_vul_from_file(output_dir)
 
     # create spotbugs directory
-    reports_dir = os.path.join(os.path.join(output_dir, OUTPUT_DIR, "spotbugs"))
-    if not os.path.exists(reports_dir):
-        os.makedirs(reports_dir)
+    reports_dir = os.path.join(output_dir, VUL4J_WORKDIR, "spotbugs")
+    os.makedirs(reports_dir, exist_ok=True)
+    assert os.path.exists(reports_dir), "Failed to create spotbugs directory!"
+    logger.debug("Spotbugs directory created!")
+    # exception can be thrown
 
     # get module path where compiled jars are located
     failing_module = vul["failing_module"]
@@ -34,54 +52,61 @@ def run_spotbugs(output_dir: str, artifacts: dict, vul: dict, version=None):
         module_path = output_dir
     else:
         module_path = os.path.join(output_dir, failing_module)
+    logger.debug(f"Module path: {module_path}")
 
-    generated_files = get_generated_files(module_path, artifacts)
+    # check for artifacts, compiling if necessary
+    try:
+        assert not force_compile, "Forced compile"
+        artifacts = get_artifacts(module_path)
+    except AssertionError as err:
+        logger.debug(err)
+        vul4j.build(output_dir, clean=True)
+        artifacts = get_artifacts(module_path)
+    logger.debug(f"Found artifacts: {artifacts}")
+    # exception can be thrown
+
+    # select the correct jar path
+    jar_path = next(file for file in artifacts if 'SNAPSHOT.jar' in file)
+    # exception can be thrown
 
     # find modified methods and their classes
-    method_getter_output = os.path.join(reports_dir, 'modifications.json')
+    method_getter_output = os.path.join(reports_dir, utils.suffix_filename("modifications.json", version))
     method_getter_command = f"java -jar {METHOD_GETTER_PATH} {output_dir} {method_getter_output}"
-    method_getter_log_path = os.path.join(reports_dir, "modifications.log")
-    log_to_file = open(method_getter_log_path, "w", encoding="utf-8") if LOG_TO_FILE else FNULL
+    method_getter_log_path = os.path.join(reports_dir, utils.suffix_filename("modifications.log", version))
+    log_to_file = open(method_getter_log_path, "w", encoding="utf-8") if LOG_TO_FILE else subprocess.DEVNULL
+    logger.debug(method_getter_command)
 
-    try:
-        # TODO proper log to file
-        subprocess.run(method_getter_command,
-                       shell=True,
-                       stdout=FNULL,
-                       stderr=log_to_file,
-                       check=True)
-        assert os.path.exists(method_getter_output)
-    except (subprocess.CalledProcessError, AssertionError):
-        logger.error("Method getter failed!")
-
-    # get actual compiled jar path
-    jar_path = os.path.join(module_path, 'target',
-                            [file for file in generated_files['module_build_file_list'] if 'SNAPSHOT.jar' in file][0])
+    logger.info("Running method getter...")
+    subprocess.run(method_getter_command,
+                   shell=True,
+                   stdout=log_to_file,
+                   stderr=subprocess.STDOUT,
+                   check=True)
+    assert os.path.exists(method_getter_output), "Method getter failed to create output files"
+    # exception can be thrown
 
     # run spotbugs
-    spotbugs_output = os.path.join(reports_dir, "spotbugs_report.xml")
+    spotbugs_output = os.path.join(reports_dir, utils.suffix_filename("spotbugs_report.xml", version))
     spotbugs_command = f"java -jar {SPOTBUGS_PATH} -textui -low -xml={spotbugs_output} {jar_path}"
-    spotbugs_log_path = os.path.join(reports_dir, "spotbugs.log")
-    log_to_file = open(spotbugs_log_path, "w", encoding="utf-8") if LOG_TO_FILE else FNULL
+    spotbugs_log_path = os.path.join(reports_dir, utils.suffix_filename("spotbugs.log", version))
+    log_to_file = open(spotbugs_log_path, "w", encoding="utf-8") if LOG_TO_FILE else subprocess.DEVNULL
+    logger.debug(spotbugs_command)
 
-    # TODO proper log to file
-    try:
-        subprocess.run(spotbugs_command,
-                       shell=True,
-                       stdout=FNULL,
-                       stderr=log_to_file,
-                       check=True)
-        assert os.path.exists(spotbugs_output)
-    except (subprocess.CalledProcessError, AssertionError):
-        logger.error("Spotbugs failed!")
+    logger.info("Running spotbugs...")
+    subprocess.run(spotbugs_command,
+                   shell=True,
+                   stdout=log_to_file,
+                   stderr=subprocess.STDOUT,
+                   check=True)
+    assert os.path.exists(spotbugs_output), "Spotbugs failed to create output files"
+    # exception can be thrown
 
     # find warnings in modified methods
     warnings = {}
-
     with open(method_getter_output, 'r') as file:
         modifications = json.load(file)
 
-    tree = ET.parse(spotbugs_output)
+    tree = ElementTree.parse(spotbugs_output)
     root = tree.getroot()
     for java_class, java_methods in modifications.items():
         for java_method in java_methods:
@@ -91,202 +116,30 @@ def run_spotbugs(output_dir: str, artifacts: dict, vul: dict, version=None):
                 if method and method.attrib['classname'] == java_class and method.attrib['name'] == java_method:
                     warnings[java_method].add(bug_instance.attrib['type'])
 
-    warnings_output = os.path.join(reports_dir, 'warnings.json' if version is None else f'warnings_{version}.json')
-
+    warnings_output = os.path.join(reports_dir, utils.suffix_filename('warnings.json', version))
     with open(warnings_output, 'w') as file:
         json.dump({key: list(value) for key, value in warnings.items()}, file, indent=2)
 
+    warning_list = []
+    for warning_set in warnings.values():
+        warning_list.extend(warning_set)
+    logger.info(f"Warnings found: {warning_list if len(warning_list) else 'None'}")
 
-def restore_pom(output_dir: str):
-    repo = git.Repo(output_dir)
-    repo.git.checkout("--", "pom.xml")
 
-
-def get_generated_files(module_path, file_name):
+def get_artifacts(module_path: str) -> list:
     """
-    Search for the generated files we need
-    :param module_path: The module path
-    :param file_name: Name of file
+    Search for artifacts in the target directory.
+    Maven only.
+
+    :param module_path: the module path
     """
-    targetDirs = []
-    jar_war_ear_zips_in_all_target = []
-    for root, dirs, files in os.walk(module_path):
-        for directory in dirs:
-            if directory.split("/")[-1] == "target":
-                jar_war_ear_zips = (
-                        glob.glob(root + "/target/*.jar")
-                        + glob.glob(root + "/target/*.war")
-                        + glob.glob(root + "/target/*.ear")
-                        + glob.glob(root + "/target/*.zip")
-                )
-                if len(jar_war_ear_zips) != 0:
-                    targetDirs.append(root + "/target")
-                    for jwez in jar_war_ear_zips:
-                        jar_war_ear_zips_in_all_target.append(jwez)
 
-    if len(targetDirs) == 0:
-        raise Exception("Missing target folder!")
+    target_path = os.path.join(module_path, "target")
+    assert os.path.exists(target_path), "Target directory not found"
 
-    if len(targetDirs) == 1 and targetDirs[0] == module_path + "/target":
-        jar_war_ear_zips = (
-                glob.glob(module_path + os.path.sep + "target/*.jar")
-                + glob.glob(module_path + "/target/*.war")
-                + glob.glob(module_path + "/target/*.ear")
-                + glob.glob(module_path + "/target/*.zip")
-        )
-
-        artifact_id = file_name["artifactId"]
-        version = file_name["version"]
-        fileList = []
-        jar_war_ear_zip_name_without_version = artifact_id
-        jar_war_ear_zip_name_with_version = artifact_id + "-" + version
-        for filePath in jar_war_ear_zips:
-            fileList.append(str(filePath).split(os.path.sep)[-1])
-        for jar_war_ear_zip in jar_war_ear_zips:
-            build_file_name = str(jar_war_ear_zip).split(
-                os.path.sep)[-1].rsplit(".", 1)[0]
-            if str(build_file_name) == str(jar_war_ear_zip_name_with_version):
-                return {
-                    "default_build_file_path": jar_war_ear_zip,
-                    "module_build_file_list": fileList,
-                }
-            if str(build_file_name) == str(jar_war_ear_zip_name_without_version):
-                return {
-                    "default_build_file_path": jar_war_ear_zip,
-                    "module_build_file_list": fileList,
-                }
-        return {"default_build_file_path": "", "module_build_file_list": fileList}
-
-
-def edit_pom(pom_path):
-    """
-    Editing pom if it is necessary
-    :param pom_path: The path where pom.xml file is
-    """
-    namespace = ""
-    parser = ET.XMLParser(target=ET.TreeBuilder(insert_comments=True))
-    tree = ET.parse(pom_path, parser)
-    root = tree.getroot()
-    ns = root.tag.split("}")[0].strip("{")
-    if ns != "project":
-        ET.register_namespace("", ns)
-        namespace = "{" + ns + "}"
-
-    artifact_id = ""
-    version = ""
-    artifactId = root.find(namespace + "artifactId")
-    if artifactId is not None:
-        artifact_id = artifactId.text
-    module_version = root.find(namespace + "version")
-    if module_version is not None:
-        version = module_version.text
-
-    no_version = True
-
-    # build = root.find(namespace + "build")
-    # if build is None:
-    #     pass
-    # else:
-    #     print("-----CHECKING BUILD CONFIGURATION-----", "")
-    #     edit_build_configuration(build, namespace, no_version)
-
-    properties = root.find(namespace + "properties")
-    if (properties is None) & no_version:
-        child = ET.Element(namespace + "properties")
-        root.append(child)
-        properties = root.find(namespace + "properties")
-
-    if properties is not None:
-        print("-----CHECKING PROPERTIES-----", "")
-        no_version = edit_properties(properties, namespace)
-
-    tree.write(open(pom_path, "w"), encoding="unicode")
-
-    print("Pom edited", "")
-    return {"artifactId": artifact_id, "version": version}
-
-
-def edit_build_configuration(build, namespace, version=None):
-    """
-    Editing build configuration if it is necessary
-    :param build: The build tag
-    :param namespace: The namespace
-    :param no_version: java version
-    """
-    plugins = build.find(namespace + "plugins")
-    if plugins is None:
-        print("-----PLUGINS ARE MISSING FROM BUILD----", "")
-    else:
-        for plugin in plugins:
-            executions = plugin.find(namespace + "executions")
-            if executions is not None:
-                for execution in executions:
-                    phase = execution.find(namespace + "phase")
-                    if phase is not None and phase.text == "never":
-                        plugins.remove(plugin)
-            configuration = plugin.find(namespace + "configuration")
-            if configuration is not None:
-                print("-----CONFIGURATION FOUND WITHIN BUILD----", "")
-                source = configuration.find(namespace + "source")
-                if source is None:
-                    print(
-                        "-----NO SOURCE ELEMENT FOUND IN CONFIGURATION-----", "")
-                else:
-                    no_version = False
-                    print(
-                        "-----SOURCE ELEMENT FOUND IN CONFIGURATION-----", "")
-                    try:
-                        if float(source.text) <= float(version):
-                            source.text = version
-                    except:
-                        source.text = version
-
-                target = configuration.find(namespace + "target")
-                if target is None:
-                    print(
-                        "-----NO TARGET ELEMENT FOUND IN CONFIGURATION-----", "")
-                else:
-                    no_version = False
-                    print(
-                        "-----SOURCE ELEMENT FOUND IN CONFIGURATION-----", "")
-                    try:
-                        if float(target.text) <= float(version):
-                            target.text = version
-                    except:
-                        target.text = version
-    return no_version
-
-
-def edit_properties(properties, namespace):
-    """
-    Editing properties if it is necessary
-    :param properties: The properties tag
-    :param namespace: The namespace
-    """
-    # source_element = properties.find(namespace + "maven.compiler.source")
-    # if source_element is None:
-    #     source_element = ET.Element("maven.compiler.source")
-    #     source_element.text = PREFERRED_JAVA_VERSION
-    #     properties.insert(0, source_element)
-    #     print("-----SOURCE ELEMENT IS MISSING FROM POM, ADDING 1.8----", "")
-    # else:
-    #     print("-----SOURCE ELEMENT FOUND IN POM-----", "")
-
-    # target_element = properties.find(namespace + "maven.compiler.target")
-    # if target_element is None:
-    #     target_element = ET.Element("maven.compiler.target")
-    #     target_element.text = PREFERRED_JAVA_VERSION
-    #     properties.insert(0, target_element)
-    #     print("-----TARGET ELEMENT IS MISSING FROM POM, ADDING 1.8----", "")
-    # else:
-    #     print("-----TARGET ELEMENT FOUND IN POM----", "")
-
-    encoding_element = properties.find(
-        namespace + "project.build.sourceEncoding")
-    if encoding_element is None:
-        encoding_element = ET.Element("project.build.sourceEncoding")
-        encoding_element.text = "UTF-8"
-        properties.insert(0, encoding_element)
-        print("-----ENCODING ELEMENT IS MISSING FROM POM, ADDING UTF-8----", "")
-    else:
-        print("-----ENCODING FOUND IN POM----", "")
+    return (
+            glob.glob(f"{target_path}/*.jar")
+            + glob.glob(f"{target_path}/*.war")
+            + glob.glob(f"{target_path}/*.ear")
+            + glob.glob(f"{target_path}/*.zip")
+    )

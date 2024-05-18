@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 
 public class Main {
 
+    private static final String VERSION = "1.0.0";
     private static final Logger logger = Logger.getLogger(Main.class.getName());
 
     private static void extractData(String repositoryDir, String outputFile) {
@@ -70,11 +71,17 @@ public class Main {
 
     public static void main(String[] args) {
 
-        if (args.length != 2) {
-            logger.severe("Usage: GitCommitAnalyzer <repo_dir> <output_file>");
+        try {
+            if (args.length == 2) {
+                extractData(args[0], args[1]);
+            } else if (args.length == 1 && args[0].equals("-version")) {
+                logger.info("Version: " + VERSION);
+            } else {
+                throw new IllegalArgumentException("Invalid number of arguments!");
+            }
+        } catch (Exception e) {
+            logger.severe("Usage: <repo_dir> <output_file> OR -version");
             System.exit(1);
         }
-
-        extractData(args[0], args[1]);
     }
 }
