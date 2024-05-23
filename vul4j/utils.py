@@ -30,7 +30,8 @@ def log_frame(title: str):
             try:
                 func(*args, **kwargs)
             except Exception as err:
-                logger.exception(err)
+                logger.error(err)
+                raise
             finally:
                 end = f" END {title} "
                 logger.info(end.center(60, "="))
@@ -141,12 +142,13 @@ def get_spotbugs(location: str = None) -> None:
     os.remove(zip_file_path)
 
 
-def clean_build(project_dir: str, build_system: str) -> None:
+def clean_build(project_dir: str, build_system: str, env: dict) -> None:
     """
     Removes build leftovers.
 
     :param project_dir: path to the project to be cleaned
     :param build_system: maven or gradle
+    :param env: environmental variables with correct java version set
     """
 
     if build_system == "Maven":
@@ -165,6 +167,7 @@ def clean_build(project_dir: str, build_system: str) -> None:
                        stdout=subprocess.DEVNULL,
                        stderr=subprocess.DEVNULL,
                        cwd=project_dir,
+                       env=env,
                        check=True)
     except subprocess.CalledProcessError:
         logger.error("Clean failed!")
@@ -181,13 +184,13 @@ def get_java_home(java_version: str) -> str:
         version = int(java_version)
 
         if version <= 7:
-            return JAVA7_HOME
+            java_home = JAVA7_HOME
         elif version == 8:
-            return JAVA8_HOME
+            java_home = JAVA8_HOME
         else:
-            return JAVA11_HOME
+            java_home = JAVA11_HOME
+
+        assert java_home is not None, f"Java home not set for version {java_version}!"
+        return java_home
     except ValueError:
         raise AssertionError(f"Illegal java version: {java_version}")
-
-
-

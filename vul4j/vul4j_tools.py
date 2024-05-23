@@ -130,14 +130,16 @@ def checkout(vul_id: str, project_dir: str) -> None:
 
     # check if vul4j git has a branch for the vulnerability
     repo = git.Repo(VUL4J_GIT)
-    clone = vul_id in [branch for branch in repo.heads]
+    clone = vul_id not in set(branch.name.split('/')[-1] for branch in repo.refs)
 
+    project_clone = os.path.join(TEMP_CLONE_DIR, vul_id)
     if clone:
+        if os.path.exists(project_clone):
+            git.rmtree(project_clone)
         os.makedirs(TEMP_CLONE_DIR, exist_ok=True)
-        project_path = os.path.join(TEMP_CLONE_DIR, vul_id)
-        logger.info(f"Cloning project into '{project_path}'")
-        git.Repo.clone_from(vul['project_url'], project_path)
-        repo = git.Repo(project_path)
+        logger.info(f"Cloning project into '{project_clone}'")
+        git.Repo.clone_from(vul['project_url'], project_clone)
+        repo = git.Repo(project_clone)
         repo.git.checkout(vul['fixing_commit_hash'])
         logger.info("Done cloning!")
     else:
@@ -149,10 +151,10 @@ def checkout(vul_id: str, project_dir: str) -> None:
         repo.git.checkout("-f", vul_id.upper())
 
     # copy to working directory
-    copytree(TEMP_CLONE_DIR if clone else VUL4J_GIT, project_dir, ignore=ignore_patterns('.git'))
+    copytree(project_clone if clone else VUL4J_GIT, project_dir, ignore=ignore_patterns('.git'))
 
     # extract patched and vulnerable files
-    extract_patch_files(vul, project_dir, clone)
+    extract_patch_files(vul, project_dir, project_clone if clone else VUL4J_GIT, clone)
 
     # write vulnerability info into file
     vul_info_file_path = os.path.join(project_dir, VUL4J_OUTPUT, "vulnerability_info.json")
@@ -166,20 +168,20 @@ def checkout(vul_id: str, project_dir: str) -> None:
     with dest_repo.config_writer() as git_config:
         git_config.set_value("user", "name", "vul4j")
         git_config.set_value("user", "email", "vul4j@vul4j.org")
+
+    apply(project_dir, 'vulnerable', True)
     dest_repo.git.add('-A')
     dest_repo.git.commit("-m", "vulnerable")
 
     apply(project_dir, 'human_patch', True)
-
     dest_repo.git.add('-A')
     dest_repo.git.commit("-m", "human_patch")
     dest_repo.git.checkout("HEAD~1")
 
     if clone:
         # remove cloned repo
-        project_path = os.path.join(TEMP_CLONE_DIR, vul_id)
-        shutil.rmtree(project_path, ignore_errors=True)
-        assert not os.path.exists(project_path), "Failed to remove temporary cloned files"
+        git.rmtree(project_clone)
+        assert not os.path.exists(project_clone), "Failed to remove temporary cloned files"
     else:
         # revert to main branch
         repo.git.reset("--hard")
@@ -206,9 +208,6 @@ def build(project_dir: str, suffix: str = None, clean: bool = False) -> None:
     assert (vul.get("compile_cmd") is not None
             and vul.get("compile_cmd") != ""), f"No compile command found for {vul['vul_id']}"
 
-    if clean:
-        utils.clean_build(project_dir, vul["build_system"])
-
     java_home = utils.get_java_home(vul['compliance_level'])
     logger.debug(f"java home: {java_home}")
 
@@ -216,6 +215,9 @@ def build(project_dir: str, suffix: str = None, clean: bool = False) -> None:
     env["PATH"] = os.path.join(java_home, "bin") + os.pathsep + env["PATH"]
     env["JAVA_OPTIONS"] = "-Djdk.net.URLClassPath.disableClassPathURLCheck=true"
     env["MAVEN_OPTS"] = MVN_ARGS
+
+    if clean:
+        utils.clean_build(project_dir, vul["build_system"], env)
 
     compile_cmd = vul['compile_cmd'] + " " + vul['cmd_options']
     logger.debug(compile_cmd)
@@ -283,9 +285,6 @@ def test(project_dir: str, batch_type: str, suffix: str = None, clean: bool = Fa
 
     assert vul.get("test_cmd") is not None and vul.get("test_cmd") != "", f"No test command found for {vul['vul_id']}"
 
-    if clean:
-        utils.clean_build(project_dir, vul["build_system"])
-
     java_home = utils.get_java_home(vul['compliance_level'])
     logger.debug(f"java home: {java_home}")
 
@@ -295,6 +294,9 @@ def test(project_dir: str, batch_type: str, suffix: str = None, clean: bool = Fa
     env["PATH"] = os.path.join(java_home, "bin") + os.pathsep + env["PATH"]
     env["JAVA_OPTIONS"] = "-Djdk.net.URLClassPath.disableClassPathURLCheck=true"
     env["MAVEN_OPTS"] = MVN_ARGS
+
+    if clean:
+        utils.clean_build(project_dir, vul["build_system"], env)
 
     test_cmd = vul[cmd_type] + " " + vul['cmd_options']
     logger.debug(test_cmd)
@@ -341,7 +343,6 @@ def reproduce(vul_ids):
     Then the human_patch version is run.
 
     :param vul_ids: single id or list of ids to reproduce
-    :return:
     """
 
     vulnerabilities = []
@@ -497,17 +498,17 @@ def reproduce(vul_ids):
                 continue
 
 
-# TODO fix
-def classpath(output_dir):
+def classpath(project_dir: str) -> str:
     """
-    modify from https://github.com/program-repair/RepairThemAll/blob/master/script/info_json_file.py
+    Reads classpath info.
 
-    :param output_dir:
-    :return:
+    :param project_dir: path to the project
+    :return classpath info
     """
 
-    vul = read_vul_from_file(output_dir)
-    # exception can be thrown
+    assert os.name == "posix", "Only available on linux!"
+
+    vul = read_vul_from_file(project_dir)
 
     """
     ----------------------------------------
@@ -536,7 +537,7 @@ def classpath(output_dir):
             if matched is None:
                 logger.error("The test all command should follow the regex \"(./gradlew :.*:)test$\"!"
                              f" It is now {test_all_cmd}")
-                return
+                return ""
 
             gradle_classpath_cmd = matched.group(1) + "copyClasspath"
             classpath_info_file = os.path.join(vul['failing_module'], 'classpath.info')
@@ -576,13 +577,15 @@ def classpath(output_dir):
                    stdout=subprocess.STDOUT,
                    stderr=subprocess.STDOUT,
                    env=env,
-                   cwd=output_dir,
+                   cwd=project_dir,
                    check=True)
 
-    classpath_result = subprocess.check_output(cp_cmd[1],
-                                               shell=True,
-                                               cwd=output_dir,
-                                               env=env)
+    classpath_result = str(subprocess.run(cp_cmd[1],
+                                          shell=True,
+                                          stdout=subprocess.PIPE,
+                                          stderr=subprocess.STDOUT,
+                                          cwd=project_dir,
+                                          env=env))
     return classpath_result
 
 
@@ -605,7 +608,7 @@ def read_vul_from_file(output_dir: str) -> dict:
         raise VulnerabilityNotFoundError("No vulnerability found in the directory!")
 
 
-def extract_patch_files(vul: dict, project_dir: str, compare_with_parent: bool = False) -> None:
+def extract_patch_files(vul: dict, project_dir: str, repo_dir: str, compare_with_parent: bool = False) -> None:
     """
     Compares the human_patch commit to the vulnerable HEAD commit by default and
     extracts the modified files into separate folders.
@@ -614,14 +617,15 @@ def extract_patch_files(vul: dict, project_dir: str, compare_with_parent: bool =
     A 'paths.json' file is also placed in each directory which points to the files location in the project.
 
     :param vul: vulnerability dictionary
-    :param project_dir: path to the projects directory
+    :param project_dir: path to the projects directory (where it is copied)
+    :param repo_dir: path to the git directory with all the commits
     :param compare_with_parent: if True, it will compare the fixing commit hash with
     """
     human_patch_dir = "human_patch"
     vulnerable_dir = "vulnerable"
     paths_filename = "paths.json"
 
-    repo = git.Repo(VUL4J_GIT)
+    repo = git.Repo(repo_dir)
     compare_to = f"{vul['fixing_commit_hash']}~1" if compare_with_parent else repo.head.commit
     logger.debug(f"Comparing fixing commit to {'parent' if compare_with_parent else 'HEAD'}...")
     diff = repo.commit(vul["fixing_commit_hash"]).diff(compare_to)
@@ -665,6 +669,7 @@ def extract_patch_files(vul: dict, project_dir: str, compare_with_parent: bool =
 def read_test_results(vul: dict, project_dir: str) -> dict:
     """
     Reads test results from result files.
+    Modify from https://github.com/program-repair/RepairThemAll/blob/master/script/info_json_file.py
 
     :param vul: vulnerability dictionary
     :param project_dir: where the project is located

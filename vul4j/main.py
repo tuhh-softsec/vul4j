@@ -15,7 +15,7 @@ logger.remove()
 logger.add(sys.stdout,
            colorize=True,
            format="<cyan>{time:YYYY-MM-DD HH:mm:ss}</cyan> | <level>{message}</level>",
-           diagnose=True,
+           diagnose=False,
            backtrace=False,
            level="INFO")
 logger.add(os.path.join(VUL4J_DATA, "logs", "vul4j_debug_logs.log"),
