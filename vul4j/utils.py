@@ -7,7 +7,7 @@ import zipfile
 from loguru import logger
 
 from vul4j.config import VUL4J_GIT, JAVA7_HOME, JAVA8_HOME, SPOTBUGS_PATH, \
-    METHOD_GETTER_PATH, DATASET_PATH, SPOTBUGS_VERSION
+    METHOD_GETTER_PATH, DATASET_PATH, SPOTBUGS_VERSION, VUL4J_DATA, JAVA11_HOME
 
 SEPARATOR = 60 * "-"
 THICK_SEPARATOR = 60 * "="
@@ -15,7 +15,7 @@ THICK_SEPARATOR = 60 * "="
 
 def suffix_filename(filename: str, suffix: str):
     """
-    puts version in the filename if needed
+    Puts version in the filename if needed.
     """
     name_list = filename.split(".")
     return f"{name_list[0]}_{suffix}.{name_list[1]}" if suffix else ".".join(name_list)
@@ -27,9 +27,13 @@ def log_frame(title: str):
         def wrapper(*args, **kwargs):
             start = f" START {title} "
             logger.info(start.center(60, "="))
-            func(*args, **kwargs)
-            end = f" END {title} "
-            logger.info(end.center(60, "="))
+            try:
+                func(*args, **kwargs)
+            except Exception as err:
+                logger.exception(err)
+            finally:
+                end = f" END {title} "
+                logger.info(end.center(60, "="))
 
         return wrapper
 
@@ -42,7 +46,7 @@ def check_status():
     """
 
     # check vul4j.ini
-    vul4j_config = os.path.exists(os.path.join(os.path.expanduser("~"), "vul4j.ini"))
+    vul4j_config = os.path.exists(os.path.join(VUL4J_DATA, "vul4j.ini"))
 
     # check vul4j git
     vul4j_git = bool(VUL4J_GIT) and os.path.exists(os.path.join(VUL4J_GIT, ".git"))
@@ -66,6 +70,15 @@ def check_status():
     if JAVA8_HOME:
         env["PATH"] = os.path.join(JAVA8_HOME, "bin") + os.pathsep + env["PATH"]
         java8 = "1.8" in str(subprocess.run("java -version",
+                                            shell=True,
+                                            stdout=subprocess.PIPE,
+                                            stderr=subprocess.STDOUT,
+                                            env=env))
+
+    java11 = False
+    if JAVA11_HOME:
+        env["PATH"] = os.path.join(JAVA11_HOME, "bin") + os.pathsep + env["PATH"]
+        java11 = "11" in str(subprocess.run("java -version",
                                             shell=True,
                                             stdout=subprocess.PIPE,
                                             stderr=subprocess.STDOUT,
@@ -99,24 +112,32 @@ def check_status():
     log_result("VUL4J dataset", vul4j_dataset)
     log_result("Java 7", java7)
     log_result("Java 8", java8)
+    log_result("Java 11", java11)
     log_result("Maven", maven)
     log_result("Spotbugs", spotbugs)
     log_result("Spotbugs method getter", method_getter)
 
 
-def get_spotbugs():
+def get_spotbugs(location: str = None) -> None:
     """
     Downloads Spotbugs. The version can be specified in the config file. Default is 4.8.5.
     """
-    zip_file_path = os.path.expanduser(f"~/spotbugs-{SPOTBUGS_VERSION}.zip")
+
+    download_dir = VUL4J_DATA if location is None else location
+    os.makedirs(download_dir, exist_ok=True)
+    zip_file_path = os.path.join(download_dir, f"spotbugs-{SPOTBUGS_VERSION}.zip")
+
+    logger.info(f"Downloading spotbugs zip to: {zip_file_path}")
     urllib.request.urlretrieve(
         f"https://github.com/spotbugs/spotbugs/releases/download/{SPOTBUGS_VERSION}/spotbugs-{SPOTBUGS_VERSION}.zip",
         zip_file_path)
 
+    logger.info(f"Extracting zip to {VUL4J_DATA}")
     with zipfile.ZipFile(zip_file_path, 'r') as zip_ref:
-        zip_ref.extractall(os.path.expanduser("~"))
+        zip_ref.extractall(VUL4J_DATA)
 
     # delete the zip file
+    logger.info(f"Removing spotbugs zip...")
     os.remove(zip_file_path)
 
 
@@ -147,3 +168,26 @@ def clean_build(project_dir: str, build_system: str) -> None:
                        check=True)
     except subprocess.CalledProcessError:
         logger.error("Clean failed!")
+
+
+def get_java_home(java_version: str) -> str:
+    """
+    Returns JAVA_HOME location depending on the specified java version.
+
+    :param java_version: java version
+    :return: JAVA_HOME path
+    """
+    try:
+        version = int(java_version)
+
+        if version <= 7:
+            return JAVA7_HOME
+        elif version == 8:
+            return JAVA8_HOME
+        else:
+            return JAVA11_HOME
+    except ValueError:
+        raise AssertionError(f"Illegal java version: {java_version}")
+
+
+

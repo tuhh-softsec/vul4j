@@ -8,13 +8,13 @@ import xml.etree.ElementTree as ElementTree
 from loguru import logger
 
 import vul4j.utils as utils
-from vul4j.config import VUL4J_WORKDIR, SPOTBUGS_PATH, METHOD_GETTER_PATH, LOG_TO_FILE
-import vul4j.vul4j_class as vul4j
+from vul4j.config import VUL4J_OUTPUT, SPOTBUGS_PATH, METHOD_GETTER_PATH, LOG_TO_FILE
+import vul4j.vul4j_tools as vul4j
 
 original_stdout = sys.stdout
 
 
-def run_spotbugs(output_dir: str, version=None, force_compile=False) -> None:
+def run_spotbugs(output_dir: str, version=None, force_compile=False) -> list:
     """
     Runs Spotbugs check on the project found in the provided directory.
     The project must contain a 'vulnerability_info.json' file.
@@ -40,11 +40,10 @@ def run_spotbugs(output_dir: str, version=None, force_compile=False) -> None:
     vul = vul4j.read_vul_from_file(output_dir)
 
     # create spotbugs directory
-    reports_dir = os.path.join(output_dir, VUL4J_WORKDIR, "spotbugs")
+    reports_dir = os.path.join(output_dir, VUL4J_OUTPUT, "spotbugs")
     os.makedirs(reports_dir, exist_ok=True)
     assert os.path.exists(reports_dir), "Failed to create spotbugs directory!"
     logger.debug("Spotbugs directory created!")
-    # exception can be thrown
 
     # get module path where compiled jars are located
     failing_module = vul["failing_module"]
@@ -60,14 +59,12 @@ def run_spotbugs(output_dir: str, version=None, force_compile=False) -> None:
         artifacts = get_artifacts(module_path)
     except AssertionError as err:
         logger.debug(err)
-        vul4j.build(output_dir, clean=True)
+        vul4j.build(output_dir, version, clean=True)
         artifacts = get_artifacts(module_path)
     logger.debug(f"Found artifacts: {artifacts}")
-    # exception can be thrown
 
     # select the correct jar path
-    jar_path = next(file for file in artifacts if 'SNAPSHOT.jar' in file)
-    # exception can be thrown
+    jar_path = next(file for file in artifacts if ('SNAPSHOT.jar' in file or 'shaded.jar' in file))
 
     # find modified methods and their classes
     method_getter_output = os.path.join(reports_dir, utils.suffix_filename("modifications.json", version))
@@ -82,8 +79,7 @@ def run_spotbugs(output_dir: str, version=None, force_compile=False) -> None:
                    stdout=log_to_file,
                    stderr=subprocess.STDOUT,
                    check=True)
-    assert os.path.exists(method_getter_output), "Method getter failed to create output files"
-    # exception can be thrown
+    assert os.path.exists(method_getter_output), "Method getter failed to create output files!"
 
     # run spotbugs
     spotbugs_output = os.path.join(reports_dir, utils.suffix_filename("spotbugs_report.xml", version))
@@ -98,8 +94,7 @@ def run_spotbugs(output_dir: str, version=None, force_compile=False) -> None:
                    stdout=log_to_file,
                    stderr=subprocess.STDOUT,
                    check=True)
-    assert os.path.exists(spotbugs_output), "Spotbugs failed to create output files"
-    # exception can be thrown
+    assert os.path.exists(spotbugs_output), "Spotbugs failed to create output files!"
 
     # find warnings in modified methods
     warnings = {}
@@ -124,6 +119,8 @@ def run_spotbugs(output_dir: str, version=None, force_compile=False) -> None:
     for warning_set in warnings.values():
         warning_list.extend(warning_set)
     logger.info(f"Warnings found: {warning_list if len(warning_list) else 'None'}")
+
+    return warning_list
 
 
 def get_artifacts(module_path: str) -> list:

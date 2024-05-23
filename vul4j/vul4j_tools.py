@@ -12,7 +12,7 @@ from loguru import logger
 
 import vul4j.spotbugs as spotbugs
 import vul4j.utils as utils
-from vul4j.config import JAVA7_HOME, MVN_ARGS, JAVA8_HOME, VUL4J_WORKDIR, LOG_TO_FILE, DATASET_PATH, \
+from vul4j.config import JAVA7_HOME, MVN_ARGS, JAVA8_HOME, VUL4J_OUTPUT, LOG_TO_FILE, DATASET_PATH, \
     TEMP_CLONE_DIR, VUL4J_GIT, REPRODUCTION_DIR, VUL4J_COMMITS_URL
 
 
@@ -24,12 +24,20 @@ class VulnerabilityNotFoundError(Exception):
 def load_vulnerabilities() -> dict:
     """
     Loads vulnerability information from the csv dataset into a dictionary of dictionaries.
+    The program exits if the dataset is not found.
 
     :return: dictionary of vulnerabilities
     """
 
+    try:
+        assert os.path.exists(DATASET_PATH)
+    except AssertionError:
+        logger.critical("Vul4j dataset not found!")
+        exit(1)
+
     def get_column(column):
-        return row[column].strip()
+        value = row.get(column)
+        return value.strip() if value is not None else value
 
     vulnerabilities = {}
 
@@ -44,7 +52,7 @@ def load_vulnerabilities() -> dict:
                 "project": get_column("repo_slug").replace("/", "_"),
                 "project_url": f"https://github.com/{get_column('repo_slug')}",
                 "build_system": get_column("build_system"),
-                "compliance_level": int(get_column("compliance_level")),
+                "compliance_level": get_column("compliance_level"),
                 "compile_cmd": get_column("compile_cmd"),
                 "test_all_cmd": get_column("test_all_cmd"),
                 "test_cmd": get_column("test_cmd"),
@@ -53,6 +61,7 @@ def load_vulnerabilities() -> dict:
                 "fixing_commit_hash": get_commit_hash(get_column("human_patch")),
                 "human_patch_url": get_column("human_patch"),
                 "failing_tests": get_column("failing_tests").split(','),
+                "warning": get_column("warning")
             }
 
     return vulnerabilities
@@ -66,12 +75,28 @@ def get_commit_hash(commit_url: str):
         return commit_hash.strip()
 
 
-def get_info(vul_id):
+def get_info(vul_id: str) -> None:
+    """
+    Logs information about the specified vulnerability.
+
+    Raises VulnerabilityNotFoundError if the vulnerability is not found.
+
+    :param vul_id: vulnerability id
+    """
     vul = get_vulnerability(vul_id)
     logger.info(json.dumps(vul, indent=4))
 
 
-def get_vulnerability(vul_id):
+def get_vulnerability(vul_id: str) -> dict:
+    """
+    Loads specified vulnerability from dataset.
+
+    Raises VulnerabilityNotFoundError if the vulnerability is not found.
+
+    :param vul_id: vulnerability id
+    :return: dictionary of vulnerability data
+    """
+
     vul = load_vulnerabilities().get(vul_id)
     if vul is None:
         raise VulnerabilityNotFoundError(f"Vulnerability not found: {vul_id}!")
@@ -79,7 +104,7 @@ def get_vulnerability(vul_id):
     return vul
 
 
-def checkout(vul_id: str, project_dir: str, clone: bool = False) -> None:
+def checkout(vul_id: str, project_dir: str) -> None:
     """
     Copies and initializes the specified vulnerability into the output directory.
 
@@ -97,14 +122,15 @@ def checkout(vul_id: str, project_dir: str, clone: bool = False) -> None:
 
     :param vul_id:  vulnerability ID to be checked out
     :param project_dir:  where the checked out project will be copied
-    :param clone:   non vul4j projects that need to be cloned instead of checked out from the vul4j git
     """
 
     vul = get_vulnerability(vul_id)
-    # exception can be thrown
 
     assert not os.path.exists(project_dir), f"Directory '{project_dir}' already exists!"
-    # exception can be thrown
+
+    # check if vul4j git has a branch for the vulnerability
+    repo = git.Repo(VUL4J_GIT)
+    clone = vul_id in [branch for branch in repo.heads]
 
     if clone:
         os.makedirs(TEMP_CLONE_DIR, exist_ok=True)
@@ -129,12 +155,11 @@ def checkout(vul_id: str, project_dir: str, clone: bool = False) -> None:
     extract_patch_files(vul, project_dir, clone)
 
     # write vulnerability info into file
-    vul_info_file_path = os.path.join(project_dir, VUL4J_WORKDIR, "vulnerability_info.json")
+    vul_info_file_path = os.path.join(project_dir, VUL4J_OUTPUT, "vulnerability_info.json")
     with open(vul_info_file_path, "w", encoding='utf-8') as f:
         f.write(json.dumps(vul, indent=2))
 
     assert os.path.exists(vul_info_file_path), "Failed to create vulnerability_info.json file"
-    # exception can be thrown
 
     # create vulnerable and human_patch commits
     dest_repo = git.Repo.init(project_dir)
@@ -168,23 +193,24 @@ def build(project_dir: str, suffix: str = None, clean: bool = False) -> None:
     Compiles the project found in the provided directory.
     The project must contain a 'vulnerability_info.json' file.
 
+    Important errors can be: VulnerabilityNotFoundError, AssertionError, subprocess.CalledProcessError,
+    but might raise other errors too.
+
     :param project_dir: path to the project to be compiled
     :param suffix: suffix to add to log files if needed (None means no suffix)
     :param clean: clean project before compiling
     """
 
     vul = read_vul_from_file(project_dir)
-    # exception can be thrown
 
     assert (vul.get("compile_cmd") is not None
             and vul.get("compile_cmd") != ""), f"No compile command found for {vul['vul_id']}"
-    # exception can be thrown
 
     if clean:
         utils.clean_build(project_dir, vul["build_system"])
 
-    java_home = JAVA7_HOME if vul['compliance_level'] <= 7 else JAVA8_HOME
-    logger.debug(f"Java home: {java_home}")
+    java_home = utils.get_java_home(vul['compliance_level'])
+    logger.debug(f"java home: {java_home}")
 
     env = os.environ.copy()
     env["PATH"] = os.path.join(java_home, "bin") + os.pathsep + env["PATH"]
@@ -194,7 +220,7 @@ def build(project_dir: str, suffix: str = None, clean: bool = False) -> None:
     compile_cmd = vul['compile_cmd'] + " " + vul['cmd_options']
     logger.debug(compile_cmd)
 
-    log_path = os.path.join(project_dir, VUL4J_WORKDIR, utils.suffix_filename("compile.log", suffix))
+    log_path = os.path.join(project_dir, VUL4J_OUTPUT, utils.suffix_filename("compile.log", suffix))
     log_output = open(log_path, "w", encoding="utf-8") if LOG_TO_FILE else subprocess.DEVNULL
 
     logger.info("Compiling...")
@@ -205,7 +231,6 @@ def build(project_dir: str, suffix: str = None, clean: bool = False) -> None:
                    cwd=project_dir,
                    env=env,
                    check=True)
-    # exception can be thrown
 
 
 def apply(project_dir: str, version: str, quiet: bool = False) -> None:
@@ -213,25 +238,25 @@ def apply(project_dir: str, version: str, quiet: bool = False) -> None:
     Copies the selected file versions into their respective locations.
     The version folder must contain a paths.json file which describes the location of each file in the project.
 
+    Important errors can be: VulnerabilityNotFoundError, but might raise other errors too.
+
     :param project_dir:  where the project is located
     :param version: the version to apply
     :param quiet:   does not display messages if True
     """
 
     vul = read_vul_from_file(project_dir)
-    # exception can be thrown
 
     if version == "human_patch" and not quiet:
         logger.warning(f"Please check {VUL4J_COMMITS_URL + vul['vul_id']} if build fails.")
 
-    with open(os.path.join(project_dir, VUL4J_WORKDIR, version, "paths.json"), "r") as file:
+    with open(os.path.join(project_dir, VUL4J_OUTPUT, version, "paths.json"), "r") as file:
         paths = json.load(file)
-    # exception can be thrown
 
     if not quiet:
         logger.info(f"Applying version: {version}")
     for file, path in paths.items():
-        shutil.copy(str(os.path.join(project_dir, VUL4J_WORKDIR, version, file)),
+        shutil.copy(str(os.path.join(project_dir, VUL4J_OUTPUT, version, file)),
                     str(os.path.join(project_dir, "/".join(path.split("/")[:-1]))))
 
     if not quiet:
@@ -255,15 +280,15 @@ def test(project_dir: str, batch_type: str, suffix: str = None, clean: bool = Fa
     """
 
     vul = read_vul_from_file(project_dir)
-    # exception can be thrown
 
     assert vul.get("test_cmd") is not None and vul.get("test_cmd") != "", f"No test command found for {vul['vul_id']}"
-    # exception can be thrown
 
     if clean:
         utils.clean_build(project_dir, vul["build_system"])
 
-    java_home = JAVA7_HOME if vul["compliance_level"] <= 7 else JAVA8_HOME
+    java_home = utils.get_java_home(vul['compliance_level'])
+    logger.debug(f"java home: {java_home}")
+
     cmd_type = "test_all_cmd" if batch_type == "all" else "test_cmd"
 
     env = os.environ.copy()
@@ -272,8 +297,9 @@ def test(project_dir: str, batch_type: str, suffix: str = None, clean: bool = Fa
     env["MAVEN_OPTS"] = MVN_ARGS
 
     test_cmd = vul[cmd_type] + " " + vul['cmd_options']
+    logger.debug(test_cmd)
 
-    log_path = os.path.join(project_dir, VUL4J_WORKDIR, utils.suffix_filename("testing.log", suffix))
+    log_path = os.path.join(project_dir, VUL4J_OUTPUT, utils.suffix_filename("testing.log", suffix))
     log_output = open(log_path, "w", encoding="utf-8") if LOG_TO_FILE else subprocess.DEVNULL
 
     logger.info(f"Running {'' if batch_type == 'all' else 'PoV '}tests...")
@@ -283,12 +309,11 @@ def test(project_dir: str, batch_type: str, suffix: str = None, clean: bool = Fa
                    stderr=subprocess.STDOUT,
                    cwd=project_dir,
                    env=env)
-    # exception can be thrown
 
     test_results = read_test_results(vul, project_dir)
 
     with (open(os.path.join(project_dir,
-                            VUL4J_WORKDIR,
+                            VUL4J_OUTPUT,
                             utils.suffix_filename("testing_results.json", suffix)), "w")) as f:
         json.dump(test_results, f, indent=2)
 
@@ -308,7 +333,7 @@ def test(project_dir: str, batch_type: str, suffix: str = None, clean: bool = Fa
     return test_results
 
 
-def reproduce(vul_ids, is_reproduce: bool = False):
+def reproduce(vul_ids):
     """
     Verifies vulnerabilities that are in the official VUL4J dataset or reproduces newly added entries.
 
@@ -316,7 +341,6 @@ def reproduce(vul_ids, is_reproduce: bool = False):
     Then the human_patch version is run.
 
     :param vul_ids: single id or list of ids to reproduce
-    :param is_reproduce:
     :return:
     """
 
@@ -330,7 +354,7 @@ def reproduce(vul_ids, is_reproduce: bool = False):
             logger.warning(f"{err} Excluding...")
             continue
 
-    logger.info(f"{'Reproducing' if is_reproduce else 'Verifying'} {len(vulnerabilities)} vulnerabilities...")
+    logger.info(f"Reproducing {len(vulnerabilities)} vulnerabilities...")
 
     os.makedirs(REPRODUCTION_DIR, exist_ok=True)
     assert os.path.exists(REPRODUCTION_DIR), "Failed to create reproduction directory!"
@@ -338,34 +362,37 @@ def reproduce(vul_ids, is_reproduce: bool = False):
     with open(os.path.join(REPRODUCTION_DIR, 'successful_vulnerabilities.txt'), 'a+') as success_vulnerabilities:
         for vul in vulnerabilities:
             try:
-                logger.info(vul['vul_id'].center(60, "-"))
-                #logger.info(f"{'Reproducing' if is_reproduce else 'Verifying'} vulnerability: {vul['vul_id']}...")
+                tests_ran = False
+                spotbugs_ok = False
 
+                logger.info(vul['vul_id'].center(60, "-"))
                 project_dir = str(os.path.join(REPRODUCTION_DIR, vul['vul_id']))
 
                 # remove existing project directory
                 if os.path.exists(project_dir):
                     shutil.rmtree(project_dir)
 
-                checkout(vul['vul_id'], project_dir, is_reproduce)
+                checkout(vul['vul_id'], project_dir)
 
                 # vulnerable
+                version = "vulnerable"
                 try:
-                    logger.info("Applying version: vulnerable")
-                    apply(project_dir, "vulnerable", quiet=True)
+                    logger.info(f"Applying version: {version}")
+                    apply(project_dir, version, quiet=True)
                 except FileNotFoundError:
-                    logger.error(f"No such version: vulnerable")
+                    logger.error(f"No such version: {version}")
                     continue
 
                 force_recompile = False
                 try:
-                    build(project_dir, clean=True)
+                    build(project_dir, version, clean=True)
                 except subprocess.CalledProcessError:
                     force_recompile = True
                     logger.error("Compile failed! Keep going...")
 
                 try:
-                    test_results = test(project_dir, "all" if is_reproduce else "povs", "vulnerable")
+                    tests = "povs" if vul["failing_tests"] else "all"
+                    test_results = test(project_dir, tests, version)
                     failing_tests = set()
                     failures = test_results['tests']['failures']
                     passing_tests = test_results['tests']['passing_tests']
@@ -386,6 +413,8 @@ def reproduce(vul_ids, is_reproduce: bool = False):
                 except AssertionError as err:
                     logger.warning(err)
 
+                if force_recompile:
+                    logger.info("Compile failed previously. Trying again for Spotbugs...")
                 try:
                     spotbugs.run_spotbugs(project_dir, None, force_recompile)
                 except subprocess.CalledProcessError:
@@ -393,27 +422,27 @@ def reproduce(vul_ids, is_reproduce: bool = False):
                     logger.error("Task failed! Keep going...")
                 except StopIteration:
                     # the correct jar was not found
-                    logger.error("No runnable artifact found. Keep going...")
-
-                logger.info(utils.SEPARATOR)
+                    logger.error("No runnable artifact found! Keep going...")
 
                 # human patch
+                version = "human_patch"
                 try:
-                    logger.info("Applying version: human_patch")
-                    apply(project_dir, "human_patch", quiet=True)
+                    logger.info(f"Applying version: {version}")
+                    apply(project_dir, version, quiet=True)
                 except FileNotFoundError:
-                    logger.error(f"No such version: human_patch")
+                    logger.error(f"No such version: {version}")
                     continue
 
                 force_recompile = False
                 try:
-                    build(project_dir)
+                    build(project_dir, version, clean=True)
                 except subprocess.CalledProcessError:
                     force_recompile = True
                     logger.error("Compile failed! Keep going...")
 
                 try:
-                    test_results = test(project_dir, "all" if is_reproduce else "povs", "human_patch")
+                    tests = "povs" if vul["failing_tests"] else "all"
+                    test_results = test(project_dir, tests, version)
                     failing_tests = set()
                     failures = test_results['tests']['failures']
                     passing_tests = test_results['tests']['passing_tests']
@@ -422,6 +451,7 @@ def reproduce(vul_ids, is_reproduce: bool = False):
                     if len(failures) == len(passing_tests) == len(skipping_tests) == 0:
                         logger.error("Build failed, no tests were run!")
                     else:
+                        tests_ran = True
                         for failure in failures:
                             failing_tests.add(failure['test_class'] + '#' + failure['test_method'])
                         if len(failing_tests) == 0:
@@ -431,21 +461,34 @@ def reproduce(vul_ids, is_reproduce: bool = False):
                             logger.critical("Patched version must contain no failing test!!!")
                             continue
                 except subprocess.CalledProcessError:
-                    logger.error("Tests failed! Keep going...")
+                    logger.error("Tests failed!")
                 except AssertionError as err:
                     logger.warning(err)
 
+                if force_recompile:
+                    logger.info("Compile failed previously. Trying again for Spotbugs...")
                 try:
-                    spotbugs.run_spotbugs(project_dir, None, force_recompile)
+                    warnings_human_patch = spotbugs.run_spotbugs(project_dir, None, force_recompile)
+                    if vul["warning"] not in warnings_human_patch:
+                        spotbugs_ok = True
                 except subprocess.CalledProcessError:
                     # compile, method getter or spotbugs fails
-                    logger.error("Task failed! Keep going...")
+                    logger.error("Task failed!")
                 except StopIteration:
                     # the correct jar was not found
-                    logger.error("No runnable artifact found. Keep going...")
+                    logger.error("No runnable artifact found!")
 
-                logger.success(f"The vulnerability {vul['vul_id']} has been "
-                               f"{'reproduced' if is_reproduce else 'verified'} successfully!")
+                if tests_ran:
+                    if spotbugs_ok:
+                        logger.success(f"{vul['vul_id']} has been reproduced successfully!")
+                    else:
+                        logger.warning(f"The vulnerabilities in {vul['vul_id']} have been reproduced successfully, "
+                                       f"but the Spotbugs analysis did not pass!")
+                else:
+                    if spotbugs_ok:
+                        logger.success(f"Spotbugs check for {vul['vul_id']} has been reproduced successfully!")
+                    else:
+                        logger.error(f"Spotbugs check for {vul['vul_id']} failed!")
 
                 success_vulnerabilities.write(vul['vul_id'] + '\n')
                 success_vulnerabilities.flush()
@@ -552,8 +595,8 @@ def read_vul_from_file(output_dir: str) -> dict:
     """
 
     try:
-        logger.debug("Reading vulnerability from file")
-        with open(os.path.join(output_dir, VUL4J_WORKDIR, "vulnerability_info.json")) as info_file:
+        logger.debug("Reading vulnerability from file...")
+        with open(os.path.join(output_dir, VUL4J_OUTPUT, "vulnerability_info.json")) as info_file:
             vul = json.load(info_file)
         assert vul.get("vul_id") is not None, "vul_id not found in dict, info file probably empty or incomplete"
         return vul
@@ -580,6 +623,7 @@ def extract_patch_files(vul: dict, project_dir: str, compare_with_parent: bool =
 
     repo = git.Repo(VUL4J_GIT)
     compare_to = f"{vul['fixing_commit_hash']}~1" if compare_with_parent else repo.head.commit
+    logger.debug(f"Comparing fixing commit to {'parent' if compare_with_parent else 'HEAD'}...")
     diff = repo.commit(vul["fixing_commit_hash"]).diff(compare_to)
     changed_java_source_files = []
 
@@ -589,29 +633,31 @@ def extract_patch_files(vul: dict, project_dir: str, compare_with_parent: bool =
             changed_java_source_files.append(modified_file)
 
     # extract vulnerable and patched code into separate folders
-    os.makedirs(os.path.join(project_dir, VUL4J_WORKDIR, human_patch_dir))
-    os.makedirs(os.path.join(project_dir, VUL4J_WORKDIR, vulnerable_dir))
+    os.makedirs(os.path.join(project_dir, VUL4J_OUTPUT, human_patch_dir))
+    os.makedirs(os.path.join(project_dir, VUL4J_OUTPUT, vulnerable_dir))
 
+    logger.debug("Writing file contents...")
     for file in changed_java_source_files:
         human_patch = file.a_blob
         vulnerable = file.b_blob
 
         # write human_patch file content
-        with open(os.path.join(project_dir, VUL4J_WORKDIR, human_patch_dir, human_patch.name), "w",
+        with open(os.path.join(project_dir, VUL4J_OUTPUT, human_patch_dir, human_patch.name), "w",
                   encoding="utf-8") as f:
             f.write(human_patch.data_stream.read().decode("utf-8"))
 
         # write vulnerable file content
-        with open(os.path.join(project_dir, VUL4J_WORKDIR, vulnerable_dir, vulnerable.name), "w",
+        with open(os.path.join(project_dir, VUL4J_OUTPUT, vulnerable_dir, vulnerable.name), "w",
                   encoding="utf-8") as f:
             f.write(vulnerable.data_stream.read().decode("utf-8"))
 
     # write paths into file
-    with open(os.path.join(project_dir, VUL4J_WORKDIR, human_patch_dir, paths_filename), "w",
+    logger.debug("Writing paths data...")
+    with open(os.path.join(project_dir, VUL4J_OUTPUT, human_patch_dir, paths_filename), "w",
               encoding="utf-8") as f:
         json.dump({entry.a_blob.name: entry.a_blob.path for entry in changed_java_source_files}, f, indent=2)
 
-    with open(os.path.join(project_dir, VUL4J_WORKDIR, vulnerable_dir, paths_filename), "w",
+    with open(os.path.join(project_dir, VUL4J_OUTPUT, vulnerable_dir, paths_filename), "w",
               encoding="utf-8") as f:
         json.dump({entry.b_blob.name: entry.b_blob.path for entry in changed_java_source_files}, f, indent=2)
 
@@ -625,7 +671,7 @@ def read_test_results(vul: dict, project_dir: str) -> dict:
     :return:    dictionary of test results
     """
 
-    logger.debug("Reading test results")
+    logger.debug("Reading test results...")
 
     # find report files
     report_files = []
