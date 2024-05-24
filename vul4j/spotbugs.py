@@ -37,7 +37,9 @@ def run_spotbugs(output_dir: str, version=None, force_compile=False) -> list:
     :param force_compile:   recompile project
     """
 
-    vul = vul4j.read_vul_from_file(output_dir)
+    vul = vul4j.Vulnerability.from_json(output_dir)
+
+    assert vul.build_system == "Maven", f"Incompatible build system: {vul.build_system}"
 
     # create spotbugs directory
     reports_dir = os.path.join(output_dir, VUL4J_OUTPUT, "spotbugs")
@@ -46,7 +48,7 @@ def run_spotbugs(output_dir: str, version=None, force_compile=False) -> list:
     logger.debug("Spotbugs directory created!")
 
     # get module path where compiled jars are located
-    failing_module = vul["failing_module"]
+    failing_module = vul.failing_module
     if failing_module == "root":
         module_path = output_dir
     else:
@@ -67,9 +69,9 @@ def run_spotbugs(output_dir: str, version=None, force_compile=False) -> list:
     jar_path = next(file for file in artifacts if ('SNAPSHOT.jar' in file or 'shaded.jar' in file))
 
     # find modified methods and their classes
-    method_getter_output = os.path.join(reports_dir, utils.suffix_filename("modifications.json", version))
+    method_getter_output = os.path.join(reports_dir, "modifications.json")
     method_getter_command = f"java -jar {METHOD_GETTER_PATH} {output_dir} {method_getter_output}"
-    method_getter_log_path = os.path.join(reports_dir, utils.suffix_filename("modifications.log", version))
+    method_getter_log_path = os.path.join(reports_dir, "modifications.log")
     log_to_file = open(method_getter_log_path, "w", encoding="utf-8") if LOG_TO_FILE else subprocess.DEVNULL
     logger.debug(method_getter_command)
 

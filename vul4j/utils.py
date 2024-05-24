@@ -7,7 +7,7 @@ import zipfile
 from loguru import logger
 
 from vul4j.config import VUL4J_GIT, JAVA7_HOME, JAVA8_HOME, SPOTBUGS_PATH, \
-    METHOD_GETTER_PATH, DATASET_PATH, SPOTBUGS_VERSION, VUL4J_DATA, JAVA11_HOME
+    METHOD_GETTER_PATH, DATASET_PATH, SPOTBUGS_VERSION, VUL4J_DATA, JAVA11_HOME, MVN_ARGS
 
 SEPARATOR = 60 * "-"
 THICK_SEPARATOR = 60 * "="
@@ -173,12 +173,12 @@ def clean_build(project_dir: str, build_system: str, env: dict) -> None:
         logger.error("Clean failed!")
 
 
-def get_java_home(java_version: str) -> str:
+def get_java_home_env(java_version: str) -> dict:
     """
     Returns JAVA_HOME location depending on the specified java version.
 
     :param java_version: java version
-    :return: JAVA_HOME path
+    :return: env with all java parameters set
     """
     try:
         version = int(java_version)
@@ -191,6 +191,12 @@ def get_java_home(java_version: str) -> str:
             java_home = JAVA11_HOME
 
         assert java_home is not None, f"Java home not set for version {java_version}!"
-        return java_home
+        logger.debug(f"java home: {java_home}")
+
+        env = os.environ.copy()
+        env["PATH"] = os.path.join(java_home, "bin") + os.pathsep + env["PATH"]
+        env["JAVA_OPTIONS"] = "-Djdk.net.URLClassPath.disableClassPathURLCheck=true"
+        env["MAVEN_OPTS"] = MVN_ARGS
+        return env
     except ValueError:
         raise AssertionError(f"Illegal java version: {java_version}")
