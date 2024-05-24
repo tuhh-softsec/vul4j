@@ -105,7 +105,7 @@ public class HttpConstraintElement {
         }
         this.emptyRoleSemantic = semantic;
         this.transportGuarantee = guarantee;
-        this.rolesAllowed = copyStrings(roleNames);
+        this.rolesAllowed = roleNames;
     }
 
     /**
@@ -154,19 +154,6 @@ public class HttpConstraintElement {
      * {@link #getEmptyRoleSemantic}).
      */
     public String[] getRolesAllowed() {
-        return copyStrings(this.rolesAllowed);
-    }
-
-    private String[] copyStrings(String[] strings) {
-        String[] arr = null;
-        if (strings != null) {
-            int len = strings.length;
-            arr = new String[len];
-            if (len > 0) {
-                System.arraycopy(strings, 0, arr, 0, len);
-            }
-        }
-
-        return ((arr != null) ? arr : new String[0]);
+        return this.rolesAllowed;
     }
 }
