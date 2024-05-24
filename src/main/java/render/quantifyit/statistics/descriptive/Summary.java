@@ -19,6 +19,6 @@ public abstract class Summary {
 	public abstract Decimal getStandardDeviation();
 
 	public Decimal[] getDataSet() {
-		return dataSet.clone(); // We return a copy to avoid returning the mutable field
+		return dataSet;
 	}
 }
