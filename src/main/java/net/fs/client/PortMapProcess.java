@@ -74,7 +74,7 @@ public class PortMapProcess implements ClientProcessorInterface{
 			int code=responeJSon.getIntValue("code");
 			String message=responeJSon.getString("message");
 			String uimessage="";
-			if(code==Constant.CODE_SUCCESS){
+			if(code==Constant.code_success){
 
 				Route.es.execute(new Runnable() {
 

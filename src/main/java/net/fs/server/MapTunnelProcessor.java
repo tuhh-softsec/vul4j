@@ -61,13 +61,13 @@ public class MapTunnelProcessor implements ConnectionProcessor{
 			final int dstPort=requestJSon.getIntValue("dst_port");
 			String message="";
 			JSONObject responeJSon=new JSONObject();
-			int code=Constant.CODE_FAILED;			
-			code=Constant.CODE_SUCCESS;
+			int code=Constant.code_failed;			
+			code=Constant.code_success;
 			responeJSon.put("code", code);
 			responeJSon.put("message", message);
 			byte[] responeData=responeJSon.toJSONString().getBytes("utf-8");
 			tos.write(responeData, 0, responeData.length);
-			if(code!=Constant.CODE_SUCCESS){
+			if(code!=Constant.code_success){
 				close();
 				return;
 			}
