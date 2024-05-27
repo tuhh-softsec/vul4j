@@ -20,8 +20,6 @@ package com.puppycrawl.tools.checkstyle.checks.javadoc;
 
 import com.puppycrawl.tools.checkstyle.api.DetailNode;
 
-import java.util.Arrays;
-
 /**
  *
  * Implementation of DetailNode interface that is mutable.
@@ -93,7 +91,7 @@ public class JavadocNodeImpl implements DetailNode
     @Override
     public DetailNode[] getChildren()
     {
-        return Arrays.copyOf(children, children.length);
+        return children;
     }
 
     @Override
@@ -130,7 +128,7 @@ public class JavadocNodeImpl implements DetailNode
 
     public void setChildren(DetailNode[] children)
     {
-        this.children = Arrays.copyOf(children, children.length);
+        this.children = children;
     }
 
     public void setParent(DetailNode parent)
