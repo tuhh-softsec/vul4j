@@ -6,7 +6,6 @@ package com.mycompany.exec;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 
 public final class ScriptParameters {
 
@@ -77,7 +76,7 @@ public final class ScriptParameters {
   }
 
   public String[] getCommandLineArguments() {
-    return Arrays.copyOf(commandLineArguments, commandLineArguments.length);
+    return commandLineArguments;
   }
 
   public Path getWorkingDirectory() {
