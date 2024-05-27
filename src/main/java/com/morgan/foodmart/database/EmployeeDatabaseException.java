@@ -1,7 +1,7 @@
 package com.morgan.foodmart.database;
 
-class EmployeeDatabaseException extends RuntimeException {
-  EmployeeDatabaseException(String message, Throwable cause) {
+public class EmployeeDatabaseException extends RuntimeException {
+  public EmployeeDatabaseException(String message, Throwable cause) {
     super(message, cause);
   }
 }
