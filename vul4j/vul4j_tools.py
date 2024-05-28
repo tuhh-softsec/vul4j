@@ -52,7 +52,11 @@ class Vulnerability:
 
     def get_column(self, column: str) -> str:
         value = self.data.get(column)
-        return value.strip() if value is not None else value
+        if isinstance(value, str):
+            value = value.strip()
+        elif isinstance(value, list):
+            value = str(",".join(value))
+        return value
 
     def to_json(self, file_path: str = None, indent: int = 2):
         vulnerability_dict = {key: value for key, value in self.__dict__.items() if key != 'data'}
@@ -67,7 +71,11 @@ class Vulnerability:
         try:
             logger.debug("Reading vulnerability from file...")
             with open(os.path.join(project_dir, VUL4J_OUTPUT, "vulnerability_info.json"), "r") as info_file:
-                vul = cls(json.load(info_file))
+                # need to rename some entries
+                data = json.load(info_file)
+                data["repo_slug"] = data["project"]
+                data["human_patch"] = data["human_patch_url"]
+                vul = cls(data)
             assert vul.vul_id is not None, "vul_id not found in json, info file probably empty or incomplete"
             return vul
         except (OSError, AssertionError) as err:
@@ -252,8 +260,6 @@ def apply(project_dir: str, version: str, quiet: bool = False) -> None:
     Copies the selected file versions into their respective locations.
     The version folder must contain a paths.json file which describes the location of each file in the project.
 
-    Important errors can be: VulnerabilityNotFoundError, but might raise other errors too.
-
     :param project_dir:  where the project is located
     :param version: the version to apply
     :param quiet:   does not display messages if True
@@ -264,7 +270,11 @@ def apply(project_dir: str, version: str, quiet: bool = False) -> None:
     if version == "human_patch" and not quiet:
         logger.warning(f"Please check {VUL4J_COMMITS_URL + vul.vul_id} if build fails.")
 
-    with open(os.path.join(project_dir, VUL4J_OUTPUT, version, "paths.json"), "r") as file:
+    paths_json = os.path.join(project_dir, VUL4J_OUTPUT, version, "paths.json")
+
+    assert os.path.exists(paths_json), f"No such version: {version}"
+
+    with open(paths_json, "r") as file:
         paths = json.load(file)
 
     if not quiet:
@@ -364,10 +374,11 @@ def reproduce(vul_ids):
     os.makedirs(REPRODUCTION_DIR, exist_ok=True)
     assert os.path.exists(REPRODUCTION_DIR), "Failed to create reproduction directory!"
 
-    with open(os.path.join(REPRODUCTION_DIR, 'successful_vulnerabilities.txt'), 'a+') as success_vulnerabilities:
+    with (open(os.path.join(REPRODUCTION_DIR, 'successful_vulnerabilities.txt'), 'a+') as success_vulnerabilities):
         for vul in vulnerabilities:
             try:
                 tests_ran = False
+                spotbugs_ran = False
                 spotbugs_ok = False
 
                 logger.info(vul.vul_id.center(60, "-"))
@@ -381,12 +392,8 @@ def reproduce(vul_ids):
 
                 # vulnerable
                 version = "vulnerable"
-                try:
-                    logger.info(f"Applying version: {version}")
-                    apply(project_dir, version, quiet=True)
-                except FileNotFoundError:
-                    logger.error(f"No such version: {version}")
-                    continue
+                logger.info(f"Applying version: {version}")
+                apply(project_dir, version, quiet=True)
 
                 force_recompile = False
                 try:
@@ -398,7 +405,6 @@ def reproduce(vul_ids):
                 try:
                     tests = "povs" if vul.failing_tests else "all"
                     test_results = test(project_dir, tests, version)
-                    failing_tests = set()
                     failures = test_results['tests']['failures']
                     passing_tests = test_results['tests']['passing_tests']
                     skipping_tests = test_results['tests']['skipping_tests']
@@ -406,37 +412,36 @@ def reproduce(vul_ids):
                     if len(failures) == len(passing_tests) == len(skipping_tests) == 0:
                         logger.error("Build failed, no tests were run! This is acceptable here.")
                     else:
-                        for failure in failures:
-                            failing_tests.add(failure['test_class'] + '#' + failure['test_method'])
-                        if len(failing_tests) == 0:
+                        failing_tests = set(f"{failure['test_class']}#{failure['test_method']}" for failure in failures)
+                        if len(failing_tests) != 0:
+                            logger.error(f"Failing tests: {list(failing_tests)}")
+                        else:
                             logger.critical("Vulnerable revision must contain at least 1 failing test!!!")
                             continue
-                        else:
-                            logger.error(f"Failing tests: {list(failing_tests)}")
                 except subprocess.CalledProcessError:
                     logger.error("Tests failed! Keep going...")
                 except AssertionError as err:
                     logger.warning(err)
 
-                if force_recompile:
-                    logger.info("Compile failed previously. Trying again for Spotbugs...")
-                try:
-                    spotbugs.run_spotbugs(project_dir, None, force_recompile)
-                except subprocess.CalledProcessError:
-                    # compile, method getter or spotbugs fails
-                    logger.error("Task failed! Keep going...")
-                except StopIteration:
-                    # the correct jar was not found
-                    logger.error("No runnable artifact found! Keep going...")
+                if vul.warning:
+                    if force_recompile:
+                        logger.info("Compile failed previously. Trying again for Spotbugs...")
+                    try:
+                        warnings_vulnerable = spotbugs.run_spotbugs(project_dir, None, force_recompile)
+                        # skip reproduction if spotbugs fails to detect the warning
+                        assert vul.warning in warnings_vulnerable, "Specified warnings not detected by spotbugs!"
+                        spotbugs_ran = True
+                    except subprocess.CalledProcessError:
+                        logger.error("Task failed! Keep going...")
+                    except StopIteration:
+                        logger.error("No runnable artifact found! Keep going...")
+                else:
+                    logger.warning(f"No fixed warning found in the dataset for {vul.vul_id}. Skipping Spotbugs...")
 
                 # human patch
                 version = "human_patch"
-                try:
-                    logger.info(f"Applying version: {version}")
-                    apply(project_dir, version, quiet=True)
-                except FileNotFoundError:
-                    logger.error(f"No such version: {version}")
-                    continue
+                logger.info(f"Applying version: {version}")
+                apply(project_dir, version, quiet=True)
 
                 force_recompile = False
                 try:
@@ -448,7 +453,6 @@ def reproduce(vul_ids):
                 try:
                     tests = "povs" if vul.failing_tests else "all"
                     test_results = test(project_dir, tests, version)
-                    failing_tests = set()
                     failures = test_results['tests']['failures']
                     passing_tests = test_results['tests']['passing_tests']
                     skipping_tests = test_results['tests']['skipping_tests']
@@ -457,10 +461,9 @@ def reproduce(vul_ids):
                         logger.error("Build failed, no tests were run!")
                     else:
                         tests_ran = True
-                        for failure in failures:
-                            failing_tests.add(failure['test_class'] + '#' + failure['test_method'])
+                        failing_tests = set(f"{failure['test_class']}#{failure['test_method']}" for failure in failures)
                         if len(failing_tests) == 0:
-                            logger.success(f"No failing tests found!")
+                            logger.success("No failing tests found!")
                         else:
                             logger.error(f"Failing tests: {list(failing_tests)}")
                             logger.critical("Patched version must contain no failing test!!!")
@@ -470,30 +473,48 @@ def reproduce(vul_ids):
                 except AssertionError as err:
                     logger.warning(err)
 
-                if force_recompile:
-                    logger.info("Compile failed previously. Trying again for Spotbugs...")
-                try:
-                    warnings_human_patch = spotbugs.run_spotbugs(project_dir, None, force_recompile)
-                    if vul.warning not in warnings_human_patch:
-                        spotbugs_ok = True
-                except subprocess.CalledProcessError:
-                    # compile, method getter or spotbugs fails
-                    logger.error("Task failed!")
-                except StopIteration:
-                    # the correct jar was not found
-                    logger.error("No runnable artifact found!")
-
-                if tests_ran:
-                    if spotbugs_ok:
-                        logger.success(f"{vul.vul_id} has been reproduced successfully!")
-                    else:
-                        logger.warning(f"The vulnerabilities in {vul.vul_id} have been reproduced successfully, "
-                                       f"but the Spotbugs analysis did not pass!")
+                if vul.warning:
+                    if force_recompile:
+                        logger.info("Compile failed previously. Trying again for Spotbugs...")
+                    try:
+                        warnings_human_patch = spotbugs.run_spotbugs(project_dir, None, force_recompile)
+                        spotbugs_ran = spotbugs_ran and True
+                        spotbugs_ok = vul.warning not in warnings_human_patch
+                    except subprocess.CalledProcessError:
+                        logger.error("Task failed!")
+                    except StopIteration:
+                        logger.error("No runnable artifact found!")
                 else:
-                    if spotbugs_ok:
-                        logger.success(f"Spotbugs check for {vul.vul_id} has been reproduced successfully!")
-                    else:
-                        logger.error(f"Spotbugs check for {vul.vul_id} failed!")
+                    logger.warning(f"No fixed warning found in the dataset for {vul.vul_id}. Skipping Spotbugs...")
+
+                tests_pass = ((1 if bool(tests_ran) else 0)
+                              + (1 if bool(vul.test_cmd or vul.test_all_cmd) else 0))
+                spotbugs_pass = ((1 if bool(spotbugs_ran) else 0)
+                                 + (1 if bool(spotbugs_ok) else 0)
+                                 + (1 if vul.warning else 0))
+
+                if tests_pass == 2:
+                    tests_status = "PASS"
+                elif tests_pass == 0:
+                    tests_status = "DNR"
+                else:
+                    tests_status = "ERROR"
+
+                if spotbugs_pass == 3:
+                    spotbugs_status = "PASS"
+                elif spotbugs_pass == 0:
+                    spotbugs_status = "DNR"
+                else:
+                    spotbugs_status = "ERROR"
+
+                if (tests_pass == 2 or spotbugs_pass == 3) and (tests_pass > 0 and spotbugs_pass > 0):
+                    log_level = "SUCCESS"
+                elif tests_pass == 0 and spotbugs_pass == 0:
+                    log_level = "ERROR"
+                else:
+                    log_level = "WARNING"
+
+                logger.log(log_level, f"Vulnerabilities: {tests_status}, Spotbugs: {spotbugs_status}!")
 
                 success_vulnerabilities.write(vul.vul_id + '\n')
                 success_vulnerabilities.flush()
@@ -662,12 +683,12 @@ def read_test_results(vul: Vulnerability, project_dir: str) -> dict:
     report_files = []
     for r, dirs, files in os.walk(project_dir):
         for file in files:
-            filePath = os.path.join(r, file)
-            if (("target/surefire-reports" in filePath
-                 or "target/failsafe-reports" in filePath
-                 or "build/test-results" in filePath)  # gradle
+            file_path = os.path.join(r, file)
+            if (("target/surefire-reports" in file_path
+                 or "target/failsafe-reports" in file_path
+                 or "build/test-results" in file_path)  # gradle
                     and file.endswith('.xml') and file.startswith('TEST-')):
-                report_files.append(filePath)
+                report_files.append(file_path)
 
     failing_tests_count = 0
     error_tests_count = 0
@@ -714,8 +735,8 @@ def read_test_results(vul: Vulnerability, project_dir: str) -> dict:
                     continue
 
                 # skip
-                skipTags = test_case.findall("skipped")
-                if len(skipTags) > 0:
+                skip_tags = test_case.findall("skipped")
+                if len(skip_tags) > 0:
                     skipping_tests_count += 1
                     skipping_test_cases.add(class_name + '#' + method_name)
                     continue

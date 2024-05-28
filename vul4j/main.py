@@ -78,8 +78,8 @@ def vul4j_apply(args):
 
     try:
         vul4j.apply(output_dir, version)
-    except FileNotFoundError:
-        logger.error(f"No such version: {version}")
+    except AssertionError as err:
+        logger.error(err)
     except vul4j.VulnerabilityNotFoundError as err:
         logger.error(err)
 

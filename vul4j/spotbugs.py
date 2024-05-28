@@ -8,8 +8,8 @@ import xml.etree.ElementTree as ElementTree
 from loguru import logger
 
 import vul4j.utils as utils
-from vul4j.config import VUL4J_OUTPUT, SPOTBUGS_PATH, METHOD_GETTER_PATH, LOG_TO_FILE
 import vul4j.vul4j_tools as vul4j
+from vul4j.config import VUL4J_OUTPUT, SPOTBUGS_PATH, METHOD_GETTER_PATH, LOG_TO_FILE
 
 original_stdout = sys.stdout
 
@@ -56,17 +56,12 @@ def run_spotbugs(output_dir: str, version=None, force_compile=False) -> list:
     logger.debug(f"Module path: {module_path}")
 
     # check for artifacts, compiling if necessary
-    try:
-        assert not force_compile, "Forced compile"
-        artifacts = get_artifacts(module_path)
-    except AssertionError as err:
-        logger.debug(err)
+    if force_compile:
+        logger.debug("Forced compile")
         vul4j.build(output_dir, version, clean=True)
-        artifacts = get_artifacts(module_path)
-    logger.debug(f"Found artifacts: {artifacts}")
 
-    # select the correct jar path
-    jar_path = next(file for file in artifacts if ('SNAPSHOT.jar' in file or 'shaded.jar' in file))
+    # select the correct jar from artifacts
+    jar_path = get_artifact(module_path)
 
     # find modified methods and their classes
     method_getter_output = os.path.join(reports_dir, "modifications.json")
@@ -125,7 +120,7 @@ def run_spotbugs(output_dir: str, version=None, force_compile=False) -> list:
     return warning_list
 
 
-def get_artifacts(module_path: str) -> list:
+def get_artifact(module_path: str) -> str:
     """
     Search for artifacts in the target directory.
     Maven only.
@@ -134,11 +129,36 @@ def get_artifacts(module_path: str) -> list:
     """
 
     target_path = os.path.join(module_path, "target")
-    assert os.path.exists(target_path), "Target directory not found"
+    assert os.path.exists(target_path), "Project's target directory not found!"
 
-    return (
+    artifacts = (
             glob.glob(f"{target_path}/*.jar")
             + glob.glob(f"{target_path}/*.war")
             + glob.glob(f"{target_path}/*.ear")
             + glob.glob(f"{target_path}/*.zip")
     )
+    logger.debug(f"Found artifacts: {artifacts}")
+
+    try:
+        tree = ElementTree.parse(os.path.join(module_path, "pom.xml"))
+        root = tree.getroot()
+
+        namespaces = {'m': 'http://maven.apache.org/POM/4.0.0'}
+
+        artifact_id = root.find('m:artifactId', namespaces)
+        version = root.find('m:version', namespaces)
+
+        if version is None:
+            parent = root.find('m:parent', namespaces)
+            if parent is not None:
+                version = parent.find('m:version', namespaces)
+
+        jar_filename = f"{artifact_id.text}-{version.text}.jar"
+
+        return next(file for file in artifacts if (jar_filename in file or
+                                                   'SNAPSHOT.jar' in file or
+                                                   'shaded.jar' in file))
+
+    except ElementTree.ParseError as err:
+        logger.debug(err)
+        raise AssertionError(f"Could not read pom.xml in {module_path}")

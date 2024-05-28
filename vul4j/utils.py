@@ -4,6 +4,7 @@ import subprocess
 import urllib.request
 import zipfile
 
+import git
 from loguru import logger
 
 from vul4j.config import VUL4J_GIT, JAVA7_HOME, JAVA8_HOME, SPOTBUGS_PATH, \
@@ -33,6 +34,11 @@ def log_frame(title: str):
                 logger.error(err)
                 raise
             finally:
+                repo = git.Repo(VUL4J_GIT)
+                repo.git.reset("--hard")
+                repo.git.checkout("--")
+                repo.git.clean("-fdx")
+                repo.git.checkout("-f", "main")
                 end = f" END {title} "
                 logger.info(end.center(60, "="))
 
@@ -138,7 +144,7 @@ def get_spotbugs(location: str = None) -> None:
         zip_ref.extractall(VUL4J_DATA)
 
     # delete the zip file
-    logger.info(f"Removing spotbugs zip...")
+    logger.info("Removing spotbugs zip...")
     os.remove(zip_file_path)
 
 

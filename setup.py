@@ -1,6 +1,7 @@
 import os
 import shutil
-from setuptools import setup, Command
+
+from setuptools import setup
 from setuptools.command.install import install
 
 
