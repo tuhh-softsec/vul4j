@@ -885,7 +885,8 @@ public class LafObjectMapper {
                 repository.getById(
                     Messung.class, newMessung.getId(), Strings.LAND);
             newMessung = ((Messung) created.getData());
-
+        }
+        
         List<KommentarM> kommentare = new ArrayList<KommentarM>();
         for (int i = 0; i < object.getKommentare().size(); i++) {
             KommentarM tmp =

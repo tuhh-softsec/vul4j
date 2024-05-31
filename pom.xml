@@ -7,7 +7,7 @@
 
     <groupId>de.intevation</groupId>
     <artifactId>lada-server</artifactId>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <parent>
         <groupId>org.jboss</groupId>
         <artifactId>jboss-parent</artifactId>
