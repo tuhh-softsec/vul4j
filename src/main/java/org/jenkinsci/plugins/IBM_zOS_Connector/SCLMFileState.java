@@ -213,7 +213,7 @@ public class SCLMFileState {
      * <br>5. Change User ID
      * <br>6. Change Group
      */
-    public static final Comparator<SCLMFileState> ChangeComparator = new Comparator<SCLMFileState>()
+    public static Comparator<SCLMFileState> ChangeComparator = new Comparator<SCLMFileState>()
     {
         public int compare(SCLMFileState o1, SCLMFileState o2)
         {

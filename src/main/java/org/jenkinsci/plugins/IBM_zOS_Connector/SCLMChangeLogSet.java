@@ -268,7 +268,7 @@ public class SCLMChangeLogSet extends ChangeLogSet<SCLMChangeLogSet.Entry> {
         /**
          * Comparator for Entries. Based on SCLMFileState comparator.
          */
-        public static final Comparator<Entry> EntryComparator = new Comparator<Entry>() {
+        public static Comparator<Entry> EntryComparator = new Comparator<Entry>() {
             @Override
             public int compare(Entry o1, Entry o2) {
                 return SCLMAffectedFile.affectedFilesComparator.compare(o1.affectedFile, o2.affectedFile);
@@ -335,7 +335,7 @@ public class SCLMChangeLogSet extends ChangeLogSet<SCLMChangeLogSet.Entry> {
         /**
          * Comparator based on SCLMFileState comparator.
          */
-        public static final Comparator<SCLMAffectedFile> affectedFilesComparator = new Comparator<SCLMAffectedFile>() {
+        public static Comparator<SCLMAffectedFile> affectedFilesComparator = new Comparator<SCLMAffectedFile>() {
             @Override
             public int compare(SCLMAffectedFile o1, SCLMAffectedFile o2) {
                 return SCLMFileState.ChangeComparator.compare(o1.file, o2.file);
