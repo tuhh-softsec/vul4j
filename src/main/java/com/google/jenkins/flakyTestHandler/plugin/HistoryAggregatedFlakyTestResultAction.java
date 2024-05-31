@@ -337,7 +337,7 @@ public class HistoryAggregatedFlakyTestResultAction implements Action {
         ArrayList<SCM> scms = new ArrayList<>(s.getSCMs());
         SCM scm = scms.size() > 0 ? scms.get(0) : null;
 
-        if (scm != null && "hudson.plugins.git.GitSCM".equalsIgnoreCase(scm.getType())) {
+        if ("hudson.plugins.git.GitSCM".equalsIgnoreCase(scm.getType())) {
           GitSCM gitSCM = (GitSCM) scm;
           BuildData buildData = gitSCM.getBuildData(build);
           if (buildData != null) {
