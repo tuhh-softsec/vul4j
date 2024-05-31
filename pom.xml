@@ -48,7 +48,7 @@ This version of xslthl provides extensions of the Apache Xalan and Saxon XSLT pr
 
 	<build>
 		<plugins>
-			<plugin>
+			<!-- <plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>findbugs-maven-plugin</artifactId>
 				<version>3.0.5</version>
@@ -60,7 +60,7 @@ This version of xslthl provides extensions of the Apache Xalan and Saxon XSLT pr
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin> -->
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<version>1.8</version>
