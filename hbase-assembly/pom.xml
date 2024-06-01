@@ -125,7 +125,7 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.4.0</version>
-        <executions>
+        <!--executions>
           <execution>
             <id>concat-NOTICE-files</id>
             <phase>package</phase>
@@ -145,7 +145,7 @@
               <workingDirectory>${project.build.directory}</workingDirectory>
             </configuration>
           </execution>
-        </executions>
+        </executions-->
       </plugin>
       <!-- /end building aggregation of NOTICE files -->
     </plugins>
