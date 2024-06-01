@@ -84,13 +84,11 @@ public class HSimpleComment implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
     public Date getLastChanged() {
-        // Deep-copy to prevent malicious code vulnerability (EI_EXPOSE_REP)
-        return new Date(lastChanged.getTime());
+        return lastChanged;
     }
 
     public void setLastChanged(Date lastChanged) {
-        // Deep-copy to prevent malicious code vulnerability (EI_EXPOSE_REP)
-        this.lastChanged = new Date(lastChanged.getTime());
+        this.lastChanged = lastChanged;
     }
 
     public static class EntityListener {

@@ -132,8 +132,7 @@ public class HDocumentHistory implements IDocumentHistory {
     }
 
     public void setLastChanged(final Date lastChanged) {
-        // Deep-copy to prevent malicious code vulnerability (EI_EXPOSE_REP)
-        this.lastChanged = new Date(lastChanged.getTime());
+        this.lastChanged = lastChanged;
     }
 
     public void setObsolete(final boolean obsolete) {
@@ -153,8 +152,7 @@ public class HDocumentHistory implements IDocumentHistory {
     }
 
     public Date getLastChanged() {
-        // Deep-copy to prevent malicious code vulnerability (EI_EXPOSE_REP)
-        return new Date(this.lastChanged.getTime());
+        return this.lastChanged;
     }
 
     public boolean isObsolete() {

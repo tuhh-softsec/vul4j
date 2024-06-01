@@ -68,8 +68,7 @@ public class HPersonEmailValidationKey implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
     public Date getCreationDate() {
-        // Deep-copy to prevent malicious code vulnerability (EI_EXPOSE_REP)
-        return new Date(creationDate.getTime());
+        return creationDate;
     }
 
     @ManyToOne(optional = false)
@@ -107,8 +106,7 @@ public class HPersonEmailValidationKey implements Serializable {
     }
 
     public void setCreationDate(final Date creationDate) {
-        // Deep-copy to prevent malicious code vulnerability (EI_EXPOSE_REP)
-        this.creationDate = new Date(creationDate.getTime());
+        this.creationDate = creationDate;
     }
 
     public void setEmail(final String email) {
