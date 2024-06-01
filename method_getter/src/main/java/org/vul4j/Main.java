@@ -1,5 +1,6 @@
 package org.vul4j;
 
+import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -13,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Map.entry;
 
@@ -47,8 +50,10 @@ public class Main {
 
                 var attributeList = GitUtils.extractModifiedAttributes(fileContent, lineNumbers)
                         .stream().map(field -> field.getVariable(0).getNameAsString()).toList();
+                var isConstructorModified = GitUtils.isConstructorModified(fileContent, lineNumbers);
                 var methodsList = GitUtils.extractModifiedMethodNames(fileContent, lineNumbers)
-                        .stream().map(MethodDeclaration::getNameAsString).toList();
+                        .stream().map(MethodDeclaration::getNameAsString).collect(Collectors.toList());
+                if (isConstructorModified) methodsList.add("<init>");
                 var parentClass = GitUtils.extractClassNameWithPackage(fileContent);
                 results.put(parentClass, Map.ofEntries(
                         entry("attributes", attributeList),

@@ -32,13 +32,13 @@ def log_frame(title: str):
                 func(*args, **kwargs)
             except Exception as err:
                 logger.error(err)
-                raise
             finally:
-                repo = git.Repo(VUL4J_GIT)
-                repo.git.reset("--hard")
-                repo.git.checkout("--")
-                repo.git.clean("-fdx")
-                repo.git.checkout("-f", "main")
+                if os.path.exists(VUL4J_GIT):
+                    repo = git.Repo(VUL4J_GIT)
+                    repo.git.reset("--hard")
+                    repo.git.checkout("--")
+                    repo.git.clean("-fdx")
+                    repo.git.checkout("-f", "main")
                 end = f" END {title} "
                 logger.info(end.center(60, "="))
 

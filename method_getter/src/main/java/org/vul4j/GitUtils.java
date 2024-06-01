@@ -3,6 +3,7 @@ package org.vul4j;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
@@ -96,6 +97,7 @@ public class GitUtils {
 
                         int[] modifiedLines = getModifiedLines(diffOutput.toString(StandardCharsets.UTF_8));
                         modifiedFilesAndLines.put(diff.getNewPath(), modifiedLines);
+                        diffOutput.reset();
                     }
                 }
             }
@@ -137,6 +139,44 @@ public class GitUtils {
         return lineNumbersList.stream().mapToInt(Integer::intValue).toArray();
     }
 
+    /*
+    Adds constructors to the keepList that were modified in the given file
+     */
+    public static boolean isConstructorModified(
+            String fileContent,
+            int[] lineNumbers
+    ) throws NoSuchElementException {
+        List<ConstructorDeclaration> constructorList = new ArrayList<>();
+
+        // parse the file content with JavaParser
+        CompilationUnit compilationUnit = new JavaParser().parse(fileContent).getResult().orElseThrow();
+
+        compilationUnit.accept(new VoidVisitorAdapter<Void>() {
+            @Override
+            public void visit(ConstructorDeclaration constructorDeclaration, Void arg) {
+
+                // get the start line and end line of the method
+                int startLine = constructorDeclaration.getBegin().orElseThrow().line;
+                int endLine = constructorDeclaration.getEnd().orElseThrow().line;
+
+                // check if any of the lines in the method is modified
+                boolean isModified = false;
+                for (int lineNumber : lineNumbers) {
+                    if (lineNumber >= startLine && lineNumber <= endLine) {
+                        isModified = true;
+                        break;
+                    }
+                }
+
+                // only add modified methods
+                if (isModified) constructorList.add(constructorDeclaration);
+
+                super.visit(constructorDeclaration, arg);
+            }
+        }, null);
+
+        return !constructorList.isEmpty();
+    }
 
     /*
     Adds methods to the keepList that were modified in the given file
@@ -180,7 +220,7 @@ public class GitUtils {
     }
 
     /*
-    Adds methods to the keepList that were modified in the given file
+    Adds class attributes to the keepList that were modified in the given file
      */
     public static List<FieldDeclaration> extractModifiedAttributes(
             String fileContent,
