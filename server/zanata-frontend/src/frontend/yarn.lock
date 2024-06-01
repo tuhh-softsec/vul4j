@@ -1960,9 +1960,9 @@ deep-is@~0.1.3:
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/deep-is/-/deep-is-0.1.3.tgz#b369d6fb5dbc13eecf524f91b070feedc357cf34"
 
-"deepmerge@git://github.com/basicallydan/deepmerge.git#c8d22b":
+"deepmerge@https://github.com/basicallydan/deepmerge.git#c8d22b":
   version "0.2.9"
-  resolved "git://github.com/basicallydan/deepmerge.git#c8d22b"
+  resolved "https://github.com/basicallydan/deepmerge.git#c8d22b"
 
 define-properties@^1.1.2:
   version "1.1.2"
@@ -3220,7 +3220,7 @@ interfake@1.15.0:
     commander "2.3.0"
     connect-json "0.0.0"
     core-util-is "^1.0.1"
-    deepmerge "git://github.com/basicallydan/deepmerge.git#c8d22b"
+    deepmerge "https://github.com/basicallydan/deepmerge.git#c8d22b"
     express "~4.8.5"
     lodash "^3.9.1"
     merge "^1.1.3"
