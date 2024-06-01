@@ -5,12 +5,17 @@ import java.util.Date;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Setter
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class MedicalRecordAddDto {
 
   @NotNull(message = "err-medical-record-advertising-source-id-is-mandatory")
@@ -31,15 +36,5 @@ public class MedicalRecordAddDto {
   private Long examinationTimes;
   @JsonFormat(pattern = "dd-MM-yyyy HH:mm")
   @NotNull(message = "err.medical-records.consulting-date-is-mandatory")
-  @Setter(AccessLevel.NONE)
-  @Getter(AccessLevel.NONE)
   private Date examinationDate;
-
-  public void setBillDate(Date examinationDate) {
-    this.examinationDate = new Date(examinationDate.getTime());
-  }
-
-  public Date getExaminationDate() {
-    return this.examinationDate = new Date(examinationDate.getTime());
-  }
 }

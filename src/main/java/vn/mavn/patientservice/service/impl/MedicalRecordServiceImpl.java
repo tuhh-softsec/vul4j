@@ -166,7 +166,6 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
       medicalRecord = mapMedicalRecordForEmp(medicalRecordAddDto, userId, userCode,
           patient.getId());
     }
-    setExaminationDateManually(medicalRecordAddDto.getExaminationDate(), medicalRecord);
     medicalRecord.setIsActive(true);
     medicalRecordRepository.save(medicalRecord);
     return medicalRecord;
