@@ -86,7 +86,7 @@ public class TestResult {
     @Exported
     @ApiModelProperty(example = "2016-07-18T16:44:00.055+02:00", value = "Start time of the test in ISO 8601 compatible date/time of format: yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     public Date getExectime() {
-        return exectime == null ? null : (Date) exectime.clone();
+        return exectime;
     }
 
     /**

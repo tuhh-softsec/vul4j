@@ -59,18 +59,17 @@ public class PerfSigEnvInvisAction extends InvisibleAction {
     }
 
     public Date getTimeframeStart() {
-        return timeframeStart == null ? null : (Date) timeframeStart.clone();
+        return timeframeStart != null ? (Date) timeframeStart.clone() : null;
     }
 
     public Date getTimeframeStop() {
-        return timeframeStop == null ? null : (Date) timeframeStop.clone();
+        return timeframeStop != null ? (Date) timeframeStop.clone() : null;
     }
 
     void setTimeframeStop(Date timeframeStop) {
         this.timeframeStop = timeframeStop;
     }
 
-    @SuppressWarnings("deprecation")
     protected Object readResolve() {
         if (testRunID != null) {
             testRunId = testRunID;

@@ -178,7 +178,7 @@ public class TestRun {
     @Exported
     @ApiModelProperty(example = "2016-05-11T11:35:31.170+02:00", value = "Test run start time in ISO 8601 compatible date/time of format: yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     public Date getStartTime() {
-        return startTime == null ? null : (Date) startTime.clone();
+        return startTime;
     }
 
     /**

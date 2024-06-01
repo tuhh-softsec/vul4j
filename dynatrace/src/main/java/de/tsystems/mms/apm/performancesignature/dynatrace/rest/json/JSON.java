@@ -296,7 +296,7 @@ public class JSON {
     /**
      * Gson TypeAdapter for JSR310 LocalDate type
      */
-    public static class LocalDateTypeAdapter extends TypeAdapter<LocalDate> {
+    public class LocalDateTypeAdapter extends TypeAdapter<LocalDate> {
 
         private DateTimeFormatter formatter;
 

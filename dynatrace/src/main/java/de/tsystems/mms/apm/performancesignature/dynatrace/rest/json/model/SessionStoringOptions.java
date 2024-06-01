@@ -48,8 +48,8 @@ public class SessionStoringOptions {
         this.appendtimestamp = appendtimestamp;
         this.recordingoption = SessionRecordingOptions.RecordingoptionEnum.fromValue(recordingoption);
         this.locksession = locksession;
-        this.timeframestart = (Date) timeframestart.clone();
-        this.timeframeend = (Date) timeframeend.clone();
+        this.timeframestart = timeframestart;
+        this.timeframeend = timeframeend;
     }
 
     /**
@@ -109,7 +109,7 @@ public class SessionStoringOptions {
      **/
     @ApiModelProperty(example = "2016-05-11T11:35:31.170+02:00", value = "Start time of the interval during which the data will be stored, in ISO 8601 compatible date/time of format: yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     public Date getTimeframestart() {
-        return timeframestart == null ? null : (Date) timeframestart.clone();
+        return timeframestart;
     }
 
     /**
@@ -119,7 +119,7 @@ public class SessionStoringOptions {
      **/
     @ApiModelProperty(example = "2016-05-11T11:35:31.170+02:00", value = "End time of the interval during which the data will be stored, in ISO 8601 compatible date/time of format: yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     public Date getTimeframeend() {
-        return timeframeend == null ? null : (Date) timeframeend.clone();
+        return timeframeend;
     }
 
     @Override
