@@ -374,7 +374,7 @@ def reproduce(vul_ids):
     os.makedirs(REPRODUCTION_DIR, exist_ok=True)
     assert os.path.exists(REPRODUCTION_DIR), "Failed to create reproduction directory!"
 
-    with (open(os.path.join(REPRODUCTION_DIR, 'successful_vulnerabilities.txt'), 'a+') as success_vulnerabilities):
+    with (open(os.path.join(REPRODUCTION_DIR, 'successful_vulnerabilities.txt'), 'a+')) as success_vulnerabilities:
         for vul in vulnerabilities:
             try:
                 tests_ran = False

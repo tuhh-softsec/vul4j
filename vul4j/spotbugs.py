@@ -14,6 +14,38 @@ from vul4j.config import VUL4J_OUTPUT, SPOTBUGS_PATH, METHOD_GETTER_PATH, LOG_TO
 original_stdout = sys.stdout
 
 
+class BugInstance:
+    def __init__(self, bug_type: str, name: str, class_name: str, is_method: bool = True):
+        self.bug_type = bug_type
+        self.name = name
+        self.class_name = class_name
+        self.content_type = is_method
+
+    @classmethod
+    def extract_methods(cls, root):
+        methods = []
+        for bug_instance in root.findall('.//BugInstance'):
+            method = bug_instance.find('.//Method')
+            if method is not None:
+                methods.append(cls(bug_instance.attrib["type"],
+                                   method.attrib['name'],
+                                   method.attrib['classname'],
+                                   True))
+        return methods
+
+    @classmethod
+    def extract_attributes(cls, root):
+        attributes = []
+        for bug_instance in root.findall('.//BugInstance'):
+            attribute = bug_instance.find('.//Field')
+            if attribute is not None and bug_instance.find('.//Method') is None:
+                attributes.append(cls(bug_instance.attrib["type"],
+                                      attribute.attrib['name'],
+                                      attribute.attrib['classname'],
+                                      False))
+        return attributes
+
+
 def run_spotbugs(output_dir: str, version=None, force_compile=False) -> list:
     """
     Runs Spotbugs check on the project found in the provided directory.
@@ -94,19 +126,20 @@ def run_spotbugs(output_dir: str, version=None, force_compile=False) -> list:
     assert os.path.exists(spotbugs_output), "Spotbugs failed to create output files!"
 
     # find warnings in modified methods
-    warnings = {}
+    warnings = {"attributes": [], "methods": []}
     with open(method_getter_output, 'r') as file:
         modifications = json.load(file)
 
     tree = ElementTree.parse(spotbugs_output)
     root = tree.getroot()
-    for java_class, java_methods in modifications.items():
-        for java_method in java_methods:
-            warnings[java_method] = set()
-            for bug_instance in root.findall('.//BugInstance'):
-                method = bug_instance.find('.//Method')
-                if method and method.attrib['classname'] == java_class and method.attrib['name'] == java_method:
-                    warnings[java_method].add(bug_instance.attrib['type'])
+    methods = BugInstance.extract_methods(root)
+    attributes = BugInstance.extract_attributes(root)
+
+    for java_class, mods in modifications.items():
+        warnings["attributes"].extend([bug.bug_type for bug in attributes
+                                       if bug.class_name == java_class and bug.name in set(mods["attributes"])])
+        warnings["methods"].extend([bug.bug_type for bug in methods
+                                    if bug.class_name == java_class and bug.name in set(mods["methods"])])
 
     warnings_output = os.path.join(reports_dir, utils.suffix_filename('warnings.json', version))
     with open(warnings_output, 'w') as file:

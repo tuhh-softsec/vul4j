@@ -3,6 +3,7 @@ package org.vul4j;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import org.eclipse.jgit.api.Git;
@@ -176,6 +177,45 @@ public class GitUtils {
         }, null);
 
         return methodList;
+    }
+
+    /*
+    Adds methods to the keepList that were modified in the given file
+     */
+    public static List<FieldDeclaration> extractModifiedAttributes(
+            String fileContent,
+            int[] lineNumbers
+    ) throws NoSuchElementException {
+        List<FieldDeclaration> attributeList = new ArrayList<>();
+
+        // parse the file content with JavaParser
+        CompilationUnit compilationUnit = new JavaParser().parse(fileContent).getResult().orElseThrow();
+
+        compilationUnit.accept(new VoidVisitorAdapter<Void>() {
+            @Override
+            public void visit(FieldDeclaration fieldDeclaration, Void arg) {
+
+                // get the start line and end line of the method
+                int startLine = fieldDeclaration.getBegin().orElseThrow().line;
+                int endLine = fieldDeclaration.getEnd().orElseThrow().line;
+
+                // check if any of the lines in the method is modified
+                boolean isModified = false;
+                for (int lineNumber : lineNumbers) {
+                    if (lineNumber >= startLine && lineNumber <= endLine) {
+                        isModified = true;
+                        break;
+                    }
+                }
+
+                // only add modified methods
+                if (isModified) attributeList.add(fieldDeclaration);
+
+                super.visit(fieldDeclaration, arg);
+            }
+        }, null);
+
+        return attributeList;
     }
 
 

@@ -1,7 +1,8 @@
 package org.vul4j;
 
 import com.github.javaparser.ast.body.MethodDeclaration;
-import org.json.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -13,6 +14,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static java.util.Map.entry;
+
 public class Main {
 
     private static final String VERSION = "1.0.0";
@@ -20,7 +23,7 @@ public class Main {
 
     private static void extractData(String repositoryDir, String outputFile) {
 
-        Map<String, List<String>> results = new HashMap<>();
+        Map<String, Map<String, List<String>>> results = new HashMap<>();
 
         try {
             // vulnerable, fixed
@@ -42,10 +45,15 @@ public class Main {
                 // Load the file content
                 String fileContent = GitUtils.getFileContentAtCommit(repositoryDir, filename, commitHashes[1]);
 
+                var attributeList = GitUtils.extractModifiedAttributes(fileContent, lineNumbers)
+                        .stream().map(field -> field.getVariable(0).getNameAsString()).toList();
                 var methodsList = GitUtils.extractModifiedMethodNames(fileContent, lineNumbers)
                         .stream().map(MethodDeclaration::getNameAsString).toList();
                 var parentClass = GitUtils.extractClassNameWithPackage(fileContent);
-                results.put(parentClass, methodsList);
+                results.put(parentClass, Map.ofEntries(
+                        entry("attributes", attributeList),
+                        entry("methods", methodsList)
+                ));
             }
 
             saveNamesToJson(outputFile, results);
@@ -56,12 +64,12 @@ public class Main {
     }
 
 
-    private static void saveNamesToJson(String filename, Map<String, List<String>> results) {
-        JSONObject json = new JSONObject(results);
+    private static void saveNamesToJson(String filename, Map<String, Map<String, List<String>>> results) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
         File file = new File(filename);
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, false))) {
-            writer.write(json.toString(2));
+            writer.write(gson.toJson(results));
         } catch (IOException exc) {
             logger.severe(exc.getMessage());
         } finally {
