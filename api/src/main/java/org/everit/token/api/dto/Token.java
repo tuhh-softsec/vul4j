@@ -70,29 +70,25 @@ public final class Token {
     public Token(final String uuid, final Date creationDate, final Date expirationDate, final Date revocationDate,
             final Date dateOfUse) {
         this.uuid = uuid;
-        this.creationDate = (Date) creationDate.clone();
-        this.expirationDate = (Date) expirationDate.clone();
-        this.revocationDate = (Date) revocationDate.clone();
-        this.dateOfUse = (Date) dateOfUse.clone();
+        this.creationDate = creationDate;
+        this.expirationDate = expirationDate;
+        this.revocationDate = revocationDate;
+        this.dateOfUse = dateOfUse;
     }
 
     public Date getCreationDate() {
-        Date creationDate = (Date) this.creationDate.clone();
         return creationDate;
     }
 
     public Date getDateOfUse() {
-        Date dateOfUse = (Date) this.dateOfUse.clone();
         return dateOfUse;
     }
 
     public Date getExpirationDate() {
-        Date expirationDate = (Date) this.expirationDate.clone();
         return expirationDate;
     }
 
     public Date getRevocationDate() {
-        Date revocationDate = (Date) this.revocationDate.clone();
         return revocationDate;
     }
 
