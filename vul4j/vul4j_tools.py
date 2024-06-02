@@ -39,8 +39,8 @@ class Vulnerability:
         self.failing_module = self.get_column("failing_module")
         self.fixing_commit_hash = self.get_commit_hash(self.get_column("human_patch"))
         self.human_patch_url = self.get_column("human_patch")
-        self.failing_tests = self.get_column("failing_tests").split(',')
-        self.warning = self.get_column("warning")
+        self.failing_tests = [value.strip() for value in self.get_column("failing_tests").split(',')]
+        self.warning = [value.strip() for value in self.get_column("warning").split(',')]
 
     @staticmethod
     def get_commit_hash(commit_url: str) -> str:
@@ -392,7 +392,7 @@ def reproduce(vul_ids):
 
                 # vulnerable
                 version = "vulnerable"
-                logger.info(f"Applying version: {version}")
+                logger.info(f"--> Applying version: {version}")
                 apply(project_dir, version, quiet=True)
 
                 force_recompile = False
@@ -423,13 +423,14 @@ def reproduce(vul_ids):
                 except AssertionError as err:
                     logger.warning(err)
 
-                if vul.warning:
+                if len(vul.warning) > 0:
                     if force_recompile:
                         logger.info("Compile failed previously. Trying again for Spotbugs...")
                     try:
                         warnings_vulnerable = spotbugs.run_spotbugs(project_dir, None, force_recompile)
                         # skip reproduction if spotbugs fails to detect the warning
-                        assert vul.warning in warnings_vulnerable, "Specified warnings not detected by spotbugs!"
+                        not_detected = [warn for warn in vul.warning if warn not in warnings_vulnerable]
+                        assert len(not_detected) != 0, f"Some warnings were not detected by spotbugs: {not_detected}"
                         spotbugs_ran = True
                     except subprocess.CalledProcessError:
                         logger.error("Task failed! Keep going...")
@@ -440,7 +441,7 @@ def reproduce(vul_ids):
 
                 # human patch
                 version = "human_patch"
-                logger.info(f"Applying version: {version}")
+                logger.info(f"--> Applying version: {version}")
                 apply(project_dir, version, quiet=True)
 
                 force_recompile = False
@@ -473,13 +474,16 @@ def reproduce(vul_ids):
                 except AssertionError as err:
                     logger.warning(err)
 
-                if vul.warning:
+                if len(vul.warning) > 0:
                     if force_recompile:
                         logger.info("Compile failed previously. Trying again for Spotbugs...")
                     try:
                         warnings_human_patch = spotbugs.run_spotbugs(project_dir, None, force_recompile)
+                        still_detected = [warn for warn in vul.warning if warn in warnings_human_patch]
+                        if len(still_detected) != 0:
+                            logger.error(f"Some bugs were not fixed: {json.dumps(still_detected, indent=2)}")
                         spotbugs_ran = spotbugs_ran and True
-                        spotbugs_ok = vul.warning not in warnings_human_patch
+                        spotbugs_ok = (len(still_detected) == 0)
                     except subprocess.CalledProcessError:
                         logger.error("Task failed!")
                     except StopIteration:
@@ -491,25 +495,27 @@ def reproduce(vul_ids):
                               + (1 if bool(vul.test_cmd or vul.test_all_cmd) else 0))
                 spotbugs_pass = ((1 if bool(spotbugs_ran) else 0)
                                  + (1 if bool(spotbugs_ok) else 0)
-                                 + (1 if vul.warning else 0))
+                                 + (1 if bool(vul.warning) else 0))
 
                 if tests_pass == 2:
                     tests_status = "PASS"
                 elif tests_pass == 0:
-                    tests_status = "DNR"
+                    tests_status = "SKIP"
                 else:
                     tests_status = "ERROR"
 
                 if spotbugs_pass == 3:
                     spotbugs_status = "PASS"
                 elif spotbugs_pass == 0:
-                    spotbugs_status = "DNR"
+                    spotbugs_status = "SKIP"
                 else:
                     spotbugs_status = "ERROR"
 
-                if (tests_pass == 2 or spotbugs_pass == 3) and (tests_pass > 0 and spotbugs_pass > 0):
+                if ((tests_pass == 2 and spotbugs_pass == 3)
+                        or (tests_pass == 2 and spotbugs_pass == 0)
+                        or (tests_pass == 0 and spotbugs_pass == 3)):
                     log_level = "SUCCESS"
-                elif tests_pass == 0 and spotbugs_pass == 0:
+                elif tests_pass < 2 and spotbugs_pass < 3:
                     log_level = "ERROR"
                 else:
                     log_level = "WARNING"

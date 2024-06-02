@@ -40,6 +40,7 @@ MVN_ARGS = get_config("JAVA", "MVN_ARGS")
 JAVA7_HOME = normpath(get_config("JAVA", "JAVA7_HOME"))
 JAVA8_HOME = normpath(get_config("JAVA", "JAVA8_HOME"))
 JAVA11_HOME = normpath(get_config("JAVA", "JAVA11_HOME"))
+JAVA16_HOME = normpath(get_config("JAVA", "JAVA16_HOME"))
 
 # SPOTBUGS
 SPOTBUGS_VERSION = get_config("SPOTBUGS", "SPOTBUGS_VERSION", "4.8.5")

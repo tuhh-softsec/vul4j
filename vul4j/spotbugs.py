@@ -38,7 +38,7 @@ class BugInstance:
         attributes = []
         for bug_instance in root.findall('.//BugInstance'):
             attribute = bug_instance.find('.//Field')
-            if attribute is not None and bug_instance.find('.//Method') is None:
+            if attribute is not None:
                 attributes.append(cls(bug_instance.attrib["type"],
                                       attribute.attrib['name'],
                                       attribute.attrib['classname'],
@@ -99,6 +99,7 @@ def run_spotbugs(output_dir: str, version=None, force_compile=False) -> list:
                    shell=True,
                    stdout=log_to_file,
                    stderr=subprocess.STDOUT,
+                   env=utils.get_java_home_env("16"),
                    check=True)
     assert os.path.exists(method_getter_output), "Modification extractor failed to create output files!"
 
@@ -146,7 +147,8 @@ def run_spotbugs(output_dir: str, version=None, force_compile=False) -> list:
                 for bug in (method_bugs if key == "methods" else attribute_bugs):
                     if bug.class_name == classname and bug.source in set(value):
                         processed_cls[key][bug.source].append(bug.bug_type)
-                        warning_list.append(bug.bug_type)
+                        source_name = bug.source if bug.source != "<init>" else bug.class_name.split(".")[-1]
+                        warning_list.append(f"{bug.bug_type}@{bug.class_name}#{source_name}")
             elif key == "classes":
                 processed_cls[key] = {}
                 for inner_classname, inner_class in value.items():
@@ -161,7 +163,7 @@ def run_spotbugs(output_dir: str, version=None, force_compile=False) -> list:
     with open(warnings_output, 'w') as file:
         json.dump(warnings, file, indent=2)
 
-    logger.info(f"Warnings found: {warning_list if len(warning_list) else 'None'}")
+    logger.info(f"Warnings found: {json.dumps(warning_list, indent=2) if len(warning_list) else 'None'}")
 
     return warning_list
 

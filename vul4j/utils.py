@@ -8,7 +8,7 @@ import git
 from loguru import logger
 
 from vul4j.config import VUL4J_GIT, JAVA7_HOME, JAVA8_HOME, SPOTBUGS_PATH, \
-    MODIFICATION_EXTRACTOR_PATH, DATASET_PATH, SPOTBUGS_VERSION, VUL4J_DATA, JAVA11_HOME, MVN_ARGS
+    MODIFICATION_EXTRACTOR_PATH, DATASET_PATH, SPOTBUGS_VERSION, VUL4J_DATA, JAVA11_HOME, MVN_ARGS, JAVA16_HOME
 
 SEPARATOR = 60 * "-"
 THICK_SEPARATOR = 60 * "="
@@ -193,8 +193,10 @@ def get_java_home_env(java_version: str) -> dict:
             java_home = JAVA7_HOME
         elif version == 8:
             java_home = JAVA8_HOME
-        else:
+        elif version == 11:
             java_home = JAVA11_HOME
+        else:
+            java_home = JAVA16_HOME
 
         assert java_home is not None, f"Java home not set for version {java_version}!"
         logger.debug(f"java home: {java_home}")
