@@ -15,9 +15,9 @@ original_stdout = sys.stdout
 
 
 class BugInstance:
-    def __init__(self, bug_type: str, name: str, class_name: str, is_method: bool = True):
+    def __init__(self, bug_type: str, source: str, class_name: str, is_method: bool = True):
         self.bug_type = bug_type
-        self.name = name
+        self.source = source
         self.class_name = class_name
         self.content_type = is_method
 
@@ -87,14 +87,6 @@ def run_spotbugs(output_dir: str, version=None, force_compile=False) -> list:
         module_path = os.path.join(output_dir, failing_module)
     logger.debug(f"Module path: {module_path}")
 
-    # check for artifacts, compiling if necessary
-    if force_compile:
-        logger.debug("Forced compile")
-        vul4j.build(output_dir, version, clean=True)
-
-    # select the correct jar from artifacts
-    jar_path = get_artifact(module_path)
-
     # find modified methods and their classes
     method_getter_output = os.path.join(reports_dir, "modifications.json")
     method_getter_command = f"java -jar {METHOD_GETTER_PATH} {output_dir} {method_getter_output}"
@@ -102,13 +94,21 @@ def run_spotbugs(output_dir: str, version=None, force_compile=False) -> list:
     log_to_file = open(method_getter_log_path, "w", encoding="utf-8") if LOG_TO_FILE else subprocess.DEVNULL
     logger.debug(method_getter_command)
 
-    logger.info("Running method getter...")
+    logger.info("Extracting modifications...")
     subprocess.run(method_getter_command,
                    shell=True,
                    stdout=log_to_file,
                    stderr=subprocess.STDOUT,
                    check=True)
-    assert os.path.exists(method_getter_output), "Method getter failed to create output files!"
+    assert os.path.exists(method_getter_output), "Modification extractor failed to create output files!"
+
+    # check for artifacts, compiling if necessary
+    if force_compile:
+        logger.debug("Forced compile")
+        vul4j.build(output_dir, version, clean=True)
+
+    # select the correct jar from artifacts
+    jar_path = get_artifact(module_path)
 
     # run spotbugs
     spotbugs_output = os.path.join(reports_dir, utils.suffix_filename("spotbugs_report.xml", version))
@@ -126,28 +126,41 @@ def run_spotbugs(output_dir: str, version=None, force_compile=False) -> list:
     assert os.path.exists(spotbugs_output), "Spotbugs failed to create output files!"
 
     # find warnings in modified methods
-    warnings = {"attributes": [], "methods": []}
+    warnings = {}
     with open(method_getter_output, 'r') as file:
         modifications = json.load(file)
 
     tree = ElementTree.parse(spotbugs_output)
     root = tree.getroot()
-    methods = BugInstance.extract_methods(root)
-    attributes = BugInstance.extract_attributes(root)
+    method_bugs = BugInstance.extract_methods(root)
+    attribute_bugs = BugInstance.extract_attributes(root)
 
-    for java_class, mods in modifications.items():
-        warnings["attributes"].extend([bug.bug_type for bug in attributes
-                                       if bug.class_name == java_class and bug.name in set(mods["attributes"])])
-        warnings["methods"].extend([bug.bug_type for bug in methods
-                                    if bug.class_name == java_class and bug.name in set(mods["methods"])])
+    warning_list = []
+
+    # recursive function to process the class dictionary
+    def process_class(cls_dict, classname):
+        processed_cls = {}
+        for key, value in cls_dict.items():
+            if key == "methods" or key == "attributes":
+                processed_cls[key] = {name: [] for name in value}
+                for bug in (method_bugs if key == "methods" else attribute_bugs):
+                    if bug.class_name == classname and bug.source in set(value):
+                        processed_cls[key][bug.source].append(bug.bug_type)
+                        warning_list.append(bug.bug_type)
+            elif key == "classes":
+                processed_cls[key] = {}
+                for inner_classname, inner_class in value.items():
+                    full_inner_classname = f"{classname}${inner_classname}"
+                    processed_cls[key][inner_classname] = process_class(inner_class, full_inner_classname)
+        return processed_cls
+
+    for class_name, class_info in modifications.items():
+        warnings[class_name] = process_class(class_info, class_name)
 
     warnings_output = os.path.join(reports_dir, utils.suffix_filename('warnings.json', version))
     with open(warnings_output, 'w') as file:
-        json.dump({key: list(value) for key, value in warnings.items()}, file, indent=2)
+        json.dump(warnings, file, indent=2)
 
-    warning_list = []
-    for warning_set in warnings.values():
-        warning_list.extend(warning_set)
     logger.info(f"Warnings found: {warning_list if len(warning_list) else 'None'}")
 
     return warning_list
