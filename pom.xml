@@ -22,6 +22,10 @@
     <java.level>7</java.level>
   </properties>
 
+  <build>
+    <finalName>${project.artifactId}-${project.version}</finalName>
+  </build>
+
   <licenses>
     <license>
       <name>MIT License</name>
