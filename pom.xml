@@ -31,6 +31,10 @@ limitations under the License.
   <packaging>hpi</packaging>
   <url>https://wiki.jenkins-ci.org/display/JENKINS/Flaky+Test+Handler+Plugin</url>
 
+  <build>
+    <finalName>${project.artifactId}-${project.version}</finalName>
+  </build>
+
   <properties>
     <!-- Baseline Jenkins version you use to build the plugin. Users must have this version or newer to run. -->
     <jenkins.version>2.121.1</jenkins.version>
