@@ -9,7 +9,7 @@ from loguru import logger
 
 import vul4j.utils as utils
 import vul4j.vul4j_tools as vul4j
-from vul4j.config import VUL4J_OUTPUT, SPOTBUGS_PATH, METHOD_GETTER_PATH, LOG_TO_FILE
+from vul4j.config import VUL4J_OUTPUT, SPOTBUGS_PATH, MODIFICATION_EXTRACTOR_PATH, LOG_TO_FILE
 
 original_stdout = sys.stdout
 
@@ -89,7 +89,7 @@ def run_spotbugs(output_dir: str, version=None, force_compile=False) -> list:
 
     # find modified methods and their classes
     method_getter_output = os.path.join(reports_dir, "modifications.json")
-    method_getter_command = f"java -jar {METHOD_GETTER_PATH} {output_dir} {method_getter_output}"
+    method_getter_command = f"java -jar {MODIFICATION_EXTRACTOR_PATH} {output_dir} {method_getter_output}"
     method_getter_log_path = os.path.join(reports_dir, "modifications.log")
     log_to_file = open(method_getter_log_path, "w", encoding="utf-8") if LOG_TO_FILE else subprocess.DEVNULL
     logger.debug(method_getter_command)

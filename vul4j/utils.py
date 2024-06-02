@@ -8,7 +8,7 @@ import git
 from loguru import logger
 
 from vul4j.config import VUL4J_GIT, JAVA7_HOME, JAVA8_HOME, SPOTBUGS_PATH, \
-    METHOD_GETTER_PATH, DATASET_PATH, SPOTBUGS_VERSION, VUL4J_DATA, JAVA11_HOME, MVN_ARGS
+    MODIFICATION_EXTRACTOR_PATH, DATASET_PATH, SPOTBUGS_VERSION, VUL4J_DATA, JAVA11_HOME, MVN_ARGS
 
 SEPARATOR = 60 * "-"
 THICK_SEPARATOR = 60 * "="
@@ -105,8 +105,8 @@ def check_status():
                                stderr=subprocess.DEVNULL).returncode == 0)
 
     # check method getter
-    method_getter = (bool(METHOD_GETTER_PATH) and
-                     subprocess.run(f"java -jar {METHOD_GETTER_PATH} -version",
+    method_getter = (bool(MODIFICATION_EXTRACTOR_PATH) and
+                     subprocess.run(f"java -jar {MODIFICATION_EXTRACTOR_PATH} -version",
                                     shell=True,
                                     stdout=subprocess.DEVNULL,
                                     stderr=subprocess.DEVNULL).returncode == 0)

@@ -158,7 +158,7 @@ def checkout(vul_id: str, project_dir: str) -> None:
 
     # check if vul4j git has a branch for the vulnerability
     repo = git.Repo(VUL4J_GIT)
-    clone = vul_id not in set(branch.source.split('/')[-1] for branch in repo.refs)
+    clone = vul_id not in set(branch.name.split('/')[-1] for branch in repo.refs)
 
     project_clone = os.path.join(TEMP_CLONE_DIR, vul_id)
     if clone:
@@ -647,12 +647,12 @@ def extract_patch_files(vul: Vulnerability, project_dir: str, repo_dir: str, com
         vulnerable = file.b_blob
 
         # write human_patch file content
-        with open(os.path.join(project_dir, VUL4J_OUTPUT, human_patch_dir, human_patch.source), "w",
+        with open(os.path.join(project_dir, VUL4J_OUTPUT, human_patch_dir, human_patch.name), "w",
                   encoding="utf-8") as f:
             f.write(human_patch.data_stream.read().decode("utf-8"))
 
         # write vulnerable file content
-        with open(os.path.join(project_dir, VUL4J_OUTPUT, vulnerable_dir, vulnerable.source), "w",
+        with open(os.path.join(project_dir, VUL4J_OUTPUT, vulnerable_dir, vulnerable.name), "w",
                   encoding="utf-8") as f:
             f.write(vulnerable.data_stream.read().decode("utf-8"))
 
@@ -660,11 +660,11 @@ def extract_patch_files(vul: Vulnerability, project_dir: str, repo_dir: str, com
     logger.debug("Writing paths data...")
     with open(os.path.join(project_dir, VUL4J_OUTPUT, human_patch_dir, paths_filename), "w",
               encoding="utf-8") as f:
-        json.dump({entry.a_blob.source: entry.a_blob.path for entry in changed_java_source_files}, f, indent=2)
+        json.dump({entry.a_blob.name: entry.a_blob.path for entry in changed_java_source_files}, f, indent=2)
 
     with open(os.path.join(project_dir, VUL4J_OUTPUT, vulnerable_dir, paths_filename), "w",
               encoding="utf-8") as f:
-        json.dump({entry.b_blob.source: entry.b_blob.path for entry in changed_java_source_files}, f, indent=2)
+        json.dump({entry.b_blob.name: entry.b_blob.path for entry in changed_java_source_files}, f, indent=2)
 
 
 def read_test_results(vul: Vulnerability, project_dir: str) -> dict:

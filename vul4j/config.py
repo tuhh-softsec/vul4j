@@ -45,5 +45,7 @@ JAVA11_HOME = normpath(get_config("JAVA", "JAVA11_HOME"))
 SPOTBUGS_VERSION = get_config("SPOTBUGS", "SPOTBUGS_VERSION", "4.8.5")
 SPOTBUGS_PATH = normpath(get_config("SPOTBUGS", "SPOTBUGS_PATH",
                                     os.path.join(VUL4J_DATA, f"spotbugs-{SPOTBUGS_VERSION}", "lib", "spotbugs.jar")))
-METHOD_GETTER_PATH = normpath(get_config("SPOTBUGS", "METHOD_GETTER_PATH",
-                                         os.path.join(VUL4J_GIT, "method_getter", "method-getter.jar")))
+MODIFICATION_EXTRACTOR_PATH = normpath(get_config("SPOTBUGS", "MODIFICATION_EXTRACTOR_PATH",
+                                                  os.path.join(VUL4J_GIT,
+                                                               "modification-extractor",
+                                                               "modification-extractor.jar")))
