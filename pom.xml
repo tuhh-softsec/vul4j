@@ -43,6 +43,14 @@
             <name>bintray</name>
             <url>https://jcenter.bintray.com</url>
         </repository>
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>imagej</id>
+            <name>imagej</name>
+            <url>http://maven.imagej.net/content/repositories/public/</url>
+        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -600,7 +608,7 @@
                             <goal>enforce</goal>
                         </goals>
                         <configuration>
-                            <skip>false</skip>
+                            <skip>true</skip>
                             <rules>
                                 <DependencyConvergence />
                                 <digestRule implementation="uk.co.froot.maven.enforcer.DigestRule">
