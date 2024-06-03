@@ -430,7 +430,8 @@ def reproduce(vul_ids):
                         warnings_vulnerable = spotbugs.run_spotbugs(project_dir, None, force_recompile)
                         # skip reproduction if spotbugs fails to detect the warning
                         not_detected = [warn for warn in vul.warning if warn not in warnings_vulnerable]
-                        assert len(not_detected) != 0, f"Some warnings were not detected by spotbugs: {not_detected}"
+                        assert len(not_detected) == 0,(f"Some warnings were not detected by spotbugs: "
+                                                       f"{json.dumps(not_detected, indent=2)}")
                         spotbugs_ran = True
                     except subprocess.CalledProcessError:
                         logger.error("Task failed! Keep going...")
