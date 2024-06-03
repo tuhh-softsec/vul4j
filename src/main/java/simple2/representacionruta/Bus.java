@@ -10,7 +10,7 @@ package simple2.representacionruta;
  */
 /**
  * 
- * Esta clase representa un bus de cables. Sólo se permite que un cable esté
+ * Esta clase representa un bus de cables. Slo se permite que un cable est
  * activo en un momento dado.
  */
 public class Bus {
@@ -20,7 +20,7 @@ public class Bus {
 	private Cable[] cables = null;
 
 	/**
-	 * Cable activo en el bus (un número negativo es ninguno.
+	 * Cable activo en el bus (un nmero negativo es ninguno.
 	 * 
 	 * @param cables
 	 */
@@ -34,7 +34,7 @@ public class Bus {
 	 *            Los cables que componen el bus.
 	 */
 	public Bus(Cable[] cables) {
-		this.cables = cables.clone();
+		this.cables = cables;
 	}
 
 	/**

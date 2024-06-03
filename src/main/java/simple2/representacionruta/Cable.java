@@ -25,13 +25,13 @@ public class Cable extends ElementoDibujable {
 	 * Crea una instancia de la clase.
 	 * 
 	 * @param dib
-	 *            La superficie de dibujo sobre la que se dibujará este objeto.
+	 *            La superficie de dibujo sobre la que se dibujar este objeto.
 	 * @param puntos
 	 *            Las coordenadas de las rectas que componen el cable
 	 */
 	public Cable(InterfaceDibujo dib, int[] puntos) {
 		super(dib);
-		this.puntos = puntos.clone();
+		this.puntos = puntos;
 	}
 
 	/**
@@ -83,7 +83,7 @@ public class Cable extends ElementoDibujable {
 		int y1 = 0;
 		int y2 = 0;
 
-		if (linea[0] == linea[2]) // es una línea vertical
+		if (linea[0] == linea[2]) // es una lnea vertical
 		{
 			x1 = linea[0] - 5;
 			x2 = linea[0] + 5;
