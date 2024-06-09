@@ -9,7 +9,7 @@ def get_config(section: str, config_name: str, default=""):
     config.read(config_path)
 
     try:
-        value = config.get(section, config_name)
+        value = config.get(section, config_name, fallback=None)
         if value is None or value == "":
             value = os.environ.get(config_name)
 
@@ -26,6 +26,7 @@ VUL4J_COMMITS_URL = get_config("VUL4J", "VUL4J_COMMITS_URL")
 DATASET_PATH = normpath(get_config("VUL4J", "DATASET_PATH",
                                    os.path.join(VUL4J_GIT, "dataset", "vul4j_dataset.csv")))
 LOG_TO_FILE = get_config("VUL4J", "LOG_TO_FILE", "1") == "1"
+FILE_LOG_LEVEL = get_config("VUL4J", "LOG_LEVEL", "DEBUG").upper()
 
 # DIRS
 VUL4J_OUTPUT = normpath(get_config("DIRS", "VUL4J_WORKDIR", "VUL4J"))

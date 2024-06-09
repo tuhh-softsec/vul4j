@@ -1,4 +1,5 @@
 import argparse
+from datetime import datetime
 import os.path
 import subprocess
 import sys
@@ -8,22 +9,24 @@ from loguru import logger
 import vul4j.spotbugs as spotbugs
 import vul4j.utils as utils
 import vul4j.vul4j_tools as vul4j
-from vul4j.config import VUL4J_DATA
+from vul4j.config import VUL4J_DATA, FILE_LOG_LEVEL
+
 
 # logger
-logger.remove()
-logger.add(sys.stdout,
-           colorize=True,
-           format="<cyan>{time:YYYY-MM-DD HH:mm:ss}</cyan> | <level>{message}</level>",
-           diagnose=False,
-           backtrace=False,
-           level="INFO")
-logger.add(os.path.join(VUL4J_DATA, "logs", "vul4j_debug_logs.log"),
-           format="<cyan>{time:YYYY-MM-DD HH:mm:ss}</cyan> | <level>{level}</level> | <level>{message}</level>",
-           level="DEBUG",
-           diagnose=True,
-           backtrace=True,
-           rotation="50 MB")
+def setup_logger(command: str, display_level: str = "INFO", file_level: str = "DEBUG"):
+    log_filename = f"{datetime.now().strftime('%y%m%d_%H%M%S')}_{command}_{file_level}.log"
+
+    logger.remove()
+    logger.add(sys.stdout,
+               colorize=True,
+               format="<cyan>{time:YYYY-MM-DD HH:mm:ss}</cyan> | <level>{message}</level>",
+               diagnose=False,
+               backtrace=False,
+               level=display_level.upper())
+    logger.add(os.path.join(VUL4J_DATA, "logs", log_filename),
+               format="<cyan>{time:YYYY-MM-DD HH:mm:ss}</cyan> | <level>{level}</level> | <level>{message}</level>",
+               rotation="00:00",
+               level=file_level.upper())
 
 
 @utils.log_frame("STATUS")
@@ -146,6 +149,8 @@ def main(args=None):
         args = sys.argv[1:]
 
     parser = argparse.ArgumentParser(prog="vul4j", description="A Dataset of Java vulnerabilities.")
+    parser.add_argument('-l', '--log', type=str, default="INFO",
+                        help="Specify displayed log level for this command.")
 
     sub_parsers = parser.add_subparsers()
 
@@ -200,7 +205,7 @@ def main(args=None):
     sast_parser.set_defaults(func=vul4j_sast)
 
     # REPRODUCE
-    reproduce_parser = sub_parsers.add_parser('reproduce',
+    reproduce_parser = sub_parsers.add_parser('reproduce', aliases=["verify"],
                                               help="Verify the reproducibility of vulnerabilities in the dataset.")
     reproduce_parser.add_argument("-i", "--id", nargs='+', type=str,
                                   help="Vulnerability ID.", required=True)
@@ -228,6 +233,8 @@ def main(args=None):
     spotbugs_parser.set_defaults(func=get_spotbugs)
 
     options = parser.parse_args(args)
+    setup_logger(options.func.__name__.upper(), options.log, FILE_LOG_LEVEL)
+
     if not hasattr(options, 'func'):
         parser.print_help()
         exit(1)

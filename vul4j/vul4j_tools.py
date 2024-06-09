@@ -656,12 +656,12 @@ def extract_patch_files(vul: Vulnerability, project_dir: str, repo_dir: str, com
         # write human_patch file content
         with open(os.path.join(project_dir, VUL4J_OUTPUT, human_patch_dir, human_patch.name), "w",
                   encoding="utf-8") as f:
-            f.write(human_patch.data_stream.read().decode("utf-8"))
+            f.write(human_patch.data_stream.read().decode("utf-8", errors="replace"))
 
         # write vulnerable file content
         with open(os.path.join(project_dir, VUL4J_OUTPUT, vulnerable_dir, vulnerable.name), "w",
                   encoding="utf-8") as f:
-            f.write(vulnerable.data_stream.read().decode("utf-8"))
+            f.write(vulnerable.data_stream.read().decode("utf-8", errors="replace"))
 
     # write paths into file
     logger.debug("Writing paths data...")
