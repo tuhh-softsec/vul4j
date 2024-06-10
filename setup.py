@@ -18,9 +18,9 @@ class Vul4JConfigure(install):
         install.finalize_options(self)
         if self.location is None:
             self.location = os.path.expanduser("~/vul4j_data")
-        # if os.path.exists(self.location):
-        #     print(f"ERROR: Directory already exists: {self.location}")
-        #     exit(1)
+        if os.path.exists(self.location):
+            print(f"ERROR: Directory already exists: {self.location}")
+            exit(1)
         os.environ["VUL4J_DATA"] = self.location
 
     def run(self):

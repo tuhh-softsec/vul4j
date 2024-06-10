@@ -32,19 +32,24 @@ def log_frame(title: str):
                 func(*args, **kwargs)
             except Exception as err:
                 logger.error(err)
+                exit(1)
             finally:
-                if os.path.exists(VUL4J_GIT):
-                    repo = git.Repo(VUL4J_GIT)
-                    repo.git.reset("--hard")
-                    repo.git.checkout("--")
-                    repo.git.clean("-fdx")
-                    repo.git.checkout("-f", "main")
+                reset_vul4j_git()
                 end = f" END {title} "
                 logger.info(end.center(60, "="))
 
         return wrapper
 
     return decorator_log_frame
+
+
+def reset_vul4j_git():
+    if os.path.exists(VUL4J_GIT):
+        repo = git.Repo(VUL4J_GIT)
+        repo.git.reset("--hard")
+        repo.git.checkout("--")
+        repo.git.clean("-fdx")
+        repo.git.checkout("-f", "main")
 
 
 def check_status():
@@ -63,11 +68,12 @@ def check_status():
 
     # check java versions
     env = os.environ.copy()
+    java_version_command = "java -version"
 
     java7 = False
     if JAVA7_HOME:
         env["PATH"] = os.path.join(JAVA7_HOME, "bin") + os.pathsep + env["PATH"]
-        java7 = "1.7" in str(subprocess.run("java -version",
+        java7 = "1.7" in str(subprocess.run(java_version_command,
                                             shell=True,
                                             stdout=subprocess.PIPE,
                                             stderr=subprocess.STDOUT,
@@ -76,7 +82,7 @@ def check_status():
     java8 = False
     if JAVA8_HOME:
         env["PATH"] = os.path.join(JAVA8_HOME, "bin") + os.pathsep + env["PATH"]
-        java8 = "1.8" in str(subprocess.run("java -version",
+        java8 = "1.8" in str(subprocess.run(java_version_command,
                                             shell=True,
                                             stdout=subprocess.PIPE,
                                             stderr=subprocess.STDOUT,
@@ -85,14 +91,23 @@ def check_status():
     java11 = False
     if JAVA11_HOME:
         env["PATH"] = os.path.join(JAVA11_HOME, "bin") + os.pathsep + env["PATH"]
-        java11 = "11" in str(subprocess.run("java -version",
+        java11 = "11" in str(subprocess.run(java_version_command,
+                                            shell=True,
+                                            stdout=subprocess.PIPE,
+                                            stderr=subprocess.STDOUT,
+                                            env=env))
+
+    java16 = False
+    if JAVA16_HOME:
+        env["PATH"] = os.path.join(JAVA16_HOME, "bin") + os.pathsep + env["PATH"]
+        java11 = "16" in str(subprocess.run(java_version_command,
                                             shell=True,
                                             stdout=subprocess.PIPE,
                                             stderr=subprocess.STDOUT,
                                             env=env))
 
     # check maven
-    maven = subprocess.run("mvn --version",
+    maven = subprocess.run("mvn -version",
                            shell=True,
                            stdout=subprocess.DEVNULL,
                            stderr=subprocess.DEVNULL).returncode == 0
@@ -120,6 +135,7 @@ def check_status():
     log_result("Java 7", java7)
     log_result("Java 8", java8)
     log_result("Java 11", java11)
+    log_result("Java 16", java16)
     log_result("Maven", maven)
     log_result("Spotbugs", spotbugs)
     log_result("Spotbugs method getter", method_getter)
@@ -181,7 +197,7 @@ def clean_build(project_dir: str, build_system: str, env: dict) -> None:
 
 def get_java_home_env(java_version: str) -> dict:
     """
-    Returns JAVA_HOME location depending on the specified java version.
+    Returns a copy of *os.environ* where the specified java version and all other java options are set.
 
     :param java_version: java version
     :return: env with all java parameters set

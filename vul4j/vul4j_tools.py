@@ -58,7 +58,7 @@ class Vulnerability:
             value = str(",".join(value))
         return value
 
-    def to_json(self, file_path: str = None, indent: int = 2):
+    def to_json(self, file_path: str = None, indent: int = 2) -> str:
         vulnerability_dict = {key: value for key, value in self.__dict__.items() if key != 'data'}
         if file_path:
             with open(file_path, "w", encoding="utf-8") as json_file:
@@ -67,7 +67,7 @@ class Vulnerability:
             return json.dumps(vulnerability_dict, indent=indent)
 
     @classmethod
-    def from_json(cls, project_dir):
+    def from_json(cls, project_dir: str):
         try:
             logger.debug("Reading vulnerability from file...")
             with open(os.path.join(project_dir, VUL4J_OUTPUT, "vulnerability_info.json"), "r") as info_file:
@@ -85,13 +85,15 @@ class Vulnerability:
 
 def load_vulnerabilities() -> dict:
     """
-    Loads vulnerability information from the csv dataset into a dictionary of dictionaries.
+    Loads vulnerability information from the csv dataset into a dictionary of Vulnerability objects.
     The program exits if the dataset is not found.
 
-    :return: dictionary of vulnerabilities
+    :return: dictionary of Vulnerability objects where the key is the vul id
     """
 
     try:
+        if not os.path.exists(DATASET_PATH):
+            utils.reset_vul4j_git()
         assert os.path.exists(DATASET_PATH)
     except AssertionError:
         logger.critical("Vul4j dataset not found!")
@@ -103,26 +105,13 @@ def load_vulnerabilities() -> dict:
         return vulnerabilities
 
 
-def get_info(vul_id: str) -> None:
-    """
-    Logs information about the specified vulnerability.
-
-    Raises VulnerabilityNotFoundError if the vulnerability is not found.
-
-    :param vul_id: vulnerability id
-    """
-    vul = get_vulnerability(vul_id)
-    logger.info(vul.to_json(indent=4))
-
-
 def get_vulnerability(vul_id: str) -> Vulnerability:
     """
-    Loads specified vulnerability from dataset.
-
+    Loads specified vulnerability from the dataset.
     Raises VulnerabilityNotFoundError if the vulnerability is not found.
 
     :param vul_id: vulnerability id
-    :return: dictionary of vulnerability data
+    :return: Vulnerability object with vulnerability data
     """
 
     vul = load_vulnerabilities().get(vul_id)
@@ -132,17 +121,31 @@ def get_vulnerability(vul_id: str) -> Vulnerability:
     return vul
 
 
+def get_info(vul_id: str) -> None:
+    """
+    Logs information about the specified vulnerability.
+    Raises VulnerabilityNotFoundError if the vulnerability is not found.
+
+    :param vul_id: vulnerability id
+    """
+    vul = get_vulnerability(vul_id)
+    logger.info(vul.to_json(indent=4))
+
+
 def checkout(vul_id: str, project_dir: str) -> None:
     """
     Copies and initializes the specified vulnerability into the output directory.
 
     If the vulnerability is from the official VUL4J dataset,
     the function checks out the corresponding branch and copies its content to the destination.
-    If the vulnerability was newly added to the dataset,
+    If the vulnerability was newly added to the dataset or the branch is not found locally,
     the function clones the project into a temporary directory and then copies its content to the destination.
 
     After copying, the function extracts the vulnerable and patched files into separate directories,
     as well as creates a vulnerability.json file which is used by other vul4j functions.
+
+    Do note that projects are cloned from their official repository,
+    which might lack some necessary fixes for compiling or testing.
 
     Finally, a git repo is initialized in the destination directory with two commits:
     one with vulnerable files applies, and another with patched files applied.
@@ -165,7 +168,7 @@ def checkout(vul_id: str, project_dir: str) -> None:
         if os.path.exists(project_clone):
             git.rmtree(project_clone)
         os.makedirs(TEMP_CLONE_DIR, exist_ok=True)
-        logger.info(f"Cloning project into '{project_clone}'")
+        logger.info(f"Cloning project into temporary folder: '{project_clone}'")
         git.Repo.clone_from(vul.project_url, project_clone)
         repo = git.Repo(project_clone)
         repo.git.checkout(vul.fixing_commit_hash)
@@ -222,12 +225,9 @@ def build(project_dir: str, suffix: str = None, clean: bool = False) -> None:
     Compiles the project found in the provided directory.
     The project must contain a 'vulnerability_info.json' file.
 
-    Important errors can be: VulnerabilityNotFoundError, AssertionError, subprocess.CalledProcessError,
-    but might raise other errors too.
-
     :param project_dir: path to the project to be compiled
     :param suffix: suffix to add to log files if needed (None means no suffix)
-    :param clean: clean project before compiling
+    :param clean: force clean project before compiling
     """
 
     vul = Vulnerability.from_json(project_dir)
@@ -299,7 +299,7 @@ def test(project_dir: str, batch_type: str, suffix: str = None, clean: bool = Fa
     :param project_dir: path to the project to be tested
     :param batch_type: 'all' for all tests, 'povs' for vulnerable tests only
     :param suffix: suffix to add to log files if needed (None means no suffix)
-    :param clean: clean project before running tests
+    :param clean: force clean project before running tests
     :return: test results dictionary (number of running, passing, failing, error, skipping)
     """
 
@@ -351,10 +351,14 @@ def test(project_dir: str, batch_type: str, suffix: str = None, clean: bool = Fa
 
 def reproduce(vul_ids):
     """
-    Verifies vulnerabilities that are in the official VUL4J dataset or reproduces newly added entries.
+    Reproduces a selected vulnerability from the dataset.
+    The reproduction is only successful if each step produces the expected results stated in the dataset csv.
+
+    If an entry has no test commands specified in the csv, the testing step is skipped.
+    If an entry has no Spotbugs warnings specified in the csv, the Spotbugs step is skipped.
 
     First the vulnerable version is compiled, tested and analyzed with Spotbugs.
-    Then the human_patch version is run.
+    Then the same with the human_patch version.
 
     :param vul_ids: single id or list of ids to reproduce
     """
@@ -390,11 +394,12 @@ def reproduce(vul_ids):
 
                 checkout(vul.vul_id, project_dir)
 
-                # vulnerable
+                # VULNERABLE
                 version = "vulnerable"
                 logger.info(f"--> Applying version: {version}")
                 apply(project_dir, version, quiet=True)
 
+                # compile
                 force_recompile = False
                 try:
                     build(project_dir, version, clean=True)
@@ -402,6 +407,7 @@ def reproduce(vul_ids):
                     force_recompile = True
                     logger.error("Compile failed! Keep going...")
 
+                # test
                 try:
                     tests = "povs" if vul.failing_tests else "all"
                     test_results = test(project_dir, tests, version)
@@ -423,6 +429,7 @@ def reproduce(vul_ids):
                 except AssertionError as err:
                     logger.warning(err)
 
+                # spotbugs
                 if len(vul.warning) > 0:
                     if force_recompile:
                         logger.info("Compile failed previously. Trying again for Spotbugs...")
@@ -440,11 +447,12 @@ def reproduce(vul_ids):
                 else:
                     logger.warning(f"No fixed warning found in the dataset for {vul.vul_id}. Skipping Spotbugs...")
 
-                # human patch
+                # HUMAN PATCH
                 version = "human_patch"
                 logger.info(f"--> Applying version: {version}")
                 apply(project_dir, version, quiet=True)
 
+                # compile
                 force_recompile = False
                 try:
                     build(project_dir, version, clean=True)
@@ -452,6 +460,7 @@ def reproduce(vul_ids):
                     force_recompile = True
                     logger.error("Compile failed! Keep going...")
 
+                # test
                 try:
                     tests = "povs" if vul.failing_tests else "all"
                     test_results = test(project_dir, tests, version)
@@ -475,6 +484,7 @@ def reproduce(vul_ids):
                 except AssertionError as err:
                     logger.warning(err)
 
+                # spotbugs
                 if len(vul.warning) > 0:
                     if force_recompile:
                         logger.info("Compile failed previously. Trying again for Spotbugs...")
@@ -492,6 +502,7 @@ def reproduce(vul_ids):
                 else:
                     logger.warning(f"No fixed warning found in the dataset for {vul.vul_id}. Skipping Spotbugs...")
 
+                # CALCULATE RESULTS
                 tests_pass = ((1 if bool(tests_ran) else 0)
                               + (1 if bool(vul.test_cmd or vul.test_all_cmd) else 0))
                 spotbugs_pass = ((1 if bool(spotbugs_ran) else 0)

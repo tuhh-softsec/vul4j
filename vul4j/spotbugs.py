@@ -46,7 +46,7 @@ class BugInstance:
         return attributes
 
 
-def run_spotbugs(output_dir: str, version=None, force_compile=False) -> list:
+def run_spotbugs(project_dir: str, version=None, force_compile=False) -> list:
     """
     Runs Spotbugs check on the project found in the provided directory.
     The project must contain a 'vulnerability_info.json' file.
@@ -56,25 +56,25 @@ def run_spotbugs(output_dir: str, version=None, force_compile=False) -> list:
     One can manually force recompilation by setting force_compile to True.
 
     The project's target folder is searched for artifacts.
-    The jar that ends in 'SNAPSHOT.jar' will be used for the Spotbugs analysis.
 
-    The method getter extracts the modified method names and their classes into the modifications.json file.
+    The modification extractor extracts the modified classes, class attributes and method names
+    into the modifications.json file.
     Then Spotbugs analysis is run.
 
-    The spotbugs_report.xml file is checked for warnings in the methods extracted by the method getter.
+    The spotbugs_report.xml file is checked for warnings in the modified code parts.
     The results are saved in the warnings.json file or warnings_version.json if a version was provided.
 
-    :param output_dir:  path to the projects directory
+    :param project_dir:  path to the projects directory
     :param version: version name, used for naming output files
     :param force_compile:   recompile project
     """
 
-    vul = vul4j.Vulnerability.from_json(output_dir)
+    vul = vul4j.Vulnerability.from_json(project_dir)
 
     assert vul.build_system == "Maven", f"Incompatible build system: {vul.build_system}"
 
     # create spotbugs directory
-    reports_dir = os.path.join(output_dir, VUL4J_OUTPUT, "spotbugs")
+    reports_dir = os.path.join(project_dir, VUL4J_OUTPUT, "spotbugs")
     os.makedirs(reports_dir, exist_ok=True)
     assert os.path.exists(reports_dir), "Failed to create spotbugs directory!"
     logger.debug("Spotbugs directory created!")
@@ -82,14 +82,14 @@ def run_spotbugs(output_dir: str, version=None, force_compile=False) -> list:
     # get module path where compiled jars are located
     failing_module = vul.failing_module
     if failing_module == "root":
-        module_path = output_dir
+        module_path = project_dir
     else:
-        module_path = os.path.join(output_dir, failing_module)
+        module_path = os.path.join(project_dir, failing_module)
     logger.debug(f"Module path: {module_path}")
 
     # find modified methods and their classes
     method_getter_output = os.path.join(reports_dir, "modifications.json")
-    method_getter_command = f"java -jar {MODIFICATION_EXTRACTOR_PATH} {output_dir} {method_getter_output}"
+    method_getter_command = f"java -jar {MODIFICATION_EXTRACTOR_PATH} {project_dir} {method_getter_output}"
     method_getter_log_path = os.path.join(reports_dir, "modifications.log")
     log_to_file = open(method_getter_log_path, "w", encoding="utf-8") if LOG_TO_FILE else subprocess.DEVNULL
     logger.debug(method_getter_command)
@@ -106,7 +106,7 @@ def run_spotbugs(output_dir: str, version=None, force_compile=False) -> list:
     # check for artifacts, compiling if necessary
     if force_compile:
         logger.debug("Forced compile")
-        vul4j.build(output_dir, version, clean=True)
+        vul4j.build(project_dir, version, clean=True)
 
     # select the correct jar from artifacts
     jar_path = get_artifact(module_path)

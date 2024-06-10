@@ -1,8 +1,8 @@
 import argparse
-from datetime import datetime
 import os.path
 import subprocess
 import sys
+from datetime import datetime
 
 from loguru import logger
 
@@ -15,14 +15,15 @@ from vul4j.config import VUL4J_DATA, FILE_LOG_LEVEL
 # logger
 def setup_logger(command: str, display_level: str = "INFO", file_level: str = "DEBUG"):
     log_filename = f"{datetime.now().strftime('%y%m%d_%H%M%S')}_{command}_{file_level}.log"
-
     logger.remove()
+    # STDOUT
     logger.add(sys.stdout,
                colorize=True,
                format="<cyan>{time:YYYY-MM-DD HH:mm:ss}</cyan> | <level>{message}</level>",
                diagnose=False,
                backtrace=False,
                level=display_level.upper())
+    # FILE
     logger.add(os.path.join(VUL4J_DATA, "logs", log_filename),
                format="<cyan>{time:YYYY-MM-DD HH:mm:ss}</cyan> | <level>{level}</level> | <level>{message}</level>",
                rotation="00:00",
@@ -30,61 +31,34 @@ def setup_logger(command: str, display_level: str = "INFO", file_level: str = "D
 
 
 @utils.log_frame("STATUS")
-def vul4j_status(args):
+def vul4j_status(_):
     utils.check_status()
 
 
 @utils.log_frame("CHECKOUT")
 def vul4j_checkout(args):
-    vul_id = args.id
-    output_dir = args.outdir
-
-    try:
-        vul4j.checkout(vul_id, output_dir)
-        return
-    except (vul4j.VulnerabilityNotFoundError, AssertionError) as err:
-        logger.error(err)
-    exit(1)
+    vul4j.checkout(args.id, args.outdir)
 
 
 @utils.log_frame("COMPILE")
 def vul4j_compile(args):
-    output_dir = args.outdir
-
     try:
-        vul4j.build(output_dir)
-        return
+        vul4j.build(args.outdir)
     except subprocess.CalledProcessError:
-        logger.error("Compile failed!")
-    except (vul4j.VulnerabilityNotFoundError, AssertionError) as err:
-        logger.error(err)
-    exit(1)
+        raise subprocess.CalledProcessError("Compile failed!")
 
 
 @utils.log_frame("TEST")
 def vul4j_test(args):
-    output_dir = args.outdir
-    batch_type = args.batchtype
-
     try:
-        vul4j.test(output_dir, batch_type)
+        vul4j.test(args.outdir, args.batchtype)
     except subprocess.CalledProcessError:
-        logger.error("Testing failed!")
-    except (vul4j.VulnerabilityNotFoundError, AssertionError) as err:
-        logger.error(err)
+        raise subprocess.CalledProcessError("Testing failed!")
 
 
 @utils.log_frame("APPLY")
 def vul4j_apply(args):
-    output_dir = args.outdir
-    version = args.version
-
-    try:
-        vul4j.apply(output_dir, version)
-    except AssertionError as err:
-        logger.error(err)
-    except vul4j.VulnerabilityNotFoundError as err:
-        logger.error(err)
+    vul4j.apply(args.outdir, args.version)
 
 
 @utils.log_frame("SAST")
@@ -120,18 +94,12 @@ def vul4j_sast(args):
 
 @utils.log_frame("REPRODUCE")
 def vul4j_reproduce(args):
-    vul_id = args.id
-    vul4j.reproduce(vul_id)
+    vul4j.reproduce(args.id)
 
 
 @utils.log_frame("INFO")
 def vul4j_info(args):
-    vul_id = args.id
-
-    try:
-        vul4j.get_info(vul_id)
-    except vul4j.VulnerabilityNotFoundError as err:
-        logger.error(err)
+    vul4j.get_info(args.id)
 
 
 @utils.log_frame("CLASSPATH")
@@ -156,7 +124,7 @@ def main(args=None):
 
     # STATUS
     status_parser = sub_parsers.add_parser("status",
-                                           help="Lists vul4j requirements and availability.")
+                                           help="Lists vul4j requirements and their availability.")
     status_parser.set_defaults(func=vul4j_status)
 
     # CHECKOUT
@@ -186,16 +154,16 @@ def main(args=None):
 
     # APPLY
     apply_parser = sub_parsers.add_parser('apply',
-                                          help="Apply the specified file version.")
+                                          help="Apply the specified file versions.")
     apply_parser.add_argument("-d", "--outdir", type=str,
                               help="The directory to which the vulnerability was checked out.", required=True)
     apply_parser.add_argument("-v", "--version", type=str,
-                              help="Version to apply", required=True)
+                              help="Version to apply.", required=True)
     apply_parser.set_defaults(func=vul4j_apply)
 
     # SAST
     sast_parser = sub_parsers.add_parser('sast',
-                                         help="Run spotbugs analysis.")
+                                         help="Run Spotbugs analysis.")
     sast_parser.add_argument("-d", "--outdir", type=str,
                              help="The directory to which the vulnerability was checked out.", required=True)
     sast_parser.add_argument("-v", "--versions", nargs='+',
@@ -227,7 +195,7 @@ def main(args=None):
 
     # GET SPOTBUGS
     spotbugs_parser = sub_parsers.add_parser("get-spotbugs",
-                                             help="Downloads Spotbugs into the user directory.")
+                                             help="Download Spotbugs into the user directory.")
     spotbugs_parser.add_argument("-l", "--location", type=str,
                                  help="Custom spotbugs installation path.", required=False)
     spotbugs_parser.set_defaults(func=get_spotbugs)
