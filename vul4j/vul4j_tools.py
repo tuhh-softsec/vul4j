@@ -22,8 +22,9 @@ class VulnerabilityNotFoundError(Exception):
 
 
 class Vulnerability:
-    def __init__(self, data: dict):
+    def __init__(self, data: dict, quiet: bool = False):
         self.data = data
+        self.quiet = quiet
 
         self.vul_id = self.get_column("vul_id")
         self.cve_id = self.get_column("cve_id")
@@ -56,6 +57,15 @@ class Vulnerability:
             value = value.strip()
         elif isinstance(value, list):
             value = str(",".join(value))
+        elif value is None:
+            # ignore None values except vul_id
+            if column == "vul_id":
+                raise ValueError("Cannot find vul_id in the file!")
+            # old json versions also have project field, but csv does not
+            source_file = "dataset csv" if self.data.get("project") is None else "vulnerability.json"
+            logger.warning(f"Error reading value for '{column}'. Please check the {source_file} file! "
+                           f"You might be using an outdated version.")
+            value = ""
         return value
 
     def to_json(self, file_path: str = None, indent: int = 2) -> str:
@@ -101,7 +111,7 @@ def load_vulnerabilities() -> dict:
 
     with open(DATASET_PATH) as dataset_file:
         reader = csv.DictReader(dataset_file, delimiter=',')
-        vulnerabilities = {vul["vul_id"]: Vulnerability(vul) for vul in reader}
+        vulnerabilities = {vul["vul_id"]: Vulnerability(vul, idx != 0) for idx, vul in enumerate(reader)}
         return vulnerabilities
 
 
@@ -132,7 +142,7 @@ def get_info(vul_id: str) -> None:
     logger.info(vul.to_json(indent=4))
 
 
-def checkout(vul_id: str, project_dir: str) -> None:
+def checkout(vul_id: str, project_dir: str, force: bool = False) -> None:
     """
     Copies and initializes the specified vulnerability into the output directory.
 
@@ -153,9 +163,14 @@ def checkout(vul_id: str, project_dir: str) -> None:
 
     :param vul_id:  vulnerability ID to be checked out
     :param project_dir:  where the checked out project will be copied
+    :param force: removes project_dir if exists
     """
 
     vul = get_vulnerability(vul_id)
+
+    if force and os.path.exists(project_dir):
+        shutil.rmtree(project_dir)
+        logger.info("Removing project directory...")
 
     assert not os.path.exists(project_dir), f"Directory '{project_dir}' already exists!"
 
@@ -437,8 +452,8 @@ def reproduce(vul_ids):
                         warnings_vulnerable = spotbugs.run_spotbugs(project_dir, None, force_recompile)
                         # skip reproduction if spotbugs fails to detect the warning
                         not_detected = [warn for warn in vul.warning if warn not in warnings_vulnerable]
-                        assert len(not_detected) == 0,(f"Some warnings were not detected by spotbugs: "
-                                                       f"{json.dumps(not_detected, indent=2)}")
+                        assert len(not_detected) == 0, (f"Some warnings were not detected by spotbugs: "
+                                                        f"{json.dumps(not_detected, indent=2)}")
                         spotbugs_ran = True
                     except subprocess.CalledProcessError:
                         logger.error("Task failed! Keep going...")

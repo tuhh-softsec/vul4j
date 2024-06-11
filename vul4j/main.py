@@ -37,7 +37,7 @@ def vul4j_status(_):
 
 @utils.log_frame("CHECKOUT")
 def vul4j_checkout(args):
-    vul4j.checkout(args.id, args.outdir)
+    vul4j.checkout(args.id, args.outdir, args.force)
 
 
 @utils.log_frame("COMPILE")
@@ -134,6 +134,8 @@ def main(args=None):
                                  help="Vulnerability ID.", required=True)
     checkout_parser.add_argument("-d", "--outdir", type=str,
                                  help="The destination directory.", required=True)
+    checkout_parser.add_argument("-f", "--force", action="store_true",
+                                 help="Removes the destination directory if it already exists.")
     checkout_parser.set_defaults(func=vul4j_checkout)
 
     # COMPILE

@@ -100,7 +100,7 @@ def check_status():
     java16 = False
     if JAVA16_HOME:
         env["PATH"] = os.path.join(JAVA16_HOME, "bin") + os.pathsep + env["PATH"]
-        java11 = "16" in str(subprocess.run(java_version_command,
+        java16 = "16" in str(subprocess.run(java_version_command,
                                             shell=True,
                                             stdout=subprocess.PIPE,
                                             stderr=subprocess.STDOUT,
