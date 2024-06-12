@@ -27,7 +27,7 @@ public class WebSocketProducerServlet extends WebSocketServlet {
     public static final String SERVLET_PATH = "/ws/producer";
     public static final String SERVLET_PATH_V2 = "/ws/v2/producer";
 
-    private final transient WebSocketService service;
+    private final WebSocketService service;
 
     public WebSocketProducerServlet(WebSocketService service) {
         this.service = service;

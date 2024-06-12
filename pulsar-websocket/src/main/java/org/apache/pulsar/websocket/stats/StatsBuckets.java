@@ -21,7 +21,6 @@ package org.apache.pulsar.websocket.stats;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.atomic.LongAdder;
 
 /**
@@ -36,10 +35,6 @@ public class StatsBuckets {
     private final long[] values;
     private long count = 0;
     private long sum = 0;
-
-    public StatsBuckets(List<Long> boundaries) {
-        this(boundaries.stream().mapToLong(l -> l).toArray());
-    }
 
     public StatsBuckets(long... boundaries) {
         checkArgument(boundaries.length > 0);
@@ -90,7 +85,7 @@ public class StatsBuckets {
     }
 
     public long[] getBuckets() {
-        return values.clone();
+        return values;
     }
 
     public long getCount() {

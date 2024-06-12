@@ -22,12 +22,12 @@ import org.eclipse.jetty.websocket.servlet.WebSocketServlet;
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 
 public class WebSocketReaderServlet extends WebSocketServlet {
-    private static final transient long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     public static final String SERVLET_PATH = "/ws/reader";
     public static final String SERVLET_PATH_V2 = "/ws/v2/reader";
 
-    private final transient WebSocketService service;
+    WebSocketService service;
 
     public WebSocketReaderServlet(WebSocketService service) {
         super();

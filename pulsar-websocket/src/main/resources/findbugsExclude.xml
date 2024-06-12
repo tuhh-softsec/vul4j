@@ -20,7 +20,7 @@
 -->
 <FindBugsFilter>
   <!-- these public fields may be used in other modules -->
-  <Match>
+  <!--Match>
     <Class name="org.apache.pulsar.websocket.data.ConsumerMessage"/>
     <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
   </Match>
@@ -31,5 +31,5 @@
   <Match>
     <Class name="org.apache.pulsar.websocket.stats.ProxyTopicStat$ProducerStats"/>
     <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
-  </Match>
+  </Match-->
 </FindBugsFilter>
