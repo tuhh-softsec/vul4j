@@ -111,6 +111,8 @@ def run_spotbugs(project_dir: str, version=None, force_compile=False) -> list:
     # select the correct jar from artifacts
     jar_path = get_artifact(module_path)
 
+    assert jar_path is not None, "No runnable artifact found!"
+
     # run spotbugs
     spotbugs_output = os.path.join(reports_dir, utils.suffix_filename("spotbugs_report.xml", version))
     spotbugs_command = f"java -jar {SPOTBUGS_PATH} -textui -low -xml={spotbugs_output} {jar_path}"
@@ -168,7 +170,7 @@ def run_spotbugs(project_dir: str, version=None, force_compile=False) -> list:
     return warning_list
 
 
-def get_artifact(module_path: str) -> str:
+def get_artifact(module_path: str):
     """
     Search for artifacts in the target directory.
     Maven only.
@@ -201,11 +203,18 @@ def get_artifact(module_path: str) -> str:
             if parent is not None:
                 version = parent.find('m:version', namespaces)
 
-        jar_filename = f"{artifact_id.text}-{version.text}.jar"
+        jar_filenames = [
+            f"{artifact_id.text}-{version.text}.jar" if artifact_id and version else "",
+            f"{artifact_id.text}.jar" if artifact_id else "",
+            "SNAPSHOT.jar",
+            "shaded.jar"
+        ]
 
-        return next(file for file in artifacts if (jar_filename in file or
-                                                   'SNAPSHOT.jar' in file or
-                                                   'shaded.jar' in file))
+        for artifact in artifacts:
+            for filename in jar_filenames:
+                if filename in artifact:
+                    return artifact
+        return None
 
     except ElementTree.ParseError as err:
         logger.debug(err)

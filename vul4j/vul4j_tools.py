@@ -22,9 +22,8 @@ class VulnerabilityNotFoundError(Exception):
 
 
 class Vulnerability:
-    def __init__(self, data: dict, quiet: bool = False):
+    def __init__(self, data: dict):
         self.data = data
-        self.quiet = quiet
 
         self.vul_id = self.get_column("vul_id")
         self.cve_id = self.get_column("cve_id")
@@ -61,10 +60,6 @@ class Vulnerability:
             # ignore None values except vul_id
             if column == "vul_id":
                 raise ValueError("Cannot find vul_id in the file!")
-            # old json versions also have project field, but csv does not
-            source_file = "dataset csv" if self.data.get("project") is None else "vulnerability.json"
-            logger.warning(f"Error reading value for '{column}'. Please check the {source_file} file! "
-                           f"You might be using an outdated version.")
             value = ""
         return value
 
@@ -111,7 +106,7 @@ def load_vulnerabilities() -> dict:
 
     with open(DATASET_PATH) as dataset_file:
         reader = csv.DictReader(dataset_file, delimiter=',')
-        vulnerabilities = {vul["vul_id"]: Vulnerability(vul, idx != 0) for idx, vul in enumerate(reader)}
+        vulnerabilities = {vul["vul_id"]: Vulnerability(vul) for vul in reader}
         return vulnerabilities
 
 
@@ -435,7 +430,7 @@ def reproduce(vul_ids):
                     else:
                         failing_tests = set(f"{failure['test_class']}#{failure['test_method']}" for failure in failures)
                         if len(failing_tests) != 0:
-                            logger.error(f"Failing tests: {list(failing_tests)}")
+                            logger.error(f"Failing tests: {json.dumps(list(failing_tests), indent=2)}")
                         else:
                             logger.critical("Vulnerable revision must contain at least 1 failing test!!!")
                             continue
@@ -445,7 +440,7 @@ def reproduce(vul_ids):
                     logger.warning(err)
 
                 # spotbugs
-                if len(vul.warning) > 0:
+                if len(vul.warning) > 0 and "" not in vul.warning:
                     if force_recompile:
                         logger.info("Compile failed previously. Trying again for Spotbugs...")
                     try:
@@ -491,7 +486,7 @@ def reproduce(vul_ids):
                         if len(failing_tests) == 0:
                             logger.success("No failing tests found!")
                         else:
-                            logger.error(f"Failing tests: {list(failing_tests)}")
+                            logger.error(f"Failing tests: {json.dumps(list(failing_tests), indent=2)}")
                             logger.critical("Patched version must contain no failing test!!!")
                             continue
                 except subprocess.CalledProcessError:
@@ -500,7 +495,7 @@ def reproduce(vul_ids):
                     logger.warning(err)
 
                 # spotbugs
-                if len(vul.warning) > 0:
+                if len(vul.warning) > 0 and "" not in vul.warning:
                     if force_recompile:
                         logger.info("Compile failed previously. Trying again for Spotbugs...")
                     try:
@@ -522,7 +517,7 @@ def reproduce(vul_ids):
                               + (1 if bool(vul.test_cmd or vul.test_all_cmd) else 0))
                 spotbugs_pass = ((1 if bool(spotbugs_ran) else 0)
                                  + (1 if bool(spotbugs_ok) else 0)
-                                 + (1 if bool(vul.warning) else 0))
+                                 + (1 if bool(len(vul.warning) > 0 and "" not in vul.warning) else 0))
 
                 if tests_pass == 2:
                     tests_status = "PASS"
@@ -627,7 +622,7 @@ def classpath(project_dir: str) -> str:
 
     subprocess.run(cp_cmd[0],
                    shell=True,
-                   stdout=subprocess.STDOUT,
+                   stdout=subprocess.DEVNULL,
                    stderr=subprocess.STDOUT,
                    env=env,
                    cwd=project_dir,
@@ -638,7 +633,9 @@ def classpath(project_dir: str) -> str:
                                           stdout=subprocess.PIPE,
                                           stderr=subprocess.STDOUT,
                                           cwd=project_dir,
-                                          env=env))
+                                          env=env).stdout)
+    logger.info(classpath_result)
+
     return classpath_result
 
 

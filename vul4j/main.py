@@ -45,7 +45,7 @@ def vul4j_compile(args):
     try:
         vul4j.build(args.outdir)
     except subprocess.CalledProcessError:
-        raise subprocess.CalledProcessError("Compile failed!")
+        raise RuntimeError("Compile failed!")
 
 
 @utils.log_frame("TEST")
@@ -53,7 +53,7 @@ def vul4j_test(args):
     try:
         vul4j.test(args.outdir, args.batchtype)
     except subprocess.CalledProcessError:
-        raise subprocess.CalledProcessError("Testing failed!")
+        raise RuntimeError("Testing failed!")
 
 
 @utils.log_frame("APPLY")
@@ -82,12 +82,8 @@ def vul4j_sast(args):
             # compile, method getter or spotbugs fails
             logger.error("Task failed!")
             continue
-        except StopIteration:
-            # the correct jar was not found
-            logger.error("No runnable artifact found")
-            continue
         except (vul4j.VulnerabilityNotFoundError, AssertionError) as err:
-            # any file fails to be created
+            # any file fails to be created or the correct jar was not found
             logger.error(err)
             continue
 
