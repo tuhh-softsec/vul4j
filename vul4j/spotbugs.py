@@ -204,8 +204,8 @@ def get_artifact(module_path: str):
                 version = parent.find('m:version', namespaces)
 
         jar_filenames = [
-            f"{artifact_id.text}-{version.text}.jar" if artifact_id and version else "",
-            f"{artifact_id.text}.jar" if artifact_id else "",
+            f"{artifact_id.text}-{version.text}.jar" if artifact_id is not None and version is not None else "",
+            f"{artifact_id.text}.jar" if artifact_id is not None else "",
             "SNAPSHOT.jar",
             "shaded.jar"
         ]

@@ -336,7 +336,7 @@ public class GitUtils {
                 .ifPresent(packageDeclaration -> builder.append(packageDeclaration.getName()).append("."));
 
         compilationUnit.findFirst(ClassOrInterfaceDeclaration.class)
-                .ifPresent(classDeclaration -> builder.append(classDeclaration.getName()));
+                .ifPresent(classDeclaration -> builder.append(classDeclaration.getNameAsString()));
 
         return builder.toString();
     }

@@ -67,44 +67,31 @@ def check_status():
     vul4j_dataset = bool(DATASET_PATH) and os.path.exists(DATASET_PATH)
 
     # check java versions
-    env = os.environ.copy()
     java_version_command = "java -version"
 
-    java7 = False
-    if JAVA7_HOME:
-        env["PATH"] = os.path.join(JAVA7_HOME, "bin") + os.pathsep + env["PATH"]
-        java7 = "1.7" in str(subprocess.run(java_version_command,
-                                            shell=True,
-                                            stdout=subprocess.PIPE,
-                                            stderr=subprocess.STDOUT,
-                                            env=env))
+    java7 = "1.7" in str(subprocess.run(java_version_command,
+                                        shell=True,
+                                        stdout=subprocess.PIPE,
+                                        stderr=subprocess.STDOUT,
+                                        env=get_java_home_env('7')))
 
-    java8 = False
-    if JAVA8_HOME:
-        env["PATH"] = os.path.join(JAVA8_HOME, "bin") + os.pathsep + env["PATH"]
-        java8 = "1.8" in str(subprocess.run(java_version_command,
-                                            shell=True,
-                                            stdout=subprocess.PIPE,
-                                            stderr=subprocess.STDOUT,
-                                            env=env))
+    java8 = "1.8" in str(subprocess.run(java_version_command,
+                                        shell=True,
+                                        stdout=subprocess.PIPE,
+                                        stderr=subprocess.STDOUT,
+                                        env=get_java_home_env('8')))
 
-    java11 = False
-    if JAVA11_HOME:
-        env["PATH"] = os.path.join(JAVA11_HOME, "bin") + os.pathsep + env["PATH"]
-        java11 = "11" in str(subprocess.run(java_version_command,
-                                            shell=True,
-                                            stdout=subprocess.PIPE,
-                                            stderr=subprocess.STDOUT,
-                                            env=env))
+    java11 = "11" in str(subprocess.run(java_version_command,
+                                        shell=True,
+                                        stdout=subprocess.PIPE,
+                                        stderr=subprocess.STDOUT,
+                                        env=get_java_home_env('11')))
 
-    java16 = False
-    if JAVA16_HOME:
-        env["PATH"] = os.path.join(JAVA16_HOME, "bin") + os.pathsep + env["PATH"]
-        java16 = "16" in str(subprocess.run(java_version_command,
-                                            shell=True,
-                                            stdout=subprocess.PIPE,
-                                            stderr=subprocess.STDOUT,
-                                            env=env))
+    java16 = "16" in str(subprocess.run(java_version_command,
+                                        shell=True,
+                                        stdout=subprocess.PIPE,
+                                        stderr=subprocess.STDOUT,
+                                        env=get_java_home_env('16')))
 
     # check maven
     maven = subprocess.run("mvn -version",
@@ -117,10 +104,11 @@ def check_status():
                 subprocess.run(f"java -jar {SPOTBUGS_PATH} -version",
                                shell=True,
                                stdout=subprocess.DEVNULL,
-                               stderr=subprocess.DEVNULL).returncode == 0)
+                               stderr=subprocess.DEVNULL,
+                               env=get_java_home_env('16')).returncode == 0)
 
     # check method getter
-    method_getter = (bool(MODIFICATION_EXTRACTOR_PATH) and
+    modification_extractor = (bool(MODIFICATION_EXTRACTOR_PATH) and
                      subprocess.run(f"java -jar {MODIFICATION_EXTRACTOR_PATH} -version",
                                     shell=True,
                                     stdout=subprocess.DEVNULL,
@@ -138,7 +126,7 @@ def check_status():
     log_result("Java 16", java16)
     log_result("Maven", maven)
     log_result("Spotbugs", spotbugs)
-    log_result("Spotbugs method getter", method_getter)
+    log_result("Spotbugs modification extractor", modification_extractor)
 
 
 def get_spotbugs(location: str = None) -> None:
