@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import net.onrc.onos.core.datastore.DataStoreClient;
 import net.onrc.onos.core.datastore.IKVClient;
 import net.onrc.onos.core.datastore.IKVTable;
@@ -62,6 +64,8 @@ public class KVObject {
         this(table, key, null, table.getVersionNonexistant());
     }
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+                        justification = "TODO: Store a copy of the object?")
     public KVObject(final IKVTable table, final byte[] key, final byte[] value, final long version) {
         if (table == null) {
             throw new IllegalArgumentException("table cannot be null");
@@ -70,7 +74,7 @@ public class KVObject {
             throw new IllegalArgumentException("key cannot be null");
         }
         this.table = table;
-        this.key = key.clone();
+        this.key = key;
         this.version = version;
         this.propertyMap = new HashMap<Object, Object>();
 
@@ -93,8 +97,10 @@ public class KVObject {
         return table.getTableId();
     }
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+                        justification = "TODO: Return a copy of the object?")
     public byte[] getKey() {
-        return key.clone();
+        return key;
     }
 
     public long getVersion() {

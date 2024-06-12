@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import net.onrc.onos.core.datastore.DataStoreClient;
 import net.onrc.onos.core.datastore.IKVTable.IKVEntry;
 import net.onrc.onos.core.datastore.topology.KVLink.STATUS;
@@ -75,10 +77,12 @@ public class KVDevice extends KVObject {
         return mac;
     }
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+                        justification = "TODO: Store a copy of the object?")
     public KVDevice(final byte[] mac) {
         super(DataStoreClient.getClient().getTable(GLOBAL_DEVICE_TABLE_NAME), getDeviceID(mac));
 
-        this.mac = mac.clone();
+        this.mac = mac;
         this.portIds = new TreeSet<>(ByteArrayComparator.BYTEARRAY_COMPARATOR);
         this.isPortIdsModified = true;
     }
@@ -121,8 +125,11 @@ public class KVDevice extends KVObject {
         }
     }
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+                        justification = "TODO: Return a copy of the object?")
     public byte[] getMac() {
-        return mac.clone();
+        // TODO may need to clone() to be sure this object will be immutable.
+        return mac;
     }
 
     public byte[] getId() {

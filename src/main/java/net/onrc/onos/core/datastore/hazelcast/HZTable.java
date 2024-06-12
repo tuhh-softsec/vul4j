@@ -7,13 +7,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import net.onrc.onos.core.datastore.IKVTable;
 import net.onrc.onos.core.datastore.IKVTableID;
 import net.onrc.onos.core.datastore.ObjectDoesntExistException;
 import net.onrc.onos.core.datastore.ObjectExistsException;
 import net.onrc.onos.core.datastore.WrongVersionException;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +70,7 @@ public class HZTable implements IKVTable, IKVTableID {
         }
 
         public VersionedValue(final byte[] value, final long version) {
-            this.value = ArrayUtils.clone(value);
+            this.value = value;
             this.version = version;
         }
 
@@ -82,7 +83,7 @@ public class HZTable implements IKVTable, IKVTableID {
         }
 
         public void setValue(final byte[] value) {
-            this.value = ArrayUtils.clone(value);
+            this.value = value;
         }
 
         public void setNextVersion() {
@@ -153,8 +154,10 @@ public class HZTable implements IKVTable, IKVTableID {
         byte[] value;
         long version;
 
+        @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+                            justification = "TODO: Store a copy of the object?")
         public Entry(final byte[] key, final byte[] value, final long version) {
-            this.key = key.clone();
+            this.key = key;
             this.setValue(value);
             this.setVersion(version);
         }
@@ -164,13 +167,17 @@ public class HZTable implements IKVTable, IKVTableID {
         }
 
         @Override
+        @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+                            justification = "TODO: Return a copy of the object?")
         public byte[] getKey() {
-            return key.clone();
+            return key;
         }
 
         @Override
+        @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+                            justification = "TODO: Return a copy of the object?")
         public byte[] getValue() {
-            return ArrayUtils.clone(value);
+            return value;
         }
 
         @Override
@@ -179,7 +186,7 @@ public class HZTable implements IKVTable, IKVTableID {
         }
 
         void setValue(final byte[] value) {
-            this.value = ArrayUtils.clone(value);
+            this.value = value;
         }
 
         void setVersion(final long version) {
