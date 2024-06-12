@@ -20,6 +20,8 @@ package net.onrc.onos.core.packet;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * @author David Erickson (daviderickson@cs.stanford.edu)
  */
@@ -121,44 +123,38 @@ public class ARP extends BasePacket {
     /**
      * @return the senderHardwareAddress
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+                        justification = "TODO: Return a copy of the object?")
     public byte[] getSenderHardwareAddress() {
-        if (this.senderHardwareAddress == null) {
-            return null;
-        }
-        return this.senderHardwareAddress.clone();
+        return senderHardwareAddress;
     }
 
     /**
      * @param senderHardwareAddress the senderHardwareAddress to set
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+                        justification = "TODO: Store a copy of the object?")
     public ARP setSenderHardwareAddress(byte[] senderHardwareAddress) {
-        if (senderHardwareAddress == null) {
-            this.senderHardwareAddress = null;
-        } else {
-            this.senderHardwareAddress = senderHardwareAddress.clone();
-        }
+        this.senderHardwareAddress = senderHardwareAddress;
         return this;
     }
 
     /**
      * @return the senderProtocolAddress
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+                        justification = "TODO: Return a copy of the object?")
     public byte[] getSenderProtocolAddress() {
-        if (this.senderProtocolAddress == null) {
-            return null;
-        }
-        return this.senderProtocolAddress.clone();
+        return senderProtocolAddress;
     }
 
     /**
      * @param senderProtocolAddress the senderProtocolAddress to set
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+                        justification = "TODO: Store a copy of the object?")
     public ARP setSenderProtocolAddress(byte[] senderProtocolAddress) {
-        if (senderProtocolAddress == null) {
-            this.senderProtocolAddress = null;
-        } else {
-            this.senderProtocolAddress = senderProtocolAddress.clone();
-        }
+        this.senderProtocolAddress = senderProtocolAddress;
         return this;
     }
 
@@ -170,33 +166,29 @@ public class ARP extends BasePacket {
     /**
      * @return the targetHardwareAddress
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+                        justification = "TODO: Return a copy of the object?")
     public byte[] getTargetHardwareAddress() {
-        if (this.targetHardwareAddress == null) {
-            return null;
-        }
-        return this.targetHardwareAddress.clone();
+        return targetHardwareAddress;
     }
 
     /**
      * @param targetHardwareAddress the targetHardwareAddress to set
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+                        justification = "TODO: Store a copy of the object?")
     public ARP setTargetHardwareAddress(byte[] targetHardwareAddress) {
-        if (targetHardwareAddress == null) {
-            this.targetHardwareAddress = null;
-        } else {
-            this.targetHardwareAddress = targetHardwareAddress.clone();
-        }
+        this.targetHardwareAddress = targetHardwareAddress;
         return this;
     }
 
     /**
      * @return the targetProtocolAddress
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+                        justification = "TODO: Return a copy of the object?")
     public byte[] getTargetProtocolAddress() {
-        if (this.targetProtocolAddress == null) {
-            return null;
-        }
-        return this.targetProtocolAddress.clone();
+        return targetProtocolAddress;
     }
 
     /**
@@ -219,12 +211,10 @@ public class ARP extends BasePacket {
     /**
      * @param targetProtocolAddress the targetProtocolAddress to set
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+                        justification = "TODO: Store a copy of the object?")
     public ARP setTargetProtocolAddress(byte[] targetProtocolAddress) {
-        if (targetProtocolAddress == null) {
-            this.targetProtocolAddress = null;
-        } else {
-            this.targetProtocolAddress = targetProtocolAddress.clone();
-        }
+        this.targetProtocolAddress = targetProtocolAddress;
         return this;
     }
 

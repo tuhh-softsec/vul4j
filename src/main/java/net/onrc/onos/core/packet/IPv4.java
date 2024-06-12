@@ -26,6 +26,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * @author David Erickson (daviderickson@cs.stanford.edu)
  */
@@ -265,26 +267,23 @@ public class IPv4 extends BasePacket {
     /**
      * @return the options
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+                        justification = "TODO: Return a copy of the object?")
     public byte[] getOptions() {
-        if (this.options == null) {
-            return null;
-        }
-        return this.options.clone();
+        return options;
     }
 
     /**
      * @param options the options to set
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+                        justification = "TODO: Store a copy of the object?")
     public IPv4 setOptions(byte[] options) {
         if (options != null && (options.length % 4) > 0) {
             throw new IllegalArgumentException(
                     "Options length must be a multiple of 4");
         }
-        if (options == null) {
-            this.options = null;
-        } else {
-            this.options = options.clone();
-        }
+        this.options = options;
         return this;
     }
 

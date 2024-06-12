@@ -22,6 +22,8 @@ package net.onrc.onos.core.packet;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import org.openflow.util.HexString;
 
 /**
@@ -59,35 +61,29 @@ public class BSNPROBE extends BasePacket {
         return this;
     }
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+                        justification = "TODO: Return a copy of the object?")
     public byte[] getSrcMac() {
-        if (this.srcMac == null) {
-            return null;
-        }
-        return this.srcMac.clone();
+        return this.srcMac;
     }
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+                        justification = "TODO: Store a copy of the object?")
     public BSNPROBE setSrcMac(byte[] srcMac) {
-        if (srcMac == null) {
-            this.srcMac = null;
-        } else {
-            this.srcMac = srcMac.clone();
-        }
+        this.srcMac = srcMac;
         return this;
     }
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+                        justification = "TODO: Return a copy of the object?")
     public byte[] getDstMac() {
-        if (this.dstMac == null) {
-            return null;
-        }
-        return this.dstMac.clone();
+        return dstMac;
     }
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+                        justification = "TODO: Store a copy of the object?")
     public BSNPROBE setDstMac(byte[] dstMac) {
-        if (dstMac == null) {
-            this.dstMac = null;
-        } else {
-            this.dstMac = dstMac.clone();
-        }
+        this.dstMac = dstMac;
         return this;
     }
 

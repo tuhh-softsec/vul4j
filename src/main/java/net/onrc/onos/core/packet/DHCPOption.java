@@ -19,6 +19,8 @@ package net.onrc.onos.core.packet;
 
 import java.util.Arrays;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * @author David Erickson (daviderickson@cs.stanford.edu)
  */
@@ -60,22 +62,19 @@ public class DHCPOption {
     /**
      * @return the data
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+                        justification = "TODO: Return a copy of the object?")
     public byte[] getData() {
-        if (this.data == null) {
-            return null;
-        }
-        return this.data.clone();
+        return data;
     }
 
     /**
      * @param data the data to set
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+                        justification = "TODO: Store a copy of the object?")
     public DHCPOption setData(byte[] data) {
-        if (data == null) {
-            this.data = null;
-        } else {
-            this.data = data.clone();
-        }
+        this.data = data;
         return this;
     }
 
