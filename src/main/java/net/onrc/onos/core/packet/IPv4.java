@@ -34,13 +34,13 @@ public class IPv4 extends BasePacket {
     public static final byte PROTOCOL_ICMP = 0x1;
     public static final byte PROTOCOL_TCP = 0x6;
     public static final byte PROTOCOL_UDP = 0x11;
-    public static final Map<Byte, Class<? extends IPacket>> PROTOCOL_CLASS_MAP;
+    public static Map<Byte, Class<? extends IPacket>> protocolClassMap;
 
     static {
-        PROTOCOL_CLASS_MAP = new HashMap<Byte, Class<? extends IPacket>>();
-        PROTOCOL_CLASS_MAP.put(PROTOCOL_ICMP, ICMP.class);
-        PROTOCOL_CLASS_MAP.put(PROTOCOL_TCP, TCP.class);
-        PROTOCOL_CLASS_MAP.put(PROTOCOL_UDP, UDP.class);
+        protocolClassMap = new HashMap<Byte, Class<? extends IPacket>>();
+        protocolClassMap.put(PROTOCOL_ICMP, ICMP.class);
+        protocolClassMap.put(PROTOCOL_TCP, TCP.class);
+        protocolClassMap.put(PROTOCOL_UDP, UDP.class);
     }
 
     protected byte version;
@@ -362,8 +362,8 @@ public class IPv4 extends BasePacket {
         }
 
         IPacket payload;
-        if (IPv4.PROTOCOL_CLASS_MAP.containsKey(this.protocol)) {
-            Class<? extends IPacket> clazz = IPv4.PROTOCOL_CLASS_MAP.get(this.protocol);
+        if (IPv4.protocolClassMap.containsKey(this.protocol)) {
+            Class<? extends IPacket> clazz = IPv4.protocolClassMap.get(this.protocol);
             try {
                 payload = clazz.newInstance();
             } catch (Exception e) {

@@ -24,14 +24,14 @@ import java.util.Arrays;
  * @author David Erickson (daviderickson@cs.stanford.edu)
  */
 public class ARP extends BasePacket {
-    public static final short HW_TYPE_ETHERNET = 0x1;
+    public static short HW_TYPE_ETHERNET = 0x1;
 
-    public static final short PROTO_TYPE_IP = 0x800;
+    public static short PROTO_TYPE_IP = 0x800;
 
-    public static final short OP_REQUEST = 0x1;
-    public static final short OP_REPLY = 0x2;
-    public static final short OP_RARP_REQUEST = 0x3;
-    public static final short OP_RARP_REPLY = 0x4;
+    public static short OP_REQUEST = 0x1;
+    public static short OP_REPLY = 0x2;
+    public static short OP_RARP_REQUEST = 0x3;
+    public static short OP_RARP_REPLY = 0x4;
 
     protected short hardwareType;
     protected short protocolType;

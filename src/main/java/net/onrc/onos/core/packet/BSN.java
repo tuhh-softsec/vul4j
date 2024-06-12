@@ -31,12 +31,12 @@ public class BSN extends BasePacket {
     public static final short BSN_VERSION_CURRENT = 0x0;
     public static final short BSN_TYPE_PROBE = 0x1;
     public static final short BSN_TYPE_BDDP = 0x2;
-    public static final Map<Short, Class<? extends IPacket>> TYPE_CLASS_MAP;
+    public static Map<Short, Class<? extends IPacket>> typeClassMap;
 
     static {
-        TYPE_CLASS_MAP = new HashMap<Short, Class<? extends IPacket>>();
-        TYPE_CLASS_MAP.put(BSN_TYPE_PROBE, BSNPROBE.class);
-        TYPE_CLASS_MAP.put(BSN_TYPE_BDDP, LLDP.class);
+        typeClassMap = new HashMap<Short, Class<? extends IPacket>>();
+        typeClassMap.put(BSN_TYPE_PROBE, BSNPROBE.class);
+        typeClassMap.put(BSN_TYPE_BDDP, LLDP.class);
     }
 
     protected short type;
@@ -112,8 +112,8 @@ public class BSN extends BasePacket {
         }
 
         IPacket payload;
-        if (TYPE_CLASS_MAP.containsKey(this.type)) {
-            Class<? extends IPacket> clazz = TYPE_CLASS_MAP.get(this.type);
+        if (typeClassMap.containsKey(this.type)) {
+            Class<? extends IPacket> clazz = typeClassMap.get(this.type);
             try {
                 payload = clazz.newInstance();
             } catch (Exception e) {
@@ -161,8 +161,8 @@ public class BSN extends BasePacket {
     public String toString() {
         StringBuffer sb = new StringBuffer("\n");
         sb.append("BSN packet");
-        if (TYPE_CLASS_MAP.containsKey(this.type))
-            sb.append(" type: " + TYPE_CLASS_MAP.get(this.type).getCanonicalName());
+        if (typeClassMap.containsKey(this.type))
+            sb.append(" type: " + typeClassMap.get(this.type).getCanonicalName());
         else
             sb.append(" type: " + this.type);
 

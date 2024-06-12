@@ -38,15 +38,15 @@ public class Ethernet extends BasePacket {
     public static final short TYPE_BSN = (short) 0x8942;
     public static final short VLAN_UNTAGGED = (short) 0xffff;
     public static final short DATALAYER_ADDRESS_LENGTH = 6; // bytes
-    public static final Map<Short, Class<? extends IPacket>> ETHER_TYPE_CLASS_MAP;
+    public static Map<Short, Class<? extends IPacket>> etherTypeClassMap;
 
     static {
-        ETHER_TYPE_CLASS_MAP = new HashMap<Short, Class<? extends IPacket>>();
-        ETHER_TYPE_CLASS_MAP.put(TYPE_ARP, ARP.class);
-        ETHER_TYPE_CLASS_MAP.put(TYPE_RARP, ARP.class);
-        ETHER_TYPE_CLASS_MAP.put(TYPE_IPV4, IPv4.class);
-        ETHER_TYPE_CLASS_MAP.put(TYPE_LLDP, LLDP.class);
-        ETHER_TYPE_CLASS_MAP.put(TYPE_BSN, BSN.class);
+        etherTypeClassMap = new HashMap<Short, Class<? extends IPacket>>();
+        etherTypeClassMap.put(TYPE_ARP, ARP.class);
+        etherTypeClassMap.put(TYPE_RARP, ARP.class);
+        etherTypeClassMap.put(TYPE_IPV4, IPv4.class);
+        etherTypeClassMap.put(TYPE_LLDP, LLDP.class);
+        etherTypeClassMap.put(TYPE_BSN, BSN.class);
     }
 
     protected MACAddress destinationMACAddress;
@@ -260,8 +260,8 @@ public class Ethernet extends BasePacket {
         this.etherType = etherType;
 
         IPacket payload;
-        if (Ethernet.ETHER_TYPE_CLASS_MAP.containsKey(this.etherType)) {
-            Class<? extends IPacket> clazz = Ethernet.ETHER_TYPE_CLASS_MAP.get(this.etherType);
+        if (Ethernet.etherTypeClassMap.containsKey(this.etherType)) {
+            Class<? extends IPacket> clazz = Ethernet.etherTypeClassMap.get(this.etherType);
             try {
                 payload = clazz.newInstance();
             } catch (Exception e) {

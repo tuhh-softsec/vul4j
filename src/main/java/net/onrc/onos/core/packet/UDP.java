@@ -25,17 +25,17 @@ import java.util.Map;
  * @author David Erickson (daviderickson@cs.stanford.edu)
  */
 public class UDP extends BasePacket {
-    public static final short DHCP_SERVER_PORT = (short) 67;
-    public static final short DHCP_CLIENT_PORT = (short) 68;
-    public static final Map<Short, Class<? extends IPacket>> DECODE_MAP;
+    public static Map<Short, Class<? extends IPacket>> decodeMap;
+    public static short DHCP_SERVER_PORT = (short) 67;
+    public static short DHCP_CLIENT_PORT = (short) 68;
 
     static {
-        DECODE_MAP = new HashMap<Short, Class<? extends IPacket>>();
+        decodeMap = new HashMap<Short, Class<? extends IPacket>>();
         /*
          * Disable DHCP until the deserialize code is hardened to deal with garbage input
          */
-        UDP.DECODE_MAP.put(DHCP_SERVER_PORT, DHCP.class);
-        UDP.DECODE_MAP.put(DHCP_CLIENT_PORT, DHCP.class);
+        UDP.decodeMap.put(DHCP_SERVER_PORT, DHCP.class);
+        UDP.decodeMap.put(DHCP_CLIENT_PORT, DHCP.class);
 
     }
 
@@ -208,15 +208,15 @@ public class UDP extends BasePacket {
         this.length = bb.getShort();
         this.checksum = bb.getShort();
 
-        if (UDP.DECODE_MAP.containsKey(this.destinationPort)) {
+        if (UDP.decodeMap.containsKey(this.destinationPort)) {
             try {
-                this.payload = UDP.DECODE_MAP.get(this.destinationPort).getConstructor().newInstance();
+                this.payload = UDP.decodeMap.get(this.destinationPort).getConstructor().newInstance();
             } catch (Exception e) {
                 throw new RuntimeException("Failure instantiating class", e);
             }
-        } else if (UDP.DECODE_MAP.containsKey(this.sourcePort)) {
+        } else if (UDP.decodeMap.containsKey(this.sourcePort)) {
             try {
-                this.payload = UDP.DECODE_MAP.get(this.sourcePort).getConstructor().newInstance();
+                this.payload = UDP.decodeMap.get(this.sourcePort).getConstructor().newInstance();
             } catch (Exception e) {
                 throw new RuntimeException("Failure instantiating class", e);
             }
