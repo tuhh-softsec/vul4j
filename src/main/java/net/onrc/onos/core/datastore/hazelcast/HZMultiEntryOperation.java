@@ -35,8 +35,8 @@ public class HZMultiEntryOperation implements IMultiEntryOperation, IModifiableM
      * @param key
      * @param operation
      */
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
-                        justification = "TODO: Store a copy of the object?")
+    // @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+    //                     justification = "TODO: Store a copy of the object?")
     public HZMultiEntryOperation(final HZTable table, final byte[] key, final OPERATION operation) {
         this.table = table;
         this.key = key;
@@ -56,8 +56,8 @@ public class HZMultiEntryOperation implements IMultiEntryOperation, IModifiableM
      * @param version
      * @param operation
      */
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
-                        justification = "TODO: Store a copy of the object?")
+    // @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+    //                     justification = "TODO: Store a copy of the object?")
     public HZMultiEntryOperation(final HZTable table, final byte[] key, final byte[] value, final long version, final OPERATION operation) {
         this.table = table;
         this.key = key;
@@ -87,8 +87,8 @@ public class HZMultiEntryOperation implements IMultiEntryOperation, IModifiableM
     }
 
     @Override
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
-                        justification = "TODO: Return a copy of the object?")
+    // @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+    //                     justification = "TODO: Return a copy of the object?")
     public byte[] getKey() {
         return key;
     }

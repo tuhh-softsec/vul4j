@@ -23,8 +23,8 @@ public class RCTable implements IKVTable {
         byte[] value;
         long version;
 
-        @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
-                            justification = "TODO: Store a copy of the object?")
+        // @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+        //                     justification = "TODO: Store a copy of the object?")
         public Entry(final byte[] key, final byte[] value, final long version) {
             this.key = key;
             this.setValue(value);
@@ -36,15 +36,15 @@ public class RCTable implements IKVTable {
         }
 
         @Override
-        @SuppressFBWarnings(value = "EI_EXPOSE_REP",
-                            justification = "TODO: Return a copy of the object?")
+        // @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+        //                     justification = "TODO: Return a copy of the object?")
         public byte[] getKey() {
             return key;
         }
 
         @Override
-        @SuppressFBWarnings(value = "EI_EXPOSE_REP",
-                            justification = "TODO: Return a copy of the object?")
+        // @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+        //                     justification = "TODO: Return a copy of the object?")
         public byte[] getValue() {
             return value;
         }

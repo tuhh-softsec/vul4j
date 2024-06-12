@@ -77,8 +77,8 @@ public class KVDevice extends KVObject {
         return mac;
     }
 
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
-                        justification = "TODO: Store a copy of the object?")
+    // @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+    //                     justification = "TODO: Store a copy of the object?")
     public KVDevice(final byte[] mac) {
         super(DataStoreClient.getClient().getTable(GLOBAL_DEVICE_TABLE_NAME), getDeviceID(mac));
 
@@ -125,8 +125,8 @@ public class KVDevice extends KVObject {
         }
     }
 
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
-                        justification = "TODO: Return a copy of the object?")
+    // @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+    //                     justification = "TODO: Return a copy of the object?")
     public byte[] getMac() {
         // TODO may need to clone() to be sure this object will be immutable.
         return mac;
