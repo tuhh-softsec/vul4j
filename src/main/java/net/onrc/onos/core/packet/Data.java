@@ -36,8 +36,8 @@ public class Data extends BasePacket {
     /**
      * @param data
      */
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
-                        justification = "TODO: Store a copy of the object?")
+    // @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+    //                     justification = "TODO: Store a copy of the object?")
     public Data(byte[] data) {
         this.data = data;
     }
@@ -45,8 +45,8 @@ public class Data extends BasePacket {
     /**
      * @return the data
      */
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
-                        justification = "TODO: Return a copy of the object?")
+    // @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+    //                     justification = "TODO: Return a copy of the object?")
     public byte[] getData() {
         return data;
     }
@@ -54,15 +54,15 @@ public class Data extends BasePacket {
     /**
      * @param data the data to set
      */
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
-                        justification = "TODO: Store a copy of the object?")
+    // @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+    //                     justification = "TODO: Store a copy of the object?")
     public Data setData(byte[] data) {
         this.data = data;
         return this;
     }
 
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
-                        justification = "TODO: Return a copy of the object?")
+    // @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+    //                     justification = "TODO: Return a copy of the object?")
     public byte[] serialize() {
         return this.data;
     }

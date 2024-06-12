@@ -27,7 +27,7 @@
     <powermock.version>1.5.1</powermock.version>
     <restlet.version>2.1.4</restlet.version>
     <cobertura-maven-plugin.version>2.6</cobertura-maven-plugin.version>
-    <findbugs-plugin.version>2.5.3</findbugs-plugin.version>
+    <findbugs-plugin.version>3.0.5</findbugs-plugin.version>
     <findbugs.effort>Max</findbugs.effort>
     <findbugs.excludeFilterFile>conf/findbugs/exclude.xml</findbugs.excludeFilterFile>
     <checkstyle-plugin.version>2.12</checkstyle-plugin.version>

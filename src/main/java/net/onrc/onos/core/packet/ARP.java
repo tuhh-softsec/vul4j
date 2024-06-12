@@ -123,8 +123,8 @@ public class ARP extends BasePacket {
     /**
      * @return the senderHardwareAddress
      */
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
-                        justification = "TODO: Return a copy of the object?")
+    // @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+    //                     justification = "TODO: Return a copy of the object?")
     public byte[] getSenderHardwareAddress() {
         return senderHardwareAddress;
     }
@@ -132,8 +132,8 @@ public class ARP extends BasePacket {
     /**
      * @param senderHardwareAddress the senderHardwareAddress to set
      */
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
-                        justification = "TODO: Store a copy of the object?")
+    // @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+    //                     justification = "TODO: Store a copy of the object?")
     public ARP setSenderHardwareAddress(byte[] senderHardwareAddress) {
         this.senderHardwareAddress = senderHardwareAddress;
         return this;
@@ -142,8 +142,8 @@ public class ARP extends BasePacket {
     /**
      * @return the senderProtocolAddress
      */
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
-                        justification = "TODO: Return a copy of the object?")
+    // @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+    //                     justification = "TODO: Return a copy of the object?")
     public byte[] getSenderProtocolAddress() {
         return senderProtocolAddress;
     }
@@ -151,8 +151,8 @@ public class ARP extends BasePacket {
     /**
      * @param senderProtocolAddress the senderProtocolAddress to set
      */
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
-                        justification = "TODO: Store a copy of the object?")
+    // @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+    //                     justification = "TODO: Store a copy of the object?")
     public ARP setSenderProtocolAddress(byte[] senderProtocolAddress) {
         this.senderProtocolAddress = senderProtocolAddress;
         return this;
@@ -166,8 +166,8 @@ public class ARP extends BasePacket {
     /**
      * @return the targetHardwareAddress
      */
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
-                        justification = "TODO: Return a copy of the object?")
+    // @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+    //                     justification = "TODO: Return a copy of the object?")
     public byte[] getTargetHardwareAddress() {
         return targetHardwareAddress;
     }
@@ -175,8 +175,8 @@ public class ARP extends BasePacket {
     /**
      * @param targetHardwareAddress the targetHardwareAddress to set
      */
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
-                        justification = "TODO: Store a copy of the object?")
+    // @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+    //                     justification = "TODO: Store a copy of the object?")
     public ARP setTargetHardwareAddress(byte[] targetHardwareAddress) {
         this.targetHardwareAddress = targetHardwareAddress;
         return this;
@@ -185,8 +185,8 @@ public class ARP extends BasePacket {
     /**
      * @return the targetProtocolAddress
      */
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
-                        justification = "TODO: Return a copy of the object?")
+    // @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+    //                     justification = "TODO: Return a copy of the object?")
     public byte[] getTargetProtocolAddress() {
         return targetProtocolAddress;
     }
@@ -211,8 +211,8 @@ public class ARP extends BasePacket {
     /**
      * @param targetProtocolAddress the targetProtocolAddress to set
      */
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
-                        justification = "TODO: Store a copy of the object?")
+    // @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+    //                     justification = "TODO: Store a copy of the object?")
     public ARP setTargetProtocolAddress(byte[] targetProtocolAddress) {
         this.targetProtocolAddress = targetProtocolAddress;
         return this;

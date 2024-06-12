@@ -38,7 +38,7 @@ import net.onrc.onos.core.packet.IPv4;
  *
  * @author readams
  */
-public class OnosDevice implements Serializable { //implements Comparable<OnosDevice> {
+public class OnosDevice implements Serializable {
 
     private static final int ACTIVITY_TIMEOUT = 30000;
 
@@ -95,8 +95,8 @@ public class OnosDevice implements Serializable { //implements Comparable<OnosDe
      * @param switchPort
      * @param lastSeenTimestamp
      */
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
-                        justification = "TODO: Store a copy of the object?")
+    // @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+    //                     justification = "TODO: Store a copy of the object?")
     public OnosDevice(MACAddress macAddress, Short vlan,
                       Integer ipv4Address, Long switchDPID, short switchPort,
                       Date lastSeenTimestamp) {
@@ -145,14 +145,14 @@ public class OnosDevice implements Serializable { //implements Comparable<OnosDe
         this.switchPort = port;
     }
 
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
-                        justification = "TODO: Return a copy of the object?")
+    // @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+    //                     justification = "TODO: Return a copy of the object?")
     public Date getLastSeenTimestamp() {
         return lastSeenTimestamp;
     }
 
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
-                        justification = "TODO: Store a copy of the object?")
+    // @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+    //                     justification = "TODO: Store a copy of the object?")
     public void setLastSeenTimestamp(Date lastSeenTimestamp) {
         if (activeSince == null ||
                 (activeSince.getTime() + ACTIVITY_TIMEOUT) <
@@ -162,14 +162,14 @@ public class OnosDevice implements Serializable { //implements Comparable<OnosDe
         this.lastSeenTimestamp = lastSeenTimestamp;
     }
 
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
-                        justification = "TODO: Return a copy of the object?")
+    // @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+    //                     justification = "TODO: Return a copy of the object?")
     public Date getActiveSince() {
         return activeSince;
     }
 
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
-                        justification = "TODO: Store a copy of the object?")
+    // @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+    //                     justification = "TODO: Store a copy of the object?")
     public void setActiveSince(Date activeSince) {
         this.activeSince = activeSince;
     }

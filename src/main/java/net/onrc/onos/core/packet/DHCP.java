@@ -269,8 +269,8 @@ public class DHCP extends BasePacket {
     /**
      * @return the clientHardwareAddress
      */
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
-                        justification = "TODO: Return a copy of the object?")
+    // @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+    //                     justification = "TODO: Return a copy of the object?")
     public byte[] getClientHardwareAddress() {
         return clientHardwareAddress;
     }
@@ -278,8 +278,8 @@ public class DHCP extends BasePacket {
     /**
      * @param clientHardwareAddress the clientHardwareAddress to set
      */
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
-                        justification = "TODO: Store a copy of the object?")
+    // @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+    //                     justification = "TODO: Store a copy of the object?")
     public DHCP setClientHardwareAddress(byte[] clientHardwareAddress) {
         this.clientHardwareAddress = clientHardwareAddress;
         return this;
