@@ -1218,10 +1218,10 @@
                             <properties>
                                 <projectName>Apache Druid (incubating)</projectName>
                             </properties>
-                            <resourceBundles>
+                            <!--resourceBundles>
                                 <resourceBundle>org.apache.apache.resources:apache-jar-resource-bundle:1.5-SNAPSHOT</resourceBundle>
                                 <resourceBundle>org.apache.apache.resources:apache-incubator-disclaimer-resource-bundle:1.2-SNAPSHOT</resourceBundle>
-                            </resourceBundles>
+                            </resourceBundles-->
                         </configuration>
                     </execution>
                 </executions>
