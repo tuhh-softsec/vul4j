@@ -80,7 +80,7 @@ public class Main {
             } else {
                 throw new IllegalArgumentException("Invalid number of arguments!");
             }
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
             logger.severe("Usage: <repo_dir> <output_file> OR -version");
             System.exit(1);
         }

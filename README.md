@@ -1,6 +1,6 @@
 ## Introduction
 **Vul4J** is a dataset of real-world Java vulnerabilities. 
-Each vulnerability in the [dataset](dataset/vul4j_dataset.csv) is provided along with a human patch, Proof-of-Vulnerability (PoV) test case(s), and other information for the reproduction of the vulnerability. 
+Each vulnerability in the [dataset](dataset/vul4j_dataset.csv) is provided along with a human patch, Proof-of-Vulnerability (PoV) test case(s), and other information for the reproduction of the vulnerability.
 
 In this repository, we host the Vul4J dataset, the support framework that allows performing several common tasks required by APR tools on the dataset, and the scripts for Patch Filtering.
 
@@ -26,8 +26,10 @@ If you use Vul4J in academic context, please cite:
 ## Quick Install
 ### Requirements
 * Linux/macOS Machine
-* Java 8
 * Java 7
+* Java 8
+* Java 11
+* Java 16
 * Maven 3
 * Python 3
 
@@ -37,41 +39,55 @@ If you use Vul4J in academic context, please cite:
 git clone https://github.com/bqcuong/vul4j
 ```
 
-3. Put your configuration information in the file [`vul4j/config.py`](vul4j/config.py):
-```python
-VUL4J_ROOT = "<absolute-path-to-vul4j-directory>"
-JAVA7_HOME = os.environ.get("JAVA7_HOME", expanduser("<path-to-java-7-home-directory>"))
-JAVA8_HOME = os.environ.get("JAVA8_HOME", expanduser("<path-to-java-8-home-directory>"))
-```
-
-4. Install Vul4J:
+2. Install Vul4J:
 ```python
 python setup.py install
 ```
+
+3. Put your configuration information in the file `~/vul4j_data/vul4j.ini`:
+```ini
+JAVA7_HOME = <path-to-java-7-home-directory>
+JAVA8_HOME = <path-to-java-8-home-directory>
+JAVA11_HOME = <path-to-java-11-home-directory>
+JAVA16_HOME = <path-to-java-16-home-directory>
+```
+Other configuration values are optional,
+if left empty the environment variables will be checked or a default value will be used.
+
+4. You can check if everything is installed correctly:
+```shell
+vul4j status
+```
+
 ## Usage
 ```bash
 $ vul4j --help
 
-usage: vul4j [-h] {checkout,compile,test,classpath,info,reproduce} ...
+usage: vul4j [-h] [-l LOG] {status,checkout,compile,test,apply,sast,reproduce,verify,info,classpath,get-spotbugs} ...
 
 A Dataset of Java vulnerabilities.
 
 positional arguments:
-  {checkout,compile,test,classpath,info,reproduce}
-    checkout            Checkout a vulnerability.
+  {status,checkout,compile,test,apply,sast,reproduce,verify,info,classpath,get-spotbugs}
+    status              Lists vul4j requirements and their availability.
+    checkout            Checkout a vulnerability into the specified directory.
     compile             Compile the checked out vulnerability.
     test                Run testsuite for the checked out vulnerability.
-    classpath           Print the classpath of the checked out vulnerability.
+    apply               Apply the specified file versions.
+    sast                Run Spotbugs analysis.
+    reproduce (verify)  Verify the reproducibility of vulnerabilities in the dataset.
     info                Print information about a vulnerability.
-    reproduce           Reproduce of newly added vulnerabilities.
+    classpath           Print the classpath of the checked out vulnerability.
+    get-spotbugs        Download Spotbugs into the user directory.
 
 optional arguments:
   -h, --help            show this help message and exit
+  -l LOG, --log LOG     Specify displayed log level for this command.
 ```
 
 ## Dataset Execution Framework Demonstration
-In this section, we demonstrate how to use the execution framework to check out a vulnerability, then compile and run the test suite of the vulnerability.
-We also demonstrate how to use our framework to validation the reproduction of new vulnerabilities.
+In this section, we demonstrate how to use the execution framework to check out a vulnerability, then compile and run the test suite and SAST analysis of the vulnerability.
+We also demonstrate how to use our framework to validate the reproduction of new vulnerabilities.
 
 0. **Preparation:** You need to install our execution framework first. You could install Vul4J on your machine by following the *Quick Install* section or use our [pre-built Docker image](https://hub.docker.com/r/bqcuongas/vul4j).
 In the case, you want to use the pre-built Docker image, use the following command to start the Docker container:
@@ -95,7 +111,7 @@ $ vul4j compile -d /tmp/vul4j/VUL4J-10
 ```shell
 $ vul4j test -d /tmp/vul4j/VUL4J-10
 
-# test results
+# test results found in /tmp/vul4j/VUL4J-10/VUL4J/test_results.json
 {
   "vul_id": "VUL4J-10",
   "cve_id": "CVE-2013-2186",
@@ -139,24 +155,48 @@ $ vul4j test -d /tmp/vul4j/VUL4J-10
 }
 ```
 
-4. **Validate reproduction of new vulnerability:** Our framework can validate the reproduction of new vulnerability.
+4. **Run SAST analysis:** Run Spotbugs analysis on the compiled jar file.
+```shell
+$ vul4j sast -d /tmp/vul4j/VUL4J-10
+
+# SAST warnings in the vulnerable files
+[
+  "MC_OVERRIDABLE_METHOD_CALL_IN_READ_OBJECT@org.apache.commons.fileupload.disk.DiskFileItem#readObject",
+  "MC_OVERRIDABLE_METHOD_CALL_IN_READ_OBJECT@org.apache.commons.fileupload.disk.DiskFileItem#readObject",
+  "MC_OVERRIDABLE_METHOD_CALL_IN_READ_OBJECT@org.apache.commons.fileupload.disk.DiskFileItem#readObject",
+  "MC_OVERRIDABLE_METHOD_CALL_IN_READ_OBJECT@org.apache.commons.fileupload.disk.DiskFileItem#readObject",
+  "RV_RETURN_VALUE_IGNORED_BAD_PRACTICE@org.apache.commons.fileupload.disk.DiskFileItem#readObject"
+]
+```
+If Spotbugs fails to run, make sure it is installed and the correct path is set in the `~/vul4j_data/vul4j.ini` file.
+You can also install it automatically to a default location with `vul4j get-spotbugs`, which will install it inside the `~/vul4j_data` directory.
+
+5. **Validate reproduction of new vulnerability:** Our framework can validate the reproduction of new vulnerability.
 First, you need to provide the essential information about the new vulnerability in the [csv dataset file](dataset/vul4j_dataset.csv) including: `vul_id`, `human_patch_url`, `build_system`, `compliance_level`, `compile_cmd`, `test_all_cmd`.
 Then, you can run the following command to check the new vulnerability is reproducible or not. We demonstrate with an existing vulnerability we used in the previous task. 
 ```shell
 $ vul4j reproduce --id VUL4J-10
 
-2022-01-24 23:44:01,413 - root - INFO - ---------------------------------------------------------
-2022-01-24 23:44:01,413 - root - INFO - Reproducing vulnerability: VUL4J-10...
-2022-01-24 23:44:01,413 - root - DEBUG - --> Checking out the vulnerable revision...
-2022-01-24 23:44:01,414 - root - DEBUG - Cloning new project... apache_commons-fileupload
-2022-01-24 23:44:05,358 - root - DEBUG - Done Cloning!
-2022-01-24 23:44:05,732 - root - DEBUG - Compiling...
-2022-01-24 23:44:09,876 - root - DEBUG - Running tests...
-2022-01-24 23:44:14,821 - root - DEBUG - Failing tests: {'org.apache.commons.fileupload.DiskFileItemSerializeTest#testInvalidRepository', 'org.apache.commons.fileupload.DiskFileItemSerializeTest#testInvalidRepositoryWithNullChar'}
-2022-01-24 23:44:14,821 - root - DEBUG - --> Applying human patch to the source code...
-2022-01-24 23:44:14,821 - root - DEBUG - Applied src/main/java/org/apache/commons/fileupload/disk/DiskFileItem.java
-2022-01-24 23:44:14,822 - root - DEBUG - Compiling...
-2022-01-24 23:44:18,743 - root - DEBUG - Running tests...
-2022-01-24 23:44:23,726 - root - DEBUG - No failing tests found!
-2022-01-24 23:44:23,726 - root - INFO - --> The vulnerability VUL4J-10 has been reproduced successfully with PoV(s): {'org.apache.commons.fileupload.DiskFileItemSerializeTest#testInvalidRepository', 'org.apache.commons.fileupload.DiskFileItemSerializeTest#testInvalidRepositoryWithNullChar'}!
+2024-06-13 20:35:31 | ===================== START REPRODUCE ======================
+2024-06-13 20:35:31 | Reproducing 1 vulnerabilities...
+2024-06-13 20:35:31 | --------------------------VUL4J-10--------------------------
+2024-06-13 20:35:31 | Checking out project...
+2024-06-13 20:35:31 | --> Applying version: vulnerable
+2024-06-13 20:35:31 | Cleaning project...
+2024-06-13 20:35:33 | Compiling...
+2024-06-13 20:35:41 | Running PoV tests...
+2024-06-13 20:35:46 | Number of running tests: 1
+2024-06-13 20:35:46 | Failing tests: [
+  "org.apache.commons.fileupload.DiskFileItemSerializeTesttestInvalidRepositoryWithNullChar"
+]
+2024-06-13 20:35:46 | No fixed warnings found in the dataset for VUL4J-10. Skipping Spotbugs...
+2024-06-13 20:35:46 | --> Applying version: human_patch
+2024-06-13 20:35:46 | Cleaning project...
+2024-06-13 20:35:48 | Compiling...
+2024-06-13 20:35:56 | Running PoV tests...
+2024-06-13 20:36:01 | Number of running tests: 1
+2024-06-13 20:36:01 | Number of passing tests: 1
+2024-06-13 20:36:01 | No fixed warnings found in the dataset for VUL4J-10. Skipping Spotbugs...
+2024-06-13 20:36:01 | Vulnerabilities: PASS, Spotbugs: SKIP!
+2024-06-13 20:36:01 | ====================== END REPRODUCE =======================
 ```

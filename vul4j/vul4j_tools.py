@@ -343,18 +343,28 @@ def test(project_dir: str, batch_type: str, suffix: str = None, clean: bool = Fa
                             utils.suffix_filename("testing_results.json", suffix)), "w")) as f:
         json.dump(test_results, f, indent=2)
 
-    test_stats = test_results["tests"]["overall_metrics"]
+    test_runs = test_results["tests"]["overall_metrics"]["number_running"]
+    test_fails = []
+    test_errors = []
+    test_skips = test_results["tests"]["skipping_tests"]
+    test_passes = test_results["tests"]["passing_tests"]
+    for test_case in test_results["tests"]["failures"]:
+        test_name = test_case["test_class"] + test_case["test_method"]
+        if test_case["is_error"]:
+            test_errors.append(test_name)
+        else:
+            test_fails.append(test_name)
 
-    logger.log(("ERROR" if test_stats["number_running"] == 0 else "INFO"),
-               "Number of running tests: " + str(test_stats["number_running"]))
-    if test_stats["number_passing"] != 0:
-        logger.success("Number of passing tests: " + str(test_stats["number_passing"]))
-    if test_stats["number_skipping"] != 0:
-        logger.warning("Number of skipping tests: " + str(test_stats["number_skipping"]))
-    if test_stats["number_failing"] != 0:
-        logger.error("Number of failing tests: " + str(test_stats["number_failing"]))
-    if test_stats["number_error"] != 0:
-        logger.error("Number of errors: " + str(test_stats["number_error"]))
+    logger.log(("ERROR" if test_runs == 0 else "INFO"),
+               "Number of running tests: " + str(test_runs))
+    if len(test_passes) != 0:
+        logger.success("Number of passing tests: " + str(len(test_passes)))
+    if len(test_skips) != 0:
+        logger.warning("Skipping tests: " + json.dumps(test_skips, indent=2))
+    if len(test_fails) != 0:
+        logger.error("Failing tests: " + json.dumps(test_fails, indent=2))
+    if len(test_errors) != 0:
+        logger.error("Tests with errors: " + json.dumps(test_errors, indent=2))
 
     return test_results
 
@@ -429,9 +439,7 @@ def reproduce(vul_ids):
                         logger.error("Build failed, no tests were run! This is acceptable here.")
                     else:
                         failing_tests = set(f"{failure['test_class']}#{failure['test_method']}" for failure in failures)
-                        if len(failing_tests) != 0:
-                            logger.error(f"Failing tests: {json.dumps(list(failing_tests), indent=2)}")
-                        else:
+                        if len(failing_tests) == 0:
                             logger.critical("Vulnerable revision must contain at least 1 failing test!!!")
                             continue
                 except subprocess.CalledProcessError:
@@ -455,7 +463,7 @@ def reproduce(vul_ids):
                     except StopIteration:
                         logger.error("No runnable artifact found! Keep going...")
                 else:
-                    logger.warning(f"No fixed warning found in the dataset for {vul.vul_id}. Skipping Spotbugs...")
+                    logger.warning(f"No fixed warnings found in the dataset for {vul.vul_id}. Skipping Spotbugs...")
 
                 # HUMAN PATCH
                 version = "human_patch"
@@ -483,10 +491,7 @@ def reproduce(vul_ids):
                     else:
                         tests_ran = True
                         failing_tests = set(f"{failure['test_class']}#{failure['test_method']}" for failure in failures)
-                        if len(failing_tests) == 0:
-                            logger.success("No failing tests found!")
-                        else:
-                            logger.error(f"Failing tests: {json.dumps(list(failing_tests), indent=2)}")
+                        if len(failing_tests) != 0:
                             logger.critical("Patched version must contain no failing test!!!")
                             continue
                 except subprocess.CalledProcessError:
@@ -510,7 +515,7 @@ def reproduce(vul_ids):
                     except StopIteration:
                         logger.error("No runnable artifact found!")
                 else:
-                    logger.warning(f"No fixed warning found in the dataset for {vul.vul_id}. Skipping Spotbugs...")
+                    logger.warning(f"No fixed warnings found in the dataset for {vul.vul_id}. Skipping Spotbugs...")
 
                 # CALCULATE RESULTS
                 tests_pass = ((1 if bool(tests_ran) else 0)
