@@ -104,15 +104,15 @@ def check_status():
                 subprocess.run(f"java -jar {SPOTBUGS_PATH} -version",
                                shell=True,
                                stdout=subprocess.DEVNULL,
-                               stderr=subprocess.DEVNULL,
-                               env=get_java_home_env('16')).returncode == 0)
+                               stderr=subprocess.DEVNULL).returncode == 0)
 
     # check method getter
     modification_extractor = (bool(MODIFICATION_EXTRACTOR_PATH) and
                      subprocess.run(f"java -jar {MODIFICATION_EXTRACTOR_PATH} -version",
                                     shell=True,
                                     stdout=subprocess.DEVNULL,
-                                    stderr=subprocess.DEVNULL).returncode == 0)
+                                    stderr=subprocess.DEVNULL,
+                                    env=get_java_home_env('16')).returncode == 0)
 
     def log_result(message: str, success: bool):
         logger.log("SUCCESS" if success else "ERROR", f"{message}: {'OK' if success else 'NOT FOUND'}")
