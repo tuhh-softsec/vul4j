@@ -25,6 +25,8 @@ WORKDIR /vul4j
 
 RUN python3 setup.py install
 
+RUN vul4j get-spotbugs
+
 # jdk7 downloaded from https://www.oracle.com/java/technologies/javase/javase7-archive-downloads.html
 RUN tar xvzf jdk-7u80-linux-x64.tar.gz -C /tmp/
 RUN mv /tmp/jdk1.7.0_80 /usr/lib/jvm/jdk1.7.0_80/
@@ -36,13 +38,5 @@ ENV JAVA8_HOME /usr/lib/jvm/java-8-openjdk-amd64
 ENV JAVA11_HOME /usr/lib/jvm/java-11-openjdk-amd64
 ENV JAVA13_HOME /usr/lib/jvm/java-13-openjdk-amd64
 ENV JAVA16_HOME /usr/lib/jvm/java-16-openjdk-amd64
-
-ENV BENCHMARK_PATH /vul4j
-ENV DATASET_PATH /vul4j/dataset/vul4j_dataset.csv
-
-ENV REPRODUCTION_DIR /vul4j/reproduction
-
-RUN mkdir /project_repos
-ENV PROJECT_REPOS_ROOT_PATH /project_repos
 
 WORKDIR /

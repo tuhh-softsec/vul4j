@@ -1,792 +1,111 @@
 import argparse
-import csv
-import json
-import logging
-import os
-import re
+import os.path
 import subprocess
 import sys
-import shutil
-from shutil import copytree, ignore_patterns
-from xml.etree.ElementTree import parse
+from datetime import datetime
 
-from unidiff import PatchSet
+from loguru import logger
 
-from vul4j.config import JAVA7_HOME, MVN_OPTS, JAVA8_HOME, OUTPUT_FOLDER_NAME, ENABLE_EXECUTING_LOGS, DATASET_PATH, \
-    BENCHMARK_PATH, PROJECT_REPOS_ROOT_PATH, REPRODUCTION_DIR, VUL4J_COMMITS_URL
-
-FNULL = open(os.devnull, 'w')
-root = logging.getLogger()
-root.setLevel(logging.DEBUG)
-
-handler = logging.StreamHandler(sys.stdout)
-handler.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-handler.setFormatter(formatter)
-root.addHandler(handler)
-
-WORK_DIR = "/tmp/vul4j/reproduction"
+import vul4j.spotbugs as spotbugs
+import vul4j.utils as utils
+import vul4j.vul4j_tools as vul4j
+from vul4j.config import VUL4J_DATA, FILE_LOG_LEVEL
 
 
-def extract_failed_tests_from_test_results(test_results):
-    failing_tests = set()
-    failures = test_results['tests']['failures']
-    passing_tests = test_results['tests']['passing_tests']
-    skipping_tests = test_results['tests']['skipping_tests']
-    if len(failures) == len(passing_tests) == len(skipping_tests) == 0:
-        return None # if all metrics are 0, then the build failed and no tests were run
-    for failure in failures:
-        failing_tests.add(failure['test_class'] + '#' + failure['test_method'])
-    return failing_tests
+# logger
+def setup_logger(command: str, display_level: str = "INFO", file_level: str = "DEBUG"):
+    log_filename = f"{datetime.now().strftime('%y%m%d_%H%M%S')}_{command}_{file_level}.log"
+    logger.remove()
+    # STDOUT
+    logger.add(sys.stdout,
+               colorize=True,
+               format="<cyan>{time:YYYY-MM-DD HH:mm:ss}</cyan> | <level>{message}</level>",
+               diagnose=False,
+               backtrace=False,
+               level=display_level.upper())
+    # FILE
+    logger.add(os.path.join(VUL4J_DATA, "logs", log_filename),
+               format="<cyan>{time:YYYY-MM-DD HH:mm:ss}</cyan> | <level>{level}</level> | <level>{message}</level>",
+               rotation="00:00",
+               level=file_level.upper())
 
 
-def write_test_results_to_file(vul, test_results, revision):
-    test_output_file = os.path.join(REPRODUCTION_DIR,
-                                    '%s_%s_tests_%s.json' % (
-                                        vul['project'].replace('-', '_'), vul['vul_id'].replace('-', '_'), revision))
-    with (open(test_output_file, 'w', encoding='utf-8')) as f:
-        f.write(test_results)
-        
-def get_commit_hash(commit_url: str):
-    commit_hash = commit_url.split("/")[-1]
-    if ".." in commit_hash:
-        return commit_hash.split("..")[-1].strip()
-    else:
-        return commit_hash.strip()
+@utils.log_frame("STATUS")
+def vul4j_status(_):
+    utils.check_status()
 
 
-class Vul4J:
-    def __init__(self):
-        self.vulnerabilities = []
-        self.load_vulnerabilities()
+@utils.log_frame("CHECKOUT")
+def vul4j_checkout(args):
+    vul4j.checkout(args.id, args.outdir, args.force)
 
-    def load_vulnerabilities(self):
-        # get all the vulnerabilities of the benchmark
-        with open(os.path.join(DATASET_PATH)) as f:
-            reader = csv.DictReader(f, delimiter=',', )
-            for row in reader:
-                vul_id = row['vul_id'].strip()
-                cve_id = row['cve_id'].strip()
-                repo_slug = row['repo_slug'].strip().replace("/", "_")
-                build_system = row['build_system'].strip()
-                compliance_level = int(row['compliance_level'].strip())
-                compile_cmd = row['compile_cmd'].strip()
-                test_all_cmd = row['test_all_cmd'].strip()
-                test_cmd = row['test_cmd'].strip()
-                cmd_options = row['cmd_options'].strip()
-                failing_module = row['failing_module'].strip()
-                src_classes_dir = row['src_classes'].strip()
-                test_classes_dir = row['test_classes'].strip()
-                human_patch_url = row['human_patch'].strip()
-                fixing_commit = get_commit_hash(human_patch_url)
 
-                if failing_module != "root" and failing_module != "":
-                    src_classes_dir = failing_module + '/' + src_classes_dir
-                    test_classes_dir = failing_module + '/' + test_classes_dir
+@utils.log_frame("COMPILE")
+def vul4j_compile(args):
+    try:
+        vul4j.build(args.outdir)
+    except subprocess.CalledProcessError:
+        raise RuntimeError("Compile failed!")
 
-                self.vulnerabilities += [{
-                    "vul_id": vul_id,
-                    "cve_id": cve_id,
-                    "project": repo_slug,
-                    "project_url": "https://github.com/%s" % (repo_slug.replace("_", "/")),
-                    "build_system": build_system,
-                    "compliance_level": compliance_level,
-                    "compile_cmd": compile_cmd,
-                    "test_all_cmd": test_all_cmd,
-                    "test_cmd": test_cmd,
-                    "cmd_options": cmd_options,
-                    "failing_module": failing_module,
-                    "src_classes_dir": src_classes_dir,
-                    "test_classes_dir": test_classes_dir,
-                    "human_patch_url": human_patch_url,
-                    "human_patch": [],
-                    "fixing_commit_hash": fixing_commit,
-                }]
-        return self.vulnerabilities
 
-    def get_vulnerability(self, vul_id):
-        for vul in self.vulnerabilities:
-            if vul_id.lower() == vul['vul_id'].lower():
-                return vul
-        return None
+@utils.log_frame("TEST")
+def vul4j_test(args):
+    try:
+        vul4j.test(args.outdir, args.batchtype)
+    except subprocess.CalledProcessError:
+        raise RuntimeError("Testing failed!")
 
-    def get_info(self, vul_id):
-        vul = self.get_vulnerability(vul_id)
-        if vul is None:
-            print("Vulnerability not found!")
-            exit(1)
 
-        print(json.dumps(vul, indent=4))
-        exit(0)
+@utils.log_frame("APPLY")
+def vul4j_apply(args):
+    vul4j.apply(args.outdir, args.version)
 
-    @staticmethod
-    def get_patch2(vul):
-        cmd = "cd " + vul['project_repo_folder'] + "; git diff %s HEAD" % (vul['fixing_commit_hash'])
-        diff = subprocess.check_output(cmd, shell=True)
-        patch = PatchSet(diff.decode('utf-8'))
 
-        changed_java_source_files = []
-        for a_file in patch.added_files:
-            file_path = a_file.path
-            if file_path.endswith('.java') and ('test/' not in file_path and 'tests/' not in file_path):
-                changed_java_source_files.append(file_path)
+@utils.log_frame("SAST")
+def vul4j_sast(args):
+    versions = args.versions
+    output_dir = args.outdir
+    force = args.force
 
-        for m_file in patch.modified_files:
-            file_path = m_file.path
-            if file_path.endswith('.java') and ('test/' not in file_path and 'tests/' not in file_path):
-                changed_java_source_files.append(file_path)
+    versions = versions if versions else [None]
 
-        patch_data = []
-        for file in changed_java_source_files:
-            cmd = "cd " + vul['project_repo_folder'] + "; git show %s:%s" % (vul['fixing_commit_hash'], file)
-            content = subprocess.check_output(cmd, shell=True).decode('utf-8')
-            patch_data.append({'file_path': file, 'content': content})
-        return patch_data
+    for version in versions:
+        if version:
+            if version != versions[0]:
+                logger.info(utils.SEPARATOR)
+            logger.info(f"Checking version: {version}...")
+            vul4j.apply(output_dir, version, True)
 
-    @staticmethod
-    def get_patch(vul):
-        cmd = "cd " + vul['project_repo_folder'] + "; git diff %s %s~1" % (
-            vul['fixing_commit_hash'], vul['fixing_commit_hash'])
-        diff = subprocess.check_output(cmd, shell=True)
-        patch = PatchSet(diff.decode('utf-8'))
-
-        changed_java_source_files = []
-        for a_file in patch.added_files:
-            file_path = a_file.path
-            if file_path.endswith('.java') and ('test/' not in file_path and 'tests/' not in file_path):
-                changed_java_source_files.append(file_path)
-
-        for m_file in patch.modified_files:
-            file_path = m_file.path
-            if file_path.endswith('.java') and ('test/' not in file_path and 'tests/' not in file_path):
-                changed_java_source_files.append(file_path)
-
-        patch_data = []
-        revert_patch_data = []
-        for file in changed_java_source_files:
-            cmd = "cd " + vul['project_repo_folder'] + "; git show %s:%s" % (vul['fixing_commit_hash'], file)
-            content = subprocess.check_output(cmd, shell=True).decode('utf-8')
-            patch_data.append({'file_path': file, 'content': content})
-
-            cmd = "cd " + vul['project_repo_folder'] + "; git show %s~1:%s" % (vul['fixing_commit_hash'], file)
-            content = subprocess.check_output(cmd, shell=True).decode('utf-8')
-            revert_patch_data.append({'file_path': file, 'content': content})
-        return patch_data, revert_patch_data
-
-    def checkout(self, vul_id, output_dir):
-        vul = self.get_vulnerability(vul_id)
-
-        if vul is None:
-            print("No vulnerability found in the dataset with id %s!" % vul_id)
-            exit(1)
-
-        if os.path.exists(output_dir):
-            print("Directory '%s' has already existed!" % output_dir)
-            exit(1)
-
-        cmd = "cd %s; git reset .; git checkout -- .; git clean -x -d --force; git checkout -f %s" % (
-            BENCHMARK_PATH, vul["vul_id"])
-        ret = subprocess.call(cmd, shell=True, stdout=FNULL, stderr=subprocess.STDOUT)
-        if ret != 0:
-            exit(1)
-
-        vul['project_repo_folder'] = BENCHMARK_PATH
-        vul['human_patch'] = self.get_patch2(vul)
-
-        # copy to working directory
-        copytree(BENCHMARK_PATH, output_dir, ignore=ignore_patterns('.git'))
-
-        cmd = "cd %s; git init; git config user.name \"vul4j\"; git config user.email \"vul4j@vul4j.org\"; git add .; git commit -m \"init\"" % (
-            output_dir)
-        subprocess.call(cmd, shell=True, stdout=FNULL, stderr=subprocess.STDOUT)
-
-        os.makedirs(os.path.join(output_dir, OUTPUT_FOLDER_NAME))
-        with open(os.path.join(output_dir, OUTPUT_FOLDER_NAME, "vulnerability_info.json"), "w", encoding='utf-8') as f:
-            f.write(json.dumps(vul, indent=2))
-        
-        # Extract vulnerable and patched code into separate folders
-        os.makedirs(os.path.join(output_dir, OUTPUT_FOLDER_NAME, "vulnerable"))
-        os.makedirs(os.path.join(output_dir, OUTPUT_FOLDER_NAME, "human_patch"))
-        for file in vul['human_patch']:
-            filename = file['file_path'].split("/")[-1]
-            shutil.copy(os.path.join(output_dir, file['file_path']), os.path.join(output_dir, OUTPUT_FOLDER_NAME, "vulnerable", filename))
-            with open(os.path.join(output_dir, OUTPUT_FOLDER_NAME, "human_patch", filename), "w",
-                      encoding='utf-8') as f:
-                f.write(file['content'])
-
-        with open(os.path.join(output_dir, OUTPUT_FOLDER_NAME, "vulnerable", "paths.json"), "w", encoding='utf-8') as f:
-            f.write(json.dumps({entry['file_path'].split("/")[-1]: entry['file_path'] for entry in vul['human_patch']}, indent=2))
-
-        with open(os.path.join(output_dir, OUTPUT_FOLDER_NAME, "human_patch", "paths.json"), "w", encoding='utf-8') as f:
-            f.write(json.dumps({entry['file_path'].split("/")[-1]: entry['file_path'] for entry in vul['human_patch']}, indent=2))
-
-        # revert to main branch
-        cmd = "cd %s; git reset .; git checkout -- .; git clean -x -d --force; git checkout -f main" % BENCHMARK_PATH
-        subprocess.call(cmd, shell=True, stdout=FNULL, stderr=subprocess.STDOUT)
-
-        return 0
-
-    '''
-    This checkout() function is used for the reproduction of new vulnerabilities 
-    '''
-
-    def checkout_reproduce(self, vul_id, output_dir):
-        vul = self.get_vulnerability(vul_id)
-        if os.path.exists(output_dir):
-            logging.error("Directory '%s' has already existed!" % output_dir)
-            exit(1)
-
-        if not os.path.exists(PROJECT_REPOS_ROOT_PATH):
-            os.makedirs(PROJECT_REPOS_ROOT_PATH)
-
-        project_repo = os.path.join(PROJECT_REPOS_ROOT_PATH, vul['project'])
-        if not os.path.exists(project_repo):
-            logging.debug("Cloning new project... " + vul['project'])
-            subprocess.call("git clone %s %s" % (vul['project_url'], os.path.abspath(project_repo)), shell=True,
-                            stdout=FNULL, stderr=subprocess.STDOUT)
-            logging.debug("Done Cloning!")
-
-        cmd = "cd %s; git reset .; git checkout -- .; git clean -x -d --force; git checkout -f %s" % (
-            project_repo, vul["fixing_commit_hash"])
-        ret = subprocess.call(cmd, shell=True, stdout=FNULL, stderr=subprocess.STDOUT)
-        if ret != 0:
-            exit(1)
-
-        # extract the original patch
-        # some vulns with customized-patch will fail here
-        vul['project_repo_folder'] = os.path.abspath(project_repo)
-        patch_data, revert_patch_data = self.get_patch(vul)
-        vul['human_patch'] = patch_data
-        vul['revert_human_patch'] = revert_patch_data
-
-        # copy to working directory
-        copytree(project_repo, output_dir, ignore=ignore_patterns('.git'))
-        os.makedirs(os.path.join(output_dir, OUTPUT_FOLDER_NAME))
-        with open(os.path.join(output_dir, OUTPUT_FOLDER_NAME, "vulnerability_info.json"), "w", encoding='utf-8') as f:
-            f.write(json.dumps(vul, indent=2))
-
-        return 0
-
-    @staticmethod
-    def read_vulnerability_from_output_dir(output_dir):
-        info_file = os.path.join(output_dir, OUTPUT_FOLDER_NAME, "vulnerability_info.json")
         try:
-            vul = json.load(open(info_file))
-            return vul
-        except IOError:
-            logging.error("Not found the info file of vulnerability: '%s'" % info_file)
-            exit(1)
-            
-    def apply(self, output_dir, version):
-        vul = self.read_vulnerability_from_output_dir(output_dir)
-        
-        if version == "human_patch":
-            print("---------------------------------------------------------")
-            print("You are applying the official patch to the project. These files might not contain some additional fixes.")
-            print("If the build or the tests fail, please check the latest commits to get the missing code.")
-            print(VUL4J_COMMITS_URL + vul["vul_id"])
-            print("---------------------------------------------------------")
-        
-        try:
-            with open(os.path.join(output_dir, OUTPUT_FOLDER_NAME, version, "paths.json"), "r") as file:
-                paths = json.load(file)
-        except FileNotFoundError:
-            print("No such version: %s" % version)
-            exit(1)
+            spotbugs.run_spotbugs(output_dir, version, bool(version) or force)
+        except subprocess.CalledProcessError:
+            # compile, method getter or spotbugs fails
+            logger.error("Task failed!")
+            continue
+        except (vul4j.VulnerabilityNotFoundError, AssertionError) as err:
+            # any file fails to be created or the correct jar was not found
+            logger.error(err)
+            continue
 
-        for file, path in paths.items():
-            shutil.copy(str(os.path.join(output_dir, OUTPUT_FOLDER_NAME, version, file)),
-                        str(os.path.join(output_dir, "/".join(path.split("/")[:-1]))))
-            
-        return 0
 
+@utils.log_frame("REPRODUCE")
+def vul4j_reproduce(args):
+    vul4j.reproduce(args.id)
 
-    def compile(self, output_dir):
-        vul = self.read_vulnerability_from_output_dir(output_dir)
 
-        java_home = JAVA7_HOME if vul['compliance_level'] <= 7 else JAVA8_HOME
+@utils.log_frame("INFO")
+def vul4j_info(args):
+    vul4j.get_info(args.id)
 
-        cmd = """cd %s;
-export JAVA_HOME="%s";
-export _JAVA_OPTIONS=-Djdk.net.URLClassPath.disableClassPathURLCheck=true;
-export MAVEN_OPTS="%s";
-%s;""" % (output_dir, java_home, MVN_OPTS, vul['compile_cmd'])
 
-        cmd_options = vul['cmd_options']
-        if cmd_options:
-            cmd = cmd[:-1]  # remove comma
-            cmd += " " + cmd_options + ';'
-
-        log_path = os.path.join(output_dir, OUTPUT_FOLDER_NAME, "compile.log")
-        stdout = open(log_path, "w", encoding="utf-8") if ENABLE_EXECUTING_LOGS == "1" else FNULL
-        ret = subprocess.call(cmd, shell=True, stdout=stdout, stderr=subprocess.STDOUT)
-        with (open(os.path.join(output_dir, OUTPUT_FOLDER_NAME, "compile_result.txt"), "w")) as f:
-            f.write("1" if ret == 0 else "0")
-        return ret
-
-    def test(self, output_dir, batch_type, print_out=True):
-        vul = self.read_vulnerability_from_output_dir(output_dir)
-        self._remove_test_results(output_dir)
-
-        java_home = JAVA7_HOME if vul['compliance_level'] <= 7 else JAVA8_HOME
-        if batch_type == "all":
-            cmd_type = 'test_all_cmd'
-        else:
-            cmd_type = 'test_cmd'
-
-        cmd = """cd %s;
-export JAVA_HOME="%s";
-export _JAVA_OPTIONS=-Djdk.net.URLClassPath.disableClassPathURLCheck=true;
-export MAVEN_OPTS="%s";
-%s;""" % (output_dir, java_home, MVN_OPTS, vul[cmd_type])
-
-        cmd_options = vul['cmd_options']
-        if cmd_options:
-            cmd = cmd[:-1]  # remove comma
-            cmd += " " + cmd_options + ';'
-
-        log_path = os.path.join(output_dir, OUTPUT_FOLDER_NAME, "testing.log")
-        stdout = open(log_path, "w", encoding="utf-8") if ENABLE_EXECUTING_LOGS == "1" else FNULL
-        subprocess.call(cmd, shell=True, stdout=stdout, stderr=subprocess.STDOUT)
-
-        test_results = self.read_test_results_maven(vul, output_dir) \
-            if vul['build_system'] == "Maven" \
-            else self.read_test_results_gradle(vul, output_dir)
-
-        json_str = json.dumps(test_results, indent=2)
-        with (open(os.path.join(output_dir, OUTPUT_FOLDER_NAME, "testing_results.json"), "w")) as f:
-            f.write(json_str)
-
-        if print_out:
-            print(json_str)
-        return json_str
-
-    def classpath(self, output_dir, print_out=True):
-        cp = self.get_classpath(output_dir)
-        if print_out:
-            print(cp)
-        exit(0)
-
-    def get_classpath(self, output_dir):
-        vul = self.read_vulnerability_from_output_dir(output_dir)
-
-        '''
-        ----------------------------------------
-        ONLY for Gradle projects, make sure to put this task into the build.gradle of failing module
-        ----------------------------------------
-        task copyClasspath {
-            def runtimeClasspath = sourceSets.test.runtimeClasspath
-            inputs.files( runtimeClasspath )
-            doLast {
-                new File(projectDir, "classpath.info").text = runtimeClasspath.join( File.pathSeparator )
-            }
-        }
-        ----------------------------------------
-        '''
-        cp_cmd = ""
-        if vul['build_system'] == "Gradle":
-            test_all_cmd = vul['test_all_cmd']
-
-            if vul['failing_module'] is None or vul['failing_module'] == 'root':
-                cp_cmd = './gradlew copyClasspath; cat classpath.info'
-            else:
-                matched = re.search("(./gradlew :.*:)test$", test_all_cmd)
-                if matched is None:
-                    print("The test all command should follow the regex \"(./gradlew :.*:)test$\"!"
-                          " It is now %s." % test_all_cmd)
-                    exit(1)
-
-                gradle_classpath_cmd = matched.group(1) + "copyClasspath"
-                classpath_info_file = os.path.join(vul['failing_module'], 'classpath.info')
-                cat_classpath_info_cmd = "cat " + classpath_info_file
-                cp_cmd = "%s;%s" % (gradle_classpath_cmd, cat_classpath_info_cmd)
-
-        elif vul['build_system'] == "Maven":
-            cmd_options = vul['cmd_options']
-            failing_module = vul['failing_module']
-            if failing_module != "root" and failing_module != "":
-                cp_cmd = "mvn dependency:build-classpath -Dmdep.outputFile='classpath.info' -pl %s %s; cat %s/classpath.info" \
-                         % (failing_module, cmd_options, failing_module)
-            else:
-                cp_cmd = "mvn dependency:build-classpath -Dmdep.outputFile='classpath.info' %s; cat classpath.info" \
-                         % (cmd_options)
-
-        else:
-            print("Not support for %s" % vul['vul_id'])
-            exit(1)
-
-        java_home = JAVA7_HOME if vul['compliance_level'] <= 7 else JAVA8_HOME
-
-        cmd = """cd %s;
-        export JAVA_HOME="%s";
-        export _JAVA_OPTIONS=-Djdk.net.URLClassPath.disableClassPathURLCheck=true;
-        export MAVEN_OPTS="%s";
-        %s;""" % (output_dir, java_home, MVN_OPTS, cp_cmd.split(';')[0])
-
-        subprocess.call(cmd, shell=True, stdout=FNULL, stderr=subprocess.STDOUT)
-
-        classpath = subprocess.check_output(
-            "cd %s;%s;" % (output_dir, cp_cmd.split(';')[1]), shell=True)
-        return classpath
-
-    '''
-    modify from https://github.com/program-repair/RepairThemAll/blob/master/script/info_json_file.py
-    '''
-
-    @staticmethod
-    def _remove_test_results(project_dir):
-        for r, dirs, files in os.walk(project_dir):
-            for file in files:
-                filePath = os.path.join(r, file)
-                if ("target/surefire-reports" in filePath or "target/failsafe-reports" in filePath
-                    or "build/test-results" in filePath) and file.endswith('.xml') and file.startswith('TEST-'):
-                    os.remove(filePath)
-
-    @staticmethod
-    def read_test_results_maven(vul, project_dir):
-        surefire_report_files = []
-        for r, dirs, files in os.walk(project_dir):
-            for file in files:
-                filePath = os.path.join(r, file)
-                if ("target/surefire-reports" in filePath or "target/failsafe-reports" in filePath) and file.endswith(
-                        '.xml') and file.startswith('TEST-'):
-                    surefire_report_files.append(filePath)
-
-        failing_tests_count = 0
-        error_tests_count = 0
-        passing_tests_count = 0
-        skipping_tests_count = 0
-
-        passingTestCases = set()
-        skippingTestCases = set()
-
-        failures = []
-
-        for report_file in surefire_report_files:
-            with open(report_file, 'r') as file:
-                xml_tree = parse(file)
-                testsuite_class_name = xml_tree.getroot().attrib['name']
-                test_cases = xml_tree.findall('testcase')
-                for test_case in test_cases:
-                    failure_list = {}
-                    class_name = test_case.attrib[
-                        'classname'] if 'classname' in test_case.attrib else testsuite_class_name
-                    method_name = test_case.attrib['name']
-                    failure_list['test_class'] = class_name
-                    failure_list['test_method'] = method_name
-
-                    failure = test_case.findall('failure')
-                    if len(failure) > 0:
-                        failing_tests_count += 1
-                        failure_list['failure_name'] = failure[0].attrib['type']
-                        if 'message' in failure[0].attrib:
-                            failure_list['detail'] = failure[0].attrib['message']
-                        failure_list['is_error'] = False
-                        failures.append(failure_list)
-                    else:
-                        error = test_case.findall('error')
-                        if len(error) > 0:
-                            error_tests_count += 1
-                            failure_list['failure_name'] = error[0].attrib['type']
-                            if 'message' in error[0].attrib:
-                                failure_list['detail'] = error[0].attrib['message']
-                            failure_list['is_error'] = True
-                            failures.append(failure_list)
-                        else:
-                            skipTags = test_case.findall("skipped")
-                            if len(skipTags) > 0:
-                                skipping_tests_count += 1
-                                skippingTestCases.add(class_name + '#' + method_name)
-                            else:
-                                passing_tests_count += 1
-                                passingTestCases.add(class_name + '#' + method_name)
-
-        repository = {'name': vul['project'], 'url': vul['project_url'], 'human_patch_url': vul['human_patch_url']}
-        overall_metrics = {'number_running': passing_tests_count + error_tests_count + failing_tests_count,
-                           'number_passing': passing_tests_count, 'number_error': error_tests_count,
-                           'number_failing': failing_tests_count, 'number_skipping': skipping_tests_count}
-        tests = {'overall_metrics': overall_metrics, 'failures': failures, 'passing_tests': list(passingTestCases),
-                 'skipping_tests': list(skippingTestCases)}
-
-        json_data = {'vul_id': vul['vul_id'], 'cve_id': vul['cve_id'], 'repository': repository, 'tests': tests}
-        return json_data
-
-    @staticmethod
-    def read_test_results_gradle(vul, project_dir):
-        surefire_report_files = []
-        for r, dirs, files in os.walk(project_dir):
-            for file in files:
-                filePath = os.path.join(r, file)
-                if "build/test-results" in filePath and file.endswith('.xml') and file.startswith('TEST-'):
-                    surefire_report_files.append(filePath)
-
-        failing_tests_count = 0
-        error_tests_count = 0
-        passing_tests_count = 0
-        skipping_tests_count = 0
-        failures = []
-
-        passingTestCases = set()
-        skippingTestCases = set()
-
-        for report_file in surefire_report_files:
-            with open(report_file, 'r') as file:
-                xml_tree = parse(file)
-                testsuite_class_name = xml_tree.getroot().attrib['name']
-                test_cases = xml_tree.findall('testcase')
-                for test_case in test_cases:
-                    failure_list = {}
-                    class_name = test_case.attrib[
-                        'classname'] if 'classname' in test_case.attrib else testsuite_class_name
-                    method_name = test_case.attrib['name']
-                    failure_list['test_class'] = class_name
-                    failure_list['test_method'] = method_name
-
-                    failure = test_case.findall('failure')
-                    if len(failure) > 0:
-                        failing_tests_count += 1
-                        failure_list['failure_name'] = failure[0].attrib['type']
-                        if 'message' in failure[0].attrib:
-                            failure_list['detail'] = failure[0].attrib['message']
-                        failure_list['is_error'] = False
-                        failures.append(failure_list)
-                    else:
-                        error = test_case.findall('error')
-                        if len(error) > 0:
-                            error_tests_count += 1
-                            failure_list['failure_name'] = error[0].attrib['type']
-                            if 'message' in error[0].attrib:
-                                failure_list['detail'] = error[0].attrib['message']
-                            failure_list['is_error'] = True
-                            failures.append(failure_list)
-                        else:
-                            skipTags = test_case.findall("skipped")
-                            if len(skipTags) > 0:
-                                skipping_tests_count += 1
-                                skippingTestCases.add(class_name + '#' + method_name)
-                            else:
-                                passing_tests_count += 1
-                                passingTestCases.add(class_name + '#' + method_name)
-
-        repository = {'name': vul['project'], 'url': vul['project_url'], 'human_patch': vul['human_patch']}
-        overall_metrics = {'number_running': passing_tests_count + error_tests_count + failing_tests_count,
-                           'number_passing': passing_tests_count, 'number_error': error_tests_count,
-                           'number_failing': failing_tests_count, 'number_skipping': skipping_tests_count}
-        tests = {'overall_metrics': overall_metrics, 'failures': failures, 'passing_tests': list(passingTestCases),
-                 'skipping_tests': list(skippingTestCases)}
-
-        json_data = {'vul_id': vul['vul_id'], 'cve_id': vul['cve_id'], 'repository': repository, 'tests': tests}
-        return json_data
-
-
-def main_verify(args):
-
-    vul4j = Vul4J()
-
-    vulnerabilities = []
-    if args.id is not None:
-        for vul_id in args.id:
-            vulnerabilities.append(vul4j.get_vulnerability(vul_id))
-
-    success_vulnerabilities = open(os.path.join(REPRODUCTION_DIR, 'successful_vulns.txt'), 'a+')
-    for vul in vulnerabilities:
-        try:
-            if os.path.exists(WORK_DIR):
-                subprocess.call("rm -rf " + WORK_DIR, shell=True, stdout=FNULL, stderr=subprocess.STDOUT)
-
-            logging.info("---------------------------------------------------------")
-            logging.info("Verifying vulnerability: %s..." % vul['vul_id'])
-
-            logging.debug("--> Checking out the vulnerable revision...")
-            ret = vul4j.checkout(vul['vul_id'], WORK_DIR)
-            if ret != 0:
-                logging.error("Checkout failed!")
-                continue
-
-            logging.debug("Compiling...")
-            ret = vul4j.compile(WORK_DIR)
-            if ret != 0:
-                logging.error("Compile failed! Keep going...")
-                #continue
-
-            logging.debug("Running PoV tests...")
-            test_results_str = vul4j.test(WORK_DIR, "povs", print_out=False)
-            write_test_results_to_file(vul, test_results_str, 'vulnerable')
-            test_results = json.loads(test_results_str)
-
-            failing_tests_of_vulnerable_revision = extract_failed_tests_from_test_results(test_results)
-            logging.debug("Failing tests: %s" % failing_tests_of_vulnerable_revision)
-            if failing_tests_of_vulnerable_revision is None:
-                logging.error("Build failed, no tests were run! This is acceptable here.")
-            elif len(failing_tests_of_vulnerable_revision) == 0:
-                logging.error("Vulnerable revision must contain at least 1 failing test!!!")
-                continue
-
-            logging.debug("--> Applying human patch to the source code...")
-            if len(vul['human_patch']) == 0:
-                logging.error("No patch changes were found!")
-                exit(1)
-
-            for change in vul['human_patch']:
-                logging.debug("Applied " + change['file_path'])
-                with open(os.path.join(WORK_DIR, change['file_path']), 'w', encoding='utf-8') as f:
-                    f.write(change['content'])
-
-            logging.debug("Compiling...")
-            ret = vul4j.compile(WORK_DIR)
-            if ret != 0:
-                logging.error("Compile failed! Keep going...")
-                #continue
-
-            logging.debug("Running PoV tests...")
-            test_results_str = vul4j.test(WORK_DIR, "povs", print_out=False)
-            write_test_results_to_file(vul, test_results_str, 'patched')
-            test_results = json.loads(test_results_str)
-
-            failing_tests_of_patched_revision = extract_failed_tests_from_test_results(test_results)
-            if failing_tests_of_patched_revision is None:
-                logging.error("Build failed, no tests were run! Human patch must compile and pass the tests!")
-            elif len(failing_tests_of_patched_revision) != 0:
-                logging.debug("Failing tests: %s" % failing_tests_of_patched_revision)
-                logging.error("Patched version must contain no failing test!!!")
-                continue
-            else:
-                logging.debug("No failing tests found!")
-                logging.info("--> The vulnerability %s has been verified successfully with PoV(s): %s!"
-                             % (vul['vul_id'], failing_tests_of_vulnerable_revision))
-                success_vulnerabilities.write(vul['vul_id'] + '\n')
-                success_vulnerabilities.flush()
-        except Exception as e:
-            logging.error("Error encountered: ", exc_info=e)
-
-
-def main_reproduce(args):
-
-    vul4j = Vul4J()
-
-    vulnerabilities = []
-    if args.id is not None:
-        for vul_id in args.id:
-            vulnerabilities.append(vul4j.get_vulnerability(vul_id))
-
-    success_vulnerabilities = open(os.path.join(REPRODUCTION_DIR, 'successful_vulns.txt'), 'a+')
-    for vul in vulnerabilities:
-        try:
-            if os.path.exists(WORK_DIR):
-                subprocess.call("rm -rf " + WORK_DIR, shell=True, stdout=FNULL, stderr=subprocess.STDOUT)
-
-            logging.info("---------------------------------------------------------")
-            logging.info("Reproducing vulnerability: %s..." % vul['vul_id'])
-
-            logging.debug("--> Checking out the vulnerable revision...")
-            ret = vul4j.checkout_reproduce(vul['vul_id'], WORK_DIR)
-            if ret != 0:
-                logging.error("Checkout failed!")
-                continue
-
-            if len(vul['revert_human_patch']) == 0:
-                logging.error("No patch changes were found!")
-                exit(1)
-
-            for change in vul['revert_human_patch']:
-                with open(os.path.join(WORK_DIR, change['file_path']), 'w', encoding='utf-8') as f:
-                    f.write(change['content'])
-
-            logging.debug("Compiling...")
-            ret = vul4j.compile(WORK_DIR)
-            if ret != 0:
-                logging.error("Compile failed!")
-                continue
-
-            logging.debug("Running tests...")
-            test_results_str = vul4j.test(WORK_DIR, "all", print_out=False)
-            write_test_results_to_file(vul, test_results_str, 'vulnerable')
-            test_results = json.loads(test_results_str)
-
-            failing_tests_of_vulnerable_revision = extract_failed_tests_from_test_results(test_results)
-            logging.debug("Failing tests: %s" % failing_tests_of_vulnerable_revision)
-            if failing_tests_of_vulnerable_revision is None:
-                logging.error("Build failed, no tests were run! This is acceptable here.")
-            elif len(failing_tests_of_vulnerable_revision) == 0:
-                logging.error("Vulnerable revision must contain at least 1 failing test!!!")
-                continue
-
-            logging.debug("--> Applying human patch to the source code...")
-            if len(vul['human_patch']) == 0:
-                logging.error("No patch changes were found!")
-                exit(1)
-
-            for change in vul['human_patch']:
-                logging.debug("Applied " + change['file_path'])
-                with open(os.path.join(WORK_DIR, change['file_path']), 'w', encoding='utf-8') as f:
-                    f.write(change['content'])
-
-            logging.debug("Compiling...")
-            ret = vul4j.compile(WORK_DIR)
-            if ret != 0:
-                logging.error("Compile failed!")
-                continue
-
-            logging.debug("Running tests...")
-            test_results_str = vul4j.test(WORK_DIR, "all", print_out=False)
-            write_test_results_to_file(vul, test_results_str, 'patched')
-            test_results = json.loads(test_results_str)
-
-            failing_tests_of_patched_revision = extract_failed_tests_from_test_results(test_results)
-            if failing_tests_of_patched_revision is None:
-                logging.error("Build failed, no tests were run! Human patch must compile and pass the tests!")
-            elif len(failing_tests_of_patched_revision) != 0:
-                logging.debug("Failing tests: %s" % failing_tests_of_patched_revision)
-                logging.error("Patched version must contain no failing test!!!")
-                continue
-            else:
-                logging.debug("No failing tests found!")
-                logging.info("--> The vulnerability %s has been reproduced successfully with PoV(s): %s!"
-                             % (vul['vul_id'], failing_tests_of_vulnerable_revision))
-                success_vulnerabilities.write(vul['vul_id'] + '\n')
-                success_vulnerabilities.flush()
-        except Exception as e:
-            logging.error("Error encountered: ", exc_info=e)
-
-
-def main_checkout(args):
-    vul4j = Vul4J()
-    ret = vul4j.checkout(args.id, args.outdir)
-    if ret != 0:
-        print("Checkout failed!")
-    exit(ret)
-
-def main_apply(args):
-    vul4j = Vul4J()
-    ret = vul4j.apply(args.outdir, args.version)
-    if ret == 0:
-        print("Verison applied: %s" % args.version)
-    else:
-        print("Something went wrong when applying version: %s" % args.version)
-    exit(0)
-
-def main_compile(args):
-    vul4j = Vul4J()
-    ret = vul4j.compile(args.outdir)
-    if ret != 0:
-        print("Compile failed!")
-    exit(ret)
-
-
-def main_test(args):
-    vul4j = Vul4J()
-    vul4j.test(args.outdir, args.batchtype)
-    exit(0)
-
-
-def main_classpath(args):
-    vul4j = Vul4J()
+@utils.log_frame("CLASSPATH")
+def vul4j_classpath(args):
     vul4j.classpath(args.outdir)
 
 
-def main_info(args):
-    vul4j = Vul4J()
-    vul4j.get_info(args.id)
+@utils.log_frame("GET-SPOTBUGS")
+def get_spotbugs(args):
+    utils.get_spotbugs(args.location)
 
 
 def main(args=None):
@@ -794,59 +113,100 @@ def main(args=None):
         args = sys.argv[1:]
 
     parser = argparse.ArgumentParser(prog="vul4j", description="A Dataset of Java vulnerabilities.")
+    parser.add_argument('-l', '--log', type=str, default="INFO",
+                        help="Specify displayed log level for this command.")
 
     sub_parsers = parser.add_subparsers()
 
-    checkout_parser = sub_parsers.add_parser('checkout', help="Checkout a vulnerability.")
-    checkout_parser.set_defaults(func=main_checkout)
-    checkout_parser.add_argument("-i", "--id", help="Vulnerability Id.", required=True)
-    checkout_parser.add_argument("-d", "--outdir", help="The destination directory.", required=True)
+    # STATUS
+    status_parser = sub_parsers.add_parser("status",
+                                           help="Lists vul4j requirements and their availability.")
+    status_parser.set_defaults(func=vul4j_status)
 
-    compile_parser = sub_parsers.add_parser('compile', help="Compile the checked out vulnerability.")
-    compile_parser.set_defaults(func=main_compile)
-    compile_parser.add_argument("-i", "--id", help="Vulnerability Id.", required=False)
-    compile_parser.add_argument("-d", "--outdir", help="The directory to which the vulnerability was checked out.",
-                                required=True)
-    
-    compile_parser = sub_parsers.add_parser('apply', help="Apply the file versions.")
-    compile_parser.set_defaults(func=main_apply)
-    compile_parser.add_argument("-d", "--outdir", help="The directory to which the vulnerability was checked out.",
-                                required=True)
-    compile_parser.add_argument("-v", "--version", help="Version to apply",
-                                required=True)
+    # CHECKOUT
+    checkout_parser = sub_parsers.add_parser('checkout',
+                                             help="Checkout a vulnerability into the specified directory.")
+    checkout_parser.add_argument("-i", "--id", type=str,
+                                 help="Vulnerability ID.", required=True)
+    checkout_parser.add_argument("-d", "--outdir", type=str,
+                                 help="The destination directory.", required=True)
+    checkout_parser.add_argument("-f", "--force", action="store_true",
+                                 help="Removes the destination directory if it already exists.")
+    checkout_parser.set_defaults(func=vul4j_checkout)
 
-    test_parser = sub_parsers.add_parser('test', help="Run testsuite for the checked out vulnerability.")
-    test_parser.set_defaults(func=main_test)
-    test_parser.add_argument("-i", "--id", help="Vulnerability Id.", required=False)
-    test_parser.add_argument("-d", "--outdir", help="The directory to which the vulnerability was checked out.",
-                             required=True)
-    test_parser.add_argument("-b", "--batchtype", help="Two modes: all tests (all) by default, and only povs (povs).",
-                             default="all", required=False)
+    # COMPILE
+    compile_parser = sub_parsers.add_parser('compile',
+                                            help="Compile the checked out vulnerability.")
+    compile_parser.add_argument("-d", "--outdir", type=str,
+                                help="The directory to which the vulnerability was checked out.", required=True)
+    compile_parser.set_defaults(func=vul4j_compile)
 
-    cp_parser = sub_parsers.add_parser('classpath', help="Print the classpath of the checked out vulnerability.")
-    cp_parser.set_defaults(func=main_classpath)
-    cp_parser.add_argument("-i", "--id", help="Vulnerability Id.", required=False)
-    cp_parser.add_argument("-d", "--outdir", help="The directory to which the vulnerability was checked out.",
-                           required=True)
+    # TEST
+    test_parser = sub_parsers.add_parser('test',
+                                         help="Run testsuite for the checked out vulnerability.")
+    test_parser.add_argument("-d", "--outdir", type=str,
+                             help="The directory to which the vulnerability was checked out.", required=True)
+    test_parser.add_argument("-b", "--batchtype", choices=["povs", "all"], default="all", type=str,
+                             help="Two modes: all tests (all) by default, and only povs (povs).", required=False)
+    test_parser.set_defaults(func=vul4j_test)
 
-    info_parser = sub_parsers.add_parser('info', help="Print information about a vulnerability.")
-    info_parser.set_defaults(func=main_info)
-    info_parser.add_argument("-i", "--id", help="Vulnerability Id.", required=True)
+    # APPLY
+    apply_parser = sub_parsers.add_parser('apply',
+                                          help="Apply the specified file versions.")
+    apply_parser.add_argument("-d", "--outdir", type=str,
+                              help="The directory to which the vulnerability was checked out.", required=True)
+    apply_parser.add_argument("-v", "--version", type=str,
+                              help="Version to apply.", required=True)
+    apply_parser.set_defaults(func=vul4j_apply)
 
-    reproduce_parser = sub_parsers.add_parser('reproduce', help="Reproduce of newly added vulnerabilities.")
-    reproduce_parser.set_defaults(func=main_reproduce)
-    reproduce_parser.add_argument("-i", "--id", nargs='+', help="Vulnerability Id.", required=True)
+    # SAST
+    sast_parser = sub_parsers.add_parser('sast',
+                                         help="Run Spotbugs analysis.")
+    sast_parser.add_argument("-d", "--outdir", type=str,
+                             help="The directory to which the vulnerability was checked out.", required=True)
+    sast_parser.add_argument("-v", "--versions", nargs='+',
+                             help="Versions to run spotbugs on.", required=False)
+    sast_parser.add_argument("-f", "--force", action="store_true",
+                             help="Force recompile project.")
+    sast_parser.set_defaults(func=vul4j_sast)
 
-    verify_parser = sub_parsers.add_parser('verify', help="Verify the reproducibility of existing vulnerabilities.")
-    verify_parser.set_defaults(func=main_verify)
-    verify_parser.add_argument("-i", "--id", nargs='+', help="Vulnerability Id.", required=True)
+    # REPRODUCE
+    reproduce_parser = sub_parsers.add_parser('reproduce', aliases=["verify"],
+                                              help="Verify the reproducibility of vulnerabilities in the dataset.")
+    reproduce_parser.add_argument("-i", "--id", nargs='+', type=str,
+                                  help="Vulnerability ID.", required=True)
+    reproduce_parser.set_defaults(func=vul4j_reproduce)
+
+    # INFO
+    info_parser = sub_parsers.add_parser('info',
+                                         help="Print information about a vulnerability.")
+    info_parser.add_argument("-i", "--id", type=str,
+                             help="Vulnerability ID.", required=True)
+    info_parser.set_defaults(func=vul4j_info)
+
+    # CLASSPATH
+    cp_parser = sub_parsers.add_parser('classpath',
+                                       help="Print the classpath of the checked out vulnerability.")
+    cp_parser.add_argument("-d", "--outdir", type=str,
+                           help="The directory to which the vulnerability was checked out.", required=True)
+    cp_parser.set_defaults(func=vul4j_classpath)
+
+    # GET SPOTBUGS
+    spotbugs_parser = sub_parsers.add_parser("get-spotbugs",
+                                             help="Download Spotbugs into the user directory.")
+    spotbugs_parser.add_argument("-l", "--location", type=str,
+                                 help="Custom spotbugs installation path.", required=False)
+    spotbugs_parser.set_defaults(func=get_spotbugs)
 
     options = parser.parse_args(args)
+    setup_logger(options.func.__name__.upper(), options.log, FILE_LOG_LEVEL)
+
     if not hasattr(options, 'func'):
         parser.print_help()
         exit(1)
+
     options.func(options)
-    return options
+    exit(0)
 
 
 if __name__ == "__main__":
