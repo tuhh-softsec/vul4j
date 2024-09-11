@@ -44,7 +44,7 @@ git clone https://github.com/bqcuong/vul4j
 python setup.py install
 ```
 
-3. Put your configuration information in the file `~/vul4j_data/vul4j.ini`:
+3. Put your configuration information in the file `~/vul4j/vul4j.ini`:
 ```ini
 JAVA7_HOME = <path-to-java-7-home-directory>
 JAVA8_HOME = <path-to-java-8-home-directory>
@@ -168,8 +168,8 @@ $ vul4j sast -d /tmp/vul4j/VUL4J-10
   "RV_RETURN_VALUE_IGNORED_BAD_PRACTICE@org.apache.commons.fileupload.disk.DiskFileItem#readObject"
 ]
 ```
-If Spotbugs fails to run, make sure it is installed and the correct path is set in the `~/vul4j_data/vul4j.ini` file.
-You can also install it automatically to a default location with `vul4j get-spotbugs`, which will install it inside the `~/vul4j_data` directory.
+If Spotbugs fails to run, make sure it is installed and the correct path is set in the `~/vul4j/vul4j.ini` file.
+You can also install it automatically to a default location with `vul4j get-spotbugs`, which will install it inside the `~/vul4j` directory.
 
 5. **Validate reproduction of new vulnerability:** Our framework can validate the reproduction of new vulnerability.
 First, you need to provide the essential information about the new vulnerability in the [csv dataset file](dataset/vul4j_dataset.csv) including: `vul_id`, `human_patch_url`, `build_system`, `compliance_level`, `compile_cmd`, `test_all_cmd`.
