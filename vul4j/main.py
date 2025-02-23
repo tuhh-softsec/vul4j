@@ -43,7 +43,7 @@ def vul4j_checkout(args):
 @utils.log_frame("COMPILE")
 def vul4j_compile(args):
     try:
-        vul4j.build(args.outdir)
+        vul4j.build(args.outdir, clean=args.clean)
     except subprocess.CalledProcessError:
         raise RuntimeError("Compile failed!")
 
@@ -51,7 +51,7 @@ def vul4j_compile(args):
 @utils.log_frame("TEST")
 def vul4j_test(args):
     try:
-        vul4j.test(args.outdir, args.batchtype)
+        vul4j.test(args.outdir, args.batchtype, clean=args.clean)
     except subprocess.CalledProcessError:
         raise RuntimeError("Testing failed!")
 
@@ -139,6 +139,8 @@ def main(args=None):
                                             help="Compile the checked out vulnerability.")
     compile_parser.add_argument("-d", "--outdir", type=str,
                                 help="The directory to which the vulnerability was checked out.", required=True)
+    compile_parser.add_argument("-c", "--clean", action="store_true",
+                                help="Clean the project before compiling.")
     compile_parser.set_defaults(func=vul4j_compile)
 
     # TEST
@@ -148,6 +150,8 @@ def main(args=None):
                              help="The directory to which the vulnerability was checked out.", required=True)
     test_parser.add_argument("-b", "--batchtype", choices=["povs", "all"], default="all", type=str,
                              help="Two modes: all tests (all) by default, and only povs (povs).", required=False)
+    test_parser.add_argument("-c", "--clean", action="store_true",
+                             help="Clean the project before compiling.")
     test_parser.set_defaults(func=vul4j_test)
 
     # APPLY
@@ -199,9 +203,12 @@ def main(args=None):
     spotbugs_parser.set_defaults(func=get_spotbugs)
 
     options = parser.parse_args(args)
-    setup_logger(options.func.__name__.upper(), options.log, FILE_LOG_LEVEL)
 
-    if not hasattr(options, 'func'):
+    if hasattr(options, 'func'):
+        setup_logger(options.func.__name__.upper(), options.log, FILE_LOG_LEVEL)
+        if not utils.check_config():
+            exit(1)
+    else:
         parser.print_help()
         exit(1)
 

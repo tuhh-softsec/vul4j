@@ -161,6 +161,9 @@ def checkout(vul_id: str, project_dir: str, force: bool = False) -> None:
     :param force: removes project_dir if exists
     """
 
+    assert not utils.is_relative_to(project_dir,
+                                    VUL4J_GIT), "The target directory must be outside the vul4j git directory."
+
     vul = get_vulnerability(vul_id)
 
     if force and os.path.exists(project_dir):
@@ -321,6 +324,11 @@ def test(project_dir: str, batch_type: str, suffix: str = None, clean: bool = Fa
 
     if clean:
         utils.clean_build(project_dir, vul.build_system, env)
+
+    # delete old report files
+    report_files = utils.find_test_reports(project_dir)
+    for file in report_files:
+        os.remove(file)
 
     test_cmd = vul.test_all_cmd if batch_type == "all" else vul.test_cmd + " " + vul.cmd_options
     logger.debug(test_cmd)
@@ -518,39 +526,20 @@ def reproduce(vul_ids):
                     logger.warning(f"No fixed warnings found in the dataset for {vul.vul_id}. Skipping Spotbugs...")
 
                 # CALCULATE RESULTS
-                tests_pass = ((1 if bool(tests_ran) else 0)
-                              + (1 if bool(vul.test_cmd or vul.test_all_cmd) else 0))
-                spotbugs_pass = ((1 if bool(spotbugs_ran) else 0)
-                                 + (1 if bool(spotbugs_ok) else 0)
-                                 + (1 if bool(len(vul.warning) > 0 and "" not in vul.warning) else 0))
+                reproduction_results = {
+                    "tests_ran": tests_ran,
+                    "has_tests": vul.test_cmd or vul.test_all_cmd,
+                    "spotbugs_ran": spotbugs_ran,
+                    "spotbugs_ok": spotbugs_ok,
+                    "has_spotbugs_warnings": len(vul.warning) > 0 and "" not in vul.warning
+                }
 
-                if tests_pass == 2:
-                    tests_status = "PASS"
-                elif tests_pass == 0:
-                    tests_status = "SKIP"
-                else:
-                    tests_status = "ERROR"
-
-                if spotbugs_pass == 3:
-                    spotbugs_status = "PASS"
-                elif spotbugs_pass == 0:
-                    spotbugs_status = "SKIP"
-                else:
-                    spotbugs_status = "ERROR"
-
-                if ((tests_pass == 2 and spotbugs_pass == 3)
-                        or (tests_pass == 2 and spotbugs_pass == 0)
-                        or (tests_pass == 0 and spotbugs_pass == 3)):
-                    log_level = "SUCCESS"
-                elif tests_pass < 2 and spotbugs_pass < 3:
-                    log_level = "ERROR"
-                else:
-                    log_level = "WARNING"
+                log_level, tests_status, spotbugs_status = utils.evaluate_reproduction_results(reproduction_results)
 
                 logger.log(log_level, f"Vulnerabilities: {tests_status}, Spotbugs: {spotbugs_status}!")
-
-                success_vulnerabilities.write(vul.vul_id + '\n')
-                success_vulnerabilities.flush()
+                if log_level == "SUCCESS":
+                    success_vulnerabilities.write(vul.vul_id + '\n')
+                    success_vulnerabilities.flush()
             except (VulnerabilityNotFoundError, AssertionError) as err:
                 logger.error(err)
                 continue
@@ -657,8 +646,8 @@ def extract_patch_files(vul: Vulnerability, project_dir: str, repo_dir: str, com
     :param repo_dir: path to the git directory with all the commits
     :param compare_with_parent: if True, it will compare the fixing commit hash with
     """
-    human_patch_dir = "human_patch"
-    vulnerable_dir = "vulnerable"
+    human_patch_dir = os.path.join(project_dir, VUL4J_OUTPUT, "human_patch")
+    vulnerable_dir = os.path.join(project_dir, VUL4J_OUTPUT, "vulnerable")
     paths_filename = "paths.json"
 
     repo = git.Repo(repo_dir)
@@ -673,8 +662,8 @@ def extract_patch_files(vul: Vulnerability, project_dir: str, repo_dir: str, com
             changed_java_source_files.append(modified_file)
 
     # extract vulnerable and patched code into separate folders
-    os.makedirs(os.path.join(project_dir, VUL4J_OUTPUT, human_patch_dir))
-    os.makedirs(os.path.join(project_dir, VUL4J_OUTPUT, vulnerable_dir))
+    os.makedirs(human_patch_dir)
+    os.makedirs(vulnerable_dir)
 
     logger.debug("Writing file contents...")
     for file in changed_java_source_files:
@@ -682,22 +671,22 @@ def extract_patch_files(vul: Vulnerability, project_dir: str, repo_dir: str, com
         vulnerable = file.b_blob
 
         # write human_patch file content
-        with open(os.path.join(project_dir, VUL4J_OUTPUT, human_patch_dir, human_patch.name), "w",
+        with open(os.path.join(human_patch_dir, human_patch.name), "w",
                   encoding="utf-8") as f:
             f.write(human_patch.data_stream.read().decode("utf-8", errors="replace"))
 
         # write vulnerable file content
-        with open(os.path.join(project_dir, VUL4J_OUTPUT, vulnerable_dir, vulnerable.name), "w",
+        with open(os.path.join(vulnerable_dir, vulnerable.name), "w",
                   encoding="utf-8") as f:
             f.write(vulnerable.data_stream.read().decode("utf-8", errors="replace"))
 
     # write paths into file
     logger.debug("Writing paths data...")
-    with open(os.path.join(project_dir, VUL4J_OUTPUT, human_patch_dir, paths_filename), "w",
+    with open(os.path.join(human_patch_dir, paths_filename), "w",
               encoding="utf-8") as f:
         json.dump({entry.a_blob.name: entry.a_blob.path for entry in changed_java_source_files}, f, indent=2)
 
-    with open(os.path.join(project_dir, VUL4J_OUTPUT, vulnerable_dir, paths_filename), "w",
+    with open(os.path.join(vulnerable_dir, paths_filename), "w",
               encoding="utf-8") as f:
         json.dump({entry.b_blob.name: entry.b_blob.path for entry in changed_java_source_files}, f, indent=2)
 
@@ -715,15 +704,7 @@ def read_test_results(vul: Vulnerability, project_dir: str) -> dict:
     logger.debug("Reading test results...")
 
     # find report files
-    report_files = []
-    for r, dirs, files in os.walk(project_dir):
-        for file in files:
-            file_path = os.path.join(r, file)
-            if (("target/surefire-reports" in file_path
-                 or "target/failsafe-reports" in file_path
-                 or "build/test-results" in file_path)  # gradle
-                    and file.endswith('.xml') and file.startswith('TEST-')):
-                report_files.append(file_path)
+    report_files = utils.find_test_reports(project_dir)
 
     failing_tests_count = 0
     error_tests_count = 0

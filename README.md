@@ -44,7 +44,13 @@ git clone https://github.com/bqcuong/vul4j
 python setup.py install
 ```
 
-3. Put your configuration information in the file `~/vul4j/vul4j.ini`:
+This will create a new `vul4j_data` folder in the home directory.
+If it already exists, you will need to manually delete it first.
+You can find the `vul4j.ini` and log files there.
+By default, the reproduction, temporary cloning and spotbugs directories are placed there as well.
+You can change these in the `vul4j.ini`.
+
+3. Put your configuration information in the file `~/vul4j_data/vul4j.ini`:
 ```ini
 JAVA7_HOME = <path-to-java-7-home-directory>
 JAVA8_HOME = <path-to-java-8-home-directory>
@@ -52,7 +58,10 @@ JAVA11_HOME = <path-to-java-11-home-directory>
 JAVA16_HOME = <path-to-java-16-home-directory>
 ```
 Other configuration values are optional,
-if left empty the environment variables will be checked or a default value will be used.
+if left empty, the environment variables will be checked or a default value will be used.
+
+The `vul4j.ini` within the **vul4j git repository** is just a sample
+and will get overridden by certain operations. Make sure to edit the one in your home directory.
 
 4. You can check if everything is installed correctly:
 ```shell
