@@ -3,12 +3,14 @@ import os
 import subprocess
 import urllib.request
 import zipfile
+from typing import List
 
 import git
 from loguru import logger
 
 from vul4j.config import VUL4J_GIT, JAVA7_HOME, JAVA8_HOME, SPOTBUGS_PATH, \
-    MODIFICATION_EXTRACTOR_PATH, DATASET_PATH, SPOTBUGS_VERSION, VUL4J_DATA, JAVA11_HOME, MVN_ARGS, JAVA16_HOME
+    MODIFICATION_EXTRACTOR_PATH, DATASET_PATH, SPOTBUGS_VERSION, VUL4J_DATA, JAVA11_HOME, MVN_ARGS, JAVA16_HOME, \
+    REPRODUCTION_DIR, TEMP_CLONE_DIR
 
 SEPARATOR = 60 * "-"
 THICK_SEPARATOR = 60 * "="
@@ -31,7 +33,7 @@ def log_frame(title: str):
             try:
                 func(*args, **kwargs)
             except Exception as err:
-                logger.error(err)
+                logger.error(f"{err.__class__.__name__}: {err}")
                 exit(1)
             finally:
                 reset_vul4j_git()
@@ -44,7 +46,7 @@ def log_frame(title: str):
 
 
 def reset_vul4j_git():
-    if os.path.exists(VUL4J_GIT):
+    if os.path.exists(os.path.join(VUL4J_GIT, ".git")):
         repo = git.Repo(VUL4J_GIT)
         repo.git.reset("--hard")
         repo.git.checkout("--")
@@ -58,7 +60,7 @@ def check_status():
     """
 
     # check vul4j.ini
-    vul4j_config = os.path.exists(os.path.join(VUL4J_DATA, "vul4j.ini"))
+    vul4j_config = check_config()
 
     # check vul4j git
     vul4j_git = bool(VUL4J_GIT) and os.path.exists(os.path.join(VUL4J_GIT, ".git"))
@@ -108,11 +110,11 @@ def check_status():
 
     # check method getter
     modification_extractor = (bool(MODIFICATION_EXTRACTOR_PATH) and
-                     subprocess.run(f"java -jar {MODIFICATION_EXTRACTOR_PATH} -version",
-                                    shell=True,
-                                    stdout=subprocess.DEVNULL,
-                                    stderr=subprocess.DEVNULL,
-                                    env=get_java_home_env('16')).returncode == 0)
+                              subprocess.run(f"java -jar {MODIFICATION_EXTRACTOR_PATH} -version",
+                                             shell=True,
+                                             stdout=subprocess.DEVNULL,
+                                             stderr=subprocess.DEVNULL,
+                                             env=get_java_home_env('16')).returncode == 0)
 
     def log_result(message: str, success: bool):
         logger.log("SUCCESS" if success else "ERROR", f"{message}: {'OK' if success else 'NOT FOUND'}")
@@ -127,6 +129,34 @@ def check_status():
     log_result("Maven", maven)
     log_result("Spotbugs", spotbugs)
     log_result("Spotbugs modification extractor", modification_extractor)
+
+
+def check_config():
+    """
+    Check if vul4j is configured correctly.
+    """
+
+    errors = []
+
+    if not os.path.exists(os.path.join(VUL4J_DATA, "vul4j.ini")):
+        logger.critical("The vul4j.ini file does not exist!")
+        return False
+
+    if is_relative_to(REPRODUCTION_DIR, VUL4J_GIT):
+        errors.append("The reproduction directory must be outside the vul4j git directory.")
+
+    if is_relative_to(TEMP_CLONE_DIR, VUL4J_GIT):
+        errors.append("The temporary clone directory must be outside the vul4j git directory.")
+
+    if is_relative_to(SPOTBUGS_PATH, VUL4J_GIT):
+        errors.append("The spotbugs directory must be outside the vul4j git directory.")
+
+    for error in errors:
+        logger.error(f"CONFIG ERROR - {error}")
+    if errors:
+        logger.warning("Please modify the vul4j.ini file or environment variables to resolve the error.")
+
+    return not bool(errors)
 
 
 def get_spotbugs(location: str = None) -> None:
@@ -212,3 +242,49 @@ def get_java_home_env(java_version: str) -> dict:
         return env
     except ValueError:
         raise AssertionError(f"Illegal java version: {java_version}")
+
+
+def find_test_reports(project_dir: str) -> List[str]:
+    report_files = []
+    for r, dirs, files in os.walk(project_dir):
+        for file in files:
+            file_path = os.path.join(r, file)
+            if (("target/surefire-reports" in file_path
+                 or "target/failsafe-reports" in file_path
+                 or "build/test-results" in file_path)  # gradle
+                    and file.endswith('.xml') and file.startswith('TEST-')):
+                report_files.append(file_path)
+    return report_files
+
+
+def evaluate_reproduction_results(results: dict):
+    if results["tests_ran"] and results["has_tests"]:
+        tests_status = "PASS"
+    elif results["tests_ran"] or results["has_tests"]:
+        tests_status = "ERROR"
+    else:
+        tests_status = "SKIP"
+
+    if results["spotbugs_ran"] and results["spotbugs_ok"] and results["has_spotbugs_warnings"]:
+        spotbugs_status = "PASS"
+    elif results["spotbugs_ran"] or results["spotbugs_ok"] or results["has_spotbugs_warnings"]:
+        spotbugs_status = "ERROR"
+    else:
+        spotbugs_status = "SKIP"
+
+    if ((tests_status == "PASS" and spotbugs_status == "SKIP") or
+            (tests_status == "SKIP" and spotbugs_status == "PASS") or
+            (tests_status == "PASS" and spotbugs_status == "PASS")):
+        log_level = "SUCCESS"
+    elif tests_status in {"ERROR", "SKIP"} and spotbugs_status in {"ERROR", "SKIP"}:
+        log_level = "ERROR"
+    else:
+        log_level = "WARNING"
+
+    return log_level, tests_status, spotbugs_status
+
+
+def is_relative_to(path: str, base: str) -> bool:
+    abs_path = os.path.abspath(path)
+    abs_base = os.path.abspath(base)
+    return abs_path.startswith(abs_base + os.sep)
